@@ -1,0 +1,604 @@
+'
+' Sphere physics demo
+' Original PB code by Jordi Valles
+' ThinBasic version by Petr Schreiber, started on 07-08-2008
+' +Oxygenated version Charles Pegge 14 July 2008
+' Elastic head-on collisions 17 July 2008
+
+#MINVERSION 1.6.0.10
+
+randomize (1)
+
+
+Uses "TBGL" 
+Uses "MATH"
+Uses "OXYGEN"
+
+dim morphogen  as double = 0.1 ' try 0.01 .. .25  :D
+dim morphogen1 as double = 0.0002 ' balloon expansion on collision
+dim jj as long
+
+' -- Create and show window
+
+Dim hWnd As Dword  = TBGL_CreateWindowEx("TBGL script - press ESC to quit", 640, 480, 32, %TBGL_WS_WINDOWED or %TBGL_WS_CLOSEBOX) 
+TBGL_ShowWindow 
+
+dim ShpereDetail as long 
+if msgbox( hWnd, "Do you want full graphic detail on spheres?", %MB_ICONQUESTION or %MB_YESNO, "Question") = %IDYES then
+  ShpereDetail = 24
+else
+  ShpereDetail = 12
+end if  
+
+TBGL_UseLighting %TRUE
+TBGL_UseLightSource %GL_LIGHT0, %TRUE
+
+tbgl_SetLightParameter %GL_LIGHT0, %TBGL_LIGHT_POSITION, 5, 10, 15, 1
+
+dim swidth  as long = 60
+dim sheight as long = 60
+
+Cage_Init()
+Ball_Init()
+Assemble_Collider()
+
+DIM FrameRate AS DOUBLE
+
+' -- Resets status of all keys 
+dim t0, t1, t2 as long
+dim Sheeps as long
+
+HiResTimer_init
+
+
+TBGL_ResetKeyState() 
+
+' -- Main loop
+While TBGL_IsWindow(hWnd) 
+  doevents
+
+  FrameRate = TBGL_GetFrameRate
+  
+  incr Sheeps
+  if Sheeps > FrameRate then
+    Sheeps = 0
+    TBGL_SetWindowTitle(hWnd, "Click to add spheres ( now"+STR$(nBalls)+" ), collision:"+format$(t1-t0, "000")+"ms sphere rendering:"+format$(t2-t1, "000")+"ms, "+format$(FrameRate, "0.00")+"FPS")
+  end if  
+
+  TBGL_ClearFrame 
+    tbgl_Camera swidth/4,70,70,swidth/2,sheight/2,0
+
+    t0 = HiResTimer_Get / 1000   
+    Ball_Collide()
+    t1 = HiResTimer_Get / 1000    
+    Ball_Render()
+    t2 = HiResTimer_Get / 1000   
+    
+    tbgl_CallList %Cage
+    
+  tbgl_DrawFrame 
+  
+  ' -- ESCAPE key to exit application
+  If TBGL_GetWindowKeyState(hWnd, %VK_ESCAPE) Then Exit While 
+
+  if TBGL_GetWindowKeystate(hWnd, %VK_space) Then Clicked()
+  
+  if TBGL_GetWindowKeyonce(hWnd, %VK_LBUTTON) Then 
+    Clicked()
+  elseif TBGL_GetWindowKeyonce(hWnd, %VK_RBUTTON) Then  
+    if nBalls > 1 then decr nBalls
+  end if  
+Wend 
+
+TBGL_DestroyWindow
+'¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤
+SUB Ball_Init()
+   TYPE tBall
+      x     AS DOUBLE     'X position
+      y     AS DOUBLE     'Y position
+      
+      r     AS DOUBLE     'Radius
+      
+      vx    AS DOUBLE     ' x velocity
+      vy    AS DOUBLE     ' y velocity
+      
+      red   AS byte       'Color
+      green AS byte
+      blue  AS byte
+   END TYPE
+   global Ball(1024) as tBall                         '1024 balloons max
+   global nBalls    as long = 1
+   nBalls = 1                  
+   with Ball(1)            'first balloon   
+     .r     = 2                         
+     .x     = swidth/2                    
+     .y     = Ball(1).r           
+     .red   = rnd(128, 255)
+     .green = rnd(128, 255)
+     .blue  = rnd(128, 255)
+   end with
+   %Sphere = 1
+   TBGL_SetPrimitiveQuality ShpereDetail           
+   tbgl_NewList %Sphere
+    tbgl_Sphere 1
+   tbgl_EndList
+   global amotion as double = 2
+END SUB
+
+'¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤
+FUNCTION BalloonsOverlap(BYVAL bX1 AS LONG, BYVAL bY1 AS LONG) AS LONG
+   'Calculate if two balloons overlap when is inserted on pool.
+   'Returns true (no overlap) or false (balloons overlap)
+   LOCAL j, distance  AS LONG
+   FUNCTION = %TRUE
+   FOR j = 1 TO nBalls       'loop over existing balls
+      jj=j
+      IF NOT (ball(j).x = 0 AND ball(j).y = 0) THEN
+         distance = SQR(((bX1-ball(j).x) ^2) + ((bY1-ball(j).y) ^2))
+         IF distance >= ball(j).r*2 THEN
+            iterate for
+         ELSE
+            FUNCTION = %FALSE
+            EXIT FOR
+         END IF
+      END IF
+   NEXT 
+END FUNCTION
+
+'¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤
+
+SUB Assemble_Collider()
+global gi,gj as long
+dim src as string="
+
+  type Ball 8 x 8 y 8 r 8 vx 8 vy 1 red 1 green 1 blue ; 43 bytes
+
+  push esi
+  esi=dataspace 256
+  indexers `esi` offset 0 ascending
+  var 4 nBalls 
+  var 8 ccx ccy factor angle
+  
+
+  mov eax,[#nballs]
+  mov nballs,eax
+  
+  mov eax,[#jj]
+  dec eax
+
+  mov ecx,eax ; i ball index  
+  
+
+  imul eax,eax,sizeof Ball
+  add eax,#ball ' offset Ball
+  mov edx,eax ; pointers to i & j balls
+
+  def jball_x  qword [eax]
+  def iball_x  qword [edx]
+  def jball_y  qword [eax+8]
+  def iball_y  qword [edx+8]
+  def jball_r  qword [eax+16]
+  def iball_r  qword [edx+16]
+  def jball_vx  qword [eax+24]
+  def iball_vx  qword [edx+24]
+  def jball_vy  qword [eax+32]
+  def iball_vy  qword [edx+32]
+  
+  ;------------
+  main_collider:
+  ;------------
+  (
+    cmp ecx,nballs
+    jg exit
+    inc ecx
+    add edx,sizeof Ball ; ball(i)
+    call check_for_collision
+    jae repeat ; try next
+    ; call morphact
+    call separate
+    call head_on_collision
+    repeat
+  )
+  pop esi
+  ret ; end main collideryy
+  
+
+  ;-------------------
+  check_for_collision:
+  ;-------------------
+      
+  fld jball_r
+  fadd iball_r
+  fmul st(0),st(0)
+  ;
+  fld   jball_x
+  fsub  iball_x
+  fmul  st(0),st(0)
+  fld   jball_y
+  fsub  iball_y
+  fmul  st(0),st(0)
+  faddp st(1),st(0)
+  ;
+  fcomip st(0),st(1)
+  fcomp st(0),st(0)
+  '          IF ((Ball(j).x-Ball(i).x)^2 + (Ball(j).y-Ball(i).y)^2) < (Ball(j).r+Ball(i).r)^2 THEN
+  ret ; check_for_collision
+
+
+
+  ;------------------
+  head_on_collision:
+  ;------------------
+
+  var 8 imass jmass  cmass cvx cvy dvx dvy
+  
+  ; cube of radius to get masses
+  ;
+  fld iball_r
+  fld st(0),st(0)   ; dup
+  fmul st(0),st(0)  ; squared
+  fmulp st(1),st(0) ; cubed
+  fstp qword imass
+  fld jball_r
+  fld st(0),st(0)
+  fmul st(0),st(0)
+  fmulp st(1),st(0)
+  fst  qword jmass
+  ;
+  fadd qword imass ; sum of masses
+  fstp qword cmass
+  ;
+  ; velocity of combined body
+  ;
+  fld qword imass
+  fmul iball_vx     ; momentum iball
+  fld qword jmass
+  fmul jball_vx     ; momentum jball
+  faddp st(1),st(0) ; combined
+  fdiv qword cmass  ; get combined velocity
+  fstp qword cvx
+  ;
+  fld qword imass
+  fmul iball_vy
+  fld qword jmass
+  fmul jball_vy
+  faddp st(1),st(0)
+  fdiv qword cmass
+  fstp qword cvy
+  ;
+  ; velocity difference between spheres
+  ;
+  fld iball_vx
+  fsub jball_vx
+  fstp qword dvx
+  ;
+  fld iball_vy
+  fsub jball_vy
+  fstp qword dvy
+  ;
+  ; distribution of velocities relative to cvel
+  ;
+  fld  qword cvx
+  fadd st(0),st(0)
+  fsub iball_vx
+  ;fadd qword cvx
+  fst iball_vx
+  fadd qword dvx
+  fstp jball_vx
+  ;
+  fld  qword cvy
+  fadd st(0),st(0)
+  fsub iball_vy
+  fst iball_vy
+  fadd qword dvy
+  fstp jball_vy
+  ;
+  
+    
+  ret ; head_on_collision
+
+
+  ;--------
+  separate:
+  ;--------
+
+  fld  jball_y
+  fsub iball_y
+  fld  jball_x
+  fsub iball_x
+  fpatan
+  fstp qword angle
+  ; reverse y sign:  atn2(x,-y)
+  ;            Angle = Atn2(Ball(j).x - Ball(i).x, Ball(j).y - Ball(i).y)
+
+
+  fld  jball_x
+  fadd iball_x
+  fld1
+  fadd st(0),st(0)
+  fdivp
+  fstp qword ccx
+  ;            cX = (Ball(j).x + Ball(i).x) / 2                                            '   '
+
+
+  fld  jball_y
+  fadd iball_y
+  fld1
+  fadd st(0),st(0)
+  fdivp
+  fstp qword ccy
+  ;            cY = (Ball(j).y + Ball(i).y) / 2                                            '   '
+
+
+  fld  jball_r
+  fadd iball_r
+  fld1
+  fadd st(0),st(0)
+  fdivp
+  fstp qword factor
+  ;            factor = (Ball(i).r+Ball(j).r)/2                                            '   '
+  
+;---
+
+  fld qword angle
+  fcos
+  fmul qword factor
+  fadd qword ccx 
+  fstp jball_x
+
+  ;            Ball(j).x = cX + (factor * COS(Angle))
+
+  ;add eax,8
+  fld qword angle
+  fsin
+  fmul qword factor
+  fadd qword ccy
+  fstp jball_y
+  
+  ;            Ball(j).y = cY + (factor * SIN(Angle))                                      '   '
+
+  fld qword angle
+  fcos
+  fmul qword factor
+  fchs
+  fadd qword ccx 
+  fstp iball_x
+
+  ;            Ball(i).x = cX - (factor * COS(Angle))                                      '   '
+ 
+  fld qword angle
+  fsin
+  fmul qword factor
+  fchs
+  fadd qword ccy
+  fstp iball_y
+
+  ;            Ball(i).y = cY - (factor * SIN(Angle))
+  
+ret ; end of separate
+  
+
+  ;--------
+  morphact:
+  ;--------
+
+  fld iball_y
+  fld jball_y
+  fcomp st(0),st(1)
+  (
+    jz exit
+    (
+      ja exit
+      fld iball_y ; iball_y > jball_y
+      fadd qword [#morphogen]
+      fstp iball_y
+      jmp ok
+    )
+    fld jball_y ; jball_y > iball
+    fadd qword [#morphogen]
+    fstp jball_y   
+    ok:
+  )
+
+  fcomp st(0),st(0) ; flush stack
+
+
+  fcomp st(0),st(0) ; flush stack
+
+
+skip
+(
+
+ ;balloon expands and bursts
+  var 4 fbl
+  fld jball_r
+  fadd qword [#morphogen1]
+  fist dword fbl
+  fstp jball_r
+  
+  cmp fbl,2
+  jle ngro
+    fld1
+    fst  jball_x
+    fst  jball_y
+    fstp jball_r
+  ngro:
+)  
+
+;ret
+
+  fld iball_x
+  fld jball_x
+  fcomp st(0),st(1)
+  (
+    jz exit
+    (
+      ja exit
+      fld iball_x ; iball_ > jball_
+      fadd qword [#morphogen]
+      fstp iball_x
+      jmp ok
+    )
+    fld jball_x ; jball_ > iball_
+    fadd qword [#morphogen]
+    fstp jball_x   
+    ok:
+  )
+
+
+
+ret
+;----
+
+"
+  o2_buf 1
+  o2_asmo src
+  if len(o2_error) then msgbox 0,o2_error+$cr+o2_view(src)
+  'msgbox 0,o2_view(src)
+end sub
+
+'¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤
+
+SUB Ball_Collide()
+   'based from an idea of Scott Buckley
+   local i AS LONG, j AS LONG
+   LOCAL sx, sy  AS LONG
+   LOCAL txt AS STRING
+   LOCAL Angle, gravity,dmotion, factor, cX, cY AS DOUBLE
+   'dim gb as long=varptr(ball(1))
+   
+   IF nBalls <= 1 THEN EXIT SUB               'skip the first ball at initial
+   'dmotion = amotion/FrameRate
+   gravity=amotion/(Framerate*25)
+
+   ' -- Collision between balls
+   FOR j = 1 to nBalls
+       jj=j
+       'dynamics
+       'Ball(j).vy = Ball(j).vy-gravity                                                                     ''''
+       Ball(j).y = Ball(j).y + Ball(j).vy
+       Ball(j).x = Ball(j).x + Ball(j).vx
+'      ' -- Collision against the walls / not needed here                                                       '
+'      IF Ball(j).y < Ball(j).r THEN 
+'        Ball(j).y = Ball(j).r                              
+'      elseIF Ball(j).y > sheight - Ball(j).r THEN
+'        Ball(j).y = sheight - Ball(j).r
+'      end if
+'                          '
+'      IF Ball(j).x < Ball(j).r THEN
+'        Ball(j).x = Ball(j).r                              
+'      elseIF Ball(j).x > swidth - Ball(j).r THEN
+'         Ball(j).x = swidth - Ball(j).r                    
+'      end if   
+      
+       o2_exec ' Oxygenated replacement for loop below
+       
+      'FOR i = j TO nBalls                                                               ''''   '
+         'IF i <> j THEN                           'avoid war against itself                '   '
+            'IF ((Ball(j).x-Ball(i).x)^2 + (Ball(j).y-Ball(i).y)^2) < (Ball(j).r+Ball(i).r)^2 THEN
+               'Angle = Atn2(Ball(j).x - Ball(i).x, Ball(j).y - Ball(i).y)
+               'cX = (Ball(j).x + Ball(i).x) / 2                                            '   '
+               'cY = (Ball(j).y + Ball(i).y) / 2                                            '   '
+               'factor = (Ball(i).r+Ball(j).r)/2                                            '   '
+               'Ball(j).x = cX + (factor * COS(Angle))                                      '   '
+               'Ball(j).y = cY - (factor * SIN(Angle))                                      '   '
+               'Ball(i).x = cX - (factor * COS(Angle))                                      '   '
+               'Ball(i).y = cY + (factor * SIN(Angle))                                      '   '
+            'END IF                                                                         '   '
+         'END IF                                                                            '   '
+      'NEXT
+                                                                                    ''''   '
+      ' -- Collision against the walls                                                         '
+      ' -- copy of first part, but necessary here for balloons in inner loop                   '
+      IF Ball(j).y < Ball(j).r THEN 
+        Ball(j).y = Ball(j).r : Ball(j).vy=-Ball(j).vy                         
+      elseIF Ball(j).y > sheight - Ball(j).r THEN
+        Ball(j).y = sheight - Ball(j).r : Ball(j).vy=-Ball(j).vy 
+      end if
+                          '
+      IF Ball(j).x < Ball(j).r THEN
+        Ball(j).x = Ball(j).r : Ball(j).vx=-Ball(j).vx                             
+      elseIF Ball(j).x > swidth - Ball(j).r THEN
+         Ball(j).x = swidth - Ball(j).r: : Ball(j).vx=-Ball(j).vx                    
+      end if   
+   NEXT                                                                                     ''''
+  
+END SUB
+'¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤
+Sub Ball_Render()
+  local j as long
+  FOR j = 1 TO nBalls
+     tbgl_PushMatrix
+       tbgl_Translate Ball(j).x, Ball(j).y, 0
+       tbgl_Color Ball(j).red, Ball(j).green, Ball(j).blue
+       TBGL_Scale Ball(j).r, Ball(j).r, Ball(j).r
+       tbgl_CallList %Sphere 
+     tbgl_PopMatrix
+  NEXT 
+
+end sub
+ 
+'¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤
+SUB Clicked()
+  local x, y, z as double
+  TBGL_GetPixelInfo tbgl_MouseGetPosX, tbgl_MouseGetPosY, %TBGL_PINFO_XYZ, x, y, z
+  IF BalloonsOverlap(x, y) THEN
+     if nballs< ubound(Ball) then INCR nBalls
+     'IF nBalls > UBOUND(Ball) THEN REDIM PRESERVE Ball(nBalls+8) '+8 means some extra buffer to not redim for each ballon then
+       
+     with Ball(nBalls)            'first balloon   
+       .r     = rndf(0.75, 1.5)                        
+       .x     = x               
+       .y     = y
+       .vx    = rndf(-0.3, 0.3)
+       .vy    = rndf(-0.3, 0.3)
+       .red   = rnd(128, 255)
+       .green = rnd(128, 255)
+       .blue  = rnd(128, 255)
+     end with
+   
+  END IF
+
+END SUB
+
+' --
+FUNCTION Atn2(X AS DOUBLE, Y AS DOUBLE) AS DOUBLE
+   'Atn2 optimized version. Simple but sufficient for this purpose.
+   'Range of the result is 0 to 2Pi radians.
+   IF Y = 0 THEN Y = 0.000001
+   FUNCTION = (ATN(ABS(X)/ABS(Y)) * SGN(X) - Pi/2) * SGN(Y)
+END FUNCTION
+
+' --
+sub Cage_Init()
+  %Cage = 2
+  tbgl_NewList %Cage
+    TBGL_Color 192, 192, 192
+    TBGL_BeginPoly %GL_QUADS
+      tbgl_Normal 0, 0, 1
+      tbgl_Vertex      0,       0, -2
+      tbgl_Vertex swidth,       0, -2
+      tbgl_Vertex swidth, sHeight, -2
+      tbgl_Vertex      0, sHeight, -2
+      
+      tbgl_Normal 0, 1, 0
+      tbgl_Vertex swidth,       0, -2
+      tbgl_Vertex      0,       0, -2
+      tbgl_Vertex      0,       0,  2
+      tbgl_Vertex swidth,       0,  2
+      
+      tbgl_Normal  1, 0, 0
+      tbgl_Vertex      0,       0, -2
+      tbgl_Vertex      0, sHeight, -2
+      tbgl_Vertex      0, sHeight,  2
+      tbgl_Vertex      0,       0,  2
+
+      tbgl_Normal 1, 0, 0
+      tbgl_Vertex swidth,       0, -2
+      tbgl_Vertex swidth, sHeight, -2
+      tbgl_Vertex swidth, sHeight,  2
+      tbgl_Vertex swidth,       0,  2      
+      
+    tbgl_EndPoly
+  tbgl_EndList
+end sub

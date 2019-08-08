@@ -1,0 +1,399 @@
+﻿'--------------------------------------------------------------------
+'
+' Window creation using only Windows API functions
+'
+'--------------------------------------------------------------------
+#MinVersion 1.10.5
+
+uses "UI"
+uses "console"
+
+#Include ".\Win32API.Inc"
+
+'------------------------------------------------------------------------------
+
+%WIN_BKCOLOR = %COLOR_APPWORKSPACE + 1 ' Windows Background Color.
+
+$APPTITLE       = "WinApp - SDK Template Application"
+
+'------------------------------------------------------------------------------
+' Global Variables.
+'------------------------------------------------------------------------------
+' Global Menu Handles - SEE MENU.INC. NOTE: Thanks To Borje for his DRAWMENU.
+GLOBAL ghMnu     AS DWORD           ' Main Menu Handle.
+GLOBAL ghMnuFile AS DWORD           ' File Menu Handle.
+GLOBAL ghMnuEdit AS DWORD           ' Edit Menu Handle.
+GLOBAL ghMnuHelp AS DWORD           ' Help Menu Handle.
+GLOBAL ghMnuLang AS DWORD           ' Lang Menu Handle.
+
+GLOBAL hInst     AS DWORD           ' Applications Instance Handle.
+
+'------------------------------------------------------------------------------
+' Second Include Files.
+' NOTE: Do not change the order of these Include Files!
+'       If you need to add any of your own Functions, add them in APPUTILS.INC.
+'------------------------------------------------------------------------------
+'#INCLUDE "APPUTILS.INC"             ' Application Utility Function and Subs.
+'#INCLUDE "SPLASH.INC"               ' Application Splash Screen.
+'#INCLUDE "URL.INC"                  ' For HyperLinking.
+'#INCLUDE "ABOUTDLG.INC"             ' For About Box Dialog.
+'#INCLUDE "HTMLHELP.INC"             ' Html Help Include file.
+'#INCLUDE "APPPROPS.INC"             ' Application Properties Functions.
+#INCLUDE "MENU.INC"                 ' Application Menu      Code.
+'#INCLUDE "TOOLBAR.INC"              ' Application ToolBar   Code.
+'#INCLUDE "STATUSBAR.INC"            ' Appliction  StatusBar Code.
+
+
+'------------------------------------------------------------------------------
+' Function    : CenterWindow ()
+'
+' Description : Centers any Window given its hWnd Handle.
+'------------------------------------------------------------------------------
+FUNCTION CenterWindow (BYVAL hWnd AS DWORD) AS LONG
+
+  LOCAL WndRect AS RECT
+  LOCAL x       AS LONG
+  LOCAL y       AS LONG
+
+  GetWindowRect(hWnd, WndRect)
+
+  x = (GetSystemMetrics(%SM_CXSCREEN) - (WndRect.nRight - WndRect.nLeft)) \ 2
+  y = (GetSystemMetrics(%SM_CYSCREEN) - (WndRect.nBottom - WndRect.nTop + GetSystemMetrics(%SM_CYCAPTION))) \ 2
+
+  SetWindowPos(hWnd, %NULL, x, y, 0, 0, %SWP_NOSIZE OR %SWP_NOZORDER)
+
+END FUNCTION
+
+'------------------------------------------------------------------------------
+' Function    : OnCreate ()
+'
+' Description : %WM_CREATE - Message Handler.
+'------------------------------------------------------------------------------
+FUNCTION OnCreate (BYVAL hWnd   AS DWORD, _
+                   BYVAL wParam AS DWORD, _
+                   BYVAL lParam AS LONG) AS LONG
+  
+  CenterWindow hWnd                              ' Center the Window no Flicker.
+  
+'  '----------------------------------------------------------------------------
+'  ' Setup and Intialize the Applications Rebar and ToolBar.
+'  '----------------------------------------------------------------------------
+'  IF ISTRUE AppInitialize(hWnd) THEN              ' Initialize the Application.
+'     ' Error Initializing Application!
+'     MessageBox(hWnd, "Failed To Initialize Application!", "ERROR", _
+'                %MB_OK OR %MB_ICONERROR OR %MB_TOPMOST)
+'     SendMessage hWnd, %WM_DESTROY, wParam, lParam
+'     FUNCTION = %TRUE
+'     EXIT FUNCTION
+'  END IF
+'            
+'  SetTimer hWnd, %IDT_TIMER1, 1000, BYVAL %NULL ' Setup a Timer.
+'  
+'  '----------------------------------------------------------------------------
+'  ' Initialize the Applications StatusBar.
+'  '----------------------------------------------------------------------------
+'  ' Example of adding an Icon to a StatusBar Part (Panel).
+'  ghSbIcon = LoadImage(hInst, "PROGRAM", %IMAGE_ICON, 16, 16, _
+'                       %LR_LOADTRANSPARENT OR %LR_DEFAULTSIZE)
+'
+'  SBarIcon 0, ghSbIcon                          ' StatusBar Simple Text Icon.
+'    
+'  SBarText 0, 0, " WinApp - SDK Example"        ' StatusBar Simple Text.
+'        
+'  SBarTime udtAp.sbTimePart, 0, udtAp.sbTimeFmt ' Update the StatusBar Time.
+'  SBarDate udtAp.sbDatePart, 0, udtAp.sbDateFmt ' Update the StatusBar Date.
+'  
+  FUNCTION = %FALSE
+        
+END FUNCTION
+
+'------------------------------------------------------------------------------
+' Function    : OnCommand ()
+'
+' Description : %WM_COMMAND - Message Handler.
+'------------------------------------------------------------------------------
+FUNCTION OnCommand (BYVAL hWnd   AS DWORD, _
+                    BYVAL wParam AS DWORD, _
+                    BYVAL lParam AS LONG) AS LONG
+  
+  LOCAL lResult AS LONG
+    
+  SELECT CASE LOWRD(wParam)
+    
+    CASE %IDM_EXIT           ' Exits the Application.
+      'EnableMenuItem ghMnuEdit, %IDM_EXIT, %MF_GRAYED
+      lResult = MsgBox(hWnd, "Are you sure you want to Exit!", _
+                           %MB_YESNOCANCEL OR %MB_ICONINFORMATION OR %MB_TOPMOST, "Exit Application")
+
+     IF lResult = %IDYES THEN
+        SendMessage hWnd, %WM_DESTROY, wParam, lParam
+     ELSE
+        FUNCTION = %TRUE
+        EXIT FUNCTION
+     END IF
+    
+    CASE %IDM_HELP, %IDM_HELPCONT ' Display the Applications Html Help.
+'      HtmlHelp(hWnd, AppPath & $APPHELP, %HH_DISPLAY_TOC, BYVAL %NULL)
+    
+    CASE %IDM_ABOUT          ' Displays the Applications AboutBox.
+'      ShowABOUTDLG (hWnd)  
+    
+    CASE %IDM_EMAIL          ' Executes the Default Email Client.
+'      lResult = ExecuteURL (hWnd, "mailto:support@www.csdsoft.com")
+        
+  END SELECT
+  
+  FUNCTION = 1
+  
+END FUNCTION
+
+'------------------------------------------------------------------------------
+' Function    : OnSysCommand ()
+'
+' Description : %WM_SYSCOMMAND - Message Handler.
+'------------------------------------------------------------------------------
+FUNCTION OnSysCommand (BYVAL hWnd   AS DWORD, _
+                       BYVAL wParam AS DWORD, _
+                       BYVAL lParam AS LONG) AS LONG
+  
+  LOCAL lResult AS LONG
+  
+  '----------------------------------------------------------------------------
+  ' This traps the System Menu and Close Buttons from exiting the Application.
+  '----------------------------------------------------------------------------
+  IF (wParam = %SC_CLOSE) THEN
+     lResult = msgbox(hWnd, "Are you sure you want to Exit!", _
+                          %MB_YESNOCANCEL OR %MB_ICONINFORMATION OR %MB_TOPMOST, "Exit Application")
+
+     IF lResult = %IDYES THEN
+        FUNCTION = %FALSE
+     ELSE
+        FUNCTION = %TRUE
+     END IF
+  END IF
+  
+END FUNCTION
+'------------------------------------------------------------------------------
+' Function    : OnPaint ()
+'
+' Description : %WM_PAINT - Message Handler.
+'------------------------------------------------------------------------------
+FUNCTION OnPaint (BYVAL hWnd   AS DWORD, _
+                  BYVAL wParam AS DWORD, _
+                  BYVAL lParam AS LONG) AS LONG
+
+  LOCAL hDC AS DWORD
+  LOCAL ps  AS PAINTSTRUCT
+  LOCAL rc  AS RECT    
+    
+  hDC = BeginPaint(hWnd, ps)
+    'GetClientRect hWnd, rc
+    'SetBkMode hDC, %TRANSPARENT
+    'SetTextColor hDC, %WHITE
+    'GetWinPos(hWnd)
+    'DrawText hDC, "Hello, Windows!" + STR$(g_lWinWidth) + STR$(g_lWinHeight), -1, rc, _
+    '              %DT_SINGLELINE OR %DT_CENTER OR %DT_VCENTER
+  EndPaint hWnd, ps
+ 
+  FUNCTION = 1
+                         
+END FUNCTION
+
+'------------------------------------------------------------------------------
+' Function    : OnDestroy ()
+'
+' Description : %WM_DESTROY - Message Handler.
+'------------------------------------------------------------------------------
+FUNCTION OnDestroy (BYVAL hWnd   AS DWORD, _
+                    BYVAL wParam AS DWORD, _
+                    BYVAL lParam AS LONG) AS LONG
+
+  '----------------------------------------------------------------------------
+  ' Clean-up and release all of our used Resources...
+  ' First we save all the application parameters.
+  '----------------------------------------------------------------------------
+  ' Close the Applications Html Help file Window...
+'  HtmlHelp(hWnd, "", %HH_CLOSE_ALL, BYVAL %NULL)
+'  
+'  AppTerminate hWnd                            ' Save the Applications Data.
+'      
+  DestroyMenu(ghMnu)                           ' Destroy the created Menu.
+'  
+'  IF ghToolBar THEN DestroyWindow ghToolbar    ' Destroy the ToolBar Control Handle.    
+'  IF ghRebar   THEN DestroyWindow ghRebar      ' Destroy the Rebar   Control Handle.
+'    
+'  IF ghImlHot  THEN ImageList_Destroy ghImlHot ' Destroy Hot Selected ImageList Handle.
+'  IF ghImlDis  THEN ImageList_Destroy ghImlDis ' Destroy Dis Disabled ImageList Handle.
+'  IF ghImlNor  THEN ImageList_Destroy ghImlNor ' Destroy Nor Normal   ImageList Handle.
+'  
+'  IF ghRbBack  THEN DeleteObject(ghRbBack)     ' Destroy Rebar Background Bitmap Handle.
+'  
+'  IF ghSbFont THEN DeleteObject(ghSbFont)      ' Destroy StatusBar Font Handle.
+'  IF ghSbIcon THEN DeleteObject(ghSbIcon)      ' Destory StatusBar Icon Handle.
+'      
+'  KillTimer hWnd, %IDT_TIMER1                  ' Kill the Applications Timer. 
+'      
+  PostQuitMessage 0                            ' Tell Windows to Quit and Exit.
+
+END FUNCTION
+
+'------------------------------------------------------------------------------
+' Applications Main Entry Point.
+'------------------------------------------------------------------------------
+FUNCTION Main () AS LONG
+
+  LOCAL Msg         AS tagMsg
+  LOCAL wcex        AS WNDCLASSEX
+  LOCAL szClassName AS ASCIIZ * 80
+  LOCAL hWnd        AS DWORD
+  LOCAL hAccel      AS DWORD
+  
+  '----------------------------------------------------------------------------
+  ' Create and Register our Window Class.
+  '----------------------------------------------------------------------------
+  hInst              = GetCurrentInstance
+  szClassName        = "WINAPP32"
+
+  wcex.cbSize        = SIZEOF( wcex )
+  wcex.style         = %CS_HREDRAW OR %CS_VREDRAW
+  wcex.lpfnWndProc   = CODEPTR( WndProc )
+  wcex.cbClsExtra    = 0
+  wcex.cbWndExtra    = 0
+  wcex.hInstance     = 0'hInstance
+  wcex.hIcon         = LoadImageA(0, app_sourcepath & "Icons\Program.ico", %IMAGE_ICON, 0, 0, %LR_LOADFROMFILE or %LR_DEFAULTSIZE)
+  wcex.hCursor       = LoadCursorA( %NULL, %IDC_ARROW)
+  wcex.hbrBackground = %WIN_BKCOLOR
+  wcex.lpszMenuName  = %NULL
+  wcex.lpszClassName = VARPTR( szClassName )
+  wcex.hIconSm       = LoadImageA(0, app_sourcepath & "Icons\Program.ico", %IMAGE_ICON, 0, 0, %LR_LOADFROMFILE or %LR_DEFAULTSIZE)
+  
+  '----------------------------------------------------------------------------
+  ' Check for Class Registration Error!
+  '----------------------------------------------------------------------------
+  IF RegisterClassExA(wcex) = 0 THEN
+     ' Class Registration has failed so inform the user.
+     MsgBox(0, "Failed To Register Window Class!", %MB_OK OR %MB_ICONERROR OR %MB_TOPMOST, "ERROR")
+     FUNCTION = 0
+     EXIT FUNCTION
+  END IF
+
+  '----------------------------------------------------------------------------
+  ' Create a Main Window using our Registered Class above.
+  '----------------------------------------------------------------------------
+  hWnd = CreateWindowExA(0, _
+                        szClassName, _                ' window class name
+                        $APPTITLE, _                  ' window caption
+                        %WS_OVERLAPPEDWINDOW, _       ' window style
+                        %CW_USEDEFAULT, _             ' initial x position
+                        %CW_USEDEFAULT, _             ' initial y position
+                        %CW_USEDEFAULT, _             ' initial x size
+                        %CW_USEDEFAULT, _             ' initial y size
+                        %HWND_DESKTOP, _              ' parent window handle
+                        %NULL, _                      ' window menu handle
+                        hInst, _                      ' program instance handle
+                        %NULL)                        ' creation parameters
+
+  '----------------------------------------------------------------------------
+  ' Check for a Window creation Error!
+  '----------------------------------------------------------------------------
+  IF hWnd = 0 THEN
+     ' Window creation has failed so inform the user.
+     msgbox(0, "Failed To Create Application Window!", %MB_OK OR %MB_ICONERROR OR %MB_TOPMOST, "ERROR")
+     FUNCTION = 0
+     EXIT FUNCTION
+  END IF
+
+  '----------------------------------------------------------------------------
+  ' Intialize our Main Window.
+  '----------------------------------------------------------------------------
+  AddMenu hWnd                                   ' Add a Menu to the Window.
+
+'  hAccel = LoadAccelerators(hInstance, "APPACCEL") ' Load Accelerator Key Table.
+
+  ShowWindow   hWnd, %SW_NORMAL                     ' Show   the Window.
+  UpdateWindow hWnd                              ' Update the Window.
+
+  '----------------------------------------------------------------------------
+  ' Main Applications Message Handler Loop.
+  '----------------------------------------------------------------------------
+  WHILE GetMessageA(Msg, %NULL, 0, 0) and IsWindow(hWnd)
+     IF ISFALSE TranslateAcceleratorA(hWnd, hAccel, Msg) THEN
+        TranslateMessage(Msg)
+        DispatchMessageA(Msg)
+     END IF
+  WEND
+
+  FUNCTION = msg.wParam
+  
+END FUNCTION
+
+' END OF WINMAIN --------------------------------------------------------------
+
+
+'------------------------------------------------------------------------------
+' Applications Main CALLBACK Procedure.
+'------------------------------------------------------------------------------
+FUNCTION WndProc (BYVAL hWnd AS DWORD, BYVAL wMsg AS DWORD, BYVAL wParam AS DWORD, BYVAL lParam AS LONG) AS DWORD
+  
+  printl hWnd, wMsg, wParam, lParam
+  
+  '----------------------------------------------------------------------------
+  ' Main Message Handler Dispatcher.
+  ' Add your other Messages here! This is just a start to Help you.
+  '----------------------------------------------------------------------------
+  SELECT CASE wMsg
+    CASE %WM_CREATE         : FUNCTION = OnCreate(hwnd, wParam, lParam)
+    CASE %WM_CLOSE          : FUNCTION = OnCommand(hWnd, wParam, lParam)
+    'CASE %WM_NOTIFY         : FUNCTION = OnNotify(hWnd, wParam, lParam)
+    CASE %WM_PAINT          : FUNCTION = OnPaint(hWnd, wParam, lParam)
+    'CASE %WM_MENUSELECT     : FUNCTION = OnMenuSelect(hwnd, wParam, lParam)
+    'CASE %WM_DRAWITEM       : FUNCTION = OnDrawItem(hWnd, wParam, lParam)
+    'CASE %WM_MEASUREITEM    : FUNCTION = OnMeasureItem(hWnd, wParam, lParam)
+    'CASE %WM_SYSCOLORCHANGE : FUNCTION = OnSysColorChange(hWnd, wParam, lParam)
+    'CASE %WM_SIZE           : FUNCTION = OnSize(hWnd, wParam, lParam)
+    CASE %WM_COMMAND        : FUNCTION = OnCommand(hWnd, wParam, lParam)
+    'CASE %WM_CONTEXTMENU    : FUNCTION = OnContextMenu(hWnd, wParam, lParam)
+    'CASE %WM_TIMER          : FUNCTION = OnTimer(hWnd, wParam, lParam)
+    'CASE %WM_INITMENU       : FUNCTION = OnInitMenu(hWnd, wParam, lParam)
+    'CASE %WM_INITMENUPOPUP  : FUNCTION = OnInitMenuPopup(hWnd, wParam, lParam)
+    CASE %WM_DESTROY        : FUNCTION = OnDestroy(hWnd, wParam, lParam)
+    CASE %WM_SYSCOMMAND
+       IF (ISTRUE OnSysCommand(hWnd, wParam, lParam)) THEN
+          EXIT FUNCTION
+       END IF
+    
+    '--------------------------------------------------------------------------
+    ' Keyboard Messages.
+    '--------------------------------------------------------------------------
+    'CASE %WM_CHAR          : FUNCTION = OnChar(hWnd, wParam, lParam)
+    'CASE %WM_GETDLGCODE    : IF lParam THEN FUNCTION = %DLGC_WANTALLKEYS
+    'CASE %WM_KEYDOWN       : FUNCTION = OnKeyDown(hWnd, wParam, lParam)
+    'CASE %WM_KEYUP         : FUNCTION = OnKeyUp(hWnd, wParam, lParam)
+    'CASE %WM_HSCROLL       : FUNCTION = OnHScroll(hWnd, wParam, lParam)
+    'CASE %WM_VSCROLL       : FUNCTION = OnVScroll(hWnd, wParam, lParam)
+     
+    '--------------------------------------------------------------------------
+    ' Mouse Messages.
+    '--------------------------------------------------------------------------
+    'CASE %WM_LBUTTONDBLCLK : FUNCTION = OnMouseLBtnDblClk(hWnd, wParam, lParam)
+    'CASE %WM_LBUTTONDOWN   : FUNCTION = OnMouseLBtnDown(hWnd, wParam, lParam)
+    'CASE %WM_LBUTTONUP     : FUNCTION = OnMouseLBtnUp(hWnd, wParam, lParam)
+    'CASE %WM_RBUTTONDBLCLK : FUNCTION = OnMouseRBtnDblClk(hWnd, wParam, lParam)
+    'CASE %WM_RBUTTONDOWN   : FUNCTION = OnMouseRBtnDown(hWnd, wParam, lParam)
+    'CASE %WM_RBUTTONUP     : FUNCTION = OnMouseRBtnUp(hWnd, wParam, lParam)
+    'CASE %WM_MOUSEMOVE     : FUNCTION = OnMouseMove(hWnd, wParam, lParam)
+    'CASE %WM_MOUSEWHEEL    : FUNCTION = OnMouseWheel(hWnd, wParam, lParam)
+    'CASE %WM_MBUTTONDBLCLK : FUNCTION = OnMouseMBtnDblClk(hWnd, wParam, lParam)
+    'CASE %WM_MBUTTONDOWN   : FUNCTION = OnMouseMBtnDown(hWnd, wParam, lParam)
+    'CASE %WM_MBUTTONUP     : FUNCTION = OnMouseMBtnUp(hWnd, wParam, lParam)   
+        
+  END SELECT
+  
+  '----------------------------------------------------------------------------
+  ' Pass on to the Default Window Procedure.
+  '----------------------------------------------------------------------------
+  FUNCTION = DefWindowProcA(hWnd, wMsg, wParam, lParam)
+    
+END FUNCTION
+
+ 

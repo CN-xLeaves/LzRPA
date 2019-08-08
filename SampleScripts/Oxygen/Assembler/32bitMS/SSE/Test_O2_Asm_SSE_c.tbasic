@@ -1,0 +1,62 @@
+' Floating point vector maths using SIMD instructions
+ 
+uses "Oxygen"
+ 
+type Txyzw
+  x as single
+  y as single
+  z as single
+  w as single
+end type
+ 
+dim v1, v2 as Txyzw
+ 
+ 
+v1.x = 1
+v1.y = 2
+v1.z = 4
+v1.w = 8
+ 
+' NB
+' AMD does not support adding from memory eg addps xmm0,[#v1]
+' loss of precision when doing division, square roots and reciprocals
+ 
+dim SSE_Demo as string = "
+  'how accurate is 1/3 ?
+  movups xmm0, [#v1]   ' load
+  movups xmm1, xmm0    ' Add
+  addps  xmm0, xmm1    ' Add
+  addps  xmm0, xmm1    ' Add
+  divps  xmm1, xmm0    ' divide
+  mulps  xmm1, xmm1    ' multiply
+  sqrtps xmm1, xmm1    ' square root
+  'rcpps  xmm1, xmm1   ' reciprocal
+  movups [#v2], xmm1   ' save
+  'ret
+  '
+  ' First number is the fibonacci ratio?
+  ' it should be 1.618033.. but does not quite make it
+  movups xmm0, [#v1]   ' load 
+  movups xmm1, xmm0    ' load
+  addps  xmm0, xmm0    ' double
+  mulps  xmm0, xmm0    ' square
+  addps  xmm0, xmm1    ' Add
+  sqrtps xmm0, xmm0    ' square root
+  subps  xmm0, xmm1    ' subtract 
+  addps  xmm1, xmm1    ' double 
+  divps  xmm0, xmm1    ' divide
+  rcpps  xmm0, xmm0    ' reciprocal
+  movups [#v2], xmm0   ' save
+  ret
+ 
+"
+ 
+o2_asmo SSE_Demo
+if len(o2_error) then
+  msgbox 0, "Assembly error"+$CRLF+O2_Error+$CRLF+O2_View(SSE_Demo)
+else  
+  o2_exec
+  msgbox 0, STR$(v2.x)+STR$(v2.y)+STR$(v2.z)+STR$(v2.w)
+  'msgbox 0,O2_View(SSE_Demo)
+endif
+ 

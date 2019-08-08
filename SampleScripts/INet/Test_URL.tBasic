@@ -1,0 +1,16 @@
+uses "INet", "Console"
+
+dim ret as number
+dim webPage as string = APP_SOURCEPATH + "Home.html"
+
+printl "Downloading web page..."
+ret = INET_URLDownLoad("http://www.thinbasic.com/", webPage)
+
+IF ret <> %TRUE THEN
+  printl "Error occurred, number="+TSTR$(ret))
+ELSE
+  printl "File "+parse$(webPage, "\", -1)+" downloaded successfully"
+END IF
+WaitKey
+
+

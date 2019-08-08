@@ -1,0 +1,47 @@
+'---------
+'------ MSScriptControl COM interface example
+'-----  You must have VBScript installed in order the script to run
+'----   (under NT4 & Xp it's not installed by default)
+'---
+
+
+uses "COM"
+  
+dim scrCtl as dword
+
+dim ClassName as string = "MSScriptControl.ScriptControl"
+dim RetVal    as long
+dim vParam(1) as variant
+dim vRetVal   AS VARIANT
+dim sScript   as string = "MsgBox( ""This is a script evaluated from MSScriptControl component."" & vbcrlf & ""If you see this messagebox it means COM interface is working."", 64 Or 3 )"
+
+'---Try to create a Scripting reference
+scrCtl = COM_CreateObject(ClassName, RetVal)
+
+IF COM_Succeeded(RetVal) THEN
+  
+  vParam(1) = "VBScript" 
+  if COM_Succeeded(COM_Execute(scrCtl, "Language", %TB_DISPATCH_PROPERTYPUT, 1, vParam, 0)) then
+
+    vParam(1) = 1
+    COM_Execute(scrCtl, "AllowUI", %TB_DISPATCH_PROPERTYPUT, 1, vParam, 0)
+    
+    vParam(1) = 0
+    COM_Execute(scrCtl, "UseSafeSubset", %TB_DISPATCH_PROPERTYPUT, 1, vParam, 0)
+    
+    vParam(1) = sScript
+    COM_Execute(scrCtl, "Eval", %TB_DISPATCH_METHOD, 1, vParam, vRetVal)
+    
+    msgbox 0, "Return value from MSScriptControl Eval: " & vRetVal
+  else
+    msgbox 0, "Not possible to set language"
+  end if
+
+  if isfalse(COM_Succeeded(COM_Release(scrCtl))) then
+    msgbox 0, "It was not possible to release component."
+  end if
+
+else
+  msgbox 0, "It was not possible to create a reference to COM interface: " & ClassName
+end if
+

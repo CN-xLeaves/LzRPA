@@ -1,0 +1,30 @@
+
+// 启动 Redis 服务器
+Function RedisServer_Run(Optional sExePath As String, Optional sOptPath As String, Optional iShow As Integer) As Integer
+	If sExePath = "" Then
+		sExePath = APP_ScriptPath & "redis_server.exe"
+    End If
+    If sOptPath = "" Then
+		sOptPath = APP_ScriptPath & "redis.conf"
+    End If
+    Return RunApp("""" & sExePath & """ """ & sOptPath & """", iShow)
+End Function
+Function RedisServer_RunEx(Optional sExePath As String, Optional sOptPath As String, Optional iShow As Integer) As Integer
+	If sExePath = "" Then
+		sExePath = APP_ScriptPath & "redis_server.exe"
+    End If
+    If sOptPath = "" Then
+		sOptPath = APP_ScriptPath & "redis.conf"
+    End If
+    Return RunApp("""" & sExePath & """ """ & sOptPath & """", iShow)
+End Function
+
+// 暴力结束 Redis 服务器
+Sub RedisServer_ForceClose(ByVal PID As Long)
+	OS_ProcessKillById(PID)
+End Sub
+
+// 检测本地服务器进程是否仍在运行
+Function RedisServer_IsRun(ByVal PID As Long) As Bool
+	Return OS_ProcessIsRunningById(PID)
+End Function

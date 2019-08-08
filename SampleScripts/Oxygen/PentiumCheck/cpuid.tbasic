@@ -1,0 +1,228 @@
+'CPUID PROFILE
+
+'INTEL CPUID GUIDE
+'http://www.intel.com/assets/pdf/appnote/241618.pdf
+
+
+uses "oxygen" ',"console"
+
+
+dim p0,p1 as long
+dim src as string
+
+src="
+
+
+  Function Asm_support() As Integer  link #p1
+   
+  dim vendor(4),
+      features(4),
+      cache(4),
+      serial(4),
+      extFun(1),
+      extInfo(2),
+      brand(12),
+      extL2cache(2),
+      addrSizes(1)
+      
+  push ebx : push esi
+  
+  mov eax,&h0 : cpuid : lea edi,vendor
+  mov [edi+00],eax
+  mov [edi+04],ebx
+  mov [edi+08],edx
+  mov [edi+12],ecx
+
+  mov eax,&h1 : cpuid : lea edi,features
+  mov [edi+00],eax
+  mov [edi+04],ebx
+  mov [edi+08],ecx
+  mov [edi+12],edx
+
+  mov eax,&h2 : cpuid : lea edi,cache
+  mov [edi+00],eax
+  mov [edi+04],ebx
+  mov [edi+08],ecx
+  mov [edi+12],edx
+
+  'Pentium III only
+  'mov eax,&h3 
+  'cpuid
+  'lea edi,serial
+  'mov [edi+00],eax
+  'mov [edi+04],ebx
+  'mov [edi+08],ecx
+  'mov [edi+12],edx
+
+  mov eax,&h80000000 : cpuid : lea edi,extFun
+  mov [edi+00],eax
+  
+  mov eax,&h80000001 : cpuid : lea edi,extInfo
+  mov [edi+08],ecx
+  mov [edi+12],edx
+  
+  
+  mov eax,&h80000002 : cpuid : lea edi,brand
+  mov [edi+00],eax
+  mov [edi+04],ebx
+  mov [edi+08],ecx
+  mov [edi+12],edx
+  mov eax,&h80000003
+  cpuid
+  mov [edi+16],eax
+  mov [edi+20],ebx
+  mov [edi+24],ecx
+  mov [edi+28],edx
+  mov eax,&h80000004
+  cpuid
+  mov [edi+32],eax
+  mov [edi+36],ebx
+  mov [edi+40],ecx
+  mov [edi+44],edx
+ 
+  mov eax,&h80000006 : cpuid : lea edi,extL2cache
+  mov [edi+00],ecx
+ 
+  mov eax,&h80000008 : cpuid : lea edi,AddrSizes
+  mov [edi+00],eax
+ 
+
+  pop esi : pop ebx
+  '
+
+
+
+  dim d
+  dim as string s
+  dim as string cr
+  cr=`
+  `
+  '
+  'FEATURES
+  '--------
+  '
+  's+=`INTEL CPU TYPE: ` str(features(2) and 255 )+cr+cr
+  
+  d=features(4) 'EDX
+
+  if d and  1          then s=s+`FPU   `+cr
+  if d and  2          then s=s+`VME   `+cr
+  if d and  4          then s=s+`DE    `+Cr
+  if d and  8          then s=s+`PSE   `+cr
+  if d and  0x10       then s=s+`TSC   `+cr
+  if d and  0x20       then s=s+`MSR   `+cr
+  if d and  0x40       then s=s+`PAE   `+cr
+  if d and  0x80       then s=s+`MCE   `+cr
+  
+  if d and  0x100      then s=s+`CXB    `+cr
+  if d and  0x200      then s=s+`APIC   `+cr
+  '0X400
+  if d and  0x800      then s=s+`SEP    `+cr
+  if d and  0x1000     then s=s+`MTRR   `+cr
+  if d and  0x2000     then s=s+`PGE    `+cr
+  if d and  0x4000     then s=s+`MCA    `+cr
+  if d and  0x8000     then s=s+`CMOV   `+cr
+  if d and  0x10000    then s=s+`PAT    `+cr
+  if d and  0x20000    then s=s+`PSE-36 `+cr
+  if d and  0x40000    then s=s+`PSN    `+cr
+  if d and  0x80000    then s=s+`CLFLUSH`+cr
+  '0x100000
+  if d and  0x200000   then  s=s+`DS    `+cr
+  if d and  0x400000   then  s=s+`ACPI  `+cr
+  if d and  0x800000   then  s=s+`MMX   `+cr
+  if d and  0x1000000  then  s=s+`FXSR  `+cr
+  if d and  0x2000000  then  s=s+`SSE   `+cr
+  if d and  0x4000000  then  s=s+`SSE2  `+cr
+  if d and  0x8000000  then  s=s+`SS    `+cr
+  if d and  0x10000000 then  s=s+`HTT   `+cr
+  if d and  0x20000000 then  s=s+`TM    `+cr
+  if d and  0x40000000 then  s=s+`IA64  `+cr
+  if d and  0x80000000 then  s=s+`PBE   `+cr
+   
+  s+=cr+cr
+  
+  d=features(3)
+  
+  if d and  1          then s=s+`SSE3  `+cr
+  '0x2
+  if d and  4          then s=s+`DTES64`+cr
+  if d and  8          then s=s+`MONITOR`+cr
+  if d and  0x10       then s=s+`DS-CPL`+cr
+  if d and  0x20       then s=s+`VMX   `+cr
+  if d and  0x40       then s=s+`SMS   `+cr
+  if d and  0x80       then s=s+`EST   `+cr
+  
+  if d and  0x100      then s=s+`TM2    `+cr
+  if d and  0x200      then s=s+`SSSE3  `+cr
+  if d and  0x400      then s=s+`CNXT-ID`+cr
+  '0x800 
+  '0x1000
+  if d and  0x2000     then s=s+`CMPXCHG16B`+cr
+  if d and  0x4000     then s=s+`xTPR   `+cr
+  if d and  0x8000     then s=s+`PDCM   `+cr
+  '0x10000
+  '0x20000
+  if d and  0x40000    then s=s+`DCA    `+cr
+  if d and  0x80000    then s=s+`SSE4-1 `+cr
+  if d and  0x100000   then s=s+`SSE4-2`+cr
+  if d and  0x200000   then s=s+`X2APIC`+cr
+  if d and  0x400000   then s=s+`MOVBE `+cr
+  if d and  0x800000   then s=s+`POPCNT`+cr
+  '0x1000000
+  '0x2000000
+  if d and  0x4000000  then  s=s+`XSAVE `cr
+  if d and  0x8000000  then  s=s+`OSXSAVE`+cr
+  '0x10000000
+  '0x20000000
+  '0x40000000
+  '0x80000000
+
+  dim p1,p2
+  dim as zstring vendorz at p1
+  p1=@vendor +4
+  dim as zstring brandz  at p2
+  p2=@brand
+
+#view
+
+  print _
+  `CPUID`     cr cr+
+  vendorz     cr cr+
+  brandz      cr cr+
+  `Features:` cr cr+
+  s
+
+#endv
+ 
+  function=features(4)  
+   
+End Function
+
+
+sub finish() link #p0
+  terminate
+end sub
+
+"
+o2_basic src
+
+
+if len(o2_error) then
+  'printl o2_error
+  'waitkey
+  msgbox 0,o2_error+$cr+$cr+o2_prep src
+  stop
+end if
+
+o2_exec
+declare function asm_support() As long at p1
+declare sub finish at p0
+
+asm_support
+
+'msgbox 0, hex$(asm_support)
+
+'printl hex$(Asm_support)
+'printl o2_prep src
+'printl o2_view src
+'waitkey

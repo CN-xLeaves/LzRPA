@@ -1,0 +1,24 @@
+type MyType
+  s1 as string * 10
+  s2 as string * 20
+  l1 as long
+  l2 as long
+end type
+
+dim MyTypeVariable(10) as MyType
+
+MyTypeVariable(1).s1 = "Hello"
+MyTypeVariable(1).s2 = "World"
+
+function ChangeIt(a() as MyType, Item as long)
+  a(Item).s1 = "A123"
+  a(Item).s2 = "B456"
+end function
+
+msgbox 0, MyTypeVariable(1).s1 & $crlf & _
+          MyTypeVariable(1).s2
+
+ChangeIt(MyTypeVariable, 1)
+
+msgbox 0, MyTypeVariable(1).s1 & $crlf & _
+          MyTypeVariable(1).s2

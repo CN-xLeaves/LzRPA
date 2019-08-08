@@ -1,0 +1,108 @@
+  '=============================================================================
+  '=                               Moving in 3D                                =
+  '=                                                                           =
+  '=                           Petr Schreiber, 2007                            =
+  '=============================================================================
+
+  '---Load needed module
+  Uses "TBGL"
+
+
+  Dim hWnd As Dword
+  Dim i, j As double
+  
+  type tCamera
+    DeltaMove   as double
+    DeltaAngle  as double
+    AngleLR     as double
+    AngleUD     as double
+    PointToX    as double
+    PointToY    as double
+    PointToZ    as double
+    PosX        as double
+    PosY        as double
+    PosZ        as double
+  end type
+  dim Cam as tCamera
+  
+  dim FrameRate as double
+
+  '---Creates OpenGL window and returns handle
+  hWnd = TBGL_CreateWindowex("Moving in 3D, use arrows to move, press ESC to quit", 640, 480, 32, %TBGL_WS_WINDOWED)
+
+  '---Shows TBGL window
+  TBGL_ShowWindow
+
+  '---The alture in which the observers eyes are situated
+  Cam.PosY = 1.75                      
+
+  TBGL_ResetKeyState() ' -- Resets status of all keys 
+
+  '---Main script loop
+  WHILE tbgl_IsWindow(hWnd)
+  
+    '---Script will run on different PCs so we must assure
+    '---constant speed of movement by scaling movement relative to framerate
+    FrameRate = tbgl_GetFrameRate
+
+    '---Prepares clear frame
+    TBGL_ClearFrame
+
+    '---Setups Camera
+    TBGL_Camera Cam.PosX, Cam.PosY, Cam.PosZ, _
+                Cam.PosX + Cam.PointToX, Cam.PosY, Cam.PosZ + Cam.PointToZ     
+
+      '---Let's build a grid
+      TBGL_BeginPoly %GL_LINES          ' Starts polygon definition based on 2 vertex lines
+        TBGL_Color 0,255,0              ' Defines color
+
+        For i = -10 To 10
+          For j = -10 To 10
+            TBGL_Vertex -10, 0,   j     ' Adds vertex
+            TBGL_Vertex  10, 0,   j     ' Adds vertex
+
+            TBGL_Vertex  i,  0, -10     ' Adds vertex
+            TBGL_Vertex  i,  0,  10     ' Adds vertex
+
+          Next
+        Next
+
+      TBGL_EndPoly 
+
+    TBGL_DrawFrame                    ' Swaps the buffers - displays rendered image
+
+    if TBGL_GetWindowKeyState( hWnd, %VK_UP)     then Cam.DeltaMove += 5/FrameRate
+    if TBGL_GetWindowKeyState( hWnd, %VK_DOWN)   then Cam.DeltaMove -= 5/FrameRate
+
+    if TBGL_GetWindowKeyState( hWnd, %VK_PGUP)   then Cam.PosY += 5/FrameRate
+    if TBGL_GetWindowKeyState( hWnd, %VK_PGDN)   then Cam.PosY -= 5/FrameRate
+
+    if TBGL_GetWindowKeyState( hWnd, %VK_RIGHT)  then Cam.DeltaAngle += 1/FrameRate
+
+    if TBGL_GetWindowKeyState( hWnd, %VK_LEFT)   then Cam.DeltaAngle -= 1/FrameRate
+
+    if TBGL_GetWindowKeyState( hWnd, %VK_ESCAPE) then EXIT WHILE
+
+    ' Some math to calculate the next position
+    Cam.AngleLR    = Cam.AngleLR + Cam.DeltaAngle
+    Cam.PointToX   = SIN(Cam.AngleLR)
+    Cam.PointToZ   = -COS(Cam.AngleLR)
+          
+    Cam.PosX       = Cam.PosX + Cam.DeltaMove * Cam.PointToX
+    Cam.PosZ       = Cam.PosZ + Cam.DeltaMove * Cam.PointToZ
+    
+    Cam.DeltaMove  = 0
+    Cam.DeltaAngle = 0
+    
+  WEND
+
+  '---Closes OpenGL window
+  TBGL_DestroyWindow
+
+
+
+
+
+
+
+

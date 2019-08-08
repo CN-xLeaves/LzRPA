@@ -1,0 +1,38 @@
+uses "oxygen"
+dim src as string
+' 
+'
+'-------------------------
+'AUTOMATIC TYPE CONVERSION
+'=========================
+
+src ="
+
+  class cls
+    '
+  private va as long
+  '
+  method v(byval a as long)
+    va=a
+  end method
+  
+  method v() as long
+    method=va
+  end method
+    
+  end class
+  '
+  '
+  'TEST
+  '
+  dim obj as cls
+  obj.v=41.9 : print obj.v
+  obj.v="24" : print obj.v
+  '
+  
+"
+ 
+o2_asmo src
+if len(o2_error) then msgbox 0,o2_error : stop
+o2_exec
+  

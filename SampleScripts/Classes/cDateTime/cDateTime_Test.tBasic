@@ -1,0 +1,92 @@
+  Uses "console"
+
+  Dim nDates        As Long  = 9
+  Dim lDate(ndates) As cDateTime
+  Dim d             As Long
+  
+  '---Either init all elements
+  '  lDate() = New cDateTime
+  '---or init each of them
+  For d = 1 To nDates
+    lDate(d) = New cDateTime
+  Next
+
+  '---Show values  
+  For d = 1 To nDates
+    PrintL d, ".Year..........", lDate(d).Year
+    PrintL d, ".IsLeapYear....", lDate(d).IsLeapYear
+    PrintL d, ".Month.........", lDate(d).Month
+    PrintL d, ".Day...........", lDate(d).Day
+    PrintL d, ".DayOfWeek.....", lDate(d).DayOfWeek
+    PrintL d, ".Hour..........", lDate(d).Hour
+    PrintL d, ".Minute........", lDate(d).Minute
+    PrintL d, ".Seconds.......", lDate(d).Second
+    PrintL d, ".MilliSeconds..", lDate(d).MilliSecond
+    PrintL d, ".Now...........", lDate(d).ToString
+    PrintL d, ".ToSeconds.....", lDate(d).DateToSeconds
+    PrintL    "----------------------------------"
+  Next
+
+Sleep 500
+lDate(9).Now
+lDate(1).Copy(lDate(9))
+
+  '---Change some values of element one
+  d = 1
+'  lDate(d).Year         = 0
+'  lDate(d).Month        = 1
+'  lDate(d).Day          = 1
+''  lDate(d).DayOfWeek    = 1
+'  lDate(d).Hour         = 1
+'  lDate(d).Minute       = 0
+'  lDate(d).Second       = 45
+'  lDate(d).MilliSecond  = 0
+  
+  '---Show changed values
+'  PrintL d, ".Now...........", lDate(d).Now
+  PrintL d, ".Year..........", lDate(d).Year
+  PrintL d, ".IsLeapYear....", lDate(d).IsLeapYear
+  PrintL d, ".Month.........", lDate(d).Month
+  PrintL d, ".Day...........", lDate(d).Day
+  PrintL d, ".DayOfWeek.....", lDate(d).DayOfWeek
+  PrintL d, ".Hour..........", lDate(d).Hour
+  PrintL d, ".Minute........", lDate(d).Minute
+  PrintL d, ".Seconds.......", lDate(d).Second
+  PrintL d, ".MilliSeconds..", lDate(d).MilliSecond
+  PrintL d, ".Now...........", lDate(d).ToString
+  PrintL    "----------------------------------"
+  PrintL d, ".ToSeconds.....", lDate(d).DateToSeconds
+  PrintL d, ".SecondsToDate.", lDate(d).SecondsToDate(lDate(d).DateToSeconds)
+
+'  Dim nSeconds  As Ext = lDate(d).DateToSeconds
+'  Dim Counter   As Ext
+'  For Counter = nSeconds To 0 Step -1
+'    PrintL lDate(d).SecondsToDate(Counter)
+'  Next
+  
+      
+WaitKey
+
+'  '---Handle timer 1
+'  MyTimer(1).Start("Hi there, I'm timer one and I will wait for 500 ms")
+'  Sleep 500
+'  MyTimer(1).Stop
+'  OutTimerInfoClass(MyTimer(1))
+'  
+'  '---Handle timer 2
+'  MyTimer(2).Start("I'm timer 2 two and I will wait for 1000 ms")
+'  Sleep 1000
+'  MyTimer(2).Stop
+'  OutTimerInfoClass(MyTimer(2))
+'
+'  PrintL "---Finished. Press any key to close---"
+'  WaitKey
+'
+'  Function OutTimerInfoClass(ByRef lTimer As cTimer) As Long
+'    PrintL "Timer name............", lTimer.GetName
+'    PrintL "Timer description.....", lTimer.GetDescription
+'    PrintL "Seconds...............", lTimer.ElapsedToString(%CTIMER_SECONDS     , "#0.0000")
+'    PrintL "Milli seconds.........", lTimer.ElapsedToString(%CTIMER_MILLISECONDS, "#0.0000")
+'    PrintL "Micro seconds.........", lTimer.ElapsedToString(%CTIMER_MICROSECONDS, "#0.0000")
+'    PrintL "----------------------------------------------"
+'  End Function

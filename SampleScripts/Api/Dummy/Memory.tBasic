@@ -1,0 +1,33 @@
+  '---Basic info about memory occupation
+
+  TYPE MEMORYSTATUS
+    dwLength        AS DWORD
+    dwMemoryLoad    AS DWORD
+    dwTotalPhys     AS DWORD
+    dwAvailPhys     AS DWORD
+    dwTotalPageFile AS DWORD
+    dwAvailPageFile AS DWORD
+    dwTotalVirtual  AS DWORD
+    dwAvailVirtual  AS DWORD
+  END TYPE 
+
+  DECLARE function GlobalMemoryStatus LIB "KERNEL32.DLL" ALIAS "GlobalMemoryStatus" (byref lpBuffer AS MEMORYSTATUS) as long
+
+  Dim lpBuffer As MEMORYSTATUS
+  
+  lpBuffer.dwLength = SizeOf(lpBuffer)
+  GlobalMemoryStatus (lpBuffer)
+
+  msgBox 0, "Physical memory:"+ $CRLF + _
+            "Available" + $TAB + FORMAT$(lpBuffer.dwAvailPhys/1024/1024, "0")+" MB"+ $CRLF + _
+            "Installed" + $TAB + FORMAT$(lpBuffer.dwTotalPhys/1024/1024, "0")+" MB"+ $CRLF + _
+            $CRLF + _
+            "Virtual memory:" + $CRLF + _
+            "Available" + $TAB + FORMAT$(lpBuffer.dwAvailVirtual/1024/1024, "0")+" MB"+ $CRLF + _ 
+            "Installed" + $TAB + FORMAT$(lpBuffer.dwTotalVirtual/1024/1024, "0")+" MB"+ $CRLF + _
+            $CRLF + _
+            "General:" + $CRLF + _
+            "Load" +$TAB + FORMAT$(lpBuffer.dwMemoryLoad, "0")+" %"+ $CRLF _
+            , %MB_OK or %MB_ICONINFORMATION, "Memory information"
+          
+            

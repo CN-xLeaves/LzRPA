@@ -1,0 +1,35 @@
+
+'=============
+'THIS AND THAT
+'=============
+
+ 
+Uses "oxygen"
+Dim src As String
+src="
+
+dim v=4
+
+class c
+  v as long
+  method m()
+    v=1
+    print "Object v = " this.v
+    print "Global v = " that.v
+  end method
+end class
+
+dim as c d
+
+d.m
+
+
+"
+'msgbox 0,O2_prep src+o2_error
+O2_asmo src
+if Len(O2_ERROR) Then
+  msgbox 0,o2_error
+else
+  o2_exec
+end if
+

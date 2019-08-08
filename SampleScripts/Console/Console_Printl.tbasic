@@ -1,0 +1,53 @@
+Uses "Console"
+
+'---Init Console Window
+Console_HideCursor
+Console_SetScreenBufferSize(120, 50)
+Console_ShowWindow(%CONSOLE_SW_MAXIMIZE)
+
+'---Bright cyan text on a blue background
+Long cBrightCyanBGBlue  = %CColor_fLightCyan | %CColor_bLightBlue'%CON_FG_BLUE | %CON_FG_GREEN | %CON_FG_INT | %CON_BG_BLUE | %CON_BG_INT
+Long cRed               = %CON_FG_RED
+Long cBrightRed         = %CColor_fLightRed'%CON_FG_RED | %CON_FG_INT
+Long cBrightYellow      = %CColor_fYellow'%CON_FG_RED | %CON_FG_GREEN | %CON_FG_INT
+
+Long lCount, gCount
+Long lColor1, lColor2
+Double T1, T2
+
+lColor1 = cBrightCyanBGBlue
+lColor2 = cBrightRed
+
+'Dim sBuffer_1       As Long = Console_CreateScreenBuffer
+'Dim sBuffer_2       As Long = Console_CreateScreenBuffer
+'Dim sBuffer_Active  As Long = sBuffer_1
+'Dim sBuffer_ToWrite As Long = sBuffer_1
+'Console_SetActiveScreenBuffer(sBuffer_Active)
+
+'Console_SetScreenBufferSize(100, 40)
+
+
+T1 = Timer
+For gCount = 1 To 100
+
+  Print gCount In cBrightYellow  At 70, 35
+  Console_SetCursorPosition(1, 1)
+  
+  For lCount = 1 To 31
+  
+    '---Changing of color and cursor position will effect only current Printl
+    Print lCount, "Hi there" In lColor1  At 25 + lCount, lCount
+    Print lCount, "Hi there" In lColor2  At 25 + lCount, 32 - lCount
+    
+    '---Firing other Printl are not effected from previous color and curso position
+    PrintL lCount, "Hi there"
+  
+    Swap lColor1, lColor2
+  Next
+
+Next
+T2 = Timer
+
+PrintL "Total time:", Format$(T2 - T1, "#0.000"), "secs"
+
+WaitKey

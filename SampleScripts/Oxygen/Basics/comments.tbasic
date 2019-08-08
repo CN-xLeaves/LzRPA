@@ -1,0 +1,37 @@
+uses "oxygen"
+dim src as string
+
+'--------
+'COMMENTS
+'========
+ 
+src ="
+  basic
+  
+  rem traditional comment
+  '   standard basic coomment
+  ;   standard assembler comment
+  //  C line comment
+  /*  
+      C comment
+  */
+  dim a
+  a=a+1 // c comment
+  a=a/1 // c comment
+  a=1+2 /* c comment */ +3
+  
+  a=(1+2 /*
+  
+        */  +3)*7
+  
+  print `OK ` a
+  "
+  
+'msgbox 0,o2_prep src 
+o2_basic src
+if len(o2_error) then
+  msgbox 0, o2_error : stop
+end if
+o2_exec
+ 
+ 

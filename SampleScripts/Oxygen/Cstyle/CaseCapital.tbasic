@@ -1,0 +1,35 @@
+'
+'----------------------------------
+'TEST CASE CAPITAL
+'==================================
+
+'Uppercase names,(containing no lowercase letters) remain uppercase.
+'All other names are conterted to lowercase
+
+ 
+Uses "oxygen"
+Dim v As double
+Dim src As String
+
+src=" 
+  basic
+  #case capital 'also sensitive insensive (default)
+
+  string Abc=`case mixed/lower`,ABC=`case capital`
+
+  print `ok ` abc `  and  ` ABC
+
+  '#dump "t.txt"
+"
+
+'MsgBox 0,O2_PREP src ': Stop
+O2_ASMO src
+If Len(O2_ERROR) Then
+  MsgBox 0, O2_ERROR
+Else
+  O2_EXEC
+End If
+
+'msgbox 0,v
+ 
+ 

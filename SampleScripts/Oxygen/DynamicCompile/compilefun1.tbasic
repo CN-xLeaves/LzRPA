@@ -1,0 +1,29 @@
+
+
+'RUNTIME COMPILING FROM STRINGS
+'
+
+uses "oxygen","file"
+dim src as string
+
+src = "
+  def zz print `Runtime Compiled`
+  dim a
+  dim s as string
+  s=`#o2h : zz`
+  a=compile s : call a
+  if len(error) then print `runtime error: `  error
+  frees a
+  terminate
+"
+o2_basic src
+
+'msgbox 0, o2_prep "o2h "+src
+
+if len(o2_error) then
+  msgbox 0, o2_error : stop
+end if
+
+o2_exec
+
+'msgbox 0,o2_error

@@ -1,0 +1,83 @@
+'
+'----------------------------------
+'OOP AND POINTERS
+'==================================
+ 
+Uses "oxygen"
+Dim v As Long
+Dim src,cod As String
+
+src="
+ 
+  basic
+
+    cr=chr(13) chr(10)
+    results="Oxygen OOP Tests:" cr cr
+
+  class Test
+  {
+
+    private
+
+      int id
+
+    public
+
+      method init(long id)
+      {
+        this.id=id
+      }
+
+      method foo()
+      {
+        results+="foo  ID " id cr
+      }
+
+      method bar()
+      {
+        results+="bar ID " id cr
+      }
+
+  }
+
+
+
+    sub Caller(long obj, long meth)
+    {
+      proc meth obj
+    }
+
+    function main
+    {
+      test t1 : t1.init 1
+      test t2 : t2.init 2
+
+      Caller &t1, &test.foo
+      Caller &t2, &test.foo
+      Caller &t1, &test.bar
+      Caller &t2, &test.bar
+
+      't1.foo
+      't2.foo
+
+      print results
+    }
+
+    main
+
+
+
+  "
+
+'MsgBox 0,O2_PREP src ': Stop
+O2_ASMO src
+If Len(O2_ERROR) Then
+  'cod=O2_VIEW src
+  MsgBox 0, "Error: "+O2_ERROR
+Else
+ O2_EXEC
+End If
+
+
+ 
+ 

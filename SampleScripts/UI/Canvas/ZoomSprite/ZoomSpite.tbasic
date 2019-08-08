@@ -1,0 +1,57 @@
+Uses "ui","math", "GDIP"
+ 
+ 
+DWord hdc,hwin
+hwin=Canvas_Window("Stern Sprite",320,240,640,480)
+Canvas_Attach(hwin,0,%TRUE) 
+Canvas_Font("arial",16,%CANVAS_FONTSTYLE_BOLD)
+
+ 
+Dim starBuf(8192) As Long
+Canvas_BitmapRender(APP_ScriptPath & "jump.bmp", 0, 0)
+Long x, y, z ,a
+For y=1 To 31
+  For x=1 To 255
+    z=y*256+x
+    starBuf(z) = Canvas_GetPixel(x,y)
+  Next
+Next
+
+ 
+While IsWindow(hwin)
+  Canvas_Clear(&hFF0000)
+  Sprite(starBuf,140,80,a)
+  SetText(220,8,"HUHU, IT'S ME",&hFFFFFF,&hFF0000)
+  Canvas_Redraw
+  a +=1
+  If a=8 Then a=0
+  If GetAsyncKeyState(27) Then Exit While
+  Sleep 40
+Wend
+Canvas_Window End
+ 
+ 
+Sub SetText(x,y As Long, txt As String, xkol,ykol As Long) 
+    Canvas_Color(xkol,ykol)
+    Canvas_SetPos(x,y)
+    Canvas_Print(txt)
+End Sub
+ 
+ 
+Sub SetPoint(x,y,po,col As Long)
+    Canvas_Box(x,y,po+x,po+y,8,col,col)
+End Sub
+ 
+ 
+Sub Sprite(buf(),x,y,f As Long)
+    Local ax,ay,az As Long
+    For ay=1 To 31
+      For ax=1 To 31
+        az=(ay*256+ax)+(32*f) 
+        If Buf(az) >0 Then
+           Canvas_SetPixel(x+ax,y+ay,buf(az))
+           SetPoint(x+ax*10,y+ay*10,10,buf(az))
+        End If
+      Next
+    Next
+End Sub

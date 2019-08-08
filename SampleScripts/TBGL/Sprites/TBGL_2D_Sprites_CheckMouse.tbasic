@@ -1,0 +1,94 @@
+  '=============================================================================
+  '=                                2D Sprites                                 =
+  '=                        Check Mouse click example                          =
+  '=                                                                           =
+  '=                          Michael Hartlef, 2009                            =
+  '=============================================================================
+
+
+Uses "TBGL"
+dim hWnd AS DWORD
+dim FrameRate AS DOUBLE
+
+FUNCTION Main()
+  local sprBackGround, width, height as long
+  local dirTextures       as string = "Textures\"
+  local mySprite, mysprite2, p as long
+
+    
+  ' -- Create and show window
+  hWnd = TBGL_CreateWindowEx("TBGL 2D Sprite sample (check mouse click) - press ESC to quit, mouse buttons to rotate", 640, 480, 32, %TBGL_WS_WINDOWED or %TBGL_WS_CLOSEBOX)
+  TBGL_ShowWindow 
+
+  TBGL_GetWindowClient( hWnd, width, height )
+  
+  ' -- Load the sprite
+  mySprite  = TBGL_SpriteLoad( APP_SOURCEPATH + dirTextures + "ship3.tga")
+  tbgl_Spritesetcollisiontype(mysprite,2)
+  TBGL_SpriteSetEvent(mysprite, %TBGL_OnMouseOver, "Player_OnMouseOver")
+  ' -- Now set the sprites position in the middle of the screen
+  TBGL_SpriteSetPos(mySprite,width/2-90,height/2)
+  ' -- Make a copy of the first sprite and place it more to the right on the screen
+  mysprite2 = tbgl_spriteCopy(mySprite)
+  TBGL_SpriteSetPos(mySprite2,width/2+90,height/2)
+
+  ' -- Set some render states
+  tbgl_uselighting %FALSE
+  tbgl_useblend %FALSE
+
+  TBGL_UseDepth %FALSE
+  tbgl_UseTexture %TRUE
+  TBGL_USEVSYNC %TRUE
+
+  tbgl_UseAlphaTest %TRUE
+  tbgl_AlphaFunc %tbGL_GREATER, 0.1
+
+  ' -- Resets status of all keys 
+  TBGL_ResetKeyState()
+  ' -- Set the TBGL color to pure white, so colors of sprites are the same like in the texture
+  tbgl_color 255,255,255
+  ' -- Set the background to a dark blue
+  tbgl_backColor 0, 0 ,80
+      
+  FrameRate = TBGL_GetFrameRate
+
+  ' -- Main loop
+  While TBGL_IsWindow(hWnd) 
+    FrameRate = TBGL_GetFrameRate
+    
+    
+    ' -- Set the render matrix to the window clients resolution
+    TBGL_Rendermatrix2D (0,height,width,0)
+    
+    ' -- Not really important to clear a frame here as we draw a background anyway
+    TBGL_ClearFrame
+    
+    ' -- With one command you draw all active sprites, even if it is just one :-)
+    TBGL_SpritesDrawAll
+    
+    ' -- Flip the buffer so you see something on the screen
+    TBGL_DrawFrame 
+
+    ' -- ESCAPE key to exit application
+    If TBGL_GetWindowKeyState(hWnd, %VK_ESCAPE) Then Exit While 
+    tbgl_Spritescheckmouseall(%VK_LButton)
+    tbgl_Spritescheckmouseall(%VK_RButton)
+    tbgl_spritesupdateall
+  Wend 
+
+  ' -- Now let's clean up the memory
+  TBGL_SpritesDeleteAll
+  
+  TBGL_DestroyWindow
+END FUNCTION 
+
+'*******************************************************************************
+sub Player_OnMouseOver()
+'*******************************************************************************
+    if tbgl_youSprite = %VK_LBUTTON then 
+        TBGL_spritesetangle(tbgl_meSprite,-60/framerate,%TRUE)
+    end if
+    if tbgl_youSprite = %VK_RBUTTON then 
+        TBGL_spritesetangle(tbgl_meSprite,60/framerate,%TRUE)
+    end if
+end sub

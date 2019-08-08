@@ -1,0 +1,2 @@
+0001	Eros	Olmi		My nick name	Mr	01/01/2001	+39 987543456	+39 33567654	eros.olmi@thinbasic.com	http://www.thinbasic.com	+39 1827346128	+39 7612354	eros.olmi@thinbasic.com	http://www.thinbasic.com	Developer of thinBasic Core engine and many other modules
+0002	Roberto	Bianchi		His nick	Mr	02/02/2002	+39 123456098	+39 38976543	roberto.bianchi@thinbasic.com	http://www.thinbasic.com	+39 127361624	+39 12873	roberto.bianchi@thinbasic.com	http://www.thinbasic.com	Developer of thinAir and many other thinBasic modules

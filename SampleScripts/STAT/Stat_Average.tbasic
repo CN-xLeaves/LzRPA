@@ -1,0 +1,66 @@
+uses "Stat", "Console"
+
+%ELEMENTS = 100
+
+function Main()
+  dim aData(%ELEMENTS) as ext
+  dim aResults(2) as ext
+  dim i as long
+  dim n as long
+  dim m as long
+  dim sText as string
+  dim sData as string
+
+  Stat_FillArray(aData, %Stat_Fill_Natural)
+  printl "Filled with natural numbers:"
+  printl
+
+  printl "Sum: " + Stat_Sum(aData) + $crlf + "Min: " + Stat_Min(aData) + $crlf + "Max: " + Stat_Max(aData), %IDOK, "Elements = " + %ELEMENTS
+  printl
+  Stat_Min(aData, aResults)
+  printl "Min Value: " + aResults(%Stat_MinMax_Value) + $crlf + "Min Index: " + aResults(%Stat_MinMax_Index), %IDOK, "Elements = " + %ELEMENTS
+  printl
+  Stat_Max(aData, aResults)
+  printl "Max Value: " + aResults(%Stat_MinMax_Value) + $crlf + "Max Index: " + aResults(%Stat_MinMax_Index), %IDOK, "Elements = " + %ELEMENTS 
+  printl
+  printl "MeanArithmetic: " + Stat_MeanArithmetic(aData) + $crlf + "MeanGeometric: " + Stat_MeanGeometric(aData) + $crlf + "MeanHarmonic: " + Stat_MeanHarmonic(aData), %IDOK, "Elements = " + %ELEMENTS
+  printl
+  printl "StdDeviation: " + Stat_StdDeviation(aData) + $crlf + "StdError: " + Stat_StdError(aData) + $crlf + "ChiSquare: " + Stat_ChiSquare(aData), %IDOK, "Elements = " + %ELEMENTS
+  printl
+  printl "Median: " + Stat_Median(aData) + $crlf + "Count of 33: " + Stat_Count(aData, 33), %IDOK, "Elements = " + %ELEMENTS
+  printl
+  printl "Now about to clear, press any key..."
+  waitkey
+  console_Cls
+  'Now Clear the array
+  Stat_FillArray(aData, %Stat_Fill_With_Number, 0)
+  printl "Sum: " + Stat_Sum(aData) + $crlf + "Min: " + Stat_Min(aData) + $crlf + "Max: " + Stat_Max(aData), %IDOK, "Elements = " + %ELEMENTS + " (Cleared)"
+  print
+  'Now fill the array with random numbers and make an histogram
+  randomize timer
+  Stat_Random(aData, 1, %ELEMENTS, timer)
+  m = %ELEMENTS / 2
+  printl "Random data for histogram: "
+  for i = 1 to m
+      print aData(i)+" "
+  next
+
+  printl 
+  printl "Elements = " + m
+  printl 
+  printl "Press any key for histogram..."
+  waitkey
+  console_Cls
+
+  printl "Histogram:"
+  printl "Number"+$TAB(2)+"Occuriences"+$TAB+"Visually"
+  n = Stat_Histogram(aData)
+  for i = 1 to n
+    printl aData(i) + $TAB(2) + aData(i + m) + "x" + $TAB(2) + REPEAT$(aData(i + m), "*")
+  next
+  printl
+  printl "Elements = " + m
+  printl 
+  printl "Press any key to exit..."
+  waitkey
+end function

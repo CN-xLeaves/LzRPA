@@ -1,0 +1,8 @@
+{
+    "Keyword1": "File_Load File_Save File_Append File_Size File_Open File_Close File_Get File_Put File_GetR File_PutR File_LineInput File_LinePrint File_Seek File_EOF File_LOF File_Exists Dir_Exists Dir_IsDir File_GetAttr File_SetAttr File_GetDate File_GetTime File_GetDateTime File_SetDateTime File_Copy File_Move File_Rename File_Kill File_ShellCopy File_ShellMove File_ShellDelete Dir_Remove Dir_Make Dir_MakeAll File_PathSplit Dir_GetCurrent Dir_ListArray",
+    "Keyword2": null,
+    "Keyword3": "FILE_NORMAL FILE_READONLY FILE_HIDDEN FILE_SYSTEM FILE_VLABEL FILE_SUBDIR FILE_ARCHIVE FILE_ADDPATH Path_RootPathFileExt Path_RootPathFile Path_RootPath Path_Root Path_FileExt Path_File Path_Ext FILE_CHANGE_WildCardNotAllowed FILE_CHANGE_FileDoesNotExists FILE_CHANGE_FirstTimeChecking FILE_CHANGE_LastWriteTimeChange FILE_CHANGE_FileSizeChange FILE_CHANGE_SizeAndTimeChange FILE_MAJORVERSION FILE_MINORVERSION FILE_BUILDVERSION FILE_REVISIONVERSION DATE_TIME_FILE_CREATION DATE_TIME_LAST_FILE_ACCESS DATE_TIME_LAST_FILE_WRITE",
+    "RelyFile": null,
+    "PackFile": null,
+    "RelyCode": "boot.tbs"
+}

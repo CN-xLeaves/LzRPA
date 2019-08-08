@@ -1,0 +1,10 @@
+uses "LAN"
+
+'Enter dummy network resuorce
+dim sResource as string = "DUMMY"
+
+msgbox 0, "User: " + LAN_GetUser(sResource), %MB_OK, "User associated with '" + sResource + "' resource"
+
+' Open the Disconnect dialog
+msgbox 0, LAN_GetLastError, %MB_OK, "LAN_GetLastError$() returns:"
+

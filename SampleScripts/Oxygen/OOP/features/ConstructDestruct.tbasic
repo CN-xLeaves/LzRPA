@@ -1,0 +1,69 @@
+uses "oxygen"
+dim src as string
+' 
+'
+'-----------------------------
+'CONSTRUCTOR AND DESTRUCTOR
+'=============================
+
+src ="
+
+  '------
+  def new
+  '======
+    dim as %1 byref %2 : @%2 = getmemory sizeof %1 : %2.new
+  end def
+
+
+  '------
+  def del
+  '======
+    %1.del()
+    freememory @%1
+  end def
+ 
+  '---------
+  class clss
+  '=========
+    '
+    private va as long
+    '
+    method new()
+      print `new`
+    end method
+    '
+    method del()
+      print `del`
+    end method
+    '
+    method v(byval a as long)
+      va=a
+    end method
+    
+    method v() as long
+      method=va
+    end method
+    
+  end class 'clss
+
+
+  '-----------------------
+  '
+  new clss obj
+  obj.v=42 : print obj.v
+  del obj
+  '
+  '-----------------------
+  '
+  
+  "
+
+ 
+'msgbox 0,o2_prep src+$cr+o2_error 
+o2_basic src
+if len(o2_error) then
+  msgbox 0,o2_error
+else
+  o2_exec
+end if
+  

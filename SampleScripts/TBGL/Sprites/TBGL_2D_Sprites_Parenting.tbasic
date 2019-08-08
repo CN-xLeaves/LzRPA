@@ -1,0 +1,102 @@
+  '=============================================================================
+  '=                                2D Sprites                                 =
+  '=                        sprite parenting example                           =
+  '=                                                                           =
+  '=                          Michael Hartlef, 2009                            =
+  '=============================================================================
+
+
+Uses "TBGL"
+
+FUNCTION Main()
+  local hWnd AS DWORD
+  local FrameRate AS DOUBLE
+  local dirTextures       as string = "Textures\"
+  local pSprite1, pSprite2 as long
+  local width, height as long
+    
+  ' -- Create and show window
+  hWnd = TBGL_CreateWindowEx("TBGL 2D Sprite sample (parenting) - press ESC to quit, arrow keys/A/W/S/D, Q/R to rotate, T/G to scale", 800, 600, 32, %TBGL_WS_WINDOWED or %TBGL_WS_CLOSEBOX OR %TBGL_WS_DONTSIZE)
+  TBGL_ShowWindow 
+
+  TBGL_GetWindowClient( hWnd, width, height )
+  ' -- Load the sprites
+  pSprite1  = TBGL_SpriteLoad( APP_SOURCEPATH + dirTextures + "ship2.tga")
+  pSprite2  = TBGL_SpriteLoad( APP_SOURCEPATH + dirTextures + "ship3.tga")
+  
+  ' -- Set some render states
+  tbgl_uselighting %FALSE
+  tbgl_useblend %TRUE
+  TBGL_BlendFunc(%GL_SRC_ALPHA, %GL_ONE_MINUS_SRC_ALPHA)
+
+  TBGL_UseDepth %FALSE
+  tbgl_UseTexture %TRUE
+  TBGL_USEVSYNC %TRUE
+
+  tbgl_UseAlphaTest %TRUE
+  tbgl_AlphaFunc %tbGL_GREATER, 0.1
+
+  ' -- Resets status of all keys 
+  TBGL_ResetKeyState()
+  ' -- Set the TBGL color to pure white, so colors of sprites are the same like in the texture
+  tbgl_color 255,255,255
+  ' -- Set the background to a dark blue
+  tbgl_backColor 0, 0 ,80
+      
+  ' -- Now set the sprites position and the layer
+  TBGL_SpriteSetPos(pSprite1,width/2+64,height/2)
+  TBGL_SpriteSetLayer(pSprite1,2)
+  
+  TBGL_SpriteSetPos(pSprite2,width/2-64,height/2)
+  TBGL_SpriteSetLayer(pSprite2,3)
+  
+  ' -- Now set pSprite2 as a parent for pSprite1
+  TBGL_SpriteSetParent(pSprite1, pSprite2)
+  
+  ' -- Now set parenting mode to only effect rotation and positioning
+  TBGL_SpriteSetParentMode(pSprite1,%TBGL_Pos OR %TBGL_Rotate)
+
+  ' -- Set the render matrix to the window clients resolution
+  TBGL_Rendermatrix2D(0,height,width,0)
+
+  ' -- Main loop
+  While TBGL_IsWindow(hWnd) 
+    ' -- read the framerate to be used in time related movements
+    FrameRate = TBGL_GetFrameRate
+    
+    ' -- Clear the background
+    TBGL_ClearFrame
+    
+    ' -- Now let's draw all sprites in their order
+    TBGL_SpriteSDrawALl 
+    
+   
+    ' -- Flip the buffer so you see something on the screen
+    TBGL_DrawFrame 
+
+    ' -- Determine which key was pressed and then do some action
+    
+    If TBGL_GetWindowKeyState(hWnd, %VK_ESCAPE) Then Exit While 
+    If TBGL_GetWindowKeyState(hWnd, %VK_UP)    Then TBGL_SpriteSetPos(  pSprite2,0.0,-60.0/framerate,%TRUE)
+    If TBGL_GetWindowKeyState(hWnd, %VK_DOWN)  Then TBGL_SpriteSetPos(  pSprite2,0.0,60.0/framerate,%TRUE)
+    If TBGL_GetWindowKeyState(hWnd, %VK_LEFT)  Then TBGL_SpriteSetPos(  pSprite2,-60.0/framerate,0.0,%TRUE)
+    If TBGL_GetWindowKeyState(hWnd, %VK_RIGHT) Then TBGL_SpriteSetPos(  pSprite2,60.0/framerate,0.0,%TRUE)
+    If TBGL_GetWindowKeyState(hWnd, %VK_E)     Then TBGL_SpriteSetAngle(pSprite2,60.0/framerate,%TRUE)
+    If TBGL_GetWindowKeyState(hWnd, %VK_Q)     Then TBGL_SpriteSetAngle(pSprite2,-60.0/framerate,%TRUE)
+    
+    if TBGL_GetWindowKeyState(hWnd, %VK_A)     Then TBGL_SpriteSlide(   pSprite2,0,-60.0/framerate)
+    if TBGL_GetWindowKeyState(hWnd, %VK_D)     Then TBGL_SpriteSlide(   pSprite2,0,60.0/framerate)
+    if TBGL_GetWindowKeyState(hWnd, %VK_W)     Then TBGL_SpriteSlide(   pSprite2, 60.0/framerate,0)
+    if TBGL_GetWindowKeyState(hWnd, %VK_S)     Then TBGL_SpriteSlide(   pSprite2,-60.0/framerate,0)
+
+    if TBGL_GetWindowKeyState(hWnd, %VK_T)     Then TBGL_SpriteSetScale(pSprite2,  0.2/framerate,%TRUE)
+    if TBGL_GetWindowKeyState(hWnd, %VK_G)     Then TBGL_SpriteSetScale(pSprite2, -0.2/framerate,%TRUE)
+
+  Wend 
+
+  ' -- Now let's clean up the memory
+  TBGL_SpritesDeleteAll
+  ' -- The final step, destroy the TBGL window
+  TBGL_DestroyWindow
+END FUNCTION 
+

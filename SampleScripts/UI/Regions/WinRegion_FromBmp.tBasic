@@ -1,0 +1,46 @@
+  '---
+  ' Splash window using region created from bitmap files
+  '---
+  
+  uses "UI"
+
+  '------------------------------------------------------------------------------
+  ' Program start point
+  '------------------------------------------------------------------------------
+  FUNCTION Main() as long
+  '------------------------------------------------------------------------------
+    LOCAL hDlg    AS DWORD    '---Used to store window handle
+    
+    '---Create a new dialog
+    DIALOG NEW 0, "Regions", -1, -1, 560, 350, %DS_CENTER OR %WS_POPUP OR %WS_VISIBLE  OR %WS_SYSMENU, 0 TO hDlg
+    
+    '---Show dialog
+    DIALOG SHOW modal hDlg, call cbDialog
+    
+  END FUNCTION
+ 
+  '------------------------------------------------------------------------------
+  ' Callback procedure for main window
+  '------------------------------------------------------------------------------
+  callback FUNCTION cbDialog() as long
+  '------------------------------------------------------------------------------
+
+    '---Now test the message 
+    SELECT CASE cbMsg
+      case %WM_initdialog
+        '---Shape window following image contours
+        dialog shapetobmp cbhndl, app_sourcepath & "BMPRegion.BMP"
+        
+      CASE %WM_LBUTTONDOWN
+           Win_ReleaseCapture
+           dialog send cbhndl, %WM_NCLBUTTONDOWN, %HTCAPTION, %NULL
+
+      CASE %WM_RBUTTONDOWN
+        '---If left mouse click then exit slash window
+        dialog end cbhndl
+
+    END SELECT
+    
+  end function
+    
+        

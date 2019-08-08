@@ -1,0 +1,16 @@
+<!DOCTYPE doc [
+
+  <!ELEMENT doc ANY>
+ 
+  <!NOTATION wine SYSTEM "wine.exe">
+
+  <!ENTITY wn PUBLIC "http://www.cohowinery.com" "coho.exe" NDATA wine>
+
+  <!ATTLIST doc 
+        src     ENTITY         #IMPLIED
+        srcs    ENTITIES       #IMPLIED>
+]>
+
+<doc srcs="wn">
+    something
+</doc>

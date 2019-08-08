@@ -1,0 +1,47 @@
+[
+    {
+        "Caption": "基础项目",
+        "Icon": "文件夹",
+        "Default": true,
+        "Child": [
+            {
+                "Caption": "空白项目",
+                "Icon": "空项目",
+                "ProjName": "新建项目",
+                "WorkName": "新建项目工作空间",
+                "MakeFile": "ProjectMake.exe",
+                "MakeParam": "空白项目"
+            },
+            {
+                "Caption": "标准项目",
+                "Icon": "标准项目",
+                "ProjName": "新建项目",
+                "WorkName": "新建项目工作空间",
+                "MakeFile": "ProjectMake.exe",
+                "MakeParam": "标准项目"
+            },
+            {
+                "Caption": "控制台项目",
+                "Icon": "控制台项目",
+                "ProjName": "新建项目",
+                "WorkName": "新建项目工作空间",
+                "MakeFile": "ProjectMake.exe",
+                "MakeParam": "控制台项目"
+            },
+            {
+                "Caption": "多线程项目",
+                "Icon": "中控项目",
+                "ProjName": "新建项目",
+                "WorkName": "新建项目工作空间",
+                "MakeFile": "ProjectMake.exe",
+                "MakeParam": "多线程项目"
+            }
+        ]
+    },
+    {
+        "Caption": "中控项目",
+        "Icon": "中控",
+        "Child": [
+        ]
+    }
+]

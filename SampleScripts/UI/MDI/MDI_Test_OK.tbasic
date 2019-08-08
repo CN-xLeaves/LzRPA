@@ -1,0 +1,201 @@
+uses "UI"
+
+Begin ControlID
+%MDIFrame_MDI                                  
+%MDIFrame_MAKECHILD                              
+%MDIFrame_SEPARATOR_510                           
+%MDIFrame_EXIT                                   
+
+%MDICHILD_BUTTON1           
+%MDICHILD_BUTTON2           
+%MDICHILD_TEXT1             
+
+%MDICHILD2_BUTTON1          
+%MDICHILD2_BUTTON2          
+%MDICHILD2_TEXT1             
+
+End ControlID
+'----------------------------------------------------------------
+'               Main Dialog (called a MDI Frame)
+'----------------------------------------------------------------
+
+Global hMDIFrame        As Long    ' Main MDI Dialog handle
+
+Global hMDIFrame_Menu0  As Long
+Global hMDIFrame_Menu1  As Long
+global MDI_ClientHandle as long
+
+'----------------------------------------------------------------
+'               First MDI Child Dialog
+'----------------------------------------------------------------
+Global hMDIChild        as long
+
+'----------------------------------------------------------------
+'               Second MDI Child Dialog
+'----------------------------------------------------------------
+Global hMDIChild2     As Long
+
+
+global Style   as long
+global ExStyle as long
+
+'----------------------------------------------------------------
+'               Main Dialog (called a MDI Frame)
+'----------------------------------------------------------------
+Sub Main() as long
+
+    Style = %WS_DLGFRAME          | _
+            %WS_CAPTION           | _
+            %WS_SYSMENU           | _
+            %WS_OVERLAPPEDWINDOW  | _
+            %WS_CLIPCHILDREN      | _
+            %WS_CLIPSIBLINGS      | _
+            %DS_CENTER
+    ExStyle = 0
+
+    Dialog New 0, "MDI using UI", 0, 0,  450,  320, Style, ExStyle To hMDIFrame
+    Menu New Bar To hMDIFrame_Menu0
+      Menu New PopUp To hMDIFrame_Menu1
+      Menu Add PopUp, hMDIFrame_Menu0 ,"&MDI", hMDIFrame_Menu1, %MF_ENABLED
+        Menu Add String, hMDIFrame_Menu1, "&Create MDI Children",  %MDIFrame_MAKECHILD, %MF_ENABLED
+        Menu Add String, hMDIFrame_Menu1, "-",  %MDIFrame_SEPARATOR_510, %MF_ENABLED
+        Menu Add String, hMDIFrame_Menu1, "E&xit",  %MDIFrame_EXIT, %MF_ENABLED
+
+    Menu Attach hMDIFrame_Menu0, hMDIFrame
+    
+    '---Must be MODELESS dialog without a message loop
+    '---Message loop will be governed by MDI_MessageLoop function
+    '---To be executed after this line
+    Dialog Show Modeless hMDIFrame , Call MDIFrame_DLGPROC
+
+
+    ' ----------------------
+      MDI_ClientHandle = MDI_CreateClient(hMDIFrame)
+            ' ---------------------- IMPORTANT
+              MDI_SubClassDialog hMDIFrame
+            ' ----------------------
+    ' IMPORTANT: MDI_MessageLoop must be invoked after MDI_CreateClient calling
+      MDI_MessageLoop MDI_ClientHandle
+    '-----------------------
+
+End Sub
+
+'----------------------------------------------------------------
+CallBack Function MDIFrame_DLGPROC() as long
+'----------------------------------------------------------------
+    Select Case CbMsg
+        Case %WM_INITDIALOG
+        Case %WM_SIZE
+ 
+        Case %WM_COMMAND
+            Select Case CbCtl
+                Case  %MDIFrame_MAKECHILD
+                    MDIFrame_MAKECHILD_Create
+                Case  %MDIFrame_EXIT
+                    dialog end cbhndl
+                Case Else
+            End Select
+        Case %WM_DESTROY
+          '--------------------
+          ' Important otherwise process remain active
+          '--------------------
+          MDI_PostQuitMessage
+          
+        Case Else
+    End Select
+End Function
+
+'----------------------------------------------------------------
+Sub MDIFrame_MAKECHILD_Create()
+'----------------------------------------------------------------
+  Static CFlag as long
+  If CFlag = %FALSE Then
+      ' ------------------------------------------------------
+      ShowDialog_MDIChild   MDI_ClientHandle ' client is parent
+      ShowDialog_MDIChild2   MDI_ClientHandle ' client is parent
+      MDI_SendMessage %WM_MDIACTIVATE, hMDIChild, 0
+      ' -------------------------------------------------------
+      CFlag = %TRUE
+  End If
+End Sub
+'
+
+'----------------------------------------------------------------
+'               First MDI Child Dialog
+'----------------------------------------------------------------
+Sub ShowDialog_MDIChild(ByVal hParent as long)
+    
+    Style = %WS_CHILD | %DS_MODALFRAME | %WS_CAPTION | %WS_MINIMIZEBOX | %WS_MAXIMIZEBOX | %WS_SYSMENU | %WS_CLIPSIBLINGS
+    ExStyle = %WS_EX_MDICHILD | %WS_EX_CONTROLPARENT
+
+    Dialog New hParent, "MDI Child #1 using UI", 0, 0,  267,  138, Style, ExStyle To hMDIChild
+    Control Add "Button", hMDIChild,  %MDICHILD_BUTTON1,  "Button  1", 21, 20, 53, 15, _
+        %WS_CHILD Or %WS_VISIBLE Or %BS_PUSHBUTTON Or %WS_TABSTOP
+    Control Add "Button", hMDIChild,  %MDICHILD_BUTTON2,  "Button  2", 21, 39, 53, 15, _
+        %WS_CHILD Or %WS_VISIBLE Or %BS_PUSHBUTTON Or %WS_TABSTOP
+    Control Add TextBox, hMDIChild,  %MDICHILD_TEXT1,  "", 93, 20, 147, 103, _
+        %WS_CHILD Or %WS_VISIBLE Or %ES_MULTILINE Or %ES_WANTRETURN Or %ES_LEFT Or %WS_TABSTOP, _
+        %WS_EX_CLIENTEDGE
+    Dialog Show Modeless hMDIChild , Call MDIChild_DLGPROC
+End Sub
+
+'----------------------------------------------------------------
+CallBack Function MDIChild_DLGPROC() as long
+'----------------------------------------------------------------
+    Select Case CbMsg
+        Case %WM_INITDIALOG
+            ' ---------------------- IMPORTANT
+              'MDI_SetExtendedStyles CbHndl
+              MDI_SubClassDialog CbHndl
+            ' ----------------------
+        case %WM_COMMAND
+          select case cbctl
+            case %MDICHILD_BUTTON1
+              control set text cbhndl,  %MDICHILD_TEXT1, "Pressed buton 1"
+            case %MDICHILD_BUTTON2
+              control set text cbhndl,  %MDICHILD_TEXT1, "Pressed buton 2"
+          end select  
+          
+        Case Else
+    End Select
+End Function
+
+'----------------------------------------------------------------
+'               Second MDI Child Dialog
+'----------------------------------------------------------------
+Sub ShowDialog_MDIChild2(ByVal hParent as long)
+
+    Style = %WS_CHILD Or %DS_MODALFRAME Or %WS_CAPTION Or %WS_MINIMIZEBOX Or %WS_MAXIMIZEBOX Or %WS_SYSMENU Or %WS_CLIPSIBLINGS
+    ExStyle = %WS_EX_MDICHILD | %WS_EX_CONTROLPARENT
+    
+    Dialog New hParent, "MDI Child #2 using UI", 40, 20,  267,  138, Style, ExStyle To hMDIChild2
+    Control Add "Button", hMDIChild2,  %MDIChild2_BUTTON1,  "Button  1", 21, 20, 53, 15, _
+        %WS_CHILD Or %WS_VISIBLE Or %BS_PUSHBUTTON Or %WS_TABSTOP
+    Control Add "Button", hMDIChild2,  %MDIChild2_BUTTON2,  "Button  2", 21, 39, 53, 15, _
+        %WS_CHILD Or %WS_VISIBLE Or %BS_PUSHBUTTON Or %WS_TABSTOP
+    Control Add TextBox, hMDIChild2,  %MDIChild2_TEXT1,  "", 93, 20, 147, 103, _
+        %WS_CHILD Or %WS_VISIBLE Or %ES_MULTILINE Or %ES_WANTRETURN Or %ES_LEFT Or %WS_TABSTOP, _
+        %WS_EX_CLIENTEDGE
+    Dialog Show Modeless hMDIChild2 , Call MDIChild2_DLGPROC
+End Sub
+
+'----------------------------------------------------------------
+CallBack Function MDIChild2_DLGPROC() as long
+'----------------------------------------------------------------
+    Select Case CbMsg
+        Case %WM_INITDIALOG
+            ' ---------------------- IMPORTANT
+              'MDI_SetExtendedStyles CbHndl
+              MDI_SubClassDialog CbHndl
+            ' ----------------------
+        case %WM_COMMAND
+          select case cbctl
+            case %MDIChild2_BUTTON1
+              control set text cbhndl,  %MDIChild2_TEXT1, "Pressed buton 1"
+            case %MDIChild2_BUTTON2
+              control set text cbhndl,  %MDIChild2_TEXT1, "Pressed buton 2"
+          end select  
+
+        Case Else
+    End Select
+End Function

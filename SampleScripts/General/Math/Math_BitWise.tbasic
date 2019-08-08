@@ -1,0 +1,28 @@
+uses "console"
+
+dim a,b,c as long
+
+b = &H09700
+c = &H03FFF
+
+a = b and c
+PrintResults("--- AND operation: a = b and c", a, b, c)
+
+a = b or c
+PrintResults("--- OR  operation: a = b or  c", a, b, c)
+
+a = notb(b)
+PrintResults("--- Bitwise NOTB operation: a = NOTB(b)  ", a, b)
+console_waitkey
+
+function PrintResults(Operation as string, a as long, b as long, optional c as long)
+  console_writeline Operation
+  console_writeline "b = " & BIN$(b, 32) & "   " & hex$(b, 4)
+  printl function_cparams
+  if function_cparams > 3 then
+    console_writeline "c = " & BIN$(c, 32) & "   " & hex$(c, 4)
+  end if
+  console_writeline string$(40, "-")
+  console_writeline "a = " & BIN$(a, 32) & "   " & hex$(a, 4)
+  console_writeline ""
+end function

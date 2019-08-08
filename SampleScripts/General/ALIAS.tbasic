@@ -1,0 +1,15 @@
+ALIAS MSGBOX  as TellUser
+ALIAS DIM     as Variable
+ALIAS AS      as OfType
+ALIAS IF      as CheckIf
+ALIAS THEN    AS AndIfYes
+ALIAS ENDIF   as EndCheck
+ALIAS LONG    AS BigSignedInteger
+
+DIM MyLong_01 AS LONG = 123
+Variable MyLong_02 OfType BigSignedInteger = 123
+
+CheckIf MyLong_02 = 123 AndIfYes
+  TellUser 0, "Look at the source code of this script. The new syntax is funny!"
+EndCheck
+

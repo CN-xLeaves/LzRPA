@@ -1,0 +1,5 @@
+
+declare function fibonacci lib "fibo.dll" alias "fibonacci" (byval sequence as dword) as dword
+
+
+dim as long v=fibonacci(40)

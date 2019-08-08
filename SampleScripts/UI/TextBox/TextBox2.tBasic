@@ -1,0 +1,134 @@
+  '---
+  ' A script example using textbox
+  ' Author: Psch
+  '---
+
+  USES "UI"
+
+  Begin ControlID 
+    %TEXTWINDOW
+    %EXITGAME  
+
+    %GONORTH   
+    %GOSOUTH   
+    %GOWEST    
+    %GOEAST    
+    %GARDENMAP 
+    %YOURPOS   
+  End ControlID
+
+  global AreaText(3, 3) AS STRING                          ' Multidimensional array to hold the text
+  global PlayerPositionX, PlayerPositionY AS LONG = 2      ' Initial position will be 2, 2
+
+  function Main()
+    DIM hDlg AS DWORD 
+
+
+    ' Text for start position
+    AreaText(2, 2) = "Once upon a time,"+$CRLF+"there was psychedelic garden..."+$CRLF+$CRLF+"You are standing in its center, try to move around a bit..."
+    
+    ' Text for the rest
+    AreaText(1, 1) = "You are in the north-west corner of the garden"+$CRLF+"Nothing interesting here"
+    AreaText(2, 1) = "You can see nice flowers here,"+$CRLF+"all programmed in thinBASIC :)"+$CRLF+$CRLF+"You can't go North"
+    AreaText(3, 1) = "You can see interesting stone here"
+
+    AreaText(1, 2) = "You can see landed UFO here, what a strange garden..."
+    AreaText(3, 2) = "You can see hole in the ground"
+
+    AreaText(1, 3) = "You can see sleeping elephant here"
+    AreaText(2, 3) = "You can see happy penguins using Linux here ;)"
+    AreaText(3, 3) = "You can see ... well ... nothing special"
+
+    '---Create a new dialog
+    DIALOG NEW 0, "Strange adventure game", -1, -1, 215, 200, _
+                                                      %WS_DLGFRAME OR %DS_CENTER OR %WS_CAPTION OR %WS_SYSMENU, _
+                                                      0 TO hDlg
+
+    CONTROL ADD TEXTBOX , hDlg, %TEXTWINDOW, AreaText(2, 2), 5, 5, 200, 100, _
+                                                 %WS_BORDER OR %ES_LEFT OR %ES_WANTRETURN OR %ES_READONLY OR %ES_MULTILINE OR _
+                                                 %ES_AUTOHSCROLL OR %ES_AUTOVSCROLL OR %WS_VSCROLL OR %WS_HSCROLL , %WS_EX_CLIENTEDGE
+
+    CONTROL SET COLOR hDlg, %TEXTWINDOW, RGB(128,0,0), RGB(255,128,0)
+
+    CONTROL ADD FRAME , hDlg, -1           , "Go...",  5, 105, 100, 70
+
+    CONTROL ADD BUTTON, hDlg, %GONORTH     , "North", 35, 115, 40, 15
+    CONTROL ADD BUTTON, hDlg, %GOEAST      , "East" , 60, 135, 40, 15
+    CONTROL ADD BUTTON, hDlg, %GOSOUTH     , "South", 35, 155, 40, 15
+    CONTROL ADD BUTTON, hDlg, %GOWEST      , "West" , 10, 135, 40, 15
+
+
+    CONTROL ADD FRAME , hDlg, -1           , "Your position", 110, 105, 100, 70
+
+    CONTROL ADD LABEL , hDlg, %GARDENMAP, "", 145, 125, 30, 30
+    CONTROL SET COLOR hDlg, %GARDENMAP, -1, RGB(0,128,0)
+    
+    CONTROL ADD LABEL , hDlg, %YOURPOS, "", 145 + (10 * (PlayerPositionX-1)), 125 + (10 * (PlayerPositionY-1)), 10, 10
+    CONTROL SET COLOR hDlg, %YOURPOS, -1, RGB(255,0,0)
+
+
+    CONTROL ADD BUTTON, hDlg, %EXITGAME, "Exit game" ,150, 180, 60, 15
+
+    '---Show dialog in MODELESS state, the only managed state at the moment
+    DIALOG SHOW MODAL hDlg, call dlgCallback
+  end function
+  
+  callback function dlgCallback() as long
+ 
+    '---Now test the message
+    SELECT CASE cbMsg
+        CASE %WM_INITDIALOG
+          CONTROL set focus cbHndl, %TEXTWINDOW
+          CONTROL SEND cbHndl, %TEXTWINDOW, %EM_SETSEL, len(control_gettext(cbHndl, %TEXTWINDOW)), -1
+
+        CASE %WM_COMMAND
+            '---Test which control has been clicked
+            SELECT CASE cbCtl
+                
+                CASE %EXITGAME
+                  if cbCtlMsg = %BN_CLICKED then
+                    IF MSGBOX(cbHndl, "Are you sure you want to exit the game ?", %MB_YESNO OR %MB_ICONQUESTION, "Question") = %IDYES THEN dialog end cbhndl
+                  end if  
+                    
+                CASE %GONORTH
+                  if cbCtlMsg = %BN_CLICKED then MovePlayer(cbHndl, 0,-1)
+                  
+                CASE %GOEAST
+                  if cbCtlMsg = %BN_CLICKED then MovePlayer(cbHndl, 1, 0)
+                  
+                CASE %GOSOUTH
+                  if cbCtlMsg = %BN_CLICKED then MovePlayer(cbHndl, 0, 1)
+                  
+                CASE %GOWEST
+                  if cbCtlMsg = %BN_CLICKED then MovePlayer(cbHndl,-1, 0)
+
+            END SELECT
+    END SELECT
+
+  end function
+  
+  FUNCTION MovePlayer( hDlg as dword, MoveX AS LONG, MoveY AS LONG ) AS LONG
+    
+    PlayerPositionX += MoveX
+    PlayerPositionY += MoveY
+
+    IF PlayerPositionX > 3 THEN
+        PlayerPositionX = 3
+        MsgBox hDlg, "You can't go this way!", %MB_OK OR %MB_ICONINFORMATION,"No way"
+    ELSEIF PlayerPositionX < 1 THEN
+        PlayerPositionX = 1
+        MsgBox hDlg, "You can't go this way!", %MB_OK OR %MB_ICONINFORMATION,"No way"
+    END IF
+
+    IF PlayerPositionY > 3 THEN
+        PlayerPositionY = 3
+        MsgBox hDlg, "You can't go this way!", %MB_OK OR %MB_ICONINFORMATION,"No way"
+    ELSEIF PlayerPositionY < 1 THEN
+        PlayerPositionY = 1
+        MsgBox hDlg, "You can't go this way!", %MB_OK OR %MB_ICONINFORMATION,"No way"
+    END IF
+    
+    CONTROL SET TEXT hDlg, %TEXTWINDOW, AreaText(PlayerPositionX, PlayerPositionY)
+    CONTROL SET LOC hDlg, %YOURPOS, 145 + (10 * (PlayerPositionX-1)), 125 + (10 * (PlayerPositionY-1))
+   
+  END FUNCTION

@@ -1,0 +1,128 @@
+  Uses "UI"
+  Uses "console"
+       
+  Begin ControlID       
+    %IDC_TIMER      
+    %IDC_LABEL      
+    %IDC_Start      
+    %IDC_Stop       
+  End ControlID
+   
+  %TIMER_DELAY    = 10          '---Timer delay (in milliseconds, not very accurate below about 100)
+
+  Global TimerValue As Double   '---Will be used to calculate timer values
+
+  '------------------------------------------------------------------------------
+  ' Main function
+  '------------------------------------------------------------------------------
+  Function Main() As Long
+    LOCAL hDlg AS DWORD
+            
+    Dialog New Name "TimerDialog", 0 , "Timer Example using CallBacks functions", -1, -1, 240, 40, %WS_OVERLAPPEDWINDOW  To hDlg
+
+    Control Add Button, Name "cmdStart", hDlg, %IDC_Start, "Start" ,  10, 10, 50, 20
+    Control Add Label ,                  hDlg, %IDC_LABEL, ""      ,  90, 10, 55, 20, %WS_CHILD Or %WS_VISIBLE Or %WS_BORDER Or %SS_CENTERIMAGE Or %SS_CENTER
+    Control Add Button, Name "cmdStop" , hDlg, %IDC_Stop , "Stop"  , 180, 10, 50, 20
+   
+    Dialog Show Modal hDlg 'Call MainDialog_OnCallBack        
+    
+  End Function
+
+ 
+  '------------------------------------------------------------------------------
+  ' TimerDialog OnCallBack
+  '------------------------------------------------------------------------------
+  CallBack Function TimerDialog_OnCallBack() As Long
+    'PrintL Timer, Function_Name, CBMSG             
+  End Function
+
+
+  '------------------------------------------------------------------------------
+  ' TimerDialog OnCommand
+  '------------------------------------------------------------------------------
+  CallBack Function TimerDialog_OnCommand() As Long
+'    Select Case CBCTL
+'
+'      '---Check which control as fired the event
+'      Case %IDC_Start
+'        '---If start, than enable/disable relevant buttons and activate the timer
+'        Control Disable CBHNDL, %IDC_Start
+'        Control Enable CBHNDL, %IDC_Stop
+'
+'        TimerValue = 0              '---Set the time counter to zero
+'        Dialog Set Timer CBHNDL, %IDC_TIMER, %TIMER_DELAY
+'
+'      Case %IDC_Stop
+'        '---If sstop, than enable/disable relevant buttons and destroy the timer
+'        Control Disable CBHNDL, %IDC_Stop
+'        Control Enable CBHNDL, %IDC_Start
+'        Dialog Kill Timer CBHNDL, %IDC_TIMER
+'
+'    End Select
+  End Function
+  
+  '------------------------------------------------------------------------------
+  ' TimerDialog OnInit
+  '------------------------------------------------------------------------------
+  CallBack Function TimerDialog_OnLoad() As Long
+    Control Disable CBHNDL, %IDC_Stop
+  End Function
+
+  '------------------------------------------------------------------------------
+  ' TimerDialog OnTimer
+  '------------------------------------------------------------------------------
+  CallBack Function TimerDialog_OnTimer() As Long
+    '---This event is fired by any timer created on the dialog. We have to check which one
+  
+      '---CBWPARAM contains the ID of the timer that fired %WM_TIMER event
+      '---More than one timer can be active sumultaneously
+      Select Case CBWPARAM
+        Case %IDC_TIMER
+          '---Increment and set the test value...
+          TimerValue += 0.01
+          Control Set Text CBHNDL, %IDC_LABEL, Format$(TimerValue, "#0.00")
+      End Select
+  End Function
+    
+  '------------------------------------------------------------------------------
+  ' TimerDialog OnSize
+  '------------------------------------------------------------------------------
+  CallBack Function TimerDialog_OnSize() As Long
+    PrintL Timer, "Sizing", CBWPARAM, CBLPARAM
+  End Function
+  
+  '------------------------------------------------------------------------------
+  ' TimerDialog OnMove
+  '------------------------------------------------------------------------------
+  CallBack Function TimerDialog_OnMove() As Long
+    PrintL Timer, "Moving", CBWPARAM, CBLPARAM
+  End Function
+
+  '------------------------------------------------------------------------------
+  ' cmdStart OnClick
+  '------------------------------------------------------------------------------
+  CallBack Function cmdStart_OnClick() As Long
+    PrintL Timer, "cmdStart_OnClick"
+
+    '---If start, than enable/disable relevant buttons and activate the timer
+    Control Disable CBHNDL, %IDC_Start
+    Control Enable CBHNDL, %IDC_Stop
+  
+    TimerValue = 0              '---Set the time counter to zero
+    Dialog Set Timer CBHNDL, %IDC_TIMER, %TIMER_DELAY
+
+  End Function
+
+  '------------------------------------------------------------------------------
+  ' cmdStop OnClick
+  '------------------------------------------------------------------------------
+  CallBack Function cmdStop_OnClick() As Long
+    PrintL Timer, "cmdStop_OnClick"
+
+    '---If sstop, than enable/disable relevant buttons and destroy the timer
+    Control Disable CBHNDL, %IDC_Stop
+    Control Enable CBHNDL, %IDC_Start
+    Dialog Kill Timer CBHNDL, %IDC_TIMER
+
+  End Function
+  

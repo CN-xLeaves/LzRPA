@@ -1,0 +1,48 @@
+uses "TBEM"
+uses "Console"
+ 
+dim event1, event2 as long
+dim y,q,z as long
+dim stime,dtime,etime as dword
+q = 0
+z = 0
+y = 0
+ 
+%evg_system = 1
+%evg_user = 2
+ 
+%evt_game = 1
+%evt_gui = 2
+%evt_next = 3    
+
+event1 = TBEM_AddEvent("getTime" , %evt_gui , GetTickCount       , %evg_system)', %TRUE)
+event2 = TBEM_AddEvent("FinishIt", %evt_game, GetTickCount+3000  , %evg_system)', %TRUE)
+ 
+ 
+stime = GetTickCount
+While q = 0
+    etime = GetTickCount
+    dtime = etime - stime
+    TBEM_AddTrigger ( %evt_gui) 
+    TBEM_AddTrigger ( %evt_game) 
+    TBEM_Run(%evg_system)
+Wend
+ 
+Console_WriteLine("TriggerCount="+TBEM_GetTriggerCount+"   EventCount="+TBEM_GetEventCount)
+ 
+Console_WriteLine("Press any key...")
+Console_WaitKey
+
+ 
+function FinishIt()
+    console_writeline(y+")    Finish")
+    q = 99
+    function = 0
+end function
+ 
+function getTime()
+    y += 1
+    console_writeline(y + ")    TimeDiff="+dtime)
+    function = 0
+end function
+ 

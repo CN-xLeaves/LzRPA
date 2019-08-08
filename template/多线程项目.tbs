@@ -1,0 +1,14 @@
+
+
+
+Function Main() As Long
+    G.SetVal("a", "Hello World")
+    Work_Create("WorkName", "")
+    Delay 3000
+End Function
+
+
+' 线程回调函数
+Function Work_WorkName(ByVal sParam As String) As Long
+    MsgBox G.GetVal("a")
+End Function

@@ -1,0 +1,61 @@
+uses "UI"
+
+Begin ControlID
+  %OPT1
+  %OPT2 
+  %OPT3 
+  %OPT4 
+  %OPT5 
+End ControlID
+
+FUNCTION Main() as long
+    DIM hDlg      AS DWORD
+
+    DIALOG NEW 0, "OPTION control test", -1, -1, _
+        100, 100, %WS_SYSMENU or %ds_center OR %WS_CAPTION TO hDlg
+    CONTROL ADD OPTION, hDlg, %OPT1, "Option 1", _
+        10, 6, 50, 14, %WS_GROUP OR %WS_TABSTOP
+    CONTROL ADD OPTION, hDlg, %OPT2, "Option 2", _
+        10, 20, 50, 14
+    CONTROL ADD OPTION, hDlg, %OPT3, "Option 3", _
+        10, 34, 50, 14
+    CONTROL ADD OPTION, hDlg, %OPT4, "Option 4", _
+        10, 48, 50, 14
+    CONTROL ADD OPTION, hDlg, %OPT5, "Option 5", _
+        10, 62, 50, 14
+    CONTROL ADD BUTTON, hDlg, %IDOK, "OK", _
+        25, 80, 50, 14, %WS_GROUP OR %WS_TABSTOP
+
+    '---Set the initial state to OPTION button 3
+    CONTROL SET OPTION hDlg, %OPT3, %OPT1, %OPT5
+
+  DIALOG SHOW MODAL hDlg, call dlgCallback
+end function
+   
+callback function dlgCallback() as long
+  dim sResult   as string
+  dim lResult   as long
+  dim Count     as long
+
+  SELECT CASE cbMsg
+    CASE %WM_COMMAND
+
+      '---Test which control has been clicked
+      SELECT CASE cbCtl
+
+        '---A number was activated
+        CASE %IDOK
+          if cbCtlMsg = %BN_CLICKED then
+            sResult = ""
+            for Count = %OPT1 to %OPT5
+              CONTROL GET CHECK cbHndl, Count TO lResult
+              sResult += "Control " & Count & " is " & lResult & $crlf
+            next
+            msgbox cbhndl, sResult
+            dialog end cbHndl
+          end if
+          
+      END SELECT
+  END SELECT
+
+END FUNCTION

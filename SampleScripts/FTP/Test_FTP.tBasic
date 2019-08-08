@@ -1,0 +1,315 @@
+'=============================================================================
+' Author      : Eros Olmi
+' Date        : 10/07/2002
+' Version     : 01.00.00
+'=============================================================================
+' Notes:        01.00.00 10/07/2002 
+'=============================================================================
+' Edit History: 01.00.00 10/07/2002 Initial coding
+'=============================================================================
+
+
+  Uses "INet"       'Script uses INet module
+  Uses "FTP"        'Script uses FTP module
+  Uses "Console"    'Script uses Console module
+  Uses "LL"         'Script uses Linked List module
+  Uses "OS"         'Script uses OS module
+  
+  '-------------------------------------------------------------------------
+  'Initial SetUp
+  '-------------------------------------------------------------------------
+  'CONSOLE_ACTIVATE
+  
+  '-------------------------------------------------------------------------
+  'Variable declaration
+  '-------------------------------------------------------------------------
+  DIM ftpResult     AS number
+  DIM ftpConnect    AS number
+  DIM vPosData      AS number value 30
+  DIM CItem         AS number value 23
+  DIM CValue        AS number value 30
+  DIM CValueError   AS number value 28
+  DIM CValueOK      AS number value 26
+  DIM CTitle        AS number value 158
+  DIM LocalDir      AS STRING
+  DIM LocalDirList  AS STRING
+  DIM ServerDir     AS STRING
+  DIM ServerDirList AS STRING
+  DIM nFilesOut     AS number
+  DIM nFilesIn      AS number
+  DIM sFileSize     AS number
+  DIM sTotalSize    AS number
+  DIM lFileSize     AS number
+  DIM lTotalSize    AS number
+  DIM BytesOut      AS number
+  DIM BytesIn       AS number                                                                                     
+  DIM fBytesOut     AS number
+  DIM fBytesIn      AS number                                                                                     
+                                                                                        
+  DIM Count         AS number
+  DIM Message       AS STRING
+  DIM lResult       AS LONG
+                    
+  DIM tmpCount      AS number
+  DIM FileSize      AS number
+  DIM FileName      AS STRING
+                    
+  DIM IConnManual   AS number
+  DIM IConnMode     AS STRING
+  DIM IConnected    AS number
+                    
+  DIM FtpServer     AS STRING value "rtfm.mit.edu"
+  DIM FtpUser       AS STRING value "anonymous"
+  DIM FtpPass       AS STRING value "youraccount@yourdomain.com"
+    
+
+    '---Set Console to WINDOW mode (In case it started FULLSCREEN)
+    'CONSOLE_WINDOW(%CONSOLE_WINDOW)
+    
+    '---Put console to TopMost in Windows Z-Order,
+    'CONSOLE_TOTOP
+  
+    '-------------------------------------------------------------------------
+    'Initial screen SetUp                                           
+    '------------------------------------------------------------------------- 
+    CONSOLE_SetTitle("FTP - Demo Program")
+    
+    CONSOLE_BOX(1, 1, 78, 3, 39, 39,"Some notes on this demo program", 46, "3DOff")
+    CONSOLE_PRINTat("This program connects to " & FtpServer & " as anonymous user.", 3, 2, 47)
+    CONSOLE_PRINTat("Find local Temp directory, goes to /pub/net directory", 3, 3, 47)
+    CONSOLE_PRINTat("and downloads all remote files to temp directory (should be 2 files)", 3, 4, 47)
+
+    CONSOLE_BOX(1,   6, 44, 18, 23, 25,"List of operations", 30, "3DOn")
+    CONSOLE_BOX(47,  6, 32,  4, 23, 25," >>> Send      "   , 30, "3DOn")
+    CONSOLE_BOX(47, 12, 32,  4, 23, 25," <<< Receive   "   , 30, "3DOn")
+    CONSOLE_BOX(47, 18, 32,  6, 23, 25,"               "   , 30, "3DOn")
+    
+    CONSOLE_PRINTat("Internet connection                       ", 3,  7, CTitle)
+    CONSOLE_PRINTat("Connection type ........ :",3, 8,cItem)
+    CONSOLE_PRINTat("Connection is active ... :",3, 9,cItem)
+    CONSOLE_PRINTat(" - Connecting .......... :",3,10,cItem)
+    CONSOLE_PRINTat("FTP Server connection                     ", 3, 11, CTitle)
+    CONSOLE_PRINTat("FTP Connection ......... :",3,12,cItem)
+    CONSOLE_PRINTat(" - IP local ............ :",3,13,CItem)
+    CONSOLE_PRINTat(" - IP server ........... :",3,14,CItem)
+    CONSOLE_PRINTat(" - Passive mode ........ :",3,15,CItem)
+    CONSOLE_PRINTat(" - Log file ............ :",3,16,CItem)
+    CONSOLE_PRINTat("Set local and remote directory            ", 3, 17, CTitle)
+    CONSOLE_PRINTat("Local  :",3,18,CItem)
+    CONSOLE_PRINTat("Server :",3,19,CItem)
+    CONSOLE_PRINTat("Determine files to send/receive           ", 3, 20, CTitle)
+    CONSOLE_PRINTat("To send    >>> Files: 0000  Bytes: 0000000", 3, 21, CItem)
+    CONSOLE_PRINTat("To receive <<< Files: 0000  Bytes: 0000000", 3, 22, CItem)
+            
+    Message = "This program will connect to " & FtpServer & " in order to demonstrate\n"
+    Message = Message & "some FTP capabilities. Please press Yes to go on, NO to Stop\n"
+    lResult = MSGBOX(0, Message, %MB_YESNO, "Continue?")
+    
+    IF lResult <> %IDYES THEN
+      STOP
+    END IF
+    
+    '-------------------------------------------------------------------------
+    'Start connection process
+    '-------------------------------------------------------------------------
+
+    '---Get connection mode string (LAN, MODEM, PROXY, ...)
+    IConnMode = INet_GetConnectionMode                              
+    CONSOLE_PRINTat(IConnMode,vPosData,8,cValue)          
+
+    '---Get connection state to see if I'm already connected to Internet
+    IConnected = INet_GetState                                       
+    '---If I'm already connected, use actual connection, otherwise ...
+    IF IConnected = true THEN  
+        CONSOLE_PRINTat("YES", vPosData, 9, cValue)
+        CONSOLE_PRINTat("not necessary", vPosData, 10, cValueOK) 
+    ELSE                                                           
+'      '... try to connect to internet using standard Explorer dialog
+'      CONSOLE_PRINT("NO", vPosData, 9, cValue)
+'      IConnManual = RAS_OpenDialUpDialog
+'      IConnected = INet_GetState
+'      IF IConnected = false THEN
+'        CONSOLE_PRINT("failed", vPosData, 10, cValueError)
+'        Message = "It was not possible to connect to Internet \n"
+'        Message = Message + "or connection aborted by user.\n\n" 
+'        MSGBOX(0, Message,%MB_OK OR %MB_ICONEXCLAMATION,"Error during Internet connection")
+'        STOP
+'      ELSE
+'        CONSOLE_PRINT("OK", vPosData, 10, cValueOK) 
+'      END IF
+    END IF
+    
+    '-------------------------------------------------------------------------
+    'Start FTP connection
+    '-------------------------------------------------------------------------
+
+    '---If you got there, you are connected to internet
+
+    '---Set a Log file so we can check later
+    '---LOG file name has the same name of source file plus log ext
+    ftpResult = FTP_SetLogFile(APP_SOURCENAME + ".Log")
+    IF ftpResult < 0 THEN
+      CONSOLE_PRINTat("failed",vPosData,16,CValueError)
+    ELSE
+      CONSOLE_PRINTat("OK",vPosData,16,CValueOK)
+    END IF
+
+    '---Now try to connect to FTP site
+    ftpConnect = FTP_Connect(FtpServer, FtpUser, FtpPass)
+    IF ftpConnect < 0 THEN     
+      CONSOLE_PRINTat("failed", vPosData, 13, CValueError)
+      Message = "There was an error during connection to FTP Server\n\n" & _
+                "Error code is: " & ftpConnect & "\n" & _
+                "Error description is:\n" & _
+                FTP_GetErrorString(ftpConnect)
+      MSGBOX(0, Message)
+      STOP
+    END IF
+                                  
+    '---Now get some info and set some options ...
+    CONSOLE_PRINTat("OK"                              , vPosData, 12, CValueOK)
+    CONSOLE_PRINTat(FTP_GetString(%FTP_GET_LOCAL_IP)  , vPosData, 13, CValue)
+    CONSOLE_PRINTat(FTP_GetString(%FTP_GET_SERVER_IP) , vPosData, 14, CValue)
+        
+    ftpResult = FTP_SetNumber(%FTP_SET_PASSIVE, 1)
+    IF ftpResult < 0 THEN
+        CONSOLE_PRINTat("Failed", vPosData, 15, CValueError)
+    ELSE
+        CONSOLE_PRINTat("OK"    , vPosData, 15, CValueOK)
+    END IF 
+
+    '---Find TEMP directory 
+    LocalDir = OS_GetTempDir
+    ftpResult = FTP_SetLocalDir(LocalDir)
+    IF ftpResult >= 0 THEN
+      CONSOLE_PRINTat(FTP_GetLocalDir, vPosData-18, 18, CValueOK)
+    ELSE
+      CONSOLE_PRINTat(FTP_GetLocalDir, vPosData-18, 18, CValueError)
+    END IF
+    
+    '---Try to change directory on the server
+    ServerDir = "/pub/net"
+    ftpResult = FTP_SetServerDir(ServerDir)
+    IF ftpResult >= 0 THEN
+      CONSOLE_PRINTat(FTP_GetServerDir, vPosData-18, 19, CValueOK)
+    ELSE
+      CONSOLE_PRINTat(FTP_GetServerDir, vPosData-18, 19, CValueError)
+    END IF
+                                           
+                                           
+    'Now get the list of the files inside local dir
+    'This list will be used later for file UpLoad
+'    LocalDirList = FILE_Dir(LocalDir, "*.*", "FILES READONLY SYSTEM")
+'    MSGBOX 0, LocalDirList
+'    IF lDirList <> "" THEN
+'      nFilesOut = LIST_Count(lDirList)
+'      CONSOLE_PRINT(format$(nFilesOut,"0000"), 25, 21, CValue)
+'
+'      FOR Count = 1 TO nFilesOut
+'        lFileSize = FILE_Size(lDir + "\" + LIST_GetItem(lDirList, Count))
+'        lTotalSize = lTotalSize + lFileSize
+'        CONSOLE_PRINT(format$(VAL(lTotalSize), "0000000"), 38, 21, cValue)
+'      NEXT
+'    END IF
+'
+    'Now get the list of the files inside server dir
+    'This list will be used later for file Download
+    ServerDirList = FTP_GetList(%FTP_LIST_FULLLISTFILE, %FTP_FULL_LIST_FILE)
+    IF ServerDirList <> "" THEN
+      MSGBOX 0, ServerDirList
+'      nFilesIn = LIST_Count(sDirList)
+'      CONSOLE_PRINT(format$(nFilesIn,"0000"), 25, 22, CValue)
+'
+'      FOR Count = 1 TO nFilesIn
+'        sFileSize = VAL(ftp_Extract(sDirList,Count, 5))
+'        sTotalSize = sTotalSize + sFileSize
+'        CONSOLE_PRINT(FORMAT$(VAL(sTotalSize),"0000000"), 38, 22, cValue)
+'      NEXT
+    END IF
+'                                                   
+'                                                   
+'                                                   
+'    '-------------------------------------------------------------------------
+'    'Start UpLoad process
+'    '-------------------------------------------------------------------------
+'        FOR Count = 1 TO nFilesOut
+'          CONSOLE_PRINT("File " + format$(Count,"000") + " di " + format$(nFilesOut, "000"), 48, 7, cItem)
+'            CONSOLE_PB(1, 65, 7, 15, 1, nFilesOut, Count)
+'
+'            FileName = LIST_GetItem(lDirList, Count)
+'            FileSize = FILE_Size(lDir + "\" + FileName)
+'            BytesOut = BytesOut + FileSize
+'            CONSOLE_PRINT(MID$(FileName, 1, 30), 48, 8, cItem)
+'            
+'                  '-------------------------------------
+'            'For this demo I will not put any file
+'                  '-------------------------------------
+'            
+'            'ftpResult = ftp_PutFile(FileName, "ASYNC")
+'            'ftpResult = ftp_finished
+'
+'                  'PB_SHOW(0, FileName, "Send file ... ")
+'            'WHILE ftpResult > 0
+'            '  fBytesOut = ftp_GetNumber("BYTESFILESENT")
+'            '  CONSOLE_PRINT("Byte " + format$(fBytesOut, "0000000") + " of " + format$(FileSize, "000000"), 48, 9, cValue, true)
+'            '  CONSOLE_PB(2, 48, 10, 32, 1, FileSize, fBytesOut)
+'                  '  PB_Update(fBytesOut, FileSize)
+'            '  ftpResult = ftp_finished
+'            'WEND
+'                  'PB_HIDE
+'            'IF ftpResult < 0 THEN
+'            '    MSGBOX(0, "There was an error during file Upload. File: " + FileName + crlf + ftp_GetString("LastResponse"))
+'            'ENDIF
+'        NEXT
+'                                                   
+' 
+'    '-------------------------------------------------------------------------
+'    'Start DownLoad process
+'    '-------------------------------------------------------------------------
+'        FOR Count = 1 TO nFilesIn
+'          CONSOLE_PRINT("File " + format$(Count, "000") + " di " + format$(nFilesIn, "000"), 48, 13, cItem)
+'            CONSOLE_PB(1,65,13,15,1,nFilesIn,Count)
+'
+'            FileName = ftp_Extract(sDirList, Count, 9)
+'            FileSize = VAL(ftp_Extract(sDirList, Count, 5))
+'            BytesIn = BytesIn + FileSize
+'            CONSOLE_PRINT(MID$(FileName, 1, 30), 48, 14, cItem)
+'
+'                'File Download process is set to ASYNC. This means that immediatelly after GET command
+'                'we will have the control. Therefore we need to loop till result is = 0
+'            ftpResult = ftp_GetFile(FileName, "ASYNC")
+'            ftpResult = ftp_finished
+'
+'            PB_SHOW(0, FileName, "Uploading file ... ")
+'            WHILE ftpResult > 0
+'                fBytesIn=ftp_GetNumber("BYTESFILERCVD")
+'                CONSOLE_PRINT("Byte " + FORMAT$(fBytesIn, "0000000") + " di " + FORMAT$(FileSize, "000000"), 48, 15, cValue, true)
+'                CONSOLE_PB(2, 48, 16, 32, 1, FileSize, fBytesIn)
+'                    PB_Update(fBytesIn, FileSize)
+'                ftpResult = ftp_finished
+'            WEND 
+'                  PB_HIDE
+'
+'            IF ftpResult < 0 THEN
+'                MSGBOX(0, "There was an error during file Download.\nFile: " + FileName + "\nLast FTP response was:\n" + ftp_GetString("LastResponse")) + "\n"
+'            END IF
+'        NEXT
+'
+'
+     '-------------------------------------------------------------------------
+     'Close FTP Connection
+     '-------------------------------------------------------------------------
+    IF ftpConnect >= 0 THEN       
+    ftpResult = FTP_Quit
+  ENDIF                          
+
+'        '-------------------------------------------------------------------------
+'        'If connection was made by us, hangup connection otherwise leave as it was
+'        '-------------------------------------------------------------------------
+'        IF IConnManual = true THEN       
+'            RAS_HangUpAll(2)
+'        END IF
+'
+'    
+    MSGBOX(0, "Operation finished.")
+

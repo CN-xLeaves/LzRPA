@@ -1,0 +1,44 @@
+'---Instruct thinBasic we need the following modules
+  Uses "File", "CGI"
+
+'---Include some general purpose functions
+  '#include "includes\Utils.tBasic"
+  #include "includes\Header.tBasic"
+  #include "includes\Footer.tBasic"
+
+'---Prepare execution speed time counting variables
+  dim T1 as quad = gettickcount
+
+'---Use a simple text file to increment a page counter
+  dim Counter_Value as long
+  dim Counter_File  as string = app_sourcepath & "Counter.txt"
+
+  Counter_Value = val(file_load(Counter_File))
+  '---If remote is not local then increment and save
+  if CGI_Environ("REMOTE_ADDR") <> "127.0.0.1" then
+    incr Counter_Value
+    file_save(Counter_File, Counter_Value)
+  end if
+
+'---Main program start
+  '---Show page header
+  echo Page_Header("")
+
+  '---Some Server info ...
+  echo "Server is Up and running<br>"
+  echo "<hr>"
+  echo "Web server: " & CGI_Environ("SERVER_SOFTWARE") & "<br>"
+  echo "Web scripting engine: thinBasic version " & FILE_GetVersionString(app_path & "thinBasicc.exe") & " - Copyright © <a target='_blank' href='http://www.thinbasic.com'>thinBasic</a> - 2005-2007<br>"
+  echo "<hr>"
+  echo "Page counter. " & Counter_Value & "<br>"
+  echo "<hr>"
+  
+  '---Some Client info ...
+  echo "HTTP_REFERER: " & CGI_Environ("HTTP_REFERER") & "<br>"
+  echo "HTTP_USER_AGENT: " & CGI_Environ("HTTP_USER_AGENT") & "<br>"
+  echo "REMOTE_ADDR: " & CGI_Environ("REMOTE_ADDR")  & "<br>"
+  echo "REMOTE_HOST: " & CGI_Environ("REMOTE_HOST")  & "<br>"
+  echo "REMOTE_PORT: " & CGI_Environ("REMOTE_PORT")  & "<br>"
+  
+  '---Show footer of the page
+  Echo Page_Footer(T1)

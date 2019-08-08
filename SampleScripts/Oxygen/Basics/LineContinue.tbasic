@@ -1,0 +1,32 @@
+
+'==============================
+'LINE CONTINUATION (UNDERSCORE)
+'==============================
+'
+ 
+uses "oxygen","file"
+dim src as string
+ 
+src = "
+
+  basic
+  print "this" _ 'comment
+  _
+  _ 'comment
+  _
+  " is treated as a single line"
+       
+  "
+o2_asmo src
+ 
+'msgbox 0, o2_view "o2h "+src
+ 
+if len(o2_error) then
+  msgbox 0, o2_error : stop
+end if
+ 
+o2_exec
+ 
+
+
+ 

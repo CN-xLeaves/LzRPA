@@ -1,0 +1,105 @@
+'----------------------------------------------------------------------------
+'----------------------------------------------------------------------------
+' This script will demonstrate how to:
+' - create a new ODBC environment
+' - connect to a DB
+' - perform SQL queries
+' - retrieve data fetching records
+' - bind script variables to data fields
+'----------------------------------------------------------------------------
+' Thanks to Jose Roca for his hard work on ODBC wrapper
+'----------------------------------------------------------------------------
+
+'---Use console module to show output
+uses "console"
+
+'---IMPORTANT: include this file in order to use ODBC functionalities
+'              inside your scripts
+#include "%APP_INCLUDEPATH%\ODBC352.INC"
+
+'---Declare needed variables
+dim hEnv    AS DWORD      '---Environment handle
+dim hDbc    AS DWORD      '---Connection handle
+dim hStmt   AS DWORD      '---Statement handle
+
+dim ConStr  AS STRING     '---Connection string
+
+'---Allocates an environment handle
+hEnv = OdbcAllocEnv
+IF OdbcError THEN
+  console_writeline("Script aborted. It was not possible to create an environment handle.")
+  Terminate
+end if
+
+'---Allocates the connection handle
+hDbc = OdbcAllocConnect(hEnv)
+IF ISFALSE hDbc THEN
+  console_writeline("Script aborted. It was not possible to allocate the connection handle.")
+  Terminate
+end if
+
+'---Connects with the ODBC driver
+ConStr = "DRIVER={Microsoft Access Driver (*.mdb)};DBQ=biblio.mdb;UID=;PWD=;"
+OdbcOpenConnection(hDbc, ConStr)
+IF OdbcError THEN
+   console_writeline(OdbcGetConnectionErrorInfo(hDbc))
+   Terminate
+END IF
+
+'---Allocates a statement handle
+hStmt = OdbcAllocStmt(hDbc)
+
+'---Binds the columns ...
+'---First declare some variable able to receive binded DB colums ...
+dim cbbytes     AS LONG
+dim lAuId       AS LONG
+dim szAuthor    AS ASCIIZ * 256
+dim iYearBorn   AS INTEGER
+
+'---than use OdbcBindCol giving column number, type, ... 
+OdbcBindCol(hStmt, 1, %SQL_C_LONG   , VARPTR(lAuId)     , 0               , cbbytes)
+OdbcBindCol(hStmt, 2, %SQL_C_CHAR   , VARPTR(szAuthor)  , SIZEOF(szAuthor), cbbytes)
+OdbcBindCol(hStmt, 3, %SQL_C_SHORT  , VARPTR(iYearBorn) , 0               , cbbytes)
+
+'---Set cursor type
+OdbcSetKeysetDrivenCursor hStmt
+'---Set optimistic concurrency
+OdbcSetOptimisticConcurrency hStmt
+
+'---Generates a result set
+OdbcExecDirect hStmt, "SELECT TOP 20 * FROM Authors ORDER BY Author"
+IF OdbcError THEN
+  console_writeline(OdbcGetStatementErrorInfo(hStmt))
+  Terminate
+END IF
+
+'---Parse the result set.
+'---Automatically binded variables will be filled with relevant data
+DO
+  OdbcFetch hStmt
+  IF ISTRUE(OdbcError) THEN EXIT DO
+  console_write     ( using$("#### ", lAuId) )
+  console_write     ( using$("\                         \ ", szAuthor) )
+  console_writeline ( using$("####", iYearBorn) )
+
+LOOP
+
+Terminate
+
+console_waitkey
+
+
+
+'----------------------------------------------------------------------------
+function Terminate()
+'----------------------------------------------------------------------------
+
+  IF hStmt  THEN OdbcCloseCursor hStmt      '---Closes the cursor
+  IF hStmt  THEN OdbcCloseStmt hStmt        '---Closes the statement handle
+  IF hDbc   THEN OdbcCloseConnection hDbc   '---Closes the connection
+  IF hEnv   THEN OdbcFreeEnv hEnv           '---Frees the environment handle
+
+  'stop
+
+end function
+

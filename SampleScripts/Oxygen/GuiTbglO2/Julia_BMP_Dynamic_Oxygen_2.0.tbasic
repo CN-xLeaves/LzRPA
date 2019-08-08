@@ -1,0 +1,306 @@
+'   Julia 2D bitmap to canvas
+ 
+#MINVERSION 1.9.10.0
+
+Uses "ui"
+Uses "oxygen"
+
+  Global MaxX As Long Value 500
+  Global MaxY As Long Value 500
+  
+  Dim s , scr , operator As String 
+  Dim pix(4*MaxX*MaxY) As Byte 
+
+Dim cr As Single
+Dim ci As Single
+Dim st As Single
+
+Dim it , k As Long
+
+scr = "
+  dim p as long
+  type rgba  r as byte, g as byte, b as byte, a as byte
+  dim as rgba  bmpunit at p 
+  p=#pix 'LINK TO THINBASIC  
+  
+  Dim dup   As Single
+  dim orb   as single
+  dim x     as single
+  dim y     as single  
+  Dim xp    As Single
+  Dim yp    As Single
+  Dim k     As single
+  
+  Dim it At #it As Long 
+  Dim cr At #cr As Single
+  Dim ci At #ci As Single
+  
+  dim Maxx at #MaxX as long
+  dim Maxy at #MaxY as long
+  
+  
+  dim i , j as integer
+  dim st at #st as single
+  
+  for i=1 to MaxX'500
+    for j=1 to MaxY'500
+   
+      y=-1.5 + i*st
+      x=-1.5 + j*st
+      For k=1 To it
+        dup=x
+        x=x*x-y*y + cr
+        y=dup*2*y + ci  
+        ORB=abs(x) $OPERATOR abs(y)
+        If ORB > 6 Then
+          Exit For
+        EndIf
+      Next
+      bmpunit.r = orb
+      bmpunit.g = k*10
+      bmpunit.b = 0
+   
+      p+=sizeof bmpunit    'ADVANCE BMP ARRAY POINTER
+  
+    next
+  next
+  "
+
+  '---Controls IDs---
+  Begin ControlID
+    %IDC_FIRST_HIDE
+    	%IDC_LBL_Rc
+  	  %IDC_TRACK_RC
+    	%IDC_EDIT_Rc
+
+    	%IDC_LBL_Ic
+  	  %IDC_TRACK_IC
+    	%IDC_EDIT_Ic 
+
+    	%IDC_LBL_MaxIt 
+  	  %IDC_TRACK_MaxIt
+    	%IDC_EDIT_MaxIt 
+
+    	%IDC_EDIT_Operator
+
+
+    	%IDC_LBL_Operator
+    %IDC_LAST_HIDE
+
+  	%IDC_BUTTON_START
+  	%IDC_BUTTON_STOP
+  	
+  	%IDC_TIMER  
+  	
+  	%IDC_Canvas 
+    %IDC_STATUSBAR  	
+  End ControlID
+
+  %TIMER_DELAY    = 1
+
+  
+  '------------------------------------------------------------------------------
+  ' Main thinBasic function
+  '------------------------------------------------------------------------------
+  Function Main() As Long
+  
+  	MainWindow_Create(%HWND_DESKTOP)
+  
+  End Function
+
+  '------------------------------------------------------------------------------
+  ' Create main Window
+  '------------------------------------------------------------------------------
+  Function MainWindow_Create(ByVal hParent As Long) As Long
+  	Local hDlg     As Long
+  	Local lStyle   As Long
+  	Local lStyleEx As Long
+  	
+  	lStyle = _                          
+  	        %WS_DLGFRAME          | _   
+  	        %WS_CAPTION           | _   
+  	        %WS_SYSMENU           | _   
+  	        %WS_OVERLAPPEDWINDOW  | _   
+  	        %WS_CLIPCHILDREN      | _   
+  	        %WS_CLIPSIBLINGS                    
+  	lStyleEx = 0                        
+
+  
+  	Dialog New Pixels, Name "JuliaDialog", hParent, "Julia2D  f(z)=z²+c  -- 380 cycles 500x500", 30, 30, 320 + MaxX, 60 + MaxY, lStyle, lStyleEx, To hDlg    
+
+    Control Add Statusbar , hDlg, %IDC_STATUSBAR, "", , , , , %SBARS_SIZEGRIP | %WS_CHILD | %WS_VISIBLE
+    
+  	Control Add Label     , hDlg, %IDC_LBL_Rc         , "R(c)"  ,   1,  30,  50,  24
+    Control Add Trackbar  , hDlg, %IDC_TRACK_RC       , ""      ,  55,  24, 150,  24, %WS_CHILD | %WS_CLIPSIBLINGS | %WS_TABSTOP | %WS_VISIBLE, ,'Call CallBack]
+  	Control Add Textbox   , hDlg, %IDC_EDIT_Rc        , "0"     , 220,  24,  40,  24, %WS_CHILD | %WS_CLIPSIBLINGS | %WS_TABSTOP | %WS_VISIBLE | %ES_RIGHT | %ES_NUMBER, %WS_EX_CLIENTEDGE
+    TrackBar_SetRange       hDlg, %IDC_TRACK_RC       , -50, 50
+    TrackBar_SetPos         hDlg, %IDC_TRACK_RC       , 0
+    TrackBar_SetTicFreq     hDlg, %IDC_TRACK_RC       , 1
+
+
+  	Control Add Label     , hDlg, %IDC_LBL_Ic         , "I(c)"  ,   1,  60,  50,  24
+    Control Add Trackbar  , hDlg, %IDC_TRACK_IC       , ""      ,  55,  54, 150,  24, %WS_CHILD | %WS_CLIPSIBLINGS | %WS_TABSTOP | %WS_VISIBLE, ,'Call CallBack]
+  	Control Add Textbox   , hDlg, %IDC_EDIT_Ic        , "1"     , 220,  54,  40,  24, %WS_CHILD | %WS_CLIPSIBLINGS | %WS_TABSTOP | %WS_VISIBLE | %ES_RIGHT | %ES_NUMBER, %WS_EX_CLIENTEDGE
+    TrackBar_SetRange       hDlg, %IDC_TRACK_IC       , -50, 50
+    TrackBar_SetPos         hDlg, %IDC_TRACK_IC       , 1
+    TrackBar_SetTicFreq     hDlg, %IDC_TRACK_IC       , 1
+
+  	Control Add Label     , hDlg, %IDC_LBL_MaxIt      , "MaxIt" ,   1,  90,  50,  24
+    Control Add Trackbar  , hDlg, %IDC_TRACK_MaxIt    , ""      ,  55,  84, 150,  24, %WS_CHILD | %WS_CLIPSIBLINGS | %WS_TABSTOP | %WS_VISIBLE, ,'Call CallBack]
+  	Control Add Textbox   , hDlg, %IDC_EDIT_MaxIt     , "55"    , 220,  84,  40,  24, %WS_CHILD | %WS_CLIPSIBLINGS | %WS_TABSTOP | %WS_VISIBLE | %ES_RIGHT | %ES_NUMBER, %WS_EX_CLIENTEDGE
+    TrackBar_SetRange       hDlg, %IDC_TRACK_MaxIt    , -100, 100
+    TrackBar_SetPos         hDlg, %IDC_TRACK_MaxIt    , 55
+    TrackBar_SetTicFreq     hDlg, %IDC_TRACK_MaxIt    , 5
+
+
+'    Control Add Textbox   , hDlg, %IDC_EDIT_MaxIt     , "55"    ,  16,  86,  80,  24, %WS_CHILD Or %WS_CLIPSIBLINGS Or %WS_TABSTOP Or %WS_VISIBLE, %WS_EX_CLIENTEDGE
+'  	Control Add Label     , hDlg, %IDC_LBL_MaxIt      , "MaxIt" , 100,  90,  60,  24
+
+  	Control Add Button    , hDlg, %IDC_BUTTON_Start   , "Start" ,  16, 136,  80,  32, %WS_CHILD Or %WS_CLIPSIBLINGS Or %WS_TABSTOP Or %WS_VISIBLE Or %BS_PUSHBUTTON, 0
+  	Control Add Button    , hDlg, %IDC_BUTTON_Stop    , "Stop " ,  16, 176,  80,  32, %WS_CHILD Or %WS_CLIPSIBLINGS Or %WS_TABSTOP Or %WS_VISIBLE Or %BS_PUSHBUTTON, 0
+    Control Disable hDlg, %IDC_BUTTON_STOP
+
+    Control Add Canvas    , hDlg, %IDC_CANVAS         , ""      , 300,  20, MaxX, MaxY, %SS_SUNKEN  
+    
+    Control Add Textbox   , hDlg, %IDC_EDIT_Operator  , "*"     ,  16, 440,  30,  24, %WS_CHILD Or %WS_CLIPSIBLINGS Or %WS_TABSTOP Or %WS_VISIBLE, %WS_EX_CLIENTEDGE
+  	Control Add Label     , hDlg, %IDC_LBL_Operator   , "METHOD", 100, 446,  60,  24
+
+  	Dialog Show Modal hDlg, Call MainWindow_Proc
+  
+  End Function
+
+  '------------------------------------------------------------------------------
+  ' Main WIndow CallBack handler
+  '------------------------------------------------------------------------------
+  CallBack Function MainWindow_Proc() As Long
+  
+  	Select Case (CBMSG)
+  
+  	  Case %WM_INITDIALOG
+        Canvas_Attach(CBHNDL, %IDC_CANVAS)
+  	    
+  	  Case %WM_COMMAND
+  	        
+        Select Case Callback_Control
+  
+          Case %IDC_BUTTON_START
+            If Callback_Control_Message = %BN_CLICKED Then
+              cr        = Control_GetText CBHNDL, %idc_edit_Rc
+              ci        = Control_GetText CBHNDL, %idc_edit_Ic
+              it        = Control_GetText CBHNDL, %idc_edit_MaxIt
+              operator  = Control_GetText CBHNDL, %idc_edit_Operator
+
+              
+              '---If JIT hide controls and start timer
+              If JIT() Then
+                Dialog Set Timer CBHNDL, %IDC_TIMER, %TIMER_DELAY
+                Control Disable CBHNDL, %IDC_BUTTON_START
+                Control Enable CBHNDL, %IDC_BUTTON_STOP
+              End If
+                               
+            End If
+
+          Case %IDC_BUTTON_STOP
+            Dialog Kill Timer CBHNDL, %IDC_TIMER
+            Control Disable CBHNDL, %IDC_BUTTON_STOP
+            Control Enable CBHNDL, %IDC_BUTTON_START
+  
+        End Select
+
+      Case %WM_HSCROLL
+        '---Handle each trackbar separately
+
+        Select Case CBLPARAM
+        
+          Case Win_GetDlgItem(CBHNDL, %IDC_TRACK_RC)
+            Control_SetText CBHNDL, %idc_edit_Rc, Str$(TrackBar_GetPos(CBHNDL, %IDC_TRACK_RC)/10)
+            cr = Control_GetText CBHNDL, %idc_edit_Rc
+            
+          Case Win_GetDlgItem(CBHNDL, %IDC_TRACK_IC)
+            Control_SetText CBHNDL, %idc_edit_Ic, Str$(TrackBar_GetPos(CBHNDL, %IDC_TRACK_IC)/10)
+            ci = Control_GetText CBHNDL, %idc_edit_Ic
+            
+          Case Win_GetDlgItem(CBHNDL, %IDC_TRACK_MaxIt)
+            Control_SetText CBHNDL, %idc_edit_MaxIt, Str$(TrackBar_GetPos(CBHNDL, %IDC_TRACK_MaxIt))
+            it = Control_GetText CBHNDL, %idc_edit_MaxIt
+          
+        End Select
+
+        '---If we have some schanges in trackbars: JIT one shot
+        If JIT() Then
+          O2_EXEC
+          Canvas_BitmapSet_ByRef(pix, MaxX, MaxY)
+        End If
+  
+  	  Case %WM_NOTIFY
+
+  	  Case %WM_DESTROY    
+  	               
+  	End Select
+  	
+  End Function
+
+'  '------------------------------------------------------------------------------
+'  ' Hide or Show controls
+'  '------------------------------------------------------------------------------
+'  Function HideShowControls(ByVal hDlg As Long, ByVal How As Long) As Long
+'    Local nControl As Long
+'    
+'    For nControl = %IDC_FIRST_HIDE To %IDC_LAST_HIDE
+'      'Control Show State hDlg, nControl, How
+'      If How = %SW_HIDE Then
+'        Control Disable hDlg, nControl
+'      Else
+'        Control Enable hDlg, nControl
+'      End If
+'    Next
+'    
+'    If How = %SW_HIDE Then
+'      Control Enable  hDlg, %IDC_BUTTON_STOP
+'      Control Disable hDlg, %IDC_BUTTON_START
+'    Else
+'      Control Disable hDlg, %IDC_BUTTON_STOP
+'      Control Enable  hDlg, %IDC_BUTTON_START
+'    End If
+'    
+'  End Function
+  
+  '------------------------------------------------------------------------------
+  ' JuliaDialog OnTimer
+  '------------------------------------------------------------------------------
+  CallBack Function JuliaDialog_OnTimer() As Long
+    '---CBWPARAM contains the ID of the timer that fired %WM_TIMER event
+    '---More than one timer can be active sumultaneously
+    'Select Case CBWPARAM
+    '  Case %IDC_TIMER
+        
+        '---Increment and set the test value...
+          cr -= 0.006
+          ci -= 0.0055
+          st  = 3/MaxX
+          
+          O2_EXEC
+          
+          Canvas_BitmapSet_ByRef(pix, MaxX, MaxY)
+   
+    'End Select
+  End Function
+
+  '------------------------------------------------------------------------------
+  ' Compile
+  '------------------------------------------------------------------------------
+  Function JIT() As Long
+    Local scrNew As String
+    '---Set initially to true and change to false if something will go wrong
+    Function = %TRUE
+    
+    '---Replace any placeholder
+    scrNew = Replace$(scr, "$OPERATOR", operator)
+
+    '---Compile
+    O2_BASIC scrNew
+
+    '---Check result    
+    If Len(O2_ERROR) Then Function = %FALSE
+  End Function
+

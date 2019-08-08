@@ -1,0 +1,133 @@
+  '=================================
+  'ATTACHING SAPI VOICE TO AN OBJECT
+  '=================================
+  '
+  '
+  '         ###############
+  '       ###################
+  '      ###               ###
+  '     ###    ###          ###
+  '    ###    ## ##         ###
+  '    ###   ##   ##        ###
+  '    ###  ##     ##       ###
+  '    ###  ##      ##      ###
+  '    ###  ##      ##      ###
+  '    ###   ####  ##      ###
+  '     ###    ####       ###
+  '      ###             ###
+  '       ###           ###
+  '         #############
+  '           #########
+
+Uses "oxygen"
+Dim c,src As String
+dim v as long
+src="
+  #basic
+
+  #include Voice.inc
+  incl VoiceMacros
+  Connect voice
+  ErrorHandler jmp fwd done
+
+
+  '---------
+  class mind
+  '=========
+    memory as string
+  end class    
+
+
+  '-----------
+  class person
+  '===========
+    ISpVoice * voice
+    has mind
+    '
+    method new()
+      memory="<>"
+    end method
+    '
+    method del()
+      memory=""
+    end method
+    '
+    method learn(string s)
+      memory+=s "<>"
+    end method
+    '
+    method recall(string s)
+      sys a,b,c
+      string r
+      a=instr(memory,s)
+      if a then
+        a+=len(s)
+        b=instr(a,memory,"<>")
+      end if
+      if a then
+        r=mid(memory,a,b-a)
+      else
+        r="I do not remember " s
+      end if
+      if & voice then
+        voice.speak w(r)
+        voice.WaitUntilDone forever
+      else
+        print r
+      end if
+    end method
+    '
+  end class
+
+  def Create
+  {
+   %1 %2
+   %2.new()
+  }
+
+  def CreatePersistant
+  {
+   %1 * %2
+   & %2=news sizeof %1
+   %2.new
+  }
+
+  def Delete
+  {
+    %1.del
+    frees & %1
+    & %1=0
+  }
+
+
+
+
+
+  '====
+  'MAIN
+  '====
+
+  CreatePersistant Person Hilda
+  Give Hilda voice
+  'Remove Hilda voice
+  Hilda.learn ".greeting. Hello Everyone"
+  Hilda.recall ".greeting."
+
+  Delete Hilda
+
+  '====
+  done:
+  '====
+
+  DisConnect voice
+
+
+"
+'msgbox 0,O2_prep src+o2_error
+O2_asmo src
+if Len(O2_ERROR) Then
+  msgbox 0,O2_ERROR
+else
+  o2_exec
+end if
+

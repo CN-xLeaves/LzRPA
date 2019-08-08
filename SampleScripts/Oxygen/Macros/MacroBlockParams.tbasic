@@ -1,0 +1,24 @@
+'
+'------------------
+'MACRO BLOCK PARAMS
+'==================
+ 
+ 
+uses "oxygen","file"
+dim src as string
+src="
+  '
+  def pr print %1
+  pr `Hello`
+  pr ( `Hello`  ` `  `Sky!` )
+  pr ( 21*2 )
+  terminate
+  "
+ 
+
+'msgbox 0,o2_prep src
+o2_basic src
+if len(o2_error) then msgbox 0,o2_error
+o2_exec
+ 
+ 

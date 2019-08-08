@@ -1,0 +1,348 @@
+USES "UI"
+uses "console"
+uses "Registry"
+
+'---Define a button ID
+begin ControlID
+  %ButtonClose
+  %ButtonSearch
+  %lblFind
+  %txtFind
+  %lblReplace
+  %txtReplace
+end ControlID
+
+
+DIALOG New Pixels, Name MyWindow, 0, "Dialog to show automatic events handling",-1,-1, 640, 480,
+                                   %WS_DLGFRAME | %DS_CENTER | %WS_CAPTION | %WS_SYSMENU | %WS_OVERLAPPEDWINDOW
+
+CONTROL ADD Label   Name lblFind    , MyWindow.Handle, %lblFind     , "Find"    ,  10,  15, 350, 20, %SS_NOTIFY
+CONTROL ADD Textbox Name txtFind    , MyWindow.Handle, %txtFind     , ""        ,  10,  30, 350, 25, %ES_AUTOHSCROLL | %ES_LEFT | %WS_TABSTOP
+
+CONTROL ADD Label   Name lblReplace , MyWindow.Handle, %lblReplace  , "Replace" ,  10,  55, 350, 20, %SS_NOTIFY
+CONTROL ADD Textbox Name txtReplace , MyWindow.Handle, %txtReplace  , ""        ,  10,  70, 350, 25, %ES_AUTOHSCROLL | %ES_LEFT |  %WS_TABSTOP
+
+
+CONTROL ADD BUTTON  Name btnSearch  , MyWindow.Handle, %ButtonSearch, "Search"  , 480,  10, 150, 25, %BS_NOTIFY | %BS_CENTER | %BS_VCENTER | %WS_TABSTOP
+CONTROL ADD BUTTON  Name btnCloseMe , MyWindow.Handle, %ButtonClose , "Close"   , 480,  40, 150, 25, %BS_NOTIFY | %BS_CENTER | %BS_VCENTER | %WS_TABSTOP
+
+
+
+DIALOG SHOW MODAL MyWindow.Handle
+
+
+'------------------------------------------------
+' Callback function used to handle dialog events 
+' not handled by specific event functions
+'------------------------------------------------
+CallBack Function MyWindow_OnCallBack() As Long
+'------------------------------------------------
+
+  'printl Timer, Function_Name, CBMSG, MyWindow.Name & ": message not handled by specific event function"
+
+End Function
+
+'------------------------------------------------
+CallBack Function MyWindow_OnInit() As Long
+'------------------------------------------------
+
+  printl Timer, Function_Name
+
+  '---Limits window minimum size
+  DIALOG SET MINSIZE CBHNDL, 550, 220
+   
+  control set Resize CBHNDL, %ButtonSearch, 0, 1, 0, 0
+  control set Resize CBHNDL, %ButtonClose , 0, 1, 0, 0
+
+  txtFind.Text    = "TextToFind"
+  txtReplace.Text = "TextToReplace"
+  btnCloseMe.Text = "Close Me"
+
+End Function
+
+'------------------------------------------------
+CallBack Function MyWindow_OnSize() As Long
+'------------------------------------------------
+  
+  printl Timer, Function_Name, MyWindow.X, MyWindow.Y, MyWindow.W, MyWindow.H
+
+End Function
+
+'------------------------------------------------
+CallBack Function MyWindow_OnMove() As Long
+'------------------------------------------------
+
+  printl Timer, Function_Name, MyWindow.X, MyWindow.Y, MyWindow.W, MyWindow.H
+
+End Function
+
+'------------------------------------------------
+CallBack Function MyWindow_OnMoving() As Long
+'------------------------------------------------
+
+  printl Timer, Function_Name
+
+End Function
+
+'------------------------------------------------
+CallBack Function MyWindow_OnMouseMove() As Long
+'------------------------------------------------
+
+  printl Timer, Function_Name
+
+End Function
+
+'------------------------------------------------
+CallBack Function MyWindow_OnNCHITTEST() As Long
+'------------------------------------------------
+
+  printl Timer, Function_Name
+
+End Function
+
+'------------------------------------------------
+CallBack Function MyWindow_OnSETCURSOR() As Long
+'------------------------------------------------
+
+  printl Timer, Function_Name
+
+End Function
+
+'------------------------------------------------
+CallBack Function MyWindow_OnLBUTTONDOWN() As Long
+'------------------------------------------------
+
+  printl Timer, Function_Name
+
+End Function
+
+'------------------------------------------------
+CallBack Function MyWindow_OnLBUTTONUP() As Long
+'------------------------------------------------
+
+  printl Timer, Function_Name
+
+End Function
+
+'------------------------------------------------
+CallBack Function MyWindow_OnLBUTTONDBLCLK() As Long
+'------------------------------------------------
+
+  printl Timer, Function_Name
+
+End Function
+
+'------------------------------------------------
+CallBack Function MyWindow_OnNCMOUSEMOVE() As Long
+'------------------------------------------------
+
+  printl Timer, Function_Name
+
+End Function
+
+'------------------------------------------------
+CallBack Function MyWindow_OnNCMOUSELEAVE() As Long
+'------------------------------------------------
+
+  printl Timer, Function_Name
+
+End Function
+
+'------------------------------------------------
+CallBack Function MyWindow_OnCommand() As Long
+'------------------------------------------------
+
+  printl Timer, Function_Name
+  
+End Function
+
+'------------------------------------------------
+CallBack Function MyWindow_OnClose() As Long
+'------------------------------------------------
+
+  printl Timer, Function_Name
+
+End Function
+
+'------------------------------------------------
+CallBack Function MyWindow_OnSHOWWINDOW() As Long
+'------------------------------------------------
+
+  printl Timer, Function_Name
+
+End Function
+
+'------------------------------------------------
+CallBack Function MyWindow_OnDestroy() As Long
+'------------------------------------------------
+
+  printl Timer, Function_Name
+  PrintL "Window just destroyed. Press a key to end" in %CCOLOR_FLIGHTRED
+  WaitKey
+
+End Function
+
+
+
+'------------------------------------------------------------------------------
+' BUTTON EVENT
+'------------------------------------------------------------------------------
+
+'------------------------------------------------
+CallBack Function btnCloseMe_OnClick() As Long
+'------------------------------------------------
+
+  printl Timer, Function_Name, btnCloseMe.Name
+  DIALOG End CBHNDL
+
+End Function
+
+'------------------------------------------------
+CallBack Function btnCloseMe_OnSetFocus() As Long
+'------------------------------------------------
+
+  printl Timer, Function_Name, btnCloseMe.Name
+
+End Function
+
+'------------------------------------------------
+CallBack Function btnCloseMe_OnKillFocus() As Long
+'------------------------------------------------
+
+  printl Timer, Function_Name, btnCloseMe.Name
+
+End Function
+
+'------------------------------------------------
+CallBack Function btnSearch_OnClick() As Long
+'------------------------------------------------
+
+  printl Timer, Function_Name, btnSearch.Name, "Search clicked, something new should happen :)"
+
+End Function
+
+'------------------------------------------------------------------------------
+' LABEL EVENT
+'------------------------------------------------------------------------------
+
+'------------------------------------------------
+CallBack Function lblFind_OnClick() As Long
+'------------------------------------------------
+
+  printl Timer, Function_Name, lblFind.Name
+
+End Function
+
+'------------------------------------------------
+CallBack Function lblFind_OnDblClk() As Long
+'------------------------------------------------
+
+  printl Timer, Function_Name, lblFind.Name
+
+End Function
+
+'------------------------------------------------
+CallBack Function lblFind_OnDisable() As Long
+'------------------------------------------------
+
+  printl Timer, Function_Name, lblFind.Name
+
+End Function
+
+'------------------------------------------------
+CallBack Function lblFind_OnEnable() As Long
+'------------------------------------------------
+
+  printl Timer, Function_Name, lblFind.Name
+
+End Function
+
+
+'------------------------------------------------------------------------------
+' TEXTBOX EVENT
+'------------------------------------------------------------------------------
+
+'------------------------------------------------
+CallBack Function txtFind_OnCallback() As Long
+'------------------------------------------------
+
+  printl Timer, Function_Name, CBCTLMSG, txtFind.Name
+  Function = %TRUE
+
+End Function
+
+
+'------------------------------------------------
+CallBack Function txtFind_OnChange() As Long
+'------------------------------------------------
+
+  printl Timer, Function_Name, "text changed in control ", txtFind.Name
+  printl txtFind.Text in %CCOLOR_FLIGHTCYAN
+
+  Function = %TRUE
+
+End Function
+
+'------------------------------------------------
+CallBack Function txtFind_OnUpdate() As Long
+'------------------------------------------------
+
+  printl Timer, Function_Name, txtFind.Name
+  Function = %TRUE
+  
+End Function
+
+'------------------------------------------------
+CallBack Function txtFind_OnSetFocus() As Long
+'------------------------------------------------
+  txtFind.backcolor = %RGB_THISTLE
+  printl Timer, Function_Name, txtFind.Name
+  
+End Function
+
+'------------------------------------------------
+CallBack Function txtFind_OnKillFocus() As Long
+'------------------------------------------------
+
+  txtFind.backcolor = %RGB_WHITE
+  printl Timer, Function_Name, txtFind.Name
+  
+End Function
+
+'------------------------------------------------
+CallBack Function txtReplace_OnChange() As Long
+'------------------------------------------------
+
+  printl Timer, Function_Name, "text changed in control ", txtReplace.Name
+  printl txtReplace.Text in %CCOLOR_FLIGHTCYAN
+  Function = %TRUE
+
+End Function
+
+'------------------------------------------------
+CallBack Function txtReplace_OnUpdate() As Long
+'------------------------------------------------
+
+  printl Timer, Function_Name, txtReplace.Name
+  Function = %TRUE
+  
+End Function
+
+'------------------------------------------------
+CallBack Function txtReplace_OnSetFocus() As Long
+'------------------------------------------------
+
+  txtReplace.backcolor = %RGB_AQUAMARINE
+  printl Timer, Function_Name, txtReplace.Name
+  
+End Function
+
+'------------------------------------------------
+CallBack Function txtReplace_OnKillFocus() As Long
+'------------------------------------------------
+
+  txtReplace.backcolor = %RGB_WHITE
+  printl Timer, Function_Name, txtReplace.Name
+  
+End Function
+ 

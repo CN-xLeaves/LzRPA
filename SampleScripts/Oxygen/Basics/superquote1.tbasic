@@ -1,0 +1,51 @@
+
+'----------
+'SUPERQUOTE
+'==========
+ 
+ 
+uses "oxygen"
+ 
+dim src as string  
+ 
+src = "
+  #basic
+
+
+  function fun()
+  
+  
+  dim a as string
+
+  ;====================  
+  a=quote
+   
+  -NorwegianParrotScript-
+  
+    squawk!
+    =))o<
+    ` ` `
+    polygon
+    pining for the fjords
+    ;lovely plumage
+    
+  -NorwegianParrotScript- `ok`
+  ;====================  
+  
+  print a
+  end function 
+  fun
+
+  terminate
+  " 
+  
+
+'msgbox 0,o2_prep src 
+o2_basic src
+if len(o2_error) then
+  msgbox 0, o2_error : stop
+end if
+o2_exec
+ 
+ 
+ 

@@ -1,0 +1,8 @@
+{
+    "Keyword1": "ActiveWindow ActiveWorkbook ActiveSheet ActiveCell Selection Visible DisplayAlerts AlertBeforeOverwriting Version Quit IsNothing SendKeys Workbooks Count Add Open Close FullName Name Saved Activate Save SaveAs Worksheets Cells Value Range Formula Clear PrintPreview HorizontalAlignment NumberFormat Address ColumnWidth ClearComments ClearContents ClearFormats ClearNotes",
+    "Keyword2": "Excel_Application Excel_Workbook Excel_Worksheet Excel_Range",
+    "Keyword3": "XlHAlign_xlHAlignCenter XlHAlign_xlHAlignCenterAcrossSelection XlHAlign_xlHAlignDistributed XlHAlign_xlHAlignFill XlHAlign_xlHAlignGeneral XlHAlign_xlHAlignJustify XlHAlign_xlHAlignLeft XlHAlign_xlHAlignRight XlColorIndex_xlColorIndexAutomatic XlColorIndex_xlColorIndexNone",
+    "RelyFile": null,
+    "PackFile": null,
+    "RelyCode": "boot.tbs"
+}

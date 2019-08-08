@@ -1,0 +1,106 @@
+'==========================
+'thinBasic Module in Oxygen
+'==========================
+
+
+uses "oxygen","z"
+
+'dim zo as z_class
+'zo=new z_class
+'zo.go
+'zo.go.for.more.a1
+
+'msgbox 0,"Greeting: " & z_greet "World" & $crlf & "3 cubed is: " & z_cubed 3
+
+
+z_run "
+
+ string tab=chr(9)
+ string cr=chr(13)+chr(10)
+
+
+ #host thinBasic_ReturnNumber
+ function foo() as ext
+   print "Result: " 1 2 3 4
+ end function
+
+ #host thinBasic_ReturnNumber
+ function bah() as ext
+   print "Result: " 1 2 3 4 5
+ end function
+
+ 
+ #host
+ class TestClass
+
+ string txt
+
+ #host
+ method _class(sys act,ext*rn,string*rs,sys rcr) as long
+ string s
+ ext n
+ string mth=thinbasic_GetUnknownToken 0
+ txt+="generic method=" mth tab "Action=" str(act)+cr
+ if mth="HEX"
+   thinBasic_ParseNumber(n)
+   rs=hex n,8
+   return thinBasic_ReturnString
+ end if
+ '
+ if mth="VAL"
+   thinBasic_ParseString(s)
+   rn=val s
+   return thinBasic_ReturnNumber
+ end if
+ end method
+
+
+ #host thinBasic_ReturnNumber
+ method _Create() as ext
+ txt+="created test object"+cr
+ end method
+
+
+ #host thinBasic_ReturnNumber
+ method _Destroy() as ext
+ print txt
+ freememory @this
+ end method
+
+
+ #host thinBasic_ReturnString
+ method Hex() as string
+ dim as ext n
+ thinBasic_ParseNumber(n)
+ return Hex n,8
+ end method
+
+
+ method other()
+ end method
+
+
+ end class
+
+"
+
+dim n as ext
+dim s as string
+dim t as TestClass
+foo
+bah
+t=new TestClass
+s=t.hex 100
+n=t.val "12345.67"
+msgbox 0, s & $crlf & n
+
+
+'z_test
+'z_test2
+'dim v as vector
+'dim v2 as vector2
+'foo
+'dim xyz as xyzClass
+'xyz= new xyzClass
+
+

@@ -1,0 +1,16 @@
+uses "COM"
+
+dim hDeskTop  as dword
+dim vParam(1) as variant
+dim vResult   as variant
+
+hDeskTop = COM_CreateObject("Shell.Application")
+'COM_Execute(hDeskTop, "ToggleDesktop", %TB_DISPATCH_METHOD, 0, 0, 0)
+
+
+vParam(1) = "http://www.microsoft.com"
+COM_Execute(hDeskTop, "ShellExecute", %TB_DISPATCH_METHOD, 1, vParam, vResult)
+msgbox 0, vResult
+
+
+COM_Release(hDeskTop)

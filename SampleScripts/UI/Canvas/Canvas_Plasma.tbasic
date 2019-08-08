@@ -1,0 +1,106 @@
+'Plasma-like effect with Canvas
+uses "UI", "oxygen"
+ 
+'----------------
+function Main()
+'================
+ 
+ 
+dim w as long = 320
+dim h as long = 240
+ 
+' -- Creating canvas window
+dim hWnd As Dword = Canvas_Window("Plasma", 256, 128, w, h) 
+' -- Attaching it for drawing and setting coordinate system
+Canvas_Attach(hWnd, 0, %true)
+Canvas_Scale (1,1,w,h)
+ 
+' -- Preparation for compilation
+dim compiledCode as string
+dim x,y As single
+dim c,t As single
+dim divisor as single = 100
+dim compo as long= 255
+ 
+dim p0,p1 as long
+dim ColorCalcSrc as string="
+o2h
+ 
+'-------------------------------------
+function plasma_pixel() as long link #p1
+'=====================================
+ 
+dim as single x at #x, y at #y, t at #t, d at #divisor, c at #c
+dim as long red,green,blue,compo
+ 
+'SIMPLE LEFT TO RIGHT EVALUATION
+'-------------------------------
+  d=100
+  #noprec 
+  c= sin(x+y+t /d) +
+     cos(x-t   /d) +
+     cos(y-t   /d) +
+     cos(x-y+t /d) *2 +
+     (sin(t/d)*15)
+'-------------------------------
+ 
+ 
+  dim satur  = 120        ' 0..127
+  dim white  = 255-satur*2
+  dim as single bright=.90
+ 
+  'LEFT TO RIGH EVALUATED
+  #noprec    red   = 1+sin(c)*satur + white * bright
+  #noprec    green = 1+cos(c)*satur + white * bright
+  #noprec    blue  = 1+cos(-c*.5)*satur + white * bright
+ 
+  compo=blue : shl compo,8 : compo+=green : shl compo,8 : compo+=red
+ 
+  'COMPO=COMPO*.75 'HENDRIX FACTOR :)
+ 
+  function=compo
+ 
+end function
+ 
+'------------------
+sub finish() link #p0
+'==================
+  terminate
+end sub
+ 
+ 
+'ret
+"
+ 
+' -- Compiling
+o2_basic ColorCalcSrc
+ 
+if len(O2_ERROR) then
+  'msgbox 0,o2_prep ColorCalcSrc 
+  msgbox 0, O2_ERROR+$crlf+"Program will end now"
+  stop
+end if
+ 
+O2_EXEC ' initialise 
+declare sub plasma_pixel() at p1
+declare sub finish() at p0
+ 
+' -- Main loop
+GetAsyncKeyState(-1)
+do 
+  t+= 1
+  for x = 1 to w step 5
+    for y = 1 to h step 5
+      compo=plasma_pixel
+      Canvas_Box_WH(x,y, 4, 4, 0, compo, compo)
+      if GetAsyncKeyState(%VK_ESCAPE) then exit do 
+    next
+  next
+  Canvas_Redraw
+loop
+ 
+Canvas_Window end
+finish ' terminate
+ 
+end function 
+ 

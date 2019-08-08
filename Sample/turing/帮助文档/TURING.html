@@ -1,0 +1,3573 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>《我的眼睛--图灵识别》命令帮助</title>
+    <link href="help.css" rel="stylesheet" rev="stylesheet"/>
+</head>
+<body>
+<div class="wrap">
+<a name="About" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">全彩图书</td>
+        <td><span class="blue">《我的眼睛--图灵识别》全彩图书配套的按键精灵插件</span></td></tr>
+        <tr><td class="tab_left" valign="top">开启篇章</td>
+            <td>揭开面纱，不再神秘；<br>
+图文并茂，深入原理；<br>
+需要有一点的计算机编程基础，至少熟悉任意一门编程语言，适用于AI人工智能机器人、图形图像、颜色和文字识别领域的相关行业作为学习参考。
+        </td></tr>
+        <tr><td class="tab_left" valign="top">图书亮点</td>
+            <td>●专注图色文字识别<br>
+●全彩共有十三章节<br>
+●图文并茂原理易懂<br>
+●多门编程语言源码<br>
+VB6、按键精灵2014、VS2015（C/C++）、Python、UiBot、易语言、TC等<br>
+●三步识别入门基础<br>
+颜色识别、图片识别、形状识别<br>
+●带十三套图像滤镜<br>
+彩色图像滤镜：二值化、灰度、色调分离<br>
+黑白图像滤镜：清除杂点、去掉直线、获取轮廓、提取色块、倾斜矫正、旋转纠正、颠倒颜色、膨胀腐蚀<br>
+图像通用滤镜：等比缩放、缩放归一化<br>
+●五种字符切割技术<br>
+固定位置、随机方位、连通区域、范围投影、颜色分层<br>
+●十个实战演练范例<br>
+文字类识别：标准数字、重叠数字、波浪数字、错位文字、中文选题<br>
+图像类识别：与众不同、面朝方向、清晰图像<br>
+图形类识别：箭头朝向、寻找圆心<br>
+●三篇识别分析理论<br>
+扭曲变形、旋转方向、滑块拼图</td></tr>
+</table>
+<br><a name="Link" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Link 关联窗口</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>关联指定的窗口句柄
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Call Plugin.TURING.Link(hwnd, mode)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>
+hwnd：整数型，窗口句柄(窗口不能最小化)<br>
+mode：字符串型，可选，关联模式。默认普通窗口"normal"，3D游戏窗口"gdi"(切换主题为Aero再试)，Aero主题缩略图"aero"</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("codea1")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='codea1'>
+窗口句柄 = 1967868
+//关联句柄
+Call Plugin.TURING.Link(窗口句柄)
+//获取指定句柄的窗口大小
+窗口大小 = Split(Plugin.TURING.Window_GetSize(),",")
+宽 = 窗口大小(2) - 窗口大小(0)
+高 = 窗口大小(3) - 窗口大小(1)
+//获取屏幕图像数据
+Call Plugin.TURING.Pixel_FromScreen(0, 0, 宽, 高)
+//图像预览
+Call Plugin.TURING.Pixel_Preview()
+//取消句柄的关联
+Call Plugin.TURING.UnLink()
+</pre></div></td></tr>
+</table>
+<br><a name="UnLink" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">UnLink 解除窗口关联</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>解除指定窗口句柄的关联
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Call Plugin.TURING.UnLink()</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("codea2")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='codea2'>
+窗口句柄 = 1967868
+//关联句柄
+Call Plugin.TURING.Link(窗口句柄)
+//获取指定句柄的窗口大小
+窗口大小 = Split(Plugin.TURING.Window_GetSize(),",")  
+宽 = 窗口大小(2) - 窗口大小(0)
+高 = 窗口大小(3) - 窗口大小(1)
+//获取屏幕图像数据
+Call Plugin.TURING.Pixel_FromScreen(0, 0, 宽, 高)
+//显示获取的图像
+Call Plugin.TURING.Pixel_Preview()
+//取消句柄的关联
+Call Plugin.TURING.UnLink()
+</pre></div></td></tr>
+</table>
+<br><a name="Window_GetSize" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Window_GetSize 得到窗口大小</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>得到指定关联句柄的窗口屏幕位置区域
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">[left, top, right, bottom] = Plugin.TURING.Window_GetSize()</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>[窗口大小，字符串型格式：左,上,右,下]<br>
+left：窗口左上角X坐标<br>
+top：窗口左上角Y坐标<br>
+right：窗口右下角X坐标<br>
+bottom：窗口右下角Y坐标</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("codea3")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='codea3'>
+窗口句柄 = 1967868
+//关联句柄
+Call Plugin.TURING.Link(窗口句柄)
+//获取指定句柄的窗口大小
+窗口大小 = Split(Plugin.TURING.Window_GetSize(),",")
+宽 = 窗口大小(2) - 窗口大小(0)
+高 = 窗口大小(3) - 窗口大小(1)
+//获取屏幕图像数据
+Call Plugin.TURING.Pixel_FromScreen(0, 0, 宽, 高)
+//显示获取的图像
+Call Plugin.TURING.Pixel_Preview()
+//取消句柄的关联
+Call Plugin.TURING.UnLink()
+</pre></div></td></tr>
+</table>
+<br><a name="Window_GetAncestor" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Window_GetAncestor 取祖窗口句柄</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>指定任意窗口句柄即可得到窗口最顶级的祖父句柄
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Hwnd = Plugin.TURING.Window_GetAncestor(iHwnd)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>iHwnd：整数型，窗口内任意元素句柄</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>Hwnd：整数型，祖父（顶级）窗口句柄</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("codea4")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='codea4'>
+//参数是：窗口内任意元素句柄即可
+任意句柄 = 136308
+祖父句柄 = Plugin.TURING.Window_GetAncestor(任意句柄)
+TracePrint 祖父句柄
+</pre></div></td></tr>
+</table>
+<br><a name="Pixel_FromScreen" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Pixel_FromScreen 获取屏幕像素</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>获取屏幕指定范围的图像像素数据
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Call Plugin.TURING.Pixel_FromScreen(left, top, right, bottom)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>
+left：整数型，屏幕左上角X坐标<br>
+top：整数型，屏幕左上角Y坐标<br>
+right：整数型，屏幕右下角X坐标<br>
+bottom：整数型，屏幕右下角Y坐标</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code'>
+//获取屏幕图像数据
+Call Plugin.TURING.Pixel_FromScreen(0,0,200,100)
+//显示获取的图像
+Call Plugin.TURING.Pixel_Preview()
+</pre></div></td></tr>
+</table>
+<br><a name="Pixel_FromPicture" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Pixel_FromPicture 获取图片像素</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>获取指定路径图片文件的图像像素数据</td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Call Plugin.TURING.Pixel_FromPicture(ImagePath, Mode)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>
+ImagePath：字符串型，图片文件的路径(支持：bmp、png、jpg、gif|帧、格式)，GIF帧参数："路径|帧"<br>
+Mode：整数型，可选，默认0。应用于图中图时使用1</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code1")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code1'>
+//获取文件图像数据
+Call Plugin.TURING.Pixel_FromPicture("C:\未命名.bmp")
+Call Plugin.TURING.Pixel_Preview()
+Call Plugin.TURING.Pixel_FromPicture("C:\未命名.png")
+Call Plugin.TURING.Pixel_Preview()
+Call Plugin.TURING.Pixel_FromPicture("C:\未命名.jpg")
+Call Plugin.TURING.Pixel_Preview()
+Call Plugin.TURING.Pixel_FromPicture("C:\未命名.gif")
+//显示获取的图像
+Call Plugin.TURING.Pixel_Preview()
+
+</pre></div></td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("codeex1")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='codeex1'>
+//找图色例子参考：
+Call Plugin.TURING.Pixel_FromPicture("C:\大图.BMP",1)
+//1、进行区域找图（内部数据）
+坐标 = Split(Plugin.TURING.FindImage(0, 0, 1024, 768, "C:\小图.bmp", 1), ",")
+x = 坐标(0)
+y = 坐标(1)
+TracePrint x  //输出为图片坐标系
+TracePrint y
+//2、进行区域找图
+坐标 = Split(Plugin.TURING.FindImage(0, 0, 1024, 768, "C:\小图.bmp", 1), ",")
+x = 坐标(0)
+y = 坐标(1)
+TracePrint x  //输出为屏幕坐标系
+TracePrint y
+</pre></div></td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("codeex2")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='codeex2'>
+//动画演示例子参考：
+i = 1    //开始帧
+e = 4    //结束帧
+Do 
+    //获取图像数据
+    Call Plugin.TURING.Pixel_FromPicture("C:\动画.gif|" & i)
+    //效果预览
+    Call Plugin.TURING.Screen_PrintImage(0, 0)  
+    Delay 100  
+    i = i + 1  //递增帧
+    If i > e Then i = 1  //重新开始
+Loop
+</pre></div></td></tr>
+</table>
+<br><a name="Pixel_FromMouse" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Pixel_FromMouse 获取鼠标像素</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>获取当前鼠标图案的像素数据</td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">hot = Plugin.TURING.Pixel_FromMouse(Width, Height)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>
+Width：整数型，可选，宽度（默认32）<br>
+Height：整数型，可选，高度（默认32）</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>[hot：字符串型，热点（格式：x坐标,y坐标）]<br>
+x：热点x坐标<br>
+y：热点y坐标</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("codesb001")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='codesb001'>
+//获取鼠标图案像素
+坐标 = Split(Plugin.TURING.Pixel_FromMouse(),",")
+x = 坐标(0)
+y = 坐标(1)
+TracePrint "热点坐标：" & x & "," & y
+//绘制热点
+Call Plugin.TURING.Draw_Point(x,y)
+//显示图像
+Call Plugin.TURING.Pixel_Preview()
+</pre></div></td></tr>
+</table>
+<br><a name="Pixel_GetClpImageData" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Pixel_GetClpImageData 获取剪切板图像数据</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>获取剪切板中的图像像素数据</td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Call Plugin.TURING.Pixel_GetClpImageData()</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code01")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code01'>
+//设置剪切板屏幕图像
+Call Plugin.TURING.Pixel_SetClpScreenData(0,0,800,600)
+//获取剪切板图像
+Call Plugin.TURING.Pixel_GetClpImageData()
+//显示获取的图像
+Call Plugin.TURING.Pixel_Preview()
+</pre></div></td></tr>
+</table>
+<br><a name="Pixel_SetClpImageData" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Pixel_SetClpImageData 设置剪切板图像数据</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>将内部的图像数据设置到剪切板中</td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Call Plugin.TURING.Pixel_SetClpImageData()</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code01a")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code01a'>
+//获取屏幕图像
+Call Plugin.TURING.Pixel_FromScreen(0,0,800,600)
+//设置剪切板图像
+Call Plugin.TURING.Pixel_SetClpImageData()
+//获取剪切板图像
+Call Plugin.TURING.Pixel_GetClpImageData()
+//显示获取的图像
+Call Plugin.TURING.Pixel_Preview()
+</pre></div></td></tr>
+</table>
+<br><a name="Pixel_SetClpScreenData" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Pixel_SetClpScreenData 设置剪切板屏幕像素</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>设置屏幕图像数据保存到剪切板中</td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Call Plugin.TURING.Pixel_SetClpScreenData(left, top, right, bottom)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>
+left：整数型，屏幕左上角X坐标<br>
+top：整数型，屏幕左上角Y坐标<br>
+right：整数型，屏幕右下角X坐标<br>
+bottom：整数型，屏幕右下角Y坐标</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code001")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code001'>
+//设置剪切板图像
+Call Plugin.TURING.Pixel_SetClpScreenData(0,0,800,600)
+//获取剪切板图像
+Call Plugin.TURING.Pixel_GetClpImageData()
+//显示获取的图像
+Call Plugin.TURING.Pixel_Preview()
+</pre></div></td></tr>
+</table>
+<br><a name="Pixel_SetClpPictureData" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Pixel_SetClpPictureData 设置剪切板图片像素</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>设置图片图像数据保存到剪切板中</td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Call Plugin.TURING.Pixel_SetClpPictureData(ImagePath)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>ImagePath：字符串型，图片文件的路径</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code0001")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code0001'>
+//设置剪切板图像
+Call Plugin.TURING.Pixel_SetClpPictureData("C:\未命名.bmp")
+//获取剪切板图像
+Call Plugin.TURING.Pixel_GetClpImageData()
+//显示获取的图像
+Call Plugin.TURING.Pixel_Preview()
+</pre></div></td></tr>
+</table>
+<br><a name="Pixel_SaveClpImageData" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Pixel_SaveClpImageData 保存剪切板图片</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>剪切板中的图像数据保存为图片文件</td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Call Plugin.TURING.Pixel_SaveClpImageData(ImagePath)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>ImagePath：字符串型，保存图片文件的路径</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code00001")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code00001'>
+//设置剪切板图像
+Call Plugin.TURING.Pixel_SetClpScreenData(0,0,800,600)
+//获取剪切板图像
+Call Plugin.TURING.Pixel_GetClpImageData()
+//显示获取的图像
+Call Plugin.TURING.Pixel_Preview()
+//保存剪切板中的图像
+Call Plugin.TURING.Pixel_SaveClpImageData("C:\剪切板图片.bmp")
+</pre></div></td></tr>
+</table>
+<br><a name="Pixel_CutImageData" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Pixel_CutImageData 拆分图像数据</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>图像像素数据拆分为多个（上限10个）
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Call Plugin.TURING.Pixel_CutImageData(left, top, right, bottom, Serial)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>
+left：整数型，屏幕左上角X坐标<br>
+top：整数型，屏幕左上角Y坐标<br>
+right：整数型，屏幕右下角X坐标<br>
+bottom：整数型，屏幕右下角Y坐标<br>
+Serial：整数型，分配数据编号（默认1，上限10个）</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code2")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code2'>
+//获取屏幕图像数据
+Call Plugin.TURING.Pixel_FromScreen(50,50,250,150)
+//显示获取的图像
+Call Plugin.TURING.Pixel_Preview()
+//进行图像数据的拆分1
+Call Plugin.TURING.Pixel_CutImageData(0,0,100,100,1)
+//进行图像数据的拆分2
+Call Plugin.TURING.Pixel_CutImageData(100,0,200,100,2)
+//显示拆分的图像1
+Call Plugin.TURING.Pixel_SetImageData(1)
+Call Plugin.TURING.Pixel_Preview()
+//显示拆分的图像2
+Call Plugin.TURING.Pixel_SetImageData(2)
+Call Plugin.TURING.Pixel_Preview()
+</pre></div></td></tr>
+</table>
+<br><a name="Pixel_SetImageData" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Pixel_SetImageData 配置拆分图像数据</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>对拆分的图像像素数据进行设置
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Call Plugin.TURING.Pixel_SetImageData(Serial)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>Serial：整数型，指定数据编号（默认1，上限10个）</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code3")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code3'>
+//获取屏幕图像数据
+Call Plugin.TURING.Pixel_FromScreen(50,50,250,150)
+//显示获取的图像
+Call Plugin.TURING.Pixel_Preview()
+//进行图像数据拆分1
+Call Plugin.TURING.Pixel_CutImageData(0,0,100,100,1)
+//进行图像数据拆分2
+Call Plugin.TURING.Pixel_CutImageData(100,0,200,100,2)
+//显示拆分的图像1
+Call Plugin.TURING.Pixel_SetImageData(1)
+Call Plugin.TURING.Pixel_Preview()
+//显示拆分的图像2
+Call Plugin.TURING.Pixel_SetImageData(2)
+Call Plugin.TURING.Pixel_Preview()
+</pre></div></td></tr>
+</table>
+<br><a name="Pixel_SetImageDataCut" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Pixel_SetImageDataCut 配置切割图像数据</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>对切割的字符图像像素数据进行设置
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Call Plugin.TURING.Pixel_SetImageDataCut(index)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>index：整数型，切割图像索引号</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code331")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code331'>
+//获取屏幕图像数据
+Call Plugin.TURING.Pixel_FromScreen(50,50,250,150)
+//显示获取的图像
+Call Plugin.TURING.Pixel_Preview()
+//进行字符切割
+数量=Plugin.TURING.Incise_RandomOrientation()
+//显示切割的图像
+Call Plugin.TURING.Pixel_SetImageDataCut(0)
+Call Plugin.TURING.Pixel_Preview()
+</pre></div></td></tr>
+</table>
+<br><a name="Pixel_SetSceneImageData" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Pixel_SetSceneImageData 配置图像数据环境</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>配置图像像素数据应用于图色场景
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Call Plugin.TURING.Pixel_SetSceneImageData(Mode)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>Mode：整数型，场景模式(默认0场景>)</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code4bb")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code4bb'>
+//获取屏幕图像数据
+Call Plugin.TURING.Pixel_FromScreen(0, 0, 500, 500)
+//二值化图像处理
+Call Plugin.TURING.Filter_Binaryzation("128-255")
+//显示获取的图像
+Call Plugin.TURING.Pixel_Preview()
+//设置图像像素数据为找图场景
+Call Plugin.TURING.Pixel_SetSceneImageData(0)
+//进行区域找图（内部图像数据）
+坐标 = Split(Plugin.TURING.FindImage(0, 0, 500, 500, "C:\小图.bmp", 1), ",")
+x = 坐标(0)
+y = 坐标(1)
+TracePrint x  //输出为图像数据坐标系
+TracePrint y
+//进行区域找图
+坐标 = Split(Plugin.TURING.FindImage(0, 0, 1024, 768, "C:\小图.bmp", 1), ",")
+x = 坐标(0)
+y = 坐标(1)
+TracePrint x  //输出为屏幕坐标系
+TracePrint y
+</pre></div></td></tr>
+</table>
+<br><a name="Pixel_SetLayerImageData" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Pixel_SetLayerImageData 配置图层图像数据</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>对拆分的颜色图层设置为图像像素数据
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Call Plugin.TURING.Pixel_SetLayerImageData(Index)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>Index：整数型，颜色图层数据索引号</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("codetc4")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='codetc4'>
+//获取文件图像数据
+Call Plugin.TURING.Pixel_FromPicture("C:\504.bmp")
+//色调分离处理
+Call Plugin.TURING.Filter_Posterization(4)
+//颜色分层切割
+n = Plugin.TURING.Pixel_ColorImageData(3, "15")
+For i = 0 To n
+    //配置切割图像数据，进行预览
+    Call Plugin.TURING.Pixel_SetLayerImageData(i)
+    Call Plugin.TURING.Pixel_Preview()
+Next
+</pre></div></td></tr>
+</table>
+<br><a name="Pixel_ColorImageData" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Pixel_ColorImageData 获取颜色图层像素</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>对获取的图像像素数据进行颜色图层拆分
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">CharNum = Plugin.TURING.Pixel_ColorImageData(Interval, Value)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>
+Interval：整数型，两颜色值之间的空间距离（以HSV的颜色空间计算的）<br>
+Value：字符串型，筛选掉干扰的颜色点数范围（例：大于保留："15"个像素，区间保留："520-9751"个像素）</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>CharNum：整数型，颜色图层数量</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("codetc41")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='codetc41'>
+//获取文件图像数据
+Call Plugin.TURING.Pixel_FromPicture("C:\504.bmp")
+//色调分离处理
+Call Plugin.TURING.Filter_Posterization(4)
+//颜色图层
+n = Plugin.TURING.Pixel_ColorImageData(3, "15")
+//n = Plugin.TURING.Pixel_ColorImageData(3, "15-2019")
+For i = 0 To n
+    //配置切割图像数据，进行预览
+    Call Plugin.TURING.Pixel_SetLayerImageData(i)
+    Call Plugin.TURING.Pixel_Preview()
+Next
+</pre></div></td></tr>
+</table>
+<br><a name="Pixel_ChannelImageData" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Pixel_ChannelImageData 获取通道图层像素</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>对获取的图像像素数据进行RGB通道图层拆分
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Call Plugin.TURING.Pixel_ChannelImageData()</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("codetc42")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='codetc42'>
+//获取文件图像数据
+Call Plugin.TURING.Pixel_FromPicture("C:\f7d.jpg")
+//通道图层
+Call Plugin.TURING.Pixel_ChannelImageData()
+For i = 0 To 2
+    //配置切割图像数据，进行预览
+    Call Plugin.TURING.Pixel_SetLayerImageData(i)
+    Call Plugin.TURING.Pixel_Preview()
+Next
+</pre></div></td></tr>
+</table>
+<br><a name="Pixel_Preview" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Pixel_Preview 像素数据预览</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>对获取的图像像素数据进行显示查看
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Call Plugin.TURING.Pixel_Preview(Mode)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>Mode：整数型，可选，模式：图像或直方图（默认0图像,1垂直直方图,2水平直方图）</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code4")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code4'>
+//获取屏幕图像
+Call Plugin.TURING.Pixel_FromScreen(0,0,200,100)
+//进行自动二值化
+Call Plugin.TURING.Filter_Binaryzation("auto")
+//显示获取的图像
+Call Plugin.TURING.Pixel_Preview()
+//显示图像效果（垂直直方图）
+Call Plugin.TURING.Pixel_Preview(1)
+//显示图像效果（水平直方图）
+Call Plugin.TURING.Pixel_Preview(2)
+</pre></div></td></tr>
+</table>
+<br><a name="Screen_PrintImage" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Screen_PrintImage 屏幕打印图像</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>直接在屏幕上打印图像像素数据
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Call Plugin.TURING.Screen_PrintImage(x, y)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>
+x：整数型，可选，屏幕X坐标(默认0)<br>
+y：整数型，可选，屏幕X坐标(默认0)</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("codepm001")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='codepm001'>
+//获取屏幕图像数据
+Call Plugin.TURING.Pixel_FromScreen(0, 0, 250, 250)
+//图像打印到屏幕上(但是会被刷新掉)
+Call Plugin.TURING.Screen_PrintImage(250, 250)
+Delay 1000
+//强制刷新屏幕
+Call Plugin.TURING.Screen_Refresh()
+</pre></div></td></tr>
+</table>
+<br><a name="Screen_PrintText" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Screen_PrintText 屏幕打印文字</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>直接在屏幕上打印文字内容
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Call Plugin.TURING.Screen_PrintText(Text, x, y, FBcolor, FontNameSize, Mode)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>
+Text：字符串型，文字内容<br>
+x：整数型，可选，屏幕X坐标(默认0)<br>
+y：整数型，可选，屏幕X坐标(默认0)<br>
+FBcolor：字符串型，可选，文字颜色|背景色(默认"0000FF|000000")<br>
+FontNameSize：字符串型，可选，字体名称|字号大小(默认"宋体|9")<br>
+Mode：整数型，可选，字体样式(默认0。格式：0正常，1粗体，2斜体，4下划线，8删除线。其他依次叠加数字)</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("codepm002")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='codepm002'>
+//强制刷新屏幕
+Call Plugin.TURING.Screen_Refresh()
+Delay 500
+//屏幕上打印文字
+Call Plugin.TURING.Screen_PrintText("《我的眼睛--图灵识别》",100,100)
+</pre></div></td></tr>
+</table>
+<br><a name="Screen_Refresh" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Screen_Refresh 刷新屏幕</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>对屏幕上显示的打印内容进行强制刷新清除
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Call Plugin.TURING.Screen_Refresh()</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("codepm003")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='codepm003'>
+//获取屏幕图像数据
+Call Plugin.TURING.Pixel_FromScreen(0, 0, 250, 250)
+//图像打印到屏幕上(但是会被刷新掉)
+Call Plugin.TURING.Screen_PrintImage(250, 250)
+Delay 1000
+//强制刷新屏幕
+Call Plugin.TURING.Screen_Refresh()
+</pre></div></td></tr>
+</table>
+<br><a name="SaveImageData" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">SaveImageData 图像数据保存为图片</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>将内部的图像数据保存为图片文件</td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Call Plugin.TURING.SaveImageData(ImagePath)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>ImagePath：字符串型，保存图片文件的路径</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("codeb0001")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='codeb0001'>
+//获取屏幕像素数据
+Call Plugin.TURING.Pixel_FromScreen(0, 0, 800, 600)
+//进行二值化滤镜处理
+Call Plugin.TURING.Filter_Binaryzation("0-178")
+//将图像数据保存为图片
+Call Plugin.TURING.SaveImageData("C:\滤镜效果.bmp")
+//显示像素图像数据
+Call Plugin.TURING.Pixel_Preview()
+</pre></div></td></tr>
+</table>
+<br><a name="GetImageData" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">GetImageData 获取图像数据</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>得到内部的图像像素数据，用于二次开发
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">[width, height, ImageData] = Plugin.TURING.GetImageData()</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td></td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>[图像像素数据，字符串型格式：宽|高|图像数据(b,g,r,a,b,g,r,a,…)]<br>
+width：字符串型，图像宽度<br>
+height：字符串型，图像高度<br>
+ImageData：字符串型，图像数据</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code5")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code5'>
+//获取屏幕图像数据
+Call Plugin.TURING.Pixel_FromScreen(0,0,5,5)
+//显示获取的图像
+Call Plugin.TURING.Pixel_Preview()
+//获取图像数据内容
+数据 = Split(Plugin.TURING.GetImageData(),"|")
+//之后，找图、找色、找字等等算法随你想怎么处理都行
+w = 数据(0) - 1
+h = 数据(1) - 1
+图像 = Split(数据(2), ",")
+n=0
+For x = 0 To w
+    For y = 0 To h
+        TracePrint 图像(n)      //B分量值
+        TracePrint 图像(n + 1)  //G分量值
+        TracePrint 图像(n + 2)  //R分量值
+        n = n + 4
+    Next
+Next
+</pre></div></td></tr>
+</table>
+<br><a name="LoadImageData" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">LoadImageData 载入图像数据</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>载入图像像素数据，用于内部滤镜处理
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Call Plugin.TURING.LoadImageData(ImageData)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>ImageData：字符串型，图像像素数据，格式：宽|高|图像数据(b,g,r,a,b,g,r,a,…)</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code551")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code551'>
+w = 60
+h = 40
+Dim 图像()
+Redim 图像(w * h * 4 - 1)
+n = 0
+For x = 0 To w - 1
+    For y = 0 To h - 1
+        If y mod 2 = 0 Then 
+            图像(n + 2) = 0
+            图像(n + 1) = 0
+            图像(n) = 0
+        Else
+            图像(n + 2) = 255
+            图像(n + 1) = 255
+            图像(n) = 255
+        End If
+        n = n + 4
+    Next
+Next
+数据 = w & "|" & h & "|" & Join(图像,",")
+//载入图像数据
+Call Plugin.TURING.LoadImageData(数据)
+//显示斑马线图像
+Call Plugin.TURING.Pixel_Preview()
+</pre></div></td></tr>
+</table>
+<br><a name="GetPixels" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">GetPixels 获取颜色数据</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>得到内部图像的16进制颜色二维数组数据，用于二次开发
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">ColorData = Plugin.TURING.GetPixels(Mode)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>Mode：整数型，可选，颜色数据进制<默认0:16进制，1:10进制></td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>ColorData：数组字符串型，16进制颜色二维数组数据</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("codeys001")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='codeys001'>
+//获取屏幕区域像素
+Call Plugin.TURING.Pixel_FromScreen(0, 0, 100, 100)
+//Call Plugin.TURING.Pixel_FromPicture("C:\小女孩.jpg")
+Dim 像素二维数组
+像素二维数组 = Plugin.TURING.GetPixels()   //配套“PixelsToBmp”使用
+//中间画了一根红线
+y = 50: 宽 = UBound(像素二维数组)
+For x = 0 To 宽
+    像素二维数组(x, y) = "0000FF"
+Next
+//配套“GetPixels”使用
+Call Plugin.TURING.PixelsToBmp(像素二维数组,"C:\图灵Test.bmp")
+</pre></div></td></tr>
+</table>
+<br><a name="PixelsToBmp" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">PixelsToBmp 获取颜色数据</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>得到内部图像的16进制颜色二维数组数据，用于二次开发
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Call Plugin.TURING.PixelsToBmp(ColorData, ImageSavePath, Mode)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>
+ColorData：数组字符串型，16进制颜色二维数组数据<br>
+ImageSavePath：字符串型，保存图片文件路径<br>
+Mode：整数型，可选，颜色数据进制<默认0:16进制，1:10进制></td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("codeys002")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='codeys002'>
+//获取屏幕区域像素
+Call Plugin.TURING.Pixel_FromScreen(0, 0, 100, 100)
+//Call Plugin.TURING.Pixel_FromPicture("C:\小女孩.jpg")
+Dim 像素二维数组
+像素二维数组 = Plugin.TURING.GetPixels(1)   //配套“PixelsToBmp”使用
+//中间画了一根红线
+y = 50: 宽 = UBound(像素二维数组)
+For x = 0 To 宽
+    像素二维数组(x, y) = 255
+Next
+//配套“GetPixels”使用
+Call Plugin.TURING.PixelsToBmp(像素二维数组,"C:\图灵Test.bmp",1)
+</pre></div></td></tr>
+</table>
+<br><a name="ImageFormatConverter" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">ImageFormatConverter 图片格式转换</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>对各种的图片格式进行转换
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Call Plugin.TURING.ImageFormatConverter(ImagePath, ImageSavePath, Value)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>
+ImagePath：字符串型，需转换的图片路径（支持任意格式图片）<br>
+ImageSavePath：字符串型，保存指定格式的图片路径（支持的格式：bmp、png、jpg、gif）<br>
+Value：整数型，可选，仅jpg格式的压缩率（默认80）</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("codea551")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='codea551'>
+原始图片 = "c:\未命名.gif"
+//图片格式转换
+Call Plugin.TURING.ImageFormatConverter(原始图片,"c:\测试.bmp")
+Call Plugin.TURING.ImageFormatConverter(原始图片,"c:\测试.jpg")
+Call Plugin.TURING.ImageFormatConverter(原始图片,"c:\测试.gif")
+Call Plugin.TURING.ImageFormatConverter(原始图片,"c:\测试.png")
+</pre></div></td></tr>
+</table>
+<br><a name="Filter_Binaryzation" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Filter_Binaryzation 二值化</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>(针对彩色图像处理)二值化滤镜
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Call Plugin.TURING.Filter_Binaryzation(value)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>value：字符串型，色阶阈值（范围：0-255）<br>
+或者：指定颜色串BBGGRR-BDGDRD（"0000FF-000080|00FFFF"）(反色效果："@BBGGRR-DBDGDR")<br>
+或者：通过最大类间方差法[Otsu]取得（"auto"）</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code6")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code6'>
+//获取屏幕图像数据
+Call Plugin.TURING.Pixel_FromScreen(0,0,200,100)
+//显示获取的图像
+Call Plugin.TURING.Pixel_Preview()
+//二值化处理
+Call Plugin.TURING.Filter_Binaryzation("0-128")
+//Call Plugin.TURING.Filter_Binaryzation("auto") '通过最大类间方差法[Otsu]取得
+//Call Plugin.TURING.Filter_Binaryzation("0000FF-000080|00FFFF")
+//反色效果："@0000FF-000080|00FFFF"
+//Call Plugin.TURING.Filter_Binaryzation("@0000FF-000080|00FFFF")
+//图像预览
+Call Plugin.TURING.Pixel_Preview()
+</pre></div></td></tr>
+</table>
+<br><a name="Filter_Gray" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Filter_Gray 灰度</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>(针对彩色图像处理)灰度滤镜
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Gray = Plugin.TURING.Filter_Gray(mode)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>mode：整数型，可选，模式（默认0:标准，1:Photoshop算法）</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>Gray：整数型，灰色平均值</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code7")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code7'>
+//获取屏幕图像数据
+Call Plugin.TURING.Pixel_FromScreen(0,0,200,100)
+//显示获取的图像
+Call Plugin.TURING.Pixel_Preview()
+//灰度处理
+Call Plugin.TURING.Filter_Gray(0)
+//图像预览
+Call Plugin.TURING.Pixel_Preview()
+</pre></div></td></tr>
+</table>
+<br><a name="Filter_Posterization" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Filter_Posterization 色调分离</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>(针对彩色图像处理)色调分离滤镜
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Call Plugin.TURING.Filter_Posterization(value)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>value：整数型，色阶阈值（范围：2~255）</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code8")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code8'>
+//获取屏幕图像数据
+Call Plugin.TURING.Pixel_FromScreen(0,0,200,100)
+//显示获取的图像
+Call Plugin.TURING.Pixel_Preview()
+//色调分离处理
+Call Plugin.TURING.Filter_Posterization(2)
+//图像预览
+Call Plugin.TURING.Pixel_Preview()
+</pre></div></td></tr>
+</table>
+<br><a name="Filter_Despeckle" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Filter_Despeckle 清除杂点</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>(针对黑白图像处理)清除杂点滤镜
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Call Plugin.TURING.Filter_Despeckle(value, Interval)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>
+value：整数型，点数阈值（范围：1~8）<br>
+Interval：整数型，间隙，默认0</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code9")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code9'>
+//获取屏幕图像数据
+Call Plugin.TURING.Pixel_FromScreen(0,0,200,100)
+//二值化处理
+Call Plugin.TURING.Filter_Binaryzation("128-255")
+//显示获取的图像
+Call Plugin.TURING.Pixel_Preview()
+//去除杂点干扰
+Call Plugin.TURING.Filter_Despeckle(5)
+//图像预览
+Call Plugin.TURING.Pixel_Preview()
+</pre></div></td></tr>
+</table>
+<br><a name="Filter_EraseLine" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Filter_EraseLine 去掉直线</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>(针对黑白图像处理)去掉直线滤镜
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Call Plugin.TURING.Filter_EraseLine(value)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>value：整数型，点数百分比（范围：1~100）</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code10")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code10'>
+//获取屏幕图像数据
+Call Plugin.TURING.Pixel_FromScreen(0,0,200,100)
+//二值化处理
+Call Plugin.TURING.Filter_Binaryzation("128-255")
+//显示获取的图像
+Call Plugin.TURING.Pixel_Preview()
+//清除直线干扰
+Call Plugin.TURING.Filter_EraseLine(50)
+//图像预览
+Call Plugin.TURING.Pixel_Preview()
+</pre></div></td></tr>
+</table>
+<br><a name="Filter_Outline" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Filter_Outline 获取轮廓</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>(针对黑白图像处理)获取轮廓滤镜
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Call Plugin.TURING.Filter_Outline()</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code11")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code11'>
+//获取屏幕图像数据
+Call Plugin.TURING.Pixel_FromScreen(0,0,200,100)
+//二值化处理
+Call Plugin.TURING.Filter_Binaryzation("128-255")
+//显示获取的图像
+Call Plugin.TURING.Pixel_Preview()
+//获取轮廓
+Call Plugin.TURING.Filter_Outline()
+//图像预览
+Call Plugin.TURING.Pixel_Preview()
+</pre></div></td></tr>
+</table>
+<br><a name="Filter_ExtractBlock" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Filter_ExtractBlock 提取色块</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>(针对黑白图像处理)提取色块滤镜
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Call Plugin.TURING.Filter_ExtractBlock(width, height, num)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>
+width：整数型，色块宽度范围<br>
+height：整数型，色块高度范围<br>
+num：整数型，符合点数量</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code12")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code12'>
+//获取屏幕图像数据
+Call Plugin.TURING.Pixel_FromScreen(0,0,200,100)
+//二值化处理
+Call Plugin.TURING.Filter_Binaryzation("128-255")
+//显示获取的图像
+Call Plugin.TURING.Pixel_Preview()
+//提取色块处理
+Call Plugin.TURING.Filter_ExtractBlock(3,3,8)
+//图像预览
+Call Plugin.TURING.Pixel_Preview()
+</pre></div></td></tr>
+</table>
+<br><a name="Filter_SlantCorrect" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Filter_SlantCorrect 倾斜矫正</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>(针对黑白图像处理)倾斜矫正滤镜
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Call Plugin.TURING.Filter_SlantCorrect()</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code13")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code13'>
+//获取屏幕图像数据
+Call Plugin.TURING.Pixel_FromScreen(0,0,200,100)
+//二值化处理
+Call Plugin.TURING.Filter_Binaryzation("128-255")
+//显示获取的图像
+Call Plugin.TURING.Pixel_Preview()
+//倾斜矫正处理
+Call Plugin.TURING.Filter_SlantCorrect()
+//图像预览
+Call Plugin.TURING.Pixel_Preview()
+</pre></div></td></tr>
+</table>
+<br><a name="Filter_RotateCorrect" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Filter_RotateCorrect 旋转纠正</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>(针对黑白图像处理)旋转纠正滤镜
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Call Plugin.TURING.Filter_RotateCorrect(angle, value)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>
+angle：整数型，旋转的正负度数值（范围：1~90）<br>
+value：整数型，旋转的度数步进（范围：1~9）</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code14")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code14'>
+//获取屏幕图像数据
+Call Plugin.TURING.Pixel_FromScreen(0,0,200,100)
+//二值化处理
+Call Plugin.TURING.Filter_Binaryzation("128-255")
+//显示获取的图像
+Call Plugin.TURING.Pixel_Preview()
+//旋转纠正处理
+Call Plugin.TURING.Filter_RotateCorrect(45,1)
+//图像预览
+Call Plugin.TURING.Pixel_Preview()
+</pre></div></td></tr>
+</table>
+<br><a name="Filter_InverseColor" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Filter_InverseColor 颠倒颜色</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>(针对黑白图像处理)颠倒颜色滤镜
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Call Plugin.TURING.Filter_InverseColor()</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code15")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code15'>
+//获取屏幕图像数据
+Call Plugin.TURING.Pixel_FromScreen(0,0,200,100)
+//二值化处理
+Call Plugin.TURING.Filter_Binaryzation("0-128")
+//显示获取的图像
+Call Plugin.TURING.Pixel_Preview()
+//统一为背景黑色，字符白色
+Call Plugin.TURING.Filter_InverseColor()
+//图像预览
+Call Plugin.TURING.Pixel_Preview()
+</pre></div></td></tr>
+</table>
+<br><a name="Filter_DilationErosion" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Filter_DilationErosion 腐蚀膨胀</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>(针对黑白图像处理)腐蚀膨胀滤镜
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Call Plugin.TURING.Filter_DilationErosion()</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code16")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code16'>
+//获取屏幕图像数据
+Call Plugin.TURING.Pixel_FromScreen(0,0,200,100)
+//二值化处理
+Call Plugin.TURING.Filter_Binaryzation("128-255")
+//显示获取的图像
+Call Plugin.TURING.Pixel_Preview()
+//对白色字符进行膨胀
+Call Plugin.TURING.Filter_DilationErosion()
+//图像预览
+Call Plugin.TURING.Pixel_Preview()
+</pre></div></td></tr>
+</table>
+<br><a name="Filter_ThinBone" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Filter_ThinBone 细化抽骨</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>(针对黑白图像处理)细化抽骨(细骨)滤镜
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Call Plugin.TURING.Filter_ThinBone()</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("codexg001")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='codexg001'>
+//获取屏幕图像数据
+Call Plugin.TURING.Pixel_FromScreen(61, 51, 350,375)
+//图像二值化滤镜处理
+Call Plugin.TURING.Filter_Binaryzation("178-255")
+//显示图像预览
+Call Plugin.TURING.Pixel_Preview()
+//细化抽骨滤镜处理
+Call Plugin.TURING.Filter_ThinBone()
+//显示图像预览
+Call Plugin.TURING.Pixel_Preview()
+</pre></div></td></tr>
+</table>
+<br><a name="Filter_Zoom" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Filter_Zoom 等比缩放</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>(通用图像处理)等比缩放滤镜
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Call Plugin.TURING.Filter_Zoom(xTimes, yTimes)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>
+xTimes：整数型，宽度倍数，0.5缩小2倍（范围：0.1~1,2~8）<br>
+yTimes：整数型，高度倍数，0.5缩小2倍（范围：0.1~1,2~8）</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code17")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code17'>
+//获取屏幕图像数据
+Call Plugin.TURING.Pixel_FromScreen(0,0,200,100)
+//显示获取的图像
+Call Plugin.TURING.Pixel_Preview()
+//对白色字符进行膨胀
+Call Plugin.TURING.Filter_Zoom(2,2)
+//图像预览
+Call Plugin.TURING.Pixel_Preview()
+</pre></div></td></tr>
+</table>
+<br><a name="Filter_ZoomOne" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Filter_ZoomOne 缩放归一化</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>(通用图像处理)缩放归一化滤镜
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Call Plugin.TURING.Filter_ZoomOne(width, height)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>
+width：整数型，宽度数值<br>
+height：整数型，高度数值</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code18")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code18'>
+//获取屏幕图像数据
+Call Plugin.TURING.Pixel_FromScreen(0,0,200,100)
+//显示获取的图像
+Call Plugin.TURING.Pixel_Preview()
+//对白色字符进行膨胀
+Call Plugin.TURING.Filter_ZoomOne(250,250)
+//图像预览
+Call Plugin.TURING.Pixel_Preview()
+</pre></div></td></tr>
+</table>
+<br><a name="Filter_ColorChoose" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Filter_ColorChoose 颜色选留</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>(通用图像处理)指定颜色保留或者涂黑滤镜
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Call Plugin.TURING.Filter_ColorChoose(value)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>value：字符串型，指定颜色串BBGGRR-BDGDRD（"0000FF-000080|00FFFF"）(反选效果："@BBGGRR-DBDGDR")</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("codesx001")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='codesx001'>
+//获取屏幕图像数据
+Call Plugin.TURING.Pixel_FromScreen(0, 0, 100, 100)
+//色选（指定白色保留）
+Call Plugin.TURING.Filter_ColorChoose("FFFFFF|0000FF|00FFFF|FFFF00")
+//色选（指定不保留白色）
+//Call Plugin.TURING.Filter_ColorChoose("@FFFFFF")  //反选
+//显示图像预览（会阻塞）
+Call Plugin.TURING.Pixel_Preview()
+</pre></div></td></tr>
+</table>
+<br><a name="Filter_Rotate" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Filter_Rotate 固定旋转</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>(通用图像处理)按一定角度旋转图像
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Call Plugin.TURING.Filter_Rotate(angle)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>angle：整数型，旋转的正负度数值，正数顺时针（默认45，范围：正负0~360）</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("codeqb1880")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='codeqb1880'>
+//获取图像数据
+Call Plugin.TURING.Pixel_FromScreen(0, 0, 500, 300)
+//按一定角度旋转图像
+Call Plugin.TURING.Filter_Rotate(45)
+//显示图像效果预览
+Call Plugin.TURING.Pixel_Preview()
+</pre></div></td></tr>
+</table>
+<br><a name="Filter_Shift" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Filter_Shift 固定移位</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>(通用图像处理)指定每(行/列)的移动数量组成特征串进行扭正图像
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Call Plugin.TURING.Filter_Shift(Value, Direction)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>
+Value：字符串型，像素移位特征串|开始行列数（移动数值：正数向左移动，负数向右移动）<br>
+Direction：整数型，像素移位方向（默认0，0水平，1垂直）</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("codeqb18801")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='codeqb18801'>
+//获取图像数据
+Call Plugin.TURING.Pixel_FromPicture("C:\68.bmp")
+//Call Plugin.TURING.Pixel_FromScreen(0, 0, 200, 40)
+//固定位置像素移位（水平移位，从第5行开始）
+Call Plugin.TURING.Filter_Shift("-7,-7,-7,-7,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,7,7,7,7,7,7,7,6,5,5,4|5")
+//效果预览
+Call Plugin.TURING.Pixel_Preview
+</pre></div></td></tr>
+</table>
+<br><a name="Filter_DispelSpot" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Filter_DispelSpot 祛除斑点</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>(通用图像处理)图像斑点祛除
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Call Plugin.TURING.Filter_DispelSpot(Sensitivity, Num)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>
+Sensitivity：整数型，周边颜色与中间颜色的差值灵敏度，默认25<br>
+Num：整数型，平均色的元素个数，默认2</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("codeqb1881")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='codeqb1881'>
+//获取屏幕图像数据
+Call Plugin.TURING.Pixel_FromScreen(0,0,200,100)
+//图像预览
+Call Plugin.TURING.Pixel_Preview()
+//祛除斑点处理
+Call Plugin.TURING.Filter_DispelSpot(25)
+//图像预览
+Call Plugin.TURING.Pixel_Preview()
+</pre></div></td></tr>
+</table>
+<br><a name="Filter_Complementary" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Filter_Complementary 查找互补色</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>(通用图像处理)右下对角点的互补颜色查找滤镜
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Colors = Plugin.TURING.Filter_Complementary()</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>Colors：字符串型，互补色颜色串，竖线分隔</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code1882")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code1882'>
+//获取屏幕图像数据
+Call Plugin.TURING.Pixel_FromScreen(0,0,200,100)
+//显示获取的图像
+Call Plugin.TURING.Pixel_Preview()
+//查找互补色
+颜色串 = Plugin.TURING.Filter_Complementary()
+//二值化处理
+Call Plugin.TURING.Filter_Binaryzation(颜色串)
+TracePrint 颜色串
+//显示图像
+Call Plugin.TURING.Pixel_Preview()
+</pre></div></td></tr>
+</table>
+<br><a name="Filter_DiffeExtract" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Filter_DiffeExtract 差异提取</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>(通用图像处理)两图像数据之间的差异提取，并返回匹配到的点数
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Num = Plugin.TURING.Filter_DiffeExtract(ImgData1, ImgData2, Similarity)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>
+ImgData1：字符串型，图像的像素数据1（格式：宽|高|图像数据）<br>
+ImgData2：字符串型，图像的像素数据2（格式：宽|高|图像数据）<br>
+Similarity：整数型，颜色相似度（范围：0.1~1）</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>Num：整数型，比对匹配上的点数量（白色为不同数据）</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code1881a")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code1881a'>
+//获取文件图像数据1
+Call Plugin.TURING.Pixel_FromPicture("C:\问题.bmp")
+//获取图像数据内容1
+数据1 = Plugin.TURING.GetImageData()
+//获取文件图像数据2
+Call Plugin.TURING.Pixel_FromPicture("C:\答案选项.bmp")
+//获取图像数据内容2
+数据2 = Plugin.TURING.GetImageData()
+//进行差异图像处理
+TracePrint Plugin.TURING.Filter_DiffeExtract(数据1, 数据2)
+//显示图像
+Call Plugin.TURING.Pixel_Preview()
+//保存，白色的就是差异内容
+Call Plugin.TURING.SaveImageData("C:\差异.bmp")
+</pre></div></td></tr>
+</table>
+<br><a name="Incise_FixedLocation" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Incise_FixedLocation 固定位置切割</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>固定位置字符切割
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">CharNum = Plugin.TURING.Incise_FixedLocation(qx, qy, width, height, interval, num)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>
+qx：整数型，起点X坐标<br>
+qy：整数型，起点Y坐标<br>
+width：整数型，字符宽度<br>
+height：整数型，字符高度<br>
+interval：整数型，字间距<br>
+num：整数型，字符数量</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>CharNum：整数型，字符切割数量</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code19")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code19'>
+//获取屏幕图像数据
+Call Plugin.TURING.Pixel_FromScreen(0,0,200,100)
+//二值化处理
+Call Plugin.TURING.Filter_Binaryzation("0-128")
+//显示获取的图像
+Call Plugin.TURING.Pixel_Preview()
+//固定位置切割字符
+数量=Plugin.TURING.Incise_FixedLocation(0,0,64,64,50,3)
+For i = 0 To 数量
+    //字符预览
+    Call Plugin.TURING.Incise_Preview(i)
+Next
+</pre></div></td></tr>
+</table>
+<br><a name="Incise_RandomOrientation" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Incise_RandomOrientation 随机方位切割</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>随机方位字符切割
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">CharNum = Plugin.TURING.Incise_RandomOrientation(Width, Height)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>
+Width：字符串型，可选，保留字符切割宽度范围（例："50-150"）。<br>
+Height：字符串型，可选，保留字符切割高度范围（例："30-100"）。</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>CharNum：整数型，字符切割数量</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code20")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code20'>
+//获取屏幕图像数据
+Call Plugin.TURING.Pixel_FromScreen(0,0,200,100)
+//二值化处理
+Call Plugin.TURING.Filter_Binaryzation("0-128")
+//显示获取的图像
+Call Plugin.TURING.Pixel_Preview()
+//随机方位切割字符
+数量=Plugin.TURING.Incise_RandomOrientation()
+For i = 0 To 数量
+    //字符预览
+    Call Plugin.TURING.Incise_Preview(i)
+Next
+</pre></div></td></tr>
+</table>
+<br><a name="Incise_ConnectedArea" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Incise_ConnectedArea 连通区域切割</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>连通区域字符切割
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">CharNum = Plugin.TURING.Incise_ConnectedArea(through, Width, Height)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>
+through：布尔型，是否八通方向（八向：True）<br>
+Width：字符串型，可选，保留字符切割宽度范围（例："50-150"）。<br>
+Height：字符串型，可选，保留字符切割高度范围（例："30-100"）。</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>CharNum：整数型，字符切割数量</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code21")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code21'>
+//获取屏幕图像数据
+Call Plugin.TURING.Pixel_FromScreen(0,0,200,100)
+//二值化处理
+Call Plugin.TURING.Filter_Binaryzation("0-128")
+//显示获取的图像
+Call Plugin.TURING.Pixel_Preview()
+//连通区域切割字符
+数量=Plugin.TURING.Incise_ConnectedArea(False)
+For i = 0 To 数量
+    //字符预览
+    Call Plugin.TURING.Incise_Preview(i)
+Next
+</pre></div></td></tr>
+</table>
+<br><a name="Incise_ScopeAisle" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Incise_ScopeAisle 范围投影切割</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>范围投影字符切割
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">CharNum = Plugin.TURING.Incise_ScopeAisle(Row, Column, Width, Height)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>
+Row：整数型，行间距<br>
+Column：整数型，列间距<br>
+Width：字符串型，可选，保留字符切割宽度范围（例："50-150"）。<br>
+Height：字符串型，可选，保留字符切割高度范围（例："30-100"）。</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>CharNum：整数型，字符切割数量</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code22")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code22'>
+//获取屏幕图像数据
+Call Plugin.TURING.Pixel_FromScreen(0,0,200,100)
+//二值化处理
+Call Plugin.TURING.Filter_Binaryzation("0-128")
+//显示获取的图像
+Call Plugin.TURING.Pixel_Preview()
+//范围投影切割字符（技术专利）
+数量=Plugin.TURING.Incise_ScopeAisle(2,2)
+For i = 0 To 数量
+    //字符预览
+    Call Plugin.TURING.Incise_Preview(i)
+Next
+</pre></div></td></tr>
+</table>
+<br><a name="Incise_ColorLayered" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Incise_ColorLayered 颜色分层切割</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>颜色分层字符切割（体验版--组合式）
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">CharNum = Plugin.TURING.Incise_ColorLayered(interval, num, Width, Height)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>
+interval：整数型，颜色值之间的距离<br>
+num：整数型，过滤掉点数的数量<br>
+Width：字符串型，可选，保留字符切割宽度范围（例："50-150"）。<br>
+Height：字符串型，可选，保留字符切割高度范围（例："30-100"）。</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>CharNum：整数型，字符切割数量</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code221")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code221'>
+//截图大小不能超过4096像素的尺寸(100 * 40)
+Call Plugin.TURING.Pixel_FromScreen(0,0,100,40) 
+//色调分离处理
+Call Plugin.TURING.Filter_Posterization(6)
+//显示获取的图像
+Call Plugin.TURING.Pixel_Preview()
+//颜色分层切割字符
+数量=Plugin.TURING.Incise_ColorLayered(15,15)
+For i = 0 To 数量
+    //字符预览
+    Call Plugin.TURING.Incise_Preview(i)
+Next
+</pre></div></td></tr>
+</table>
+<br><a name="Incise_Adaptive" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Incise_Adaptive 自适应矩形切割</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>自适应矩形字符切割（体验版）
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">CharNum = Plugin.TURING.Incise_Adaptive(Width, Height)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>
+Width：字符串型，可选，保留字符切割宽度范围（例："50-150"）<br>
+Height：字符串型，可选，保留字符切割高度范围（例："30-100"）</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>CharNum：整数型，字符切割数量</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code22a")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code22a'>
+//获取屏幕图像数据
+Call Plugin.TURING.Pixel_FromScreen(0,0,200,100)
+//二值化处理
+Call Plugin.TURING.Filter_Binaryzation("0-128")
+//显示获取的图像
+Call Plugin.TURING.Pixel_Preview()
+//自适应矩形字符切割（体验版）
+数量=Plugin.TURING.Incise_Adaptive()
+For i = 0 To 数量
+    //字符预览
+    Call Plugin.TURING.Incise_Preview(i)
+Next
+</pre></div></td></tr>
+</table>
+<br><a name="Incise_ModifyCharData" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Incise_ModifyCharData 修改切割字符数据</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>修改图像中切割的字符数据
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Call Plugin.TURING.Incise_ModifyCharData(Index, Left, Top)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>
+Index：整数型，切割字符数据对应的索引号<br>
+Left：整数型，可选，设置左边坐标（默认0）<br>
+Top：整数型，可选，设置顶上坐标（默认0）</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code22ax")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code22ax'>
+//获取屏幕图像数据
+Call Plugin.TURING.Pixel_FromScreen(0, 0, 100, 100)
+//二值化处理
+Call Plugin.TURING.Filter_Binaryzation("168-255")
+//显示图像
+Call Plugin.TURING.Pixel_Preview()
+//固定位置切割字符
+数量 = Plugin.TURING.Incise_FixedLocation(0, 0, 50, 50, 1, 1)
+//载入切割图像
+Call Plugin.TURING.Pixel_SetImageDataCut(0)
+//统一大小
+Call Plugin.TURING.Filter_ZoomOne(100, 100)
+左 = 10: 上 = 10
+//修改切割图像数据
+Call Plugin.TURING.Incise_ModifyCharData(0, 左, 上)
+//字符预览
+Call Plugin.TURING.Incise_Preview(0)
+//获取切割字符数据内容
+数据 = Split(Plugin.TURING.Incise_GetCharData(), "|")
+切割 = Split(数据(0), ",")
+TracePrint 切割(0)  //被修改后的 左
+TracePrint 切割(1)  //被修改后的 上
+</pre></div></td></tr>
+</table>
+<br><a name="Incise_EraseData" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Incise_EraseData 清除切割字符数据</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>清除图像中切割的字符所有数据
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Call Plugin.TURING.Incise_EraseData()</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code22ay")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code22ay'>
+//获取屏幕图像数据
+Call Plugin.TURING.Pixel_FromScreen(0, 0, 100, 100)
+//二值化处理
+Call Plugin.TURING.Filter_Binaryzation("168-255")
+//显示图像
+Call Plugin.TURING.Pixel_Preview()
+//固定位置切割字符
+数量 = Plugin.TURING.Incise_FixedLocation(0, 0, 50, 50, 1, 1)
+//获取切割字符数据内容
+数据 = Split(Plugin.TURING.Incise_GetCharData(), "|")
+切割 = Split(数据(0), ",")
+TracePrint 切割(0) 
+TracePrint 切割(1)
+//清除所有字库
+Call Plugin.TURING.Incise_EraseData()
+左 = 10: 上 = 10
+//追加字库
+数量 = Plugin.TURING.Incise_AddCharData(左, 上)
+TracePrint 数量
+//获取切割字符数据内容
+数据 = Split(Plugin.TURING.Incise_GetCharData(), "|")
+切割 = Split(数据(0), ",")
+TracePrint 切割(0)  //被修改后的 左
+TracePrint 切割(1)  //被修改后的 上
+</pre></div></td></tr>
+</table>
+<br><a name="Incise_AddCharData" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Incise_AddCharData 追加图像数据为切割数据</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>追加图像数据为切割字符数据
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">CharNum = Plugin.TURING.Incise_AddCharData(Left, Top)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>
+Left：整数型，可选，设置左边坐标（默认0）<br>
+Top：整数型，可选，设置顶上坐标（默认0）</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>CharNum：整数型，字符切割数量</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code22az")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code22az'>
+//获取屏幕图像数据
+Call Plugin.TURING.Pixel_FromScreen(0, 0, 100, 100)
+//二值化处理
+Call Plugin.TURING.Filter_Binaryzation("168-255")
+//显示图像
+Call Plugin.TURING.Pixel_Preview()
+//固定位置切割字符
+数量 = Plugin.TURING.Incise_FixedLocation(0, 0, 50, 50, 1, 1)
+//获取切割字符数据内容
+数据 = Split(Plugin.TURING.Incise_GetCharData(), "|")
+切割 = Split(数据(0), ",")
+TracePrint 切割(0) 
+TracePrint 切割(1)
+//清除所有字库
+Call Plugin.TURING.Incise_EraseData()
+左 = 10: 上 = 10
+//追加字库
+数量 = Plugin.TURING.Incise_AddCharData(左, 上)
+TracePrint 数量
+//获取切割字符数据内容
+数据 = Split(Plugin.TURING.Incise_GetCharData(), "|")
+切割 = Split(数据(0), ",")
+TracePrint 切割(0)  //被修改后的 左
+TracePrint 切割(1)  //被修改后的 上
+</pre></div></td></tr>
+</table>
+<br><a name="Incise_GetCharData" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Incise_GetCharData 获取切割字符数据</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>获取切割字符的数据结构信息 
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">CharData = Plugin.TURING.Incise_GetCharData()</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>CharData：字符串型，字符切割数据信息，格式：左,上,宽,高,点阵|左,上,宽,高,点阵|…）</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("codea19")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='codea19'>
+//获取文件图像数据
+Call Plugin.TURING.Pixel_FromPicture("C:\10个数字.bmp")
+//二值化处理
+Call Plugin.TURING.Filter_Binaryzation("128-255")
+//图像预览
+Call Plugin.TURING.Pixel_Preview()
+//固定位置切割
+数量 = Plugin.TURING.Incise_FixedLocation(6, 4, 7, 11, 13, 10)
+//获取切割字符数据内容
+数据 = Split(Plugin.TURING.Incise_GetCharData(), "|")
+For i = 0 To 数量
+    字符 = Split(数据(i), ",")
+    TracePrint "左：" & 字符(0)
+    TracePrint "上：" & 字符(1)
+    TracePrint "宽：" & 字符(2)
+    TracePrint "高：" & 字符(3)
+    TracePrint "点阵：" & 字符(4)
+Next
+</pre></div></td></tr>
+</table>
+<br><a name="Incise_JoinCharData" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Incise_JoinCharData 合并切割字符</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>对切割的两个字符像素数据进行合并处理
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">CharNum = Plugin.TURING.Incise_JoinCharData(index1, index2)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>
+index1：整数型，切割字符索引号1<br>
+index2：整数型，切割字符索引号2（合并后删除此字符图像）</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>CharNum：整数型，字符切割数量</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("codeab23")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='codeab23'>
+//获取屏幕图像数据
+Call Plugin.TURING.Pixel_FromScreen(90,80,120,110)
+//指定颜色二值化
+Call Plugin.TURING.Filter_Binaryzation("000000")
+//显示获取的图像
+Call Plugin.TURING.Pixel_Preview()
+//范围投影切割（技术专利）
+数量 = Plugin.TURING.Incise_ScopeAisle(1, 1)
+TracePrint 数量  //字符数量
+//切割字符数据合并
+数量 = Plugin.TURING.Incise_JoinCharData(0, 1)
+TracePrint 数量  //验证字符数量
+For i = 0 To 数量
+    //预览查看字符
+    Call Plugin.TURING.Incise_Preview(i)
+Next
+</pre></div></td></tr>
+</table>
+<br><a name="Incise_CharSizeOne" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Incise_CharSizeOne 切割字符大小归一化</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>对切割的字符像素数据进行统一大小
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Call Plugin.TURING.Incise_CharSizeOne(iWidth, iHeight)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>
+iWidth：整数型，统一大小的宽度值<br>
+iHeight：整数型，统一大小的高度值</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("codeab23a")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='codeab23a'>
+//加载识别字库
+Call Plugin.TURING.Lib_Load("C:\缩放归一字库.lib")
+//获取图片图像数据
+Call Plugin.TURING.Pixel_FromPicture("C:\0704.bmp")
+//二值化处理
+Call Plugin.TURING.Filter_Binaryzation("128-255")
+//固定位置切割字符
+数量 = Plugin.TURING.Incise_FixedLocation(6, 4, 7, 11, 13, 4)
+//切割的字符进行大小归一化
+Call Plugin.TURING.Incise_CharSizeOne(40, 40)
+//生成识别字库：
+//For i = 0 To 数量
+//    Call Plugin.TURING.Incise_Preview(i)
+//    //切割字符生成点阵
+//    点阵 = Plugin.TURING.Lib_OneCharData(i)
+//    Call Plugin.TURING.Lib_Save(i, 点阵, "C:\缩放归一字库.lib")
+//Next
+TracePrint Plugin.TURING.OCR(50)
+</pre></div></td></tr>
+</table>
+<br><a name="Incise_Preview" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Incise_Preview 切割字符预览</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>对切割的字符像素数据进行显示查看
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Call Plugin.TURING.Incise_Preview(index)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>index：整数型，切割字符索引号</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code23")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code23'>
+//获取屏幕图像数据
+Call Plugin.TURING.Pixel_FromScreen(0,0,200,100)
+//二值化处理
+Call Plugin.TURING.Filter_Binaryzation("0-128")
+//显示获取的图像
+Call Plugin.TURING.Pixel_Preview()
+//固定位置切割字符
+数量=Plugin.TURING.Incise_FixedLocation(0,0,64,64,50,3)
+For i = 0 To 数量
+    //预览查看字符
+    Call Plugin.TURING.Incise_Preview(i)
+Next
+</pre></div></td></tr>
+</table>
+<br><a name="Lib_Generate" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Lib_Generate 生成字符串点阵</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>生成二进制字符串点阵
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">bit = Plugin.TURING.Lib_Generate()</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>bit：字符串型，二进制字符串点阵</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code24")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code24'>
+//获取屏幕图像数据
+Call Plugin.TURING.Pixel_FromScreen(0,0,20,10)
+//二值化处理
+Call Plugin.TURING.Filter_Binaryzation("0-128")
+//显示获取的图像
+Call Plugin.TURING.Pixel_Preview()
+字符串点阵=Plugin.TURING.Lib_Generate()
+TracePrint 字符串点阵
+</pre></div></td></tr>
+</table>
+<br><a name="Lib_OneCharData" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Lib_OneCharData 字符切割数据</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>获取图像切割的字符点阵库内容
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">lattice = Plugin.TURING.Lib_OneCharData(index)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>index：整数型，切割字符索引号</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>lattice：字符串型，字符点阵（格式：字符宽,高|二进制字符串点阵）</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code25")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code25'>
+//获取屏幕图像数据
+Call Plugin.TURING.Pixel_FromScreen(0,0,200,100)
+//二值化处理
+Call Plugin.TURING.Filter_Binaryzation("0-128")
+//显示获取的图像
+Call Plugin.TURING.Pixel_Preview()
+//固定位置切割字符
+数量=Plugin.TURING.Incise_FixedLocation(0,0,64,64,50,3)
+For i = 0 To 数量
+    //切割的字符生成点阵
+    字符点阵=Plugin.TURING.Lib_OneCharData(i)
+    TracePrint 字符点阵
+Next
+</pre></div></td></tr>
+</table>
+<br><a name="Lib_AnalyzeFontSize" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Lib_AnalyzeFontSize 分析切割字符的字体与字号</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>分析切割字符的字体与字号
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">FontSize = Plugin.TURING.Lib_AnalyzeFontSize(Text, Mode)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>
+Text：字符串型，切割字符对应的文字<br>
+Mode：字符串型，样式，默认"0|0"（格式：0正常,1粗体,2斜体,3粗斜体|0中文字体，1英文字体）</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>FontSize：字符串型，字体与字号（格式：字体,字号,相似度|字体,字号,相似度|…）</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code25aa1")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code25aa1'>
+//加载需要分析的图片
+Call Plugin.TURING.Pixel_FromPicture("C:\找图色.png")
+//二值化处理
+Call Plugin.TURING.Filter_Binaryzation("128-255")
+//图像显示预览
+Call Plugin.TURING.Pixel_Preview()
+//范围投影切割字符（专利技术）
+Call Plugin.TURING.Incise_ScopeAisle(2, 1)
+//【注意】分析之前，必须把每个字符切割完整，如：不要把“好”字切割成“女子”！
+//开始：分析字符的字体与字号（搜查时间会比较久，请耐心等待）
+TracePrint Plugin.TURING.Lib_AnalyzeFontSize("找图色", "0|0")
+</pre></div></td></tr>
+</table>
+<br><a name="Lib_Save" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Lib_Save 存储识别字库</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>切割字符存储为识别字库
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Call Plugin.TURING.Lib_Save(text, lattice, LibPath)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>
+text：字符串型，字符点阵对应的识别文字<br>
+lattice：字符串型，字符点阵（格式：字符宽,高|二进制字符串点阵）<br>
+LibPath：字符串型，识别字库文件路径</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code25a")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code25a'>
+//获取屏幕图像数据
+Call Plugin.TURING.Pixel_FromScreen(0,0,200,100)
+//二值化处理
+Call Plugin.TURING.Filter_Binaryzation("0-128")
+//显示获取的图像
+Call Plugin.TURING.Pixel_Preview()
+//固定位置切割字符
+数量=Plugin.TURING.Incise_FixedLocation(0,0,64,64,50,3)
+For i = 0 To 数量
+    //切割的字符生成点阵
+    字符点阵 = Plugin.TURING.Lib_OneCharData(i)
+    TracePrint 字符点阵
+    //保存点阵识别库（临时）
+    Call Plugin.TURING.Lib_Save(i, 字符点阵, "C:\识别库.lib")
+Next
+</pre></div></td></tr>
+</table>
+<br><a name="Lib_Load" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Lib_Load 加载识别字库</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>加载识别字库文件数据
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">num = Plugin.TURING.Lib_Load(LibPath)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>LibPath：字符串型，识别字库文件路径</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>num：整数型，字库的数量</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code26")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code26'>
+//获取文件图像数据
+Call Plugin.TURING.Pixel_FromPicture("C:\8201.bmp")
+//二值化处理
+Call Plugin.TURING.Filter_Binaryzation("128-255")
+//显示获取的图像
+Call Plugin.TURING.Pixel_Preview()
+//固定位置切割字符
+数量 = Plugin.TURING.Incise_FixedLocation(6,4,7,11,13,4)
+//加载识别字库
+数量 = Plugin.TURING.Lib_Load("C:\识别库.lib")
+//识别
+TracePrint Plugin.TURING.OCR()
+</pre></div></td></tr>
+</table>
+<br><a name="Lib_Create" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Lib_Create 创建识别字库</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>创建系统的字体作为识别字库文件数据
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">num = Plugin.TURING.Lib_Create(Font, Size, Text)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>
+Font：字符串型，系统中的字体名称|字体样式(默认0。数值：0正常，1粗体，2斜体。其他依次叠加数字)<br>
+Size：整数型，字体的字号大小<br>
+Text：字符串型，可选，设置字库内容，默认含有3500个汉字和英文数字符号。</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>num：整数型，字库的数量</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code026")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code026'>
+//获取屏幕图像数据
+Call Plugin.TURING.Pixel_FromScreen(15, 55, 75, 75)
+//二值化处理
+Call Plugin.TURING.Filter_Binaryzation("0-178")
+//显示图像
+Call Plugin.TURING.Pixel_Preview()
+//范围投影切割字符
+数量 = Plugin.TURING.Incise_ScopeAisle(3, 1)
+//创建一个系统“宋体9号”字库
+Call Plugin.TURING.Lib_Create("宋体", 9)
+//识别
+TracePrint Plugin.TURING.OCR(85)
+</pre></div></td></tr>
+</table>
+<br><a name="Lib_Add" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Lib_Add 添加新的识别字库</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>添加新的识别字库数据到指定编号
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Call Plugin.TURING.Lib_Add(Serial)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>Serial：整数型，可选，字库编号（默认1，上限10）</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("codezk001")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='codezk001'>
+//加载识别字库
+数量 = Plugin.TURING.Lib_Load("C:\识别库1.lib")
+//添加识别字库数据到指定编号
+Call Plugin.TURING.Lib_Add()   //默认1
+//加载识别字库
+数量 = Plugin.TURING.Lib_Load("C:\识别库2.lib")
+Call Plugin.TURING.Lib_Add(2)
+//切换使用指定编号的字库
+Call Plugin.TURING.Lib_Use()   //默认1
+//切换使用指定编号的字库
+Call Plugin.TURING.Lib_Use(2)
+</pre></div></td></tr>
+</table>
+<br><a name="Lib_Use" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Lib_Use 使用指定识别字库</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>使用指定编号的识别字库数据
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Call Plugin.TURING.Lib_Use(Serial)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>Serial：整数型，可选，字库编号（默认1，上限10）</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("codezk002")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='codezk002'>
+//加载识别字库
+数量 = Plugin.TURING.Lib_Load("C:\识别库1.lib")
+//添加识别字库数据到指定编号
+Call Plugin.TURING.Lib_Add()   //默认1
+//加载识别字库
+数量 = Plugin.TURING.Lib_Load("C:\识别库2.lib")
+Call Plugin.TURING.Lib_Add(2)
+//切换使用指定编号的字库
+Call Plugin.TURING.Lib_Use()   //默认1
+//切换使用指定编号的字库
+Call Plugin.TURING.Lib_Use(2)
+</pre></div></td></tr>
+</table>
+<br><a name="Lib_AddImageData" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Lib_AddImageData 图像数据追加为字库</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>内部的图像数据追加为识别字库
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Call Plugin.TURING.Lib_AddImageData(text)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>text：字符串型，字符点阵对应的识别文字</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code25a1")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code25a1'>
+//创建字库（准备一张10个数字的图片作为字库）
+Call Plugin.TURING.Pixel_FromPicture("C:\10个数字.bmp")
+//二值化处理
+Call Plugin.TURING.Filter_Binaryzation("128-255")
+//显示图像预览
+Call Plugin.TURING.Pixel_Preview()
+//固定位置切割
+数量 = Plugin.TURING.Incise_FixedLocation(6, 4, 7, 11, 13, 10)
+Dim n(9)
+文字 = "0123456789"        
+For i = 0 To 9
+    n(i) = mid(文字, i + 1, 1)  //设置字库对应的文字
+Next
+For i = 0 To 数量
+    //载入切割的字符图像数据
+    Call Plugin.TURING.Pixel_SetImageDataCut(i) 
+    //设置点阵识别库
+    Call Plugin.TURING.Lib_AddImageData(n(i))   
+Next
+//识别测试
+Call Plugin.TURING.Pixel_FromPicture("C:\0704.bmp")
+//二值化处理
+Call Plugin.TURING.Filter_Binaryzation("128-255")
+//显示图像预览
+Call Plugin.TURING.Pixel_Preview()
+//固定位置切割
+数量 = Plugin.TURING.Incise_FixedLocation(6, 4, 7, 11, 13, 4)
+//识别
+TracePrint Plugin.TURING.OCR(85)
+</pre></div></td></tr>
+</table>
+<br><a name="Lib_Preview" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Lib_Preview 字库点阵预览</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>对加载的识别字库点阵进行显示查看
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Call Plugin.TURING.Lib_Preview(index)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>index：整数型，字库索引号</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code27")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code27'>
+数量=Plugin.TURING.Lib_Load("C:\识别库.lib")
+For i = 0 To 数量
+    Call Plugin.TURING.Lib_Preview(i)
+Next
+</pre></div></td></tr>
+</table>
+<br><a name="OCR" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">OCR 识别</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>进行图像文字识别
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">text = Plugin.TURING.OCR(Similar, Mode)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>
+Similar：整数型，点数匹配相似度<br>
+Mode：整数型，设置返回结果内容，格式：0:识别文字，1:识别文字|第1个字x坐标,y坐标|第2个字x坐标,y坐标|…</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>text：字符串型，识别得到的文字内容</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code28")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code28'>
+//获取文件图像数据
+Call Plugin.TURING.Pixel_FromPicture("C:\8201.bmp")
+//二值化处理
+Call Plugin.TURING.Filter_Binaryzation("128-255")
+//图像预览
+Call Plugin.TURING.Pixel_Preview()
+ //固定位置切割
+数量 = Plugin.TURING.Incise_FixedLocation(6,4,7,11,13,4)
+//加载识别字库
+数量 = Plugin.TURING.Lib_Load("C:\识别库.lib")
+//识别
+TracePrint "识别方法1：" &  Plugin.TURING.OCR()
+识别结果 = Split(Plugin.TURING.OCR(0, 1), "|")
+TracePrint "识别方法2：" &  识别结果(0)
+n = UBound(识别结果) - 1
+For i = 1 To n
+    TracePrint "每个字符的坐标：" & 识别结果(i)
+Next
+</pre></div></td></tr>
+</table>
+<br><a name="OCRex" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">OCRex 识别_增强版</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>进行图像文字识别（对拆分的文字识别，效率比较慢）
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">text = Plugin.TURING.OCRex(Similar)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>Similar：整数型，点数匹配相似度</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>text：字符串型，识别得到的文字内容</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("codeex001")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='codeex001'>
+//获取屏幕图像数据，系统：经典主题（打开文件夹且最大化进行测试）
+Call Plugin.TURING.Pixel_FromScreen(15, 110, 168, 205)
+//指定黑色保留的二值化
+Call Plugin.TURING.Filter_Binaryzation("000000")
+//显示图像预览（会阻塞）
+Call Plugin.TURING.Pixel_Preview()
+//范围投影切割（专利技术）
+数量 = Plugin.TURING.Incise_ScopeAisle(3, 1)
+//创建一个系统字体的字库
+Call Plugin.TURING.Lib_Create("宋体", 9)
+//普通识别（快速）
+TracePrint Plugin.TURING.OCR(80)
+//增强版识别（对拆分的文字识别，效率比较慢）
+TracePrint Plugin.TURING.OCRex(80)
+</pre></div></td></tr>
+</table>
+<br><a name="Different" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Different 与众不同</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>计算图像中颜色最小的区域范围
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">[x,y] = Plugin.TURING.Different()</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>[坐标]<br>
+x：返回X坐标<br>
+y：返回Y坐标</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code2881")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code2881'>
+//获取文件图像数据
+Call Plugin.TURING.Pixel_FromPicture("C:\5.bmp")
+//色调分离
+Call Plugin.TURING.Filter_Posterization(4)
+//显示获取的图像
+Call Plugin.TURING.Pixel_Preview()
+//与众不同算法
+坐标 = Plugin.TURING.Different()
+TracePrint "识别坐标：" & 坐标
+</pre></div></td></tr>
+</table>
+<br><a name="EvalVariance" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">EvalVariance 统计差平方</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>评价图像清晰度（对图像进行差平方的统计）
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">num = Plugin.TURING.EvalVariance()</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>num：整数型，清晰度数值</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code29")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code29'>
+//获取屏幕图像数据
+Call Plugin.TURING.Pixel_FromScreen(0,0,200,100)
+//显示获取的图像
+Call Plugin.TURING.Pixel_Preview()
+//统计差平方算法
+TracePrint Plugin.TURING.EvalVariance()
+</pre></div></td></tr>
+</table>
+<br><a name="GetLineAllPos" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">GetLineAllPos 取直线上所有坐标</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>获取两点间的直线上所有坐标
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">AllPos = Plugin.TURING.GetLineAllPos(x1,y1,x2,y2)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>
+x1：整数型，起点X坐标<br>
+y1：整数型，起点Y坐标<br>
+x2：整数型，终点X坐标<br>
+y2：整数型，终点Y坐标</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>AllPos：字符串型，直线上所有坐标（格式:x坐标,y坐标|x坐标,y坐标|…）</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("codezx29")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='codezx29'>
+坐标 = Plugin.TURING.GetLineAllPos(0,0,10,10)
+TracePrint 坐标
+</pre></div></td></tr>
+</table>
+<br><a name="TwoLinesCrossPos" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">TwoLinesCrossPos 取两直线相交坐标</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>获取两条件直线相交的坐标（理论上的相交线）
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Pos = Plugin.TURING.TwoLinesCrossPos(ax1,ay1,ax2,ay2,bx1,by1,bx2,by2)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>
+ax1：整数型，第1条线起点X坐标<br>
+ay1：整数型，第1条线起点Y坐标<br>
+ax2：整数型，第1条线终点X坐标<br>
+ay2：整数型，第1条线终点Y坐标<br>
+bx1：整数型，第2条线起点X坐标<br>
+by1：整数型，第2条线起点Y坐标<br>
+bx2：整数型，第2条线终点X坐标<br>
+by2：整数型，第2条线终点Y坐标</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>Pos：字符串型，两线相交的坐标（格式:x坐标,y坐标）</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("codexj29")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='codexj29'>
+坐标 = Plugin.TURING.TwoLinesCrossPos(0,0,50,50,5,0,0,50)
+TracePrint 坐标
+</pre></div></td></tr>
+</table>
+<br><a name="GetAllPoints" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">GetAllPoints 获取所有端点坐标</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>获取内部图像数据上的所有认为是端点的坐标
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Pos = Plugin.TURING.GetAllPoints(Value)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>Value：整数型，可选，阈值（默认7，1~上限8）</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>Pos：字符串型，所有端点的坐标（格式:x坐标,y坐标|…）</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("codedd001")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='codedd001'>
+//获取文件图像数据
+Call Plugin.TURING.Pixel_FromPicture("C:\验证码.BMP")
+//二值化处理
+Call Plugin.TURING.Filter_Binaryzation("0-128")
+//提取所有端点坐标
+数据 = Plugin.TURING.GetAllPoints(7)
+端点 = Split(数据, "|")
+数量 = UBound(端点)
+For n = 0 To 数量
+    TracePrint 端点(n)   //输出坐标数据
+    坐标 = Split(端点(n), ",")
+    x = 坐标(0)
+    y = 坐标(1)
+    //TracePrint x
+    //TracePrint y
+    //画颜色点
+    Call Plugin.TURING.Draw_Point(x, y)
+Next
+//显示端点图像
+Call Plugin.TURING.Pixel_Preview()
+</pre></div></td></tr>
+</table>
+<br><a name="GetOneLine" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">GetOneLine 指定端点之间的线段</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>获取内部图像数据上的指定两端点之间的线条坐标
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Pos = Plugin.TURING.GetOneLine(x1,y1,x2,y2)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>
+x1：整数型，起点X坐标<br>
+y1：整数型，起点Y坐标<br>
+x2：整数型，终点X坐标<br>
+y2：整数型，终点Y坐标</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>Pos：字符串型，线条上所有坐标（格式:x坐标,y坐标-x坐标,y坐标…）</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("codedd002")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='codedd002'>
+//获取文件图像数据
+Call Plugin.TURING.Pixel_FromPicture("C:\验证码.BMP")
+//二值化
+Call Plugin.TURING.Filter_Binaryzation("0-128")
+//指定两个端点坐标
+数据 = Plugin.TURING.GetOneLine(23, 7, 69, 30)
+端点 = Split(数据, "-")
+数量 = UBound(端点)
+For m = 0 To 数量
+    TracePrint 端点(m)   //输出线条坐标数据
+    坐标 = Split(端点(m), ",")
+    x = 坐标(0)
+    y = 坐标(1)
+    //TracePrint x
+    //TracePrint y
+    //画颜色点
+    Call Plugin.TURING.Draw_Point(x, y)
+Next
+//显示图像
+Call Plugin.TURING.Pixel_Preview()
+</pre></div></td></tr>
+</table>
+<br><a name="GetAllLines" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">GetAllLines 所有端点之间的线段</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>获取内部图像数据上的所有端点之间的线条坐标<br>
+【注意】需要配合“GetAllPoints 获取所有端点坐标”命令使用
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Pos = Plugin.TURING.GetAllLines(Value, Num)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>
+Value：整数型，可选，阈值（默认7，1~上限8）<br>
+Num：整数型，可选，像素点数量（大于此数量保留坐标）</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>Pos：字符串型，线条上所有坐标（格式:x坐标,y坐标-x坐标,y坐标…）</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("codedd003")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='codedd003'>
+//获取文件图像数据
+Call Plugin.TURING.Pixel_FromPicture("C:\验证码.BMP")
+//二值化
+Call Plugin.TURING.Filter_Binaryzation("0-128")
+//【注意】需要配合提取所有端点
+Call Plugin.TURING.GetAllPoints(7)
+//提取任意线条，指定10个像素以上保留坐标
+数据 = Plugin.TURING.GetAllLines(0, 10)
+线段 = Split(数据, "|")
+数量1 = UBound(线段)
+For n = 0 To 数量1
+    TracePrint 线段(n)   //输出每个线条坐标数据
+    端点 = Split(线段(n), "-")
+    数量2 = UBound(端点)
+    For m = 0 To 数量2
+        坐标 = Split(端点(m), ",")
+        x = 坐标(0)
+        y = 坐标(1)
+        //画颜色点
+        Call Plugin.TURING.Draw_Point(x, y)
+    Next
+Next
+//显示图像
+Call Plugin.TURING.Pixel_Preview()
+</pre></div></td></tr>
+</table>
+<br><a name="CountColorNum" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">CountColorNum 统计颜色点数量</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>统计内部图像数据上的颜色点数量
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Num = Plugin.TURING.CountColorNum(Color)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>Color：字符串型，指定统计的颜色串BBGGRR-BDGDRD（例："0000FF-000080|00FFFF"）</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>Num：整数型，颜色点数量</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("codedd004")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='codedd004'>
+//获取屏幕图像数据
+Call Plugin.TURING.Pixel_FromScreen(0, 0, 100, 100)
+//进行指定颜色数量统计
+数量 = Plugin.TURING.CountColorNum("0000FF")
+//数量 = Plugin.TURING.CountColorNum("FFFFFF-101010")
+//数量 = Plugin.TURING.CountColorNum("0000FF|FFFFFF-101010")
+//数量 = Plugin.TURING.CountColorNum("0000FF-202020|FFFFFF-101010")
+TracePrint 数量
+</pre></div></td></tr>
+</table>
+<br><a name="GetPixelColor" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">GetPixelColor 得到指定点的颜色</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>得到屏幕指定位置点的颜色
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">color = Plugin.TURING.GetPixelColor(x, y)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>
+x：整数型，屏幕X坐标<br>
+y：整数型，屏幕Y坐标</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>color：字符串型，16进制颜色值</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code30")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code30'>
+TracePrint Plugin.TURING.GetPixelColore(10,100)
+</pre></div></td></tr>
+</table>
+<br><a name="FindColor" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">FindColor 区域找色</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>屏幕指定区域内查找颜色
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">[x, y] = Plugin.TURING.FindColor(left, top, right, bottom, color, direction, similarity)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>
+left：整数型，屏幕左上角X坐标<br>
+top：整数型，屏幕左上角Y坐标<br>
+right：整数型，屏幕右下角X坐标<br>
+bottom：整数型，屏幕右下角Y坐标<br>
+color：字符串型，16进制颜色值<br>
+direction：整数型，查找方向（0从左上往右下，1从左下往右上，2从右上往左下，3从右下往左上，4从上左往下右，5从上右往下左，6从下左往上右，7从下右往上左）<br>
+similarity：整数型，颜色相似度（范围：0.1~1）</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>[坐标，格式：x,y]<br>
+x：返回屏幕X坐标<br>
+y：返回屏幕Y坐标</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code31")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code31'>
+//屏幕区域找色
+坐标 = Split(Plugin.TURING.FindColor(0,0,1024,768,"0000FF",0,1),",")
+x = 坐标(0)
+y = 坐标(1)
+If x > 0 And y > 0 Then
+    TracePrint x
+    TracePrint y
+End If
+</pre></div></td></tr>
+</table>
+<br><a name="FindColorExS" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">FindColorExS 区域找多色</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>屏幕指定区域内查找多个颜色及多个坐标
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">xyS = Plugin.TURING.FindColorExS(left, top, right, bottom, colorS, direction, similarity)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>
+left：整数型，屏幕左上角X坐标<br>
+top：整数型，屏幕左上角Y坐标<br>
+right：整数型，屏幕右下角X坐标<br>
+bottom：整数型，屏幕右下角Y坐标<br>
+colorS：字符串型，16进制颜色值，多色用竖线|分隔<br>
+direction：整数型，查找方向（0从左上往右下，1从左下往右上，2从右上往左下，3从右下往左上，4从上左往下右，5从上右往下左，6从下左往上右，7从下右往上左）<br>
+similarity：整数型，颜色相似度（范围：0.1~1）</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>[坐标，格式：x,y|x,y|…]<br>
+xyS：返回屏幕多个坐标（格式：x坐标,y坐标|x坐标,y坐标|…）</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code311")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code311'>
+//屏幕区域找多色
+坐标 = Split(Plugin.TURING.FindColorExS(0, 0, 1024, 768, "0000FF|FFFF00|FF00FF", 0, 1), "|")
+For i = 0 To UBound(坐标)
+    xyS = Split(坐标(i), ",")    //输出每个颜色的坐标值
+    TracePrint xyS(0)
+    TracePrint xyS(1)
+Next
+</pre></div></td></tr>
+</table>
+<br><a name="FindImage" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">FindImage 区域找图</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>屏幕指定区域内查找图片（同按键精灵）
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">[x, y] = Plugin.TURING.FindImage(left, top, right, bottom, ImagePath, similarity)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>
+left：整数型，屏幕左上角X坐标<br>
+top：整数型，屏幕左上角Y坐标<br>
+right：整数型，屏幕右下角X坐标<br>
+bottom：整数型，屏幕右下角Y坐标<br>
+ImagePath：字符串型，需要查找的图片路径<br>
+similarity：整数型，颜色相似度（范围：0.1~1）</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>[坐标，格式：x,y]<br>
+x：返回屏幕X坐标<br>
+y：返回屏幕Y坐标</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code32")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code32'>
+//屏幕区域找图
+坐标 = Split(Plugin.TURING.FindImage(0, 0, 1024, 768, "C:\图片.bmp", 1), ",")
+x = 坐标(0)
+y = 坐标(1)
+TracePrint x
+If x>0 And y>0 Then
+    TracePrint x
+    TracePrint y
+End If
+</pre></div></td></tr>
+</table>
+<br><a name="FindImageS" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">FindImageS 区域找所有图</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>屏幕指定区域内查找图片的所有坐标
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">xyS = Plugin.TURING.FindImageS(left, top, right, bottom, ImagePath, similarity)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>
+left：整数型，屏幕左上角X坐标<br>
+top：整数型，屏幕左上角Y坐标<br>
+right：整数型，屏幕右下角X坐标<br>
+bottom：整数型，屏幕右下角Y坐标<br>
+ImagePath：字符串型，需要查找的图片路径<br>
+similarity：整数型，颜色相似度（范围：0.1~1）</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>[坐标，格式：x,y|x,y|…]<br>
+xyS：返回屏幕多个坐标（格式：x坐标,y坐标|x坐标,y坐标|…）</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code321")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code321'>
+//区域找所有图
+坐标 = Split(Plugin.TURING.FindImageS(0,0,1024,768,"C:\图片.bmp",1),"|")
+For i=0 To UBound(坐标) 
+    xyS = Split(坐标(i), ",")
+    TracePrint xyS(0)
+    TracePrint xyS(1)
+Next
+</pre></div></td></tr>
+</table>
+<br><a name="FindImageEx" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">FindImageEx 区域找其中图</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>屏幕指定区域内查找所有图片的其中一张
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">[x, y] = Plugin.TURING.FindImageEx(left, top, right, bottom, ImagePathS, similarity)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>
+left：整数型，屏幕左上角X坐标<br>
+top：整数型，屏幕左上角Y坐标<br>
+right：整数型，屏幕右下角X坐标<br>
+bottom：整数型，屏幕右下角Y坐标<br>
+ImagePathS：字符串型，需要查找的图片路径，多图用竖线|分隔<br>
+similarity：整数型，颜色相似度（范围：0.1~1）</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>[坐标，格式：x,y]<br>
+x：返回屏幕X坐标<br>
+y：返回屏幕Y坐标</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code322")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code322'>
+//区域找其中图
+坐标 = Split(Plugin.TURING.FindImageEx(0,0,1024,768,"C:\图片.bmp|未命名.bmp|D:\电脑.bmp",1), ",")
+x = 坐标(0)
+y = 坐标(1)
+If x>0 And y>0 Then
+    TracePrint x
+    TracePrint y
+End If
+</pre></div></td></tr>
+</table>
+<br><a name="FindImageExS" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">FindImageExS 区域找所有图所有坐标</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>屏幕指定区域内查找所有图片的每一张图的所有坐标
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">idxyS = Call Plugin.TURING.FindImageExS(left, top, right, bottom, ImagePathS, similarity)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>
+left：整数型，屏幕左上角X坐标<br>
+top：整数型，屏幕左上角Y坐标<br>
+right：整数型，屏幕右下角X坐标<br>
+bottom：整数型，屏幕右下角Y坐标<br>
+ImagePathS：字符串型，需要查找的图片路径，多图用竖线|分隔<br>
+similarity：整数型，颜色相似度（范围：0.1~1）</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>[坐标，格式：id,x,y|id,x,y|…]<br>
+idxyS：返回屏幕多个坐标（格式：id图片标识,x坐标,y坐标|id图片标识,x坐标,y坐标|…）</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code3221")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code3221'>
+//区域找所有图所有坐标
+坐标 = Split(Plugin.TURING.FindImageExS(0,0,1024,768,"C:\图.bmp|未命名.bmp|D:\电脑.bmp",1.0),"|")
+For i=0 To UBound(坐标) 
+    idxyS = Split(坐标(i), ",")   //输出每个图的所有坐标
+    TracePrint idxyS(0)
+    TracePrint idxyS(1)
+    TracePrint idxyS(2)
+Next
+</pre></div></td></tr>
+</table>
+<br><a name="RGBtoHSV" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">RGBtoHSV RGB转HSV</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>RGB转换为HSV空间颜色值
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">[h, s, v] = Plugin.TURING.RGBtoHSV(color)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>
+color：字符串型，16进制颜色值</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>[HSV颜色，格式：H,S,V]<br>
+h：返回颜色H分量<br>
+s：返回颜色S分量<br>
+v：返回颜色V分量</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code33")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code33'>
+//RGB转HSV
+HSV = Split(Plugin.TURING.RGBtoHSV("0000FF"), ",")
+H = HSV(0)
+S = HSV(1)
+V = HSV(2)
+TracePrint H
+TracePrint S
+TracePrint V
+</pre></div></td></tr>
+</table>
+<br><a name="HSVtoRGB" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">HSVtoRGB HSV转RGB</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>HSV转换为RGB空间颜色值
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">color = Plugin.TURING.HSVtoRGB(h, s, v)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>
+h：整数型，颜色H分量<br>
+s：整数型，颜色S分量<br>
+v：整数型，颜色V分量</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>color：字符串型，16进制颜色值</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code34")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code34'>
+//HSV转RGB
+hColor=Plugin.TURING.HSVtoRGB(0,100,100)
+TracePrint hColor
+</pre></div></td></tr>
+</table>
+<br><a name="FindShape" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">FindShape 多边形识别</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>对二维多边形的图形进行识别（体验版）
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">shape = Plugin.TURING.FindShape(distance, length)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>
+distance：整数型，两顶点之间的距离<br>
+length：整数型，两顶点之间的线条长度</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>shape：字符串型，图形名称（三角形、多边形、矩形和圆形）</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code35")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code35'>
+//获取文件图像数据
+Call Plugin.TURING.Pixel_FromPicture("C:\图形.bmp")
+//二值化处理
+Call Plugin.TURING.Filter_Binaryzation("128-255")
+//显示获取的图像
+Call Plugin.TURING.Pixel_Preview()
+//多边形识别
+shape=Plugin.TURING.FindShape(15,15)
+TracePrint shape
+</pre></div></td></tr>
+</table>
+<br><a name="FindMouseShape" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">FindMouseShape 鼠标形状识别</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>获取当前鼠标光标的形状特征码
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">shape = Plugin.TURING.FindMouseShape(Mode)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>Mode：整数型，特征方式</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>shape：整数型，鼠标特征码</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code36")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code36'>
+Do
+    //鼠标形状识别
+    shape=Plugin.TURING.FindMouseShape(0)
+    TracePrint shape
+    Delay 500
+Loop
+</pre></div></td></tr>
+</table>
+<br><a name="Pass_MD5String" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Pass_MD5String 字符串MD5加密</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>字符串MD5加密
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">cipher = Plugin.TURING.Pass_MD5String(Text, Code)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>
+Text：字符串型，字符串内容<br>
+Code：整数型，可选，编码，默认3（格式：0:ANSI，1:ANSI-UTF8，2:GB2312，3:GB2312-UTF8）</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>cipher：字符串型，加密的文字内容</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("codemd5001")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='codemd5001'>
+//字符串MD5加密
+cipher = Plugin.TURING.Pass_MD5String("我的眼睛--图灵识别", 3)
+TracePrint cipher
+</pre></div></td></tr>
+</table>
+<br><a name="Pass_Encode" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Pass_Encode 字符串加密</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>字符串加密
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">cipher = Plugin.TURING.Pass_Encode(text, password)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>
+text：字符串型，文字内容<br>
+password：字符串型，10位密码（每位范围：1~255）</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>cipher：字符串型，加密的文字内容</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code37")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code37'>
+//字符串加密
+cipher=Plugin.TURING.Pass_Encode("我的眼睛--图灵识别", _
+        "123,4,35,46,67,6,85,123,145,14")
+TracePrint cipher
+//字符串解密
+text=Plugin.TURING.Pass_Uncode(cipher,"123,4,35,46,67,6,85,123,145,14")
+TracePrint text
+</pre></div></td></tr>
+</table>
+<br><a name="Pass_Uncode" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Pass_Uncode 字符串解密</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>字符串解密
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">cipher = Plugin.TURING.Pass_Uncode(cipher, password)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>
+cipher：字符串型，加密的文字内容<br>
+password：字符串型，10位密码（每位范围：1~255）</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>text：字符串型，文字内容</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code38")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code38'>
+//字符串加密
+cipher=Plugin.TURING.Pass_Encode("我的眼睛--图灵识别",_
+       "123,4,35,46,67,6,85,123,145,14")
+TracePrint cipher
+//字符串解密
+text=Plugin.TURING.Pass_Uncode(cipher,"123,4,35,46,67,6,85,123,145,14")
+TracePrint text
+</pre></div></td></tr>
+</table>
+<br><a name="Image_Base64Encode" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Image_Base64Encode 图片Base64编码</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>对图片进行Base64编码（支持bmp/png/jpg/gif等）
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">cipher = Plugin.TURING.Image_Base64Encode(FilePath, IsHead)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>
+FilePath：字符串型，图片文件路径<br>
+IsHead：布尔型，默认False，True为含包头（格式：“data:image/<后缀名>;base64,”）</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>cipher：字符串型，编码的文本内容</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("codeimg001")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='codeimg001'>
+Base64 = Plugin.TURING.Image_Base64Encode("C:\图片.jpg",True)
+TracePrint Base64
+</pre></div></td></tr>
+</table>
+<br><a name="BITtoHEX" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">BITtoHEX 二进制转十六进制字符串</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>二进制转十六进制字符串
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">HexStr = Plugin.TURING.BITtoHEX(BitStr)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>BitStr：字符串型，二进制字符串内容</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>HexStr：字符串型，十六进制字符串内容</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code39")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code39'>
+//十六进制转二进制字符串
+BitStr=Plugin.TURING.HEXtoBIT("0000FF")
+TracePrint BitStr
+//二进制转十六进制字符串
+HexStr=Plugin.TURING.BITtoHEX(BitStr)
+TracePrint HexStr
+</pre></div></td></tr>
+</table>
+<br><a name="HEXtoBIT" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">HEXtoBIT 十六进制转二进制字符串</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>十六进制转二进制字符串
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">BitStr = Plugin.TURING.HEXtoBIT(HexStr)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>HexStr：字符串型，十六进制字符串内容</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>BitStr：字符串型，二进制字符串内容</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code40")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code40'>
+//十六进制转二进制字符串
+BitStr=Plugin.TURING.HEXtoBIT("0000FF")
+TracePrint BitStr
+//二进制转十六进制字符串
+HexStr=Plugin.TURING.BITtoHEX(BitStr)
+TracePrint HexStr
+</pre></div></td></tr>
+</table>
+<br><a name="Draw_CreateCanvas" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Draw_CreateCanvas 创建空白画布</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>创建一个空白的内部图像数据的画布
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Call Plugin.TURING.Draw_CreateCanvas(Width, Height)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>
+Width：整数型，画布的宽度<br>
+Height：整数型，画布的高度</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("codeht000")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='codeht000'>
+//创建一个空白画布
+Call Plugin.TURING.Draw_CreateCanvas(256, 256)
+For n = 0 To 255
+    //画点
+    Call Plugin.TURING.Draw_Point(n, n * 0.5)
+    Call Plugin.TURING.Draw_Point(n, n)
+    Call Plugin.TURING.Draw_Point(n, 128)
+    Call Plugin.TURING.Draw_Point(128, n)
+Next
+//显示图像
+Call Plugin.TURING.Pixel_Preview()
+</pre></div></td></tr>
+</table>
+<br><a name="Draw_Point" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Draw_Point 绘图画点</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>在内部的图像数据上画了一个点
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Call Plugin.TURING.Draw_Point(x, y, R, G, B)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>
+x：整数型，X坐标<br>
+y：整数型，Y坐标<br>
+R：整数型，可选，默认255，10进制红色分量值<br>
+G：整数型，可选，默认0，10进制绿色分量值<br>
+B：整数型，可选，默认0，10进制蓝色分量值</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("codeht001")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='codeht001'>
+//获取屏幕区域像素
+Call Plugin.TURING.Pixel_FromScreen(0, 0, 100, 100)
+//画点
+Call Plugin.TURING.Draw_Point(50, 60, 255, 0, 0)
+//显示图像
+Call Plugin.TURING.Pixel_Preview()
+</pre></div></td></tr>
+</table>
+<br><a name="Draw_Line" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Draw_Line 绘图画线</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>在内部的图像数据上画一条直线
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Call Plugin.TURING.Draw_Line(x1, y1, x2, y2, R, G, B)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>
+x1：整数型，起点X坐标<br>
+y1：整数型，起点Y坐标<br>
+x2：整数型，终点X坐标<br>
+y2：整数型，终点Y坐标<br>
+R：整数型，可选，默认255，10进制红色分量值<br>
+G：整数型，可选，默认0，10进制绿色分量值<br>
+B：整数型，可选，默认0，10进制蓝色分量值</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("codeht002")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='codeht002'>
+//获取屏幕区域像素
+Call Plugin.TURING.Pixel_FromScreen(0, 0, 100, 100)
+//画线
+Call Plugin.TURING.Draw_Line(0, 20, 100, 20, 255, 0, 0)
+//显示图像
+Call Plugin.TURING.Pixel_Preview()
+</pre></div></td></tr>
+</table>
+<br><a name="Draw_Rectangle" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Draw_Rectangle 绘图矩形</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>在内部的图像数据上画一个矩形框
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Call Plugin.TURING.Draw_Rectangle(left, top, right, bottom, R, G, B)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>
+left：整数型，左上角X坐标<br>
+top：整数型，左上角Y坐标<br>
+right：整数型，右下角X坐标<br>
+bottom：整数型，右下角Y坐标<br>
+R：整数型，可选，默认255，10进制红色分量值<br>
+G：整数型，可选，默认0，10进制绿色分量值<br>
+B：整数型，可选，默认0，10进制蓝色分量值</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("codeht003")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='codeht003'>
+//加载图片数据
+Call Plugin.TURING.Pixel_FromPicture("C:\验证码.png")
+//显示图像效果
+Call Plugin.TURING.Pixel_Preview()
+//进行自动二值化
+Call Plugin.TURING.Filter_Binaryzation("auto")
+//显示图像效果
+Call Plugin.TURING.Pixel_Preview()
+//颠倒反色，使之为黑底白字
+Call Plugin.TURING.Filter_InverseColor()
+//显示图像效果
+Call Plugin.TURING.Pixel_Preview()
+//去除杂点
+Call Plugin.TURING.Filter_Despeckle(5)
+//显示图像效果
+Call Plugin.TURING.Pixel_Preview()
+//进行范围投影切割（专利技术）
+数量 = Plugin.TURING.Incise_ScopeAisle(10, 2)
+//获取切割字符的数据信息
+数据 = Split(Plugin.TURING.Incise_GetCharData(), "|")
+For i = 0 To 数量
+    字符 = Split(数据(i), ",")
+    //提取切割范围
+    左 = Clng(字符(0))
+    上 = Clng(字符(1))
+    右 = 左 + Clng(字符(2))
+    下 = 上 + Clng(字符(3))
+    //绘制切割范围
+    Call Plugin.TURING.Draw_Rectangle(左, 上, 右, 下)
+Next
+//显示图像效果
+Call Plugin.TURING.Pixel_Preview()
+</pre></div></td></tr>
+</table>
+<br><a name="Draw_Circle" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Draw_Circle 绘图画圆</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>在内部的图像数据上画一个圆形
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Call Plugin.TURING.Draw_Circle(x, y, Radius, R, G, B)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>
+x：整数型，圆心X坐标<br>
+y：整数型，圆心Y坐标<br>
+Radius：整数型，圆的半径<br>
+R：整数型，可选，默认255，10进制红色分量值<br>
+G：整数型，可选，默认0，10进制绿色分量值<br>
+B：整数型，可选，默认0，10进制蓝色分量值</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("codeht004")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='codeht004'>
+//获取屏幕区域像素
+Call Plugin.TURING.Pixel_FromScreen(0, 0, 100, 100)
+//画圆
+Call Plugin.TURING.Draw_Circle(50, 60, 25, 255, 0, 0)
+//显示图像效果
+Call Plugin.TURING.Pixel_Preview()
+</pre></div></td></tr>
+</table>
+<br><a name="Draw_Text" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Draw_Text 绘图文字</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>在内部的图像数据上进行打字文本内容
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Call Plugin.TURING.Draw_Text(x, y, Text, Mode, R, G, B)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>
+x：整数型，X坐标<br>
+y：整数型，Y坐标<br>
+Text：字符串型，打字文本内容<br>
+Mode：字符串型，可选，样式默认："宋体|9|0"（格式：字体|字号|模式<0正常，1粗体，2斜体，4下划线，8删除线。其他依次叠加数字>）<br>
+R：整数型，可选，默认255，10进制红色分量值<br>
+G：整数型，可选，默认0，10进制绿色分量值<br>
+B：整数型，可选，默认0，10进制蓝色分量值</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("codeht005")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='codeht005'>
+//创建空白画布
+Call Plugin.TURING.Draw_CreateCanvas(200, 80)
+//画布上打字
+Call Plugin.TURING.Draw_Text(30, 30, "我的眼睛--图灵识别")
+//显示获取的图像
+Call Plugin.TURING.Pixel_Preview()
+</pre></div></td></tr>
+</table>
+<br><a name="Draw_Fill" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Draw_Fill 绘图填充</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>在内部的图像数据上对指定坐标开始进行颜色填充
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Area = Plugin.TURING.Draw_Fill(x, y, Through, R, G, B)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>
+x：整数型，开始X坐标<br>
+y：整数型，开始Y坐标<br>
+Through：布尔型，可选，是否八向,默认False<br>
+R：整数型，可选，默认255，10进制红色分量值<br>
+G：整数型，可选，默认0，10进制绿色分量值<br>
+B：整数型，可选，默认0，10进制蓝色分量值</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>Area：字符串型，返回填充区域范围（格式：左,上,右,下）</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("codeht006")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='codeht006'>
+//创建一个空白画布
+Call Plugin.TURING.Draw_CreateCanvas(100, 100)
+//画圆
+Call Plugin.TURING.Draw_Circle(50, 50, 25, 255, 255, 255)
+//显示图像
+Call Plugin.TURING.Pixel_Preview()
+//颜色填充
+TracePrint Plugin.TURING.Draw_Fill(1, 1, false, 255, 255, 255)
+TracePrint Plugin.TURING.Draw_Fill(50, 50)
+//显示图像
+Call Plugin.TURING.Pixel_Preview()
+</pre></div></td></tr>
+</table>
+<br><a name="Draw_CAPTCHA" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Draw_CAPTCHA 绘图生成验证码</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>随机生成一个数学（加减乘）计算的验证码
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Num = Plugin.TURING.Draw_CAPTCHA()</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>Num：整数型，返回验证码中计算的结果</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("codeht007")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='codeht007'>
+//假设
+输入答案 = 10
+//生成数学计算的随机验证码图像
+计算结果 = Plugin.TURING.Draw_CAPTCHA()
+TracePrint 计算结果
+//保存图片
+//Call Plugin.TURING.SaveImageData("C:\验证码.bmp")
+//效果预览
+Call Plugin.TURING.Pixel_Preview()
+//验证判断
+If 输入答案 = 计算结果 Then 
+    MessageBox "验证通过~"
+Else 
+    MessageBox "识别错误!"
+End If
+</pre></div></td></tr>
+</table>
+<br><a name="Draw_Backups" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Draw_Backups 图像数据备份</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>将内部的图像数据进行一次备份
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Call Plugin.TURING.Draw_Backups(Serial)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>Serial：整数型，备份编号（范围：1~64）</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("codeht008")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='codeht008'>
+//获取屏幕区域像素
+Call Plugin.TURING.Pixel_FromScreen(0, 0, 100, 100)
+Call Plugin.TURING.Draw_Point(50, 60, 255, 0, 0)        //画点
+//进行图像数据备份（编号：1~32）
+Call Plugin.TURING.Draw_Backups(1)
+Call Plugin.TURING.Draw_Line(0, 20, 100, 20, 255, 0, 0) //画线
+//进行图像数据备份
+Call Plugin.TURING.Draw_Backups(2)
+Call Plugin.TURING.Draw_Circle(50, 60, 25, 255, 0, 0)   //画圆
+//进行图像数据备份
+Call Plugin.TURING.Draw_Backups(3)
+//恢复备份的图像数据（编号：1~32）
+Call Plugin.TURING.Draw_Recover(3)
+//显示图像
+Call Plugin.TURING.Pixel_Preview()
+//恢复备份的图像数据
+Call Plugin.TURING.Draw_Recover(2)
+Call Plugin.TURING.Pixel_Preview()
+//恢复备份的图像数据
+Call Plugin.TURING.Draw_Recover(1)
+//显示图像
+Call Plugin.TURING.Pixel_Preview()
+</pre></div></td></tr>
+</table>
+<br><a name="Draw_Recover" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Draw_Recover 图像数据恢复</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>恢复一次内部的图像数据
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Call Plugin.TURING.Draw_Recover(Serial)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>Serial：整数型，备份编号（范围：1~64）</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("codeht009")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='codeht009'>
+//获取屏幕区域像素
+Call Plugin.TURING.Pixel_FromScreen(0, 0, 100, 100)
+Call Plugin.TURING.Draw_Point(50, 60, 255, 0, 0)        //画点
+//进行图像数据备份（编号：1~32）
+Call Plugin.TURING.Draw_Backups(1)
+Call Plugin.TURING.Draw_Line(0, 20, 100, 20, 255, 0, 0) //画线
+//进行图像数据备份
+Call Plugin.TURING.Draw_Backups(2)
+Call Plugin.TURING.Draw_Circle(50, 60, 25, 255, 0, 0)   //画圆
+//进行图像数据备份
+Call Plugin.TURING.Draw_Backups(3)
+//恢复备份的图像数据（编号：1~32）
+Call Plugin.TURING.Draw_Recover(3)
+//显示图像
+Call Plugin.TURING.Pixel_Preview()
+//恢复备份的图像数据
+Call Plugin.TURING.Draw_Recover(2)
+//显示图像
+Call Plugin.TURING.Pixel_Preview()
+//恢复备份的图像数据
+Call Plugin.TURING.Draw_Recover(1)
+//显示图像
+Call Plugin.TURING.Pixel_Preview()
+</pre></div></td></tr>
+</table>
+<br><a name="Memory_Clear" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Memory_Clear 内存清理</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>进行物理内存垃圾清理
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Call Plugin.TURING.Memory_Clear()</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("codenc001")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='codenc001'>
+//清理前信息：总共物理内存KB|可用物理内存KB|已用内存比率%
+TracePrint Plugin.TURING.Memory_GetInfo()
+//进行内存垃圾清理
+Call Plugin.TURING.Memory_Clear()
+//清理后结果：
+TracePrint Plugin.TURING.Memory_GetInfo()
+</pre></div></td></tr>
+</table>
+<br><a name="Memory_GetInfo" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Memory_GetInfo 获取内存信息</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>获取物理内存相关信息
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Info = Plugin.TURING.Memory_GetInfo()</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>Info：字符串型，获取内存信息（总共物理内存KB|可用物理内存KB|已用内存比率%）</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("codenc002")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='codenc002'>
+//清理前信息：总共物理内存KB|可用物理内存KB|已用内存比率%
+TracePrint Plugin.TURING.Memory_GetInfo()
+//进行内存垃圾清理
+Call Plugin.TURING.Memory_Clear()
+//清理后结果：
+TracePrint Plugin.TURING.Memory_GetInfo()
+</pre></div></td></tr>
+</table>
+<br><a name="FileSaveGIF" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">FileSaveGIF 生成GIF文件</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>对多张图片合成GIF文件
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">Call Plugin.TURING.FileSaveGIF(LoadName, SaveName, Delay)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>
+LoadName：字符串型，加载多张图片（jpg,bmp,png），但必须是同尺寸文件（格式：图片1|图片2|…）<br>
+SaveName：字符串型，保存文件路径<br>
+Delay：整数型，可选，延迟时间（默认100毫秒）</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("codewj001")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='codewj001'>
+Dim 文件名(5) 
+文件名(0) = "C:\验证码\1.jpg"
+文件名(1) = "C:\验证码\2.jpg"
+文件名(2) = "C:\验证码\3.jpg"
+文件名(3) = "C:\验证码\4.jpg"
+文件名(4) = "C:\验证码\5.jpg"
+文件名(5) = "C:\验证码\6.jpg"
+//生成GIF动画图片
+Call Plugin.TURING.FileSaveGIF(Join(文件名,"|"), "C:\动画.gif")
+</pre></div></td></tr>
+</table>
+<br><a name="Run" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Run 运行</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>运行Cmd命令行功能
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">ret = Plugin.TURING.Run(CmdLine)</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>CmdLine：字符串型，命令行内容</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>ret：字符串型，执行结果信息内容</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("codeml001")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='codeml001'>
+'/c 执行后关闭Cmd窗口
+'/k 执行后保留Cmd窗口(无效果)
+命令行 = "Dir C:\"
+//运行命令行，并返回结果内容
+MessageBox Plugin.TURING.Run("Cmd /c " & 命令行)
+</pre></div></td></tr>
+</table>
+<br><a name="Version" style="display:none"></a>
+<table><tr><td class="tab_left" valign="top">命令名称</td>
+        <td><span class="blue">Version 版本号</span></td></tr>
+        <tr><td class="tab_left" valign="top">命令功能</td>
+        <td>当前插件版本号
+        </td></tr>
+        <tr><td class="tab_left" valign="top">语法格式</td>
+        <td ><span class="blue">ver = Plugin.TURING.Version()</span></td></tr>
+        <tr><td class="tab_left" valign="top">参数说明</td>
+        <td>无</td></tr>
+        <tr><td class="tab_left" valign="top">返回值</td>
+        <td>ver：字符串型，插件版本号</td></tr>
+        <tr><td class="tab_left" valign="top">脚本例子</td>
+        <td><div class="dp-highlighter">
+        <a class='copy' href='javascript:void(0)' onclick='copycode("code41")'>复制代码</a>
+        <Pre class='prettyprint lang-ql linenums' id='code41'>
+ver=Plugin.TURING.Version()
+TracePrint ver
+</pre></div></td></tr>
+</table>
+
+
+
+</div>
+    <script type="text/javascript" src="help.js"></script>
+</body>
+</html>

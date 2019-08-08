@@ -1,0 +1,76 @@
+
+'----------------------------------------
+'USING CLASSES TO ENCAPSULATe PROGRAMS
+'- isolation of globals
+'- exposing internal function via methods
+'========================================
+
+
+uses "oxygen"
+dim src as string
+ 
+src = "
+
+  global sys a=0,b=0,c=0
+    
+  class MARTIAN
+  
+    global sys a=1,b=2,c=3 'GLOBALS ISOLATED
+    sub showABC()
+      print `
+      MARTIAN GLOBAL
+      ` str(a) `
+      ` str(b) `
+      ` str(c) `
+      `
+    end sub
+    
+    method show()
+      showABC
+    end method
+    
+  end class
+  
+  class VENUSIAN
+  
+    global sys a=4,b=5,c=6 'GLOBALS ISOLATED
+    
+    sub showABC()
+      print `
+      VENUSIAN GLOBAL
+      ` str(a) `
+      ` str(b) `
+      ` str(c) `
+      `
+    end sub
+    
+    method show()
+      showABC
+    end method
+    
+  end class
+  
+  sub g_show 
+      print `
+      EARTH GLOBAL
+      ` str(a) `
+      ` str(b) `
+      ` str(c) `
+      `
+  end sub
+  
+  dim as martian  m
+  dim as venusian v
+  
+  g_show
+  m.show
+  v.show 
+   
+  "
+ 
+o2_basic src
+if len(o2_error) then
+  msgbox 0, o2_error : stop
+end if
+o2_exec
+ 

@@ -1,0 +1,26 @@
+
+  'How to make an sdk/dll call
+  
+  'revised 24 Mr 2009
+  'Charles Pegge
+
+  Uses "Oxygen","File"
+  
+  dim vv as long
+  dim src as string = " 
+  mbox `ok` : ret
+  indexers `esi` offset 0 ascending   ' tell asm how to map variables
+  ;esi=dataspace 100                  ' create some inline storage
+  esi=getmemory 100                   ' get some system memory
+  var 4 user32                        ' create a 4 byte variable
+  user32=loadlibrary `user32.dll`     ' get libray handle
+  bind user32 ( messagebox  MessageBoxA )     ' bind procaddresses
+  messagebox 0,`Hello World!`,`Greeting`,0  ' call the dll proc
+  freelibrary user32                  ' free the library
+  freememory esi                      ' free system memory
+  ret                                 ' return
+  "
+  
+  'file_save ("t.txt",o2_view(src))
+  o2_asmo src 'assemble but do not return string
+  o2_exec                  ' execute buffered code

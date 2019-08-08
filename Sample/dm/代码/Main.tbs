@@ -1,0 +1,10 @@
+
+Function Main() As Long
+    
+    ' 创建大漠插件对象
+	Dim dm As Object = CreateObject("dm.dmsoft")
+	
+	' 调用大漠插件
+	MsgBox dm.Ver()
+    
+End Function

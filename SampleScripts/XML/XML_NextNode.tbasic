@@ -1,0 +1,47 @@
+' =========================================================================================
+' Demonstrates the use of the nextNode method.
+' The following example creates an IXMLDOMNodeList object and uses its nextNode method to
+' iterate the collection.
+' =========================================================================================
+
+uses "Console"
+
+#default declare Checkduplicates    %TRUE
+#default declare CheckMissing       %TRUE
+
+#INCLUDE "%APP_INCLUDEPATH%\TB_XML60.INC"
+
+' ========================================================================================
+' Main
+' ========================================================================================
+FUNCTION MAIN() as long
+
+   LOCAL pXmlDoc AS DWORD
+   LOCAL pNodeList AS DWORD
+   LOCAL pNode AS DWORD
+   LOCAL iLen AS LONG
+   LOCAL i AS LONG
+
+   pXmlDoc = XmlCreateObject($PROGID_Msxml2DOMDocument)
+   IXMLDOMDocument_put_async pXmlDoc, %FALSE
+
+   IF ISTRUE IXMLDOMDocument_load(pXmlDoc, "books.xml") THEN
+      pNodeList = IXMLDOMDocument_getElementsByTagName(pXmlDoc, "author")
+      iLen = IXMLDOMNodeList_get_length(pNodeList)
+      FOR i = 0 TO iLen - 1
+         pNode = IXMLDOMNodeList_nextNode(pNodeList)
+         console_writeline IXMLDOMNode_get_text(pNode)
+         XmlRelease pNode
+      NEXT
+   END IF
+
+   ' cleanup
+   XmlRelease pNodeList
+   XmlRelease pXmlDoc
+
+   console_writeline "--- Press any key to finish ---"
+   console_WAITKEY
+
+END FUNCTION
+
+Main

@@ -1,0 +1,104 @@
+  
+
+
+#INCLUDE Once "Module MidiOut.tbasic" 
+#INCLUDE Once "Module MidiIn.tbasic"  
+
+Uses "CONSOLE" 
+Uses "WinMM" 
+    
+    Console_SetTitle("MIDI OUT EXAMPLE")  
+    
+    Dim OutCaps As MIDIOUTCAPS 
+    Dim numDevicesOut As Byte     ' number of midi output devices 
+    Dim curDeviceOut As Byte      ' current midi device OUT       
+    
+    Dim InCaps As MIDIINCAPS 
+    Dim numDevicesIn As Byte      ' number of midi input devices
+    Dim curDeviceIn As Byte       ' current midi device IN
+    
+    Dim As Long num = 0           ' counts events sent
+    Dim tStart,tEnd,tTime As Double      'for obtain elapsed time (Optional)
+    
+    numDevicesOut = MidiOut_GetNumDevs  'get number of midi output devices
+    numDevicesIn = MidiIn_GetNumDevs    'get number of midi input devices
+    Print CRLF & "Number of Midi OUTs in your system: " & numDevicesOut & CRLF   
+    Print "Number of Midi INs  in your system: " & numDevicesIn & CRLF     
+    
+    ''''''''''''''''
+    Print CRLF
+    PrintL "Midi OUTs:"                            
+    For i As Integer = 0 To (numDevicesOut - 1)    'for all Midi outs 
+       MidiOut_GetDevCaps i, OutCaps', Len(OutCaps)  'get the name
+       PrintL "Device Out " & i & ":" & $TAB & OutCaps.szPname 
+    Next 
+  
+    Print CRLF
+    PrintL "Midi INs:"
+    For i As Integer = 0 To (numDevicesIn - 1)     'for all Midi ins
+       MidiIn_GetDevCaps i, InCaps     'get the name
+       PrintL "Device In  " & i & ":" & $TAB & InCaps.szPname
+    Next  
+    ''''''''''''''''' 
+  
+   PrintL
+
+
+   PrintL "Adjust the volume to an appropriate level"
+   PrintL "and press one key to continue..."  
+   PrintL
+   
+   Console_WaitKey        
+   'Sleep 250
+  
+   init_MIDI_OUT(%MIDI_MAPPER)
+   
+   Print CRLF & CRLF
+   Sleep 500
+   
+   tStart = Timer 
+   
+'********************** MIDI OUT **********************   
+Dim instMeno As Byte
+   
+For instrument As Byte = 1 To 100 Step 10   'set instrument General Midi (0-127)
+   instMeno = instrument-1
+   PChange(instMeno)
+   'MsgBox 0,"Instrument:" & inst_MIDI(instrument)
+   
+   For note As Byte = 30 To 100 Step 10            'change note (0-127)            
+      PrintL "Note: " & Format$(note,"000") & $TAB & "Event: "& num & $TAB & _
+             "GM Instrument: " & instMeno & $TAB & inst_MIDI(instrument)   
+
+      NoteOn(0,note,127)   'play the note
+      Sleep 40
+      NoteOff(0,note,127)  'release the note
+      Sleep 5 
+      num += 1      
+   Next note
+   
+Next instrument
+'*******************************************************  
+
+tEnd = Timer 
+tTime = (tEnd-tStart)  
+
+end_MIDI_OUT  '<<<=== always CLOSE the MIDI port that you had previously opened
+'end_MIDI_IN
+'MsgBox 0,"Executed in " & tTime & " seconds" 
+
+If TRUE Then 
+  Print CRLF 
+  PrintL "Executed in " & tTime & " seconds"
+  PrintL CRLF & "Midi OUT closed succesfully!"    
+  Print CRLF  
+  PrintL "IMPORTANT: make sure always CLOSE the MIDI port that you had previously opened ...."  
+  Print CRLF 
+  PrintL "Press a key or X to exit..." 
+EndIf
+
+Console_WaitKey
+
+
+
+    

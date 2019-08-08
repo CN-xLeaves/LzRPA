@@ -1,0 +1,11 @@
+  uses "Stat"
+
+  %ELEMENTS = 6
+
+  dim aData(%ELEMENTS) as ext
+
+  stat_fillarray(aData, %Stat_Fill_Natural)
+
+  MsgBox 0, "MeanArithmetic:  " + Stat_MeanArithmetic(aData) + $CRLF + 
+            "MeanGeometric:   " + Stat_MeanGeometric(aData) + $crlf + 
+            "MeanHarmonic:    " + Stat_MeanHarmonic(aData), %IDOK, "Elements = " + %ELEMENTS + " of natural"

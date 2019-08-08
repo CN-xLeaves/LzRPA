@@ -1,0 +1,30 @@
+'Uses "Registry"
+'
+'Dim MyString As String
+'MyString = Registry_GetAllKeys("HKEYLM", "SOFTWARE\Microsoft\Windows\CurrentVersion", $CRLF)
+'MsgBox 0, MyString
+'Stop
+
+
+Uses "Registry"
+
+Dim lRet      As Long
+dim sKeyPath  as string value "Software\thinBasic"
+dim sKeyName  as string value "InstallPath"
+
+DIM MyValue   AS STRING
+
+lRet = Registry_KeyExists("HKEYLM", sKeyPath, sKeyName)
+
+If lRet Then
+  MyValue = Registry_GetValue("HKEYLM", sKeyPath, sKeyName)
+  msgbox 0, "Key " & sKeyPath & sKeyName & " exists: " & MyValue
+else
+
+  if lRet = -1 then
+    msgbox 0, "Path [" & sKeyPath & "] not found in registry"
+  elseif lRet = -2 then
+    msgbox 0, "Path [" & sKeyPath & "] exists but key [" & sKeyName & "] not found in registry"
+  end if
+  
+end if

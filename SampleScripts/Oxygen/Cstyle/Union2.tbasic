@@ -1,0 +1,45 @@
+uses "oxygen"
+
+dim s as string
+s="
+
+basic
+
+
+'=================================
+'DEFINE STRUCTURE CONTAINING UNION
+'=================================
+
+###
+
+type utype
+{
+  sys t
+  union
+  {
+    byte b
+    long i
+    double f
+  }
+}
+
+utype v
+
+v.b=42
+
+###
+
+print v.i
+
+
+"
+
+msgbox 0,o2_prep s
+
+o2_asmo s
+
+if len(o2_error) then
+  msgbox 0,o2_error
+else
+  o2_exec
+end if

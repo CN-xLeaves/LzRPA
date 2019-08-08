@@ -1,0 +1,1368 @@
+
+
+
+' OPENGL /WINDOWS API Example
+
+
+' Charles Pegge
+
+
+Uses "Oxygen", "Sapi", "File", "Tbgl"
+'Uses "Sapi", "Oxygen", "File", "Tbgl"
+
+dim src as string : dim a as long
+
+src="
+
+
+  '#file `PortViewer.exe`
+  '#case capital
+  /*
+
+  Window size wWidth wHeight
+  Active view:
+    0 = none
+    1 = upper left
+    2 = upper right
+    3 = lower left
+    4 = lower right
+
+  */
+   
+  'SELECT WHICH HEADERS TO USE
+  % TBheaders
+  '% JRheaders
+  '% CHheaders 
+  
+  #ifdef TBheaders
+    'include Win32Api.inc
+    typedef extended ext
+    def included include once `%%APP_INCLUDEPATH%%\thinbasic_%1.inc`
+    'included gl
+    included glext
+    included glu
+    included wgl
+  #endif
+
+  #ifdef JRheaders
+    includepath "gl\"
+    'include once "opengl32.inc"
+    include once "gl.inc"
+    include once "glu.inc"
+    include once "wglext.inc"
+    include once "thinbasic_wgl.inc"
+    includepath ""
+  #endif
+
+  #ifdef CHheaders
+    #define WINGDIAPI
+    #define APIENTRY
+    #define const
+    typedef word wchar_t
+    typedef sys ptrdiff_t
+    includepath "glo2\"
+    library "opengl32.dll"
+    include once "gl\gl.h"
+    'include once "gl\glext.h"
+    library "glu32.dll"
+    include once "gl\glu.h"
+    include once "gl\thinbasic_wgl.inc"
+    library ""
+  #endif
+  
+  '////////////////////
+
+type WNDCLASS
+  ;40 bytes
+  STYLE as long
+  lpfnwndproc as long
+  cbClsextra as long
+  cbWndExtra as long
+  hInstance as long
+  hIcon as long
+  hCursor as long
+  hbrBackground as long
+  lpszMenuName as long
+  lpszClassName as long
+end type
+
+type point
+  x as long
+  y as long
+end type
+
+type MSG
+  ; 28 bytes
+  hwnd as long
+  message as long
+  wParam as long
+  lParam as long
+  time as long
+  pt as point
+end type
+
+
+                         '
+
+  #define SW_NORMAL 1
+  % SW_SHOWDEFAULT 10
+
+
+
+  % CS_VREDRAW      1
+  % CS_HREDRAW      2
+  % IDI_APPLICATION 32512
+  % IDC_ARROW       32512
+  % WHITE_BRUSH     0
+  % MB_ICONERROR    16
+
+  % CW_USEDEFAULT       &h80000000
+  % WS_OVERLAPPEDWINDOW &h00cf0000
+
+
+
+
+type RECT
+  ; 16 bytes
+  nleft as long
+  ntop as long
+  nright as long
+  nbottom as long
+end type
+
+type rgbacolor
+  red as byte
+  green as byte
+  blue as byte
+  alpha as byte
+end type
+  
+type PAINTSTRUCT
+  ; 64 bytes
+  hDC as long
+  fErase as long
+  rcPaint as rect
+  fRestore as long
+  fIncUpdate as long
+  rgb as rgbacolor
+  Reserved as 32
+end type
+
+
+
+ % FALSE 0
+ % TRUE -1
+
+
+  % WM_ACTIVATE    0
+  % WM_CREATE      1
+  % WM_DESTROY     2
+  % WM_MOVE        3
+  % WM_SIZE        5
+  % WM_SETFOCUS    7
+  % WM_KILLFOCUS   8
+  % WM_PAINT      15
+  % WM_CLOSE      16
+  % WM_ERASEBKGND 20
+  
+  %WM_KEYDOWN         =  &H100
+  %WM_KEYUP            = &H101
+  %WM_CHAR             = &H102
+  %WM_DEADCHAR         = &H103
+  %WM_SYSKEYDOWN       = &H104
+  %WM_SYSKEYUP         = &H105
+  %WM_SYSCHAR          = &H106
+  %WM_SYSDEADCHAR      = &H107
+  %WM_UNICHAR          = &H109
+  %WM_TIMER            = &H113
+  %WM_HSCROLL          = &H114
+  %WM_VSCROLL          = &H115
+
+  %WM_MOUSEMOVE        = &H200
+  %WM_LBUTTONDOWN      = &H201
+  %WM_LBUTTONUP        = &H202
+  %WM_LBUTTONDBLCLK    = &H203
+  %WM_RBUTTONDOWN      = &H204
+  %WM_RBUTTONUP        = &H205
+  %WM_RBUTTONDBLCLK    = &H206
+  %WM_MBUTTONDOWN      = &H207
+  %WM_MBUTTONUP        = &H208
+  %WM_MBUTTONDBLCLK    = &H209
+  %WM_MOUSEWHEEL       = &H20A
+
+
+
+TYPE PIXELFORMATDESCRIPTOR
+  nSize AS WORD
+  nVersion AS WORD
+  dwFlags AS DWORD
+  iPixelType AS BYTE
+  cColorBits AS BYTE
+  cRedBits AS BYTE
+  cRedShift AS BYTE
+  cGreenBits AS BYTE
+  cGreenShift AS BYTE
+  cBlueBits AS BYTE
+  cBlueShift AS BYTE
+  cAlphaBits AS BYTE
+  cAlphaShift AS BYTE
+  cAccumBits AS BYTE
+  cAccumRedBits AS BYTE
+  cAccumGreenBits AS BYTE
+  cAccumBlueBits AS BYTE
+  cAccumAlphaBits AS BYTE
+  cDepthBits AS BYTE
+  cStencilBits AS BYTE
+  cAuxBuffers AS BYTE
+  iLayerType AS BYTE
+  bReserved AS BYTE
+  dwLayerMask AS DWORD
+  dwVisibleMask AS DWORD
+  dwDamageMask AS DWORD
+END TYPE
+
+
+
+
+' PIXELFORMATDESCRIPTOR flags
+%PFD_TYPE_RGBA       = 0
+%PFD_TYPE_COLORINDEX = 1
+%PFD_MAIN_PLANE      = 0
+%PFD_OVERLAY_PLANE   = 1
+%PFD_UNDERLAY_PLANE  =-1
+'
+%PFD_DOUBLEBUFFER          = &H00000001
+%PFD_STEREO                = &H00000002
+%PFD_DRAW_TO_WINDOW        = &H00000004
+%PFD_DRAW_TO_BITMAP        = &H00000008
+%PFD_SUPPORT_GDI           = &H00000010
+%PFD_SUPPORT_OPENGL        = &H00000020
+%PFD_GENERIC_FORMAT        = &H00000040
+%PFD_NEED_PALETTE          = &H00000080
+%PFD_NEED_SYSTEM_PALETTE   = &H00000100
+%PFD_SWAP_EXCHANGE         = &H00000200
+%PFD_SWAP_COPY             = &H00000400
+%PFD_SWAP_LAYER_BUFFERS    = &H00000800
+%PFD_GENERIC_ACCELERATED   = &H00001000
+%PFD_SUPPORT_DIRECTDRAW    = &H00002000
+
+' PIXELFORMATDESCRIPTOR flags for use in ChoosePixelFormat only
+%PFD_DEPTH_DONTCARE        = &H20000000
+%PFD_DOUBLEBUFFER_DONTCARE = &H40000000
+%PFD_STEREO_DONTCARE       = &H80000000
+
+' Font Weights
+%FW_DONTCARE   = 0
+%FW_THIN       = 100
+%FW_EXTRALIGHT = 200
+%FW_LIGHT      = 300
+%FW_NORMAL     = 400
+%FW_MEDIUM     = 500
+%FW_SEMIBOLD   = 600
+%FW_BOLD       = 700
+%FW_EXTRABOLD  = 800
+%FW_HEAVY      = 900
+
+
+%DEFAULT_QUALITY        = 0
+%DRAFT_QUALITY          = 1
+%PROOF_QUALITY          = 2
+%NONANTIALIASED_QUALITY = 3
+%ANTIALIASED_QUALITY    = 4
+
+%ANSI_CHARSET        = 0
+%DEFAULT_CHARSET     = 1
+%SYMBOL_CHARSET      = 2
+
+%OUT_TT_PRECIS       = 4
+%CLIP_DEFAULT_PRECIS = 0
+
+%DEFAULT_PITCH   = 0
+%FIXED_PITCH     = 1
+%VARIABLE_PITCH  = 2
+%MONO_FONT       = 8
+
+
+' Font Families
+'
+%FF_DONTCARE = 0    ' Don't care or don't know.
+%FF_ROMAN    = 16   ' Variable stroke width, serifed.
+
+' Times Roman, Century Schoolbook, etc.
+%FF_SWISS    = 32   ' Variable stroke width, sans-serifed.
+
+' Helvetica, Swiss, etc.
+%FF_MODERN   = 48   ' Constant stroke width, serifed or sans-serifed.
+
+' Pica, Elite, Courier, etc.
+%FF_SCRIPT     = 64 ' Cursive, etc.
+%FF_DECORATIVE = 80 ' Old English, etc.
+
+
+%LF_FACESIZE     = 32
+
+
+TYPE LOGFONT
+  lfHeight AS LONG
+  lfWidth AS LONG
+  lfEscapement AS LONG
+  lfOrientation AS LONG
+  lfWeight AS LONG
+  lfItalic AS BYTE
+  lfUnderline AS BYTE
+  lfStrikeOut AS BYTE
+  lfCharSet AS BYTE
+  lfOutPrecision AS BYTE
+  lfClipPrecision AS BYTE
+  lfQuality AS BYTE
+  lfPitchAndFamily AS BYTE
+  lfFaceName AS 32
+END TYPE
+
+
+
+  dim kernel32,user32,GDI32 as long
+
+  kernel32=LoadLibrary `kernel32.dll`
+  user32=LoadLibrary `user32.dll`
+  GDI32=LoadLibrary `GDI32.dll`
+
+  bind kernel32
+  (
+    GetExitCodeProcess GetExitCodeProcess ; @8
+    ExitProcess        ExitProcess        ; @4
+    GetCommandLine     GetCommandLineA    ; @0
+    GetModuleHandle    GetModuleHandleA   ; @4
+    Sleep              Sleep              ; @4
+    QueryPerformanceCounter QueryPerformanceCounter ; @4
+  )
+
+  bind user32
+  (
+    LoadIcon         LoadIconA         ; @8
+    LoadCursor       LoadCursorA       ; @8
+    RegisterClass    RegisterClassA    ; @4
+    MessageBox       MessageBoxA       ; @4
+    CreateWindowEx   CreateWindowExA   ; @48
+    ShowWindow       ShowWindow        ; @8
+    UpdateWindow     UpdateWindow      ; @4
+    GetMessage       GetMessageA       ; @16
+    TranslateMessage TranslateMessage  ; @4
+    DispatchMessage  DispatchMessageA  ; @4
+    PostQuitMessage  PostQuitMessage   ; @4
+    BeginPaint       BeginPaint        ; @8
+    EndPaint         EndPaint          ; @8
+    GetClientRect    GetClientRect     ; @8  
+    DrawText         DrawTextA         ; @20
+    PostMessage      PostMessageA      ; @16
+    DefWindowProc    DefWindowProcA    ; @16
+    FillRect         FillRect
+    GetDC            GetDC             ; @4
+    ReleaseDC        ReleaseDC
+    SetTimer         SetTimer
+    KillTimer        KillTimer
+  )
+
+
+
+  bind GDI32
+  (
+    GetStockObject     GetStockObject    ; @4
+    CreateSolidBrush   CreateSolidBrush  ; @4
+    ChoosePixelFormat  ChoosePixelFormat
+    SetPixelFormat     SetPixelFormat
+    CreateFontIndirect CreateFontIndirectA
+    SelectObject       SelectObject
+    DeleteObject       DeleteObject
+    SwapBuffers        SwapBuffers
+   )
+
+
+function hiwrd   (byval a as long) as long
+  shr a,16
+  return a
+end function
+
+function lowrd(byval a as long) as long
+  and a,&hffff : function=a
+end function
+
+function min(byval a as long, byval b as long) as long
+  if a<=b then function=a else function=b
+end function
+
+function max(byval a as long, byval b as long) as long
+  if a>=b then function=a else function=b
+end function
+
+function minmax(byval a as long, byval b as long, byval c as long) as long
+  if b<=a then b=a
+  if b>=c then b=c
+  function=b
+end function
+
+function rgb(byval r as long, byval g as long, byval b as long) as long
+  r=minmax 0,r,255
+  g=minmax 0,g,255
+  b=minmax 0,b,255
+  function=r+g*256+b*65536  
+end function
+
+  '////////////////////
+
+
+
+
+  dim a
+
+
+  'dim gmf(256) AS GLYPHMETRICSFLOAT
+
+  dim as quad
+    '
+    'TIMING
+    '
+    grtic1,grtic2,freq
+    
+  dim as double
+    '
+    'TIMING
+    '
+    fps,grlap
+  
+  dim as long
+    '
+    'STATE VARIABLES
+    '
+    refresh,bselect,kselect,keyd,cha,ReqShutDown,
+    bLeft,bMid,bRight,bWheel,
+    wWidth,wHeight,
+    '
+    'GL CONTEXT
+    '
+    hDC,hRC,
+    '
+    shadows,shadowable,
+    antialias, multisampling,
+    nPixelFormat,ReqNewMode,arbMultisampleFormat,
+    arbMultisampleSupported,
+    '
+    'TIMING
+    '
+    timerval, doredraw,
+    '
+    'POSITIONAL
+    '
+    xpos, ypos,
+    sposx,sposy,mposx,mposy,eposx,eposy,
+    '
+    'Rotation around each axis
+    '
+    rot_x, rot_y, rot_z,
+    active_view
+
+
+  
+'====================================================================
+' DrawTorus() - Draw a solid torus (use a display list for the model)
+'====================================================================
+
+sub DrawTorus
+
+  static as double
+  
+  twopi          = pi()*2,
+  torus_major    = 1.5,
+  torus_minor    = 0.5,
+  torus_major_res= 32,
+  torus_minor_res= 32
+
+
+  static as long
+
+    torus_list, i,j,k
+  
+  static as single
+
+    a, b, s, t, x, y, z, nx, ny, nz, gscale,tmc,tmd,tme
+  
+  if not torus_list
+    '
+    'Record the Torus plot list
+    '--------------------------
+    '
+    torus_list = glGenLists 1
+    glNewList( torus_list, GL_COMPILE_AND_EXECUTE )
+    '
+    'Draw the torus
+    '
+    for i = 0 TO TORUS_MINOR_RES-1
+      '
+      glBegin GL_QUAD_STRIP
+      '
+      for j = 0 TO TORUS_MAJOR_RES
+        '
+        for k = 1 TO 0 STEP -1
+          '
+          s = mod( i+k,TORUS_MINOR_RES + 0.5)
+          t = mod(j,TORUS_MAJOR_RES)
+          '
+          'CALCULATE POINT ON SURFACE
+          '--------------------------
+          '
+          tmd=s*twopi/TORUS_MINOR_RES
+          tme=t*twopi/TORUS_MAJOR_RES
+          tmc=TORUS_MAJOR+TORUS_MINOR * cos tmd
+          '
+          x = tmc * cos tme
+          y = TORUS_MINOR * sin tmd
+          z = tmc * sin tme
+          '
+          'CALCULATE SURFACE NORMAL
+          '------------------------
+          '
+          a=TORUS_MAJOR * cos tme
+          nx = x - a
+          ny = y
+          a=TORUS_MAJOR * sin tme
+          nz = z - a
+          '
+          'SCALING OF NORMALS
+          '
+          gscale = 1 / SQR( nx*nx + ny*ny + nz*nz )
+          nx*=gscale
+          ny*=gscale
+          nz*=gscale
+          '
+          glNormal3f nx, ny, nz
+          glVertex3f x, y, z
+          '
+        next
+        '
+      next
+      '
+      glEnd()
+      '
+    next
+    '
+    glEndList()
+    '
+  else
+    '  
+    'Playback displaylist
+    '
+    glCallList( torus_list )
+  end if
+end sub
+
+
+
+''================================================
+'' DrawScene() - Draw the scene (a rotating torus)
+''================================================
+
+sub DrawScene
+
+  static as single,
+
+  model_diffuse(4)  => (1.0, 0.8, 0.0, 1.0),
+  model_specular(4) => (0.0, 0.0, 1.0, 1.0),
+  model_shininess=0.1
+
+  glPushMatrix
+
+  'Rotate the object
+  
+  glRotatef rot_x*0.5, 1.0, 0.0, 0.0
+  glRotatef rot_y*0.5, 0.0, 1.0, 0.0
+  glRotatef rot_z*0.5, 0.0, 0.0, 1.0
+
+  'Set model color (used for orthogonal views, lighting disabled)
+  '
+  glColor4fv model_diffuse
+
+  'Set model material (used for perspective view, lighting enabled)
+  '
+  glMaterialfv GL_FRONT, GL_DIFFUSE,   model_diffuse
+  glMaterialfv GL_FRONT, GL_SPECULAR,  model_specular
+  glMaterialf  GL_FRONT, GL_SHININESS, model_shininess
+  '
+  DrawTorus
+
+  glPopMatrix
+    
+end sub
+
+
+'============================================================
+' DrawBorder() - Draw a 2D border (used for orthogonal views)
+'============================================================
+
+sub DrawBorder( byval gscale as single, st as long )
+  dim as single x,y
+  glPushMatrix
+
+  'Setup modelview matrix (flat XY view)
+  '
+  glLoadIdentity
+  gluLookAt _
+  0.0, 0.0, 1.0, 
+  0.0, 0.0, 0.0,
+  0.0, 1.0, 0.0
+  'We don't want to update the Z-buffer
+  '
+  glDepthMask GL_FALSE
+
+  'Set color
+  '---------
+  glDisable GL_LIGHTING
+  glColor3f 0.7, 0.7, 0.4
+  glBegin GL_LINES
+
+  dim h as long
+  'h=gsteps*0.5
+  h=st*0.5
+  x = gscale * h
+  y = gscale * h
+    
+  'Horizontal lines
+  '----------------
+  
+  glVertex3f -x, -y, 0.0
+  glVertex3f  x, -y, 0.0
+  glVertex3f -x,  y, 0.0
+  glVertex3f  x,  y, 0.0
+
+  'Vertical lines
+  
+  glVertex3f -x, -y, 0.0
+  glVertex3f -x,  y, 0.0
+  glVertex3f  x, -y, 0.0
+  glVertex3f  x,  y, 0.0
+
+  glEnd
+
+  'Enable Z-buffer writing again
+  '
+  glDepthMask GL_TRUE
+
+  glPopMatrix
+  
+end sub
+
+
+'========================================================
+' DrawGrid() - Draw a 2D grid (used for orthogonal views)
+'========================================================
+
+sub DrawGrid( BYVAL gscale AS SINGLE, BYVAL gsteps AS INTEGER )
+
+  dim as long i
+  dim as single x,y
+
+  glPushMatrix
+
+  'Set background color
+  '
+  glClearColor 0.15, 0.15, 0.3, 0.0
+  glClear GL_COLOR_BUFFER_BIT
+
+  'Setup modelview matrix (flat XY view)
+  '
+  glLoadIdentity
+  gluLookAt _
+  0.0, 0.0, 1.0, 
+  0.0, 0.0, 0.0,
+  0.0, 1.0, 0.0
+  '
+  'We don't want to update the Z-buffer
+  '
+  glDepthMask GL_FALSE
+
+  'Set grid color
+    
+  glDisable GL_LIGHTING
+  glColor3f 0.0, 0.5, 0.5
+
+  glBegin GL_LINES
+
+  dim g,h as long
+
+  g=gsteps+0
+  h=g*0.5
+    
+  '' Horizontal lines
+  
+  x = gscale * h
+  y = (-gscale) * h
+  '
+  for i = 0 to g
+    glVertex3f -x, y, 0.0
+    glVertex3f x, y, 0.0
+    y+=gscale
+  next
+
+  '' Vertical lines
+  
+  x = -gscale * h
+  y = gscale * h
+  '
+  for i = 0 to g
+    glVertex3f x, -y, 0.0
+    glVertex3f x, y, 0.0
+    x+=gscale
+  next
+
+  glEnd
+
+  'Enable Z-buffer writing again
+  '
+  glDepthMask GL_TRUE
+
+  glPopMatrix
+  
+end sub
+
+;===============
+; DrawAllViews( )
+;===============
+
+sub DrawAllViews( )
+  dim bb
+  static as single,
+  
+  light_position(4) => (0.0, 8.0, 8.0, 1.0),
+  light_diffuse (4) => (0.5, 0.5, 0.5, 1.0),
+  light_specular(4) => (0.5, 0.5, 0.5, 1.0),
+  light_ambient (4) => (0.5, 0.5, 0.5, 1.0)
+  
+  static as double aspect
+  
+  ;
+  ;Calculate aspect of window
+  ;
+  if ( wheight > 0 )
+    aspect = wwidth / wheight
+  else
+    aspect = 1.0
+  end if
+  '
+  glClearColor 0.1, 0, 0.5, 0
+  glClear GL_COLOR_BUFFER_BIT OR GL_DEPTH_BUFFER_BIT
+  '
+  glEnable GL_SCISSOR_TEST
+  ;
+  glEnable GL_DEPTH_TEST
+  glDepthFunc GL_LEQUAL
+
+
+  ;======================
+  ;** ORTHOGONAL VIEWS **
+  ;======================
+  
+
+  ;For orthogonal views, use wireframe rendering
+  ;---------------------------------------------
+
+  glPolygonMode GL_FRONT_AND_BACK, GL_LINE
+
+  ;Enable line anti-aliasing
+  ;
+  glEnable GL_LINE_SMOOTH
+  glEnable GL_BLEND
+  glBlendFunc GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA
+
+  ;Setup orthogonal projection matrix
+
+  glMatrixMode GL_PROJECTION
+  glLoadIdentity
+  dim as long a
+  glOrtho  -3*aspect, 3.0*aspect, -3.0, 3.0, 1.0, 50
+
+  dim w,h as long
+  w=wwidth : h=wheight
+  sar w : sar h
+ 
+  glMatrixMode GL_MODELVIEW
+  glLoadIdentity
+
+
+  ;Upper left view (TOP VIEW)
+  ;--------------------------
+  ;
+  glViewport 0,h,w,h
+  glScissor  0,h,w,h
+  DrawGrid 0.4,12
+  if active_view=1 then DrawBorder 0.45,12
+  glMatrixMode GL_MODELVIEW
+  glLoadIdentity
+  gluLookAt _
+  0.0, 10.0, 0.1,  'Eye-position (above)
+  0.0,  0.0, 0.0,  'View-point
+  0.0,  1.0, 0.0   'Up-vector
+  DrawScene
+
+  ;Lower left view (FRONT VIEW)
+  ;----------------------------
+  ;
+  glViewport 0,0,w,h
+  glScissor  0,0,w,h
+  ;glMatrixMode GL_MODELVIEW
+  ;
+  DrawGrid 0.4, 12
+  if active_view=3 then DrawBorder 0.45,12
+  glLoadIdentity
+  gluLookAt _
+  0.0, 0.0, 10.0,  'Eye-position (in front of)
+  0.0, 0.0,  0.0,  'View-point
+  0.0, 1.0,  0.0   'Up-vector
+  DrawScene
+
+  ;Lower right view (SIDE VIEW)
+  ;----------------------------
+  ;
+  glViewport w,0,w,h
+  glScissor  w,0,w,h
+  DrawGrid 0.4, 12
+  if active_view=4 then DrawBorder 0.45,12
+  glMatrixMode GL_MODELVIEW
+  glLoadIdentity
+  
+  gluLookAt _
+  10.0, 0.0, 0.0,  'Eye-position (to the right)
+   0.0, 0.0, 0.0,  'View-point
+   0.0, 1.0, 0.0   'Up-vector
+  
+  DrawScene
+
+  ;Disable line anti-aliasing
+  ;
+  glDisable GL_LINE_SMOOTH
+  glDisable GL_BLEND
+
+
+  ;======================
+  ;** PERSPECTIVE VIEW **
+  ;======================
+
+  ;For perspective view, use solid rendering
+  ;
+  glPolygonMode GL_FRONT_AND_BACK, GL_FILL
+
+  ;Enable face culling (faster rendering)
+  ;
+  glEnable GL_CULL_FACE
+  glCullFace GL_BACK
+  glFrontFace GL_CW
+
+  ;Setup perspective projection matrix
+  ;
+  glMatrixMode GL_PROJECTION
+  glLoadIdentity
+  gluPerspective 65.0, aspect, 1.0, 50.0
+
+  ;Upper right view (PERSPECTIVE VIEW
+  '
+  glViewport  w, h, w, h
+  glScissor   w, h, w, h
+  glMatrixMode GL_MODELVIEW
+  glLoadIdentity
+  
+  gluLookAt _
+  3.0, 1.5, 3.0,  'Eye-position
+  0.0, 0.0, 0.0,  'View-point
+  0.0, 1.0, 0.0   'Up-vector
+  '
+  'Configure and enable light source 1
+  '
+  glLightfv GL_LIGHT1, GL_POSITION, light_position
+  glLightfv GL_LIGHT1, GL_AMBIENT,  light_ambient
+  glLightfv GL_LIGHT1, GL_DIFFUSE,  light_diffuse
+  glLightfv GL_LIGHT1, GL_SPECULAR, light_specular
+
+  glEnable GL_LIGHT1
+  glEnable GL_LIGHTING
+
+  DrawScene
+
+  glDisable GL_LIGHTING
+  glDisable GL_CULL_FACE
+  glDisable GL_DEPTH_TEST
+  glDisable GL_SCISSOR_TEST
+
+
+end sub
+
+
+
+
+  'dim keys(256) as long
+  'dim mapref(16) as long
+  'dim cameraProjectionMatrix(16) as single
+
+  dim as double,
+  
+  modelview(16),
+  projection(16)
+
+
+
+sub do_the_next_frame(BYVAL hWnd AS long )  ' construct each frame
+                                              '
+  static as long signal = 0
+  ' timing
+
+  'QueryPerformanceCounter &grtic2
+  'grlap=(grtic2-grtic1)*1e6/freq
+
+  ' fps=0.99*fps+10000/grlap ' moving average frames per sec
+  ' screen refresh
+  ' if bselect+kselect+refresh=0 then grtic1=grtic2: GOTO xdo_frame ' no need to update frame
+  refresh=0
+  'glClear(GL_COLOR_BUFFER_BIT OR GL_DEPTH_BUFFER_BIT)
+
+  '=============
+  DrawAllViews()
+  '=============
+  glFinish   ' wait until all operations complete
+  SwapBuffers HDC
+  'IF firstframe=0 THEN SetWindowPos hWnd,HWND_TOP,100,100,500,500,0: firstframe=1
+
+  'grtic1=grtic2
+  '
+xdo_frame:
+
+end sub                                    '
+
+
+
+
+'include mwinproc.inc
+'////////////////////
+
+'---------------------------------------------------------------------------------------------------------------------
+function WndProc (byval hWnd as long, byval wMsg as long, byval wParam as long, byval lparam as long) as long callback
+'=====================================================================================================================
+
+  STATIC cxClient AS LONG
+  STATIC cyClient AS LONG
+  LOCAL  hdc AS LONG
+
+    dim viewport(4) AS LONG
+
+    dim as long a,b,c,i,j
+    dim as long x,y,z
+
+    if wmsg=wm_paint then refresh=1
+
+
+  '==========
+  select wMsg
+  '==========
+  '
+  
+  '---------------
+  case WM_ACTIVATE
+  '===============
+      
+    if HIwrd(wParam) then exit function
+    
+  '--------------      
+  case WM_DESTROY
+  '==============
+      
+    goto termination
+
+  '------------    
+  case WM_TIMER
+  '============
+  
+    if wParam=1
+      do_the_next_frame (hWnd)
+      if ReqShutDown then goto termination
+    end if
+
+  '---------------
+  case WM_KEYDOWN
+  '==============
+  
+    wParam=wParam AND 255
+    'keys(wParam) = 1: keyd=wParam: kselect=wParam
+    if wParam=27 then ReqShutDown=1 : goto termination
+
+
+  '---------------
+  case WM_DESTROY
+  '===============
+
+    goto termination1
+
+  '----------------
+  case WM_MOUSEMOVE
+  '================
+
+    bselect=bselect OR 1
+    mPosX = LOwrd(lParam)
+    mPosY = HIwrd(lParam)
+    '
+    if bleft=1
+      '
+      x=mPosX : y=mPosY
+      '
+      'Depending on which view was selected, rotate around different axes
+      '
+      '=================
+      select active_view
+      '=================
+
+      '-----
+      case 1
+      '=====
+        '
+        rot_x = rot_x + y - ypos
+        rot_z = rot_z + x - xpos
+        '
+      '-----
+      case 3
+      '=====
+      
+        rot_x = rot_x + y - ypos
+        rot_y = rot_y + x - xpos
+        '
+      '-----
+      case 4
+      '=====
+        '
+        rot_y = rot_y + x - xpos
+        rot_z = rot_z + y - ypos
+        '
+      '--------
+      case else
+      '========
+        '
+        'Do nothing for perspective view, or if no view is selected
+        '
+      '=========
+      end select
+      '=========
+      '
+      'Remember mouse position
+      '
+      xpos = x
+      ypos = y
+      '
+    end if
+
+  '----------------
+  case WM_LBUTTONUP
+  '================
+
+    bLeft = 0:ePosX=mPosX:ePosY=mPosy
+    '
+    'Deselect any previously selected view
+    '
+    active_view = 0
+
+  '----------------
+  case WM_MBUTTONUP
+  '================
+
+    bMid = 0:ePosX=mPosX:ePosY=mPosy
+
+  '----------------
+  case WM_RBUTTONUP
+  '================
+ 
+    bRight = 0:ePosX=mPosX:ePosY=mPosy
+
+  '------------------
+  case WM_LBUTTONDOWN
+  '==================
+
+    bLeft  = 1:sPosX=mPosX:sPosY=mPosy
+    bSelect = bselect OR 2
+    xpos = LOwrd(lParam)
+    ypos = HIwrd(lParam)
+    '
+    ' Detect which of the four views was clicked
+    '
+    active_view = 1
+    if ( xpos >= wwidth\2 )
+      active_view+=1
+    end if
+    if ( ypos >= wheight\2 )
+      active_view = active_view + 2
+    end if
+    doredraw = TRUE
+
+  '------------------
+  case WM_MBUTTONDOWN
+  '==================
+
+    bMid  = 1 : sPosX=mPosX:sPosY=mPosy
+    bSelect = bselect OR 2
+
+  '------------------
+  case WM_RBUTTONDOWN
+  '==================
+
+    bRight = 1:sPosX=mPosX:sPosY=mPosY
+    bSelect = bselect OR 2
+
+  '-----------------
+  case WM_MOUSEWHEEL
+  '=================
+
+    bWheel = HIwrd(wParam)
+    bselect=1
+
+  '------------    
+  case %WM_SIZE
+  '============
+  
+    wWidth = lowrd lParam
+    wHeight = hiwrd lParam
+    '
+    'Set the viewport to new dimensions
+    '
+    if wHeight > 0 and wWidth > 0
+      glViewport 0, 0, wWidth, wHeight
+     viewport(1)=>0,0,wWidth,wHeight
+      '
+      glMatrixMode   GL_PROJECTION
+      glLoadIdentity
+      gluPerspective 45, wWidth/wHeight, 1.0, 100
+      glMatrixMode   GL_MODELVIEW
+      glGetDoublev   GL_MODELVIEW_MATRIX, modelview
+      glGetDoublev   GL_PROJECTION_MATRIX, projection
+    end if
+
+
+  '------------------
+  case %WM_ERASEBKGND
+  '==================
+  
+  function = 1
+
+  
+  '--------
+  case else
+  '========
+
+    function=DefWindowProc hWnd,wMsg,wParam,lParam
+
+  '=========
+  end select
+  '=========
+  ;
+  
+  exit function 
+  ;
+  termination:
+    '
+    if ReqShutDown<0 THEN exit function ' dont terminate
+    '
+  termination1:
+    '
+    KillTimer hWnd,1
+    'CLOSE
+    glDeleteLists 1000, 255 ' font
+    wglMakeCurrent hDC, NULL
+    wglDeleteContext hRC
+    ReleaseDC hWnd,hDC
+    PostQuitMessage 0
+
+end function ' WndProc
+
+
+
+'////////////////////
+
+
+
+
+
+'--------------------
+sub initialise_OpenGL
+  (
+    BYVAL hWnd AS LONG,
+    BYVAL hDC AS LONG,
+    BYVAL hRC AS LONG
+  )
+ '====================
+
+    'BuildFont
+    dim glFont       as LOGFONT
+    dim glFontHandle as long
+    '
+    glFont.lfHeight         = 1                            'Height Of Font
+    glFont.lfWeight         = FW_BOLD                       'Font Weight
+    glFont.lfCharSet        = ANSI_CHARSET                  'Character Set Identifier
+    glFont.lfOutPrecision   = OUT_TT_PRECIS                 'Output Precision
+    glFont.lfClipPrecision  = CLIP_DEFAULT_PRECIS           'Clipping Precision
+    glFont.lfQuality        = ANTIALIASED_QUALITY           'Output Quality
+    glFont.lfPitchAndFamily = FF_DONTCARE OR DEFAULT_PITCH  'Family And Pitch
+    copy0 &glFont.lfFaceName, `Arial` '`Comic Sans MS`      'Font Name
+    '
+    glFontHandle = CreateFontIndirect(&glFont)
+    glFontHandle = SelectObject(hDC, glFontHandle)
+    '
+    'wglUseFontOutlines hDC, 0, 255, 1000, 0.0, 0.2, WGL_FONT_POLYGONS, ?gmf)
+    '
+    DeleteObject(glFontHandle)
+end sub
+
+
+
+
+'-------------------------
+Function WinMain,
+
+  byval inst as long,
+  byval prevInst as long,
+  byval cmdline as long,
+  byval show as long
+  
+  as long
+'=========================
+
+  ; window handle
+  
+  dim a,b,c,hWnd as long
+  dim wc as WndClass
+  dim wm as MSG
+
+  with wc.                 '
+    style=CS_HREDRAW or CS_VREDRAW
+    lpfnWndProc=@WndProc
+    cbClsExtra=0
+    cbWndExtra=0    
+    hInstance=inst
+    hIcon=LoadIcon 0, IDI_APPLICATION
+    hCursor=LoadCursor 0,IDC_ARROW
+    hbrBackground=GetStockObject WHITE_BRUSH '
+    lpszMenuName=0
+    lpszClassName=@"Opengl"
+  end with
+  
+  if not RegisterClass &wc
+    MessageBox 0,`Registration failed`,`Problem`,MB_ICONERROR
+    exit function
+  end if                  '
+
+  hWnd=CreateWindowEx 0,wc.lpszClassName,`4 Port Viewer Demo`,
+  WS_OVERLAPPEDWINDOW,
+  CW_USEDEFAULT,CW_USEDEFAULT,480,480,
+  0,0,inst,0
+      
+  if not hWnd
+    MessageBox 0,`Unable to create window`,`problem`,MB_ICONERROR
+    exit function
+  end if  
+  
+  hDC   = GetDC(hWnd)
+
+
+  'setup pixel format
+
+
+  dim pfd AS PIXELFORMATDESCRIPTOR
+  '
+  pfd.nSize           = SIZEOF PIXELFORMATDESCRIPTOR 'Size of UDT structure
+  pfd.nVersion        = 1                            'Version. Always set to 1.
+  pfd.dwFlags         = PFD_DRAW_TO_WINDOW OR _      'Support Window
+                        PFD_SUPPORT_OPENGL OR _      'Support OpenGL
+                        PFD_DOUBLEBUFFER             'Support Double Buffering
+  pfd.iPixelType      = PFD_TYPE_RGBA                'Red, Green, Blue, & Alpha Mode
+  pfd.cColorBits      = 32                           '32-Bit Color Mode
+  pfd.cRedBits        = NULL                         'Ignore Color and Shift Bits...
+  pfd.cRedShift       = NULL                         '...
+  pfd.cGreenBits      = NULL                         '...
+  pfd.cGreenShift     = NULL                         '...
+  pfd.cBlueBits       = NULL                         '...
+  pfd.cBlueShift      = NULL                         '...
+  pfd.cAlphaBits      = NULL                         'No Alpha Buffer
+  pfd.cAlphaShift     = NULL                         'Ignore Shift Bit.
+  pfd.cAccumBits      = NULL                         'No Accumulation Buffer
+  pfd.cAccumRedBits   = NULL                         'Ignore Accumulation Bits...
+  pfd.cAccumGreenBits = NULL                         '...
+  pfd.cAccumBlueBits  = NULL                         '...
+  pfd.cAccumAlphaBits = NULL                         '... Good Cereal! ;)
+  pfd.cDepthBits      = 16                            ' bits z-buffer depth 8 16 24
+  pfd.cStencilBits    = 1                             'Stencil Buffer
+  pfd.cAuxBuffers     = NULL                         'No Auxiliary Buffer
+  pfd.iLayerType      = PFD_MAIN_PLANE               'Main Drawing Plane
+  pfd.bReserved       = NULL                         'Reserved
+  pfd.dwLayerMask     = NULL                         'Ignore Layer Masks...
+  pfd.dwVisibleMask   = NULL                         '...
+  pfd.dwDamageMask    = NULL                         '...
+
+  nPixelFormat = ChoosePixelFormat(hDC, &pfd) ' First without multisampling
+  SetPixelFormat(hDC, nPixelFormat, &pfd)
+  hRC = wglCreateContext (hDC)
+  wglMakeCurrent hDC, hRC
+
+  ReqNewMode=0 ' done
+
+  ShowWindow hWnd,show
+  UpdateWindow hWnd
+  ;
+  timerval=16 ' a bit less than 1/60 sec
+  SetTimer hWnd,1,timerval,NULL
+  ; 
+  ;MESSAGE LOOP
+  ;
+  while GetMessage &wm,0,0,0
+    TranslateMessage &wm
+    DispatchMessage &wm
+  wend
+  ;
+  function=wm.wparam
+  sleep 100
+
+end function ; end of WinMain
+
+
+  a=true
+
+  dim cmdline,inst as long
+  cmdline=GetCommandLine
+  inst=GetModuleHandle 0
+  '
+  
+  sub start() external link #pstart
+  WinMain (inst,0,cmdline,SW_NORMAL)
+  end sub
+
+  sub finish() external link #pfinish
+  freelibrary kernel32
+  freelibrary user32
+  freelibrary gdi32
+  terminate
+  end sub
+
+"
+
+
+'///////////////////////
+
+
+'msgbox 0,o2_prep src
+dim as long pStart,pFinish
+o2_basic src
+
+'msgbox 0,o2_len
+'sapi_speak("Hello Port Viewer")
+if len(o2_error) then
+  'sapi_speak("Problem: "+left$(o2_error,80))
+  msgbox 0,o2_error
+  stop
+end if
+'msgbox 0,o2_len+$cr+o2_error ': stop
+'File_Save("t.txt",o2_len+$cr+o2_error+$crlf+o2_prep "o2h "+src )': stop
+o2_exec
+declare sub Start()  at pStart
+declare sub Finish() at pFinish
+Start
+Finish
+'if len(o2_error) then msgbox 0,o2_error

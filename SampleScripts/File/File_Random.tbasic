@@ -1,0 +1,45 @@
+uses "File", "Console"
+
+type tRecord
+  LName AS STRING * 12
+  FName AS STRING * 8
+  Age   AS BYTE
+  nl    as string * 2
+end type
+
+dim Item        as tRecord
+dim OutFileName as string = app_sourcepath & "Test.DAT"
+dim f           as dword
+
+file_kill(OutFileName)
+f = file_open(OutFileName, "random", sizeof(tRecord))
+
+printl "Vader in the file"
+  Item.LName = "Vader"
+  Item.FName = "Darth"
+  Item.Age   = 1
+  Item.nl    = $crlf
+  file_putr(f, 1, Item)
+
+printl "Yoda in the file"
+  Item.LName = "Yoda"
+  Item.FName = "Mister"
+  Item.Age   = 2
+  file_putr(f, 2, Item)
+
+printl "---------------------------"
+
+reset item
+
+printl "Seeking first: "
+  file_getr f, 1, Item 
+  printl item.LName, item.FName, item.Age
+
+printL "Seeking second: "
+  file_getr f, 2, Item 
+  printl item.LName, item.FName, item.Age
+
+file_close(f)
+
+waitkey
+

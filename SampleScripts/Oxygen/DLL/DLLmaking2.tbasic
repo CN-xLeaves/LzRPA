@@ -1,0 +1,35 @@
+uses "oxygen"
+
+dim src as string
+
+src="
+
+%       filename "t.dll"
+%       dll
+include "RTL32.inc"
+
+extern export stdcall
+
+function hello(byval name as string) as string
+  return "Hello "+name
+end function
+
+end extern
+
+" 'end src
+
+o2_basic src
+if o2_errno then
+  msgbox 0, o2_error
+  stop
+else
+  o2_exec
+end if
+
+declare function hello lib "t.dll" alias "hello" (byval name as string) as string
+
+msgbox 0,hello("World!")
+
+
+
+

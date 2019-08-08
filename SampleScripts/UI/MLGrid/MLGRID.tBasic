@@ -1,0 +1,379 @@
+  #MINVERSION 1.8.9.0
+
+  '------------------------------------------------------------------------------
+  ' MLGrid Example
+  '------------------------------------------------------------------------------
+
+  
+  uses "UI"
+'  uses "Console"
+  
+  randomize
+
+  Begin ControlID
+    %IDC_MLGRID     
+    %IDC_LEFTMENU
+    %IDC_TOOLBAR
+    %IDC_InputBox
+
+    %MNU_FILE_CLEAR      
+    %MNU_FILE_LOAD
+    %MNU_FILE_EXIT
+    %MNU_Data_Sort_Asc
+    %MNU_Data_Sort_Des
+    %MNU_HELP_HELP
+    %MNU_HELP_ABOUT
+  End ControlID
+
+  '---Color for image transparency
+    global cPink as long = rgb(255, 0, 255)
+
+  '---Create and load image list
+    global iToolList    as long = ImageList_New(icon, 24, 24, 32)
+    global iToolList_d  as long = ImageList_New(icon, 24, 24, 32)
+    global iToolList_h  as long = ImageList_New(icon, 24, 24, 32)
+    
+      '---Clear
+        ImageList_Add masked, iToolList   , app_sourcepath & "Icons\new_document24.bmp"       , cPink 
+        ImageList_Add masked, iToolList_d , app_sourcepath & "Icons\new_document24_d.bmp"     , cPink 
+        ImageList_Add masked, iToolList_h , app_sourcepath & "Icons\new_document24_h.bmp"     , cPink 
+      '---Open
+        ImageList_Add masked, iToolList   , app_sourcepath & "Icons\folder_open24.bmp"        , cPink 
+        ImageList_Add masked, iToolList_d , app_sourcepath & "Icons\folder_open24_d.bmp"      , cPink 
+        ImageList_Add masked, iToolList_h , app_sourcepath & "Icons\folder_open24_h.bmp"      , cPink 
+      '---SortA
+        ImageList_Add masked, iToolList   , app_sourcepath & "Icons\sort_ascending24.bmp"        , cPink 
+        ImageList_Add masked, iToolList_d , app_sourcepath & "Icons\sort_ascending24_d.bmp"      , cPink 
+        ImageList_Add masked, iToolList_h , app_sourcepath & "Icons\sort_ascending24_h.bmp"      , cPink 
+      '---SortD
+        ImageList_Add masked, iToolList   , app_sourcepath & "Icons\sort_descending24.bmp"        , cPink 
+        ImageList_Add masked, iToolList_d , app_sourcepath & "Icons\sort_descending24_d.bmp"      , cPink 
+        ImageList_Add masked, iToolList_h , app_sourcepath & "Icons\sort_descending24_h.bmp"      , cPink 
+
+
+  '----------------------------------------------------------------------------
+  FUNCTION Main() as long
+  '----------------------------------------------------------------------------
+    local hDlg    AS long    '---Used to store window handle
+    local Count   as long
+    local hMenu   as long
+    local hPopup1 as long
+    local hPopup2 as long
+    
+    ' ** First create a top-level menu:
+    MENU NEW BAR TO hMenu
+
+    ' ** Add a top-level menu item with a popup menu:
+    MENU NEW POPUP TO hPopup1
+    MENU ADD POPUP,  hMenu, "&File", hPopup1, %MF_ENABLED
+    MENU ADD STRING, hPopup1, "&Clear"        , %MNU_FILE_CLEAR , %MF_ENABLED
+    MENU ADD STRING, hPopup1, "&Load ..."     , %MNU_FILE_LOAD  , %MF_ENABLED
+    MENU ADD STRING, hPopup1, "-"             , 0               , 0
+    MENU ADD STRING, hPopup1, "&Exit"         , %MNU_FILE_EXIT  , %MF_ENABLED
+
+
+    ' ** Now we can add another item to the menu that will bring up a sub-menu.  First we obtain a new popup menu handle to distinuish it from the first popup menu:
+    MENU NEW POPUP TO hPopup2
+
+
+    ' ** Finally, we'll add a second top-level menu and popup.  For this popup, we can reuse the first popup variable:
+    MENU NEW POPUP TO hPopup2
+    MENU ADD POPUP,  hMenu, "&Help", hPopup2, %MF_ENABLED
+    MENU ADD STRING, hPopup2, "&Help"         , %MNU_HELP_HELP  , %MF_ENABLED
+    MENU ADD STRING, hPopup2, "-"             , 0               , 0
+    MENU ADD STRING, hPopup2, "&About"        , %MNU_HELP_ABOUT , %MF_ENABLED
+
+
+        
+    '---Create a new dialog
+    Dialog New Pixels, 0, "thinBasic - MLGrid Control test", -1, -1, 640, 480,
+                                                  %WS_DLGFRAME          |
+                                                  %DS_CENTER            |
+                                                  %WS_CAPTION           |
+                                                  %WS_SYSMENU           |
+                                                  %WS_OVERLAPPEDWINDOW  |
+                                                  %WS_CLIPCHILDREN      ,
+                                                  0 TO hDlg
+
+    '---Attach menu to dialog          
+      MENU ATTACH hMenu, hDlg
+    
+    '---Set window minimum size
+      DIALOG SET MINSIZE hDlg, 408, 206
+
+
+
+    '---Show dialog
+    DIALOG SHOW modal hDlg, call cbDialog_Proc
+
+  END FUNCTION
+
+  '------------------------------------------------------------------------------
+  ' Callback procedure for main window
+  '------------------------------------------------------------------------------
+  callback FUNCTION cbDialog_Proc() as long
+  '------------------------------------------------------------------------------
+    static hGrid          as long
+    local Counter         as long
+    local w1, w2, h1, h2  as long
+    local lRow, lCol      as long
+    static ToolBarH       as long
+
+    select case cbmsg
+
+      case %WM_INITDIALOG
+        '---Add controls
+        'DIALOG SET GRADIENT cbhndl, %GRADIENT_FILL_V, rgb(193, 217, 240), rgb(0, 0, 0)
+        Control Add TOOLBAR  CBHNDL, %IDC_TOOLBAR, "", , , , , '%WS_VISIBLE OR %WS_TABSTOP OR %CCS_TOP OR %TBSTYLE_FLAT
+        toolbar_AddSeparator cbhndl, %IDC_TOOLBAR, 1
+        ToolBar_SetImageList cbhndl, %IDC_TOOLBAR, iToolList    , 0
+        ToolBar_SetImageList cbhndl, %IDC_TOOLBAR, iToolList_d  , 1
+        ToolBar_SetImageList cbhndl, %IDC_TOOLBAR, iToolList_h  , 2
+
+        toolbar_AddButton     cbhndl, %IDC_TOOLBAR, 1, %MNU_FILE_CLEAR    , %TBSTYLE_BUTTON, "Clear"
+        toolbar_AddButton     cbhndl, %IDC_TOOLBAR, 2, %MNU_FILE_LOAD     , %TBSTYLE_BUTTON, "Load"
+        toolbar_AddSeparator  cbhndl, %IDC_TOOLBAR, 1
+        toolbar_AddButton     cbhndl, %IDC_TOOLBAR, 3, %MNU_Data_Sort_Asc , %TBSTYLE_BUTTON, "SortA"
+        toolbar_AddButton     cbhndl, %IDC_TOOLBAR, 4, %MNU_Data_Sort_Des , %TBSTYLE_BUTTON, "SortD"
+
+
+        dialog get client cbhndl to w1, h1
+        control get size cbhndl, %IDC_TOOLBAR to w1, ToolBarH
+
+        Control Add Textbox, CBHNDL, %IDC_InputBox, "", 50, ToolBarH, w1, 20, %WS_TABSTOP | %ES_READONLY
+        
+                                        '"e3/r50000/c800/b3/m1First,Second,Third", _
+                                        '"r20000/c50/b3/e1/t2/m1Sort This Column,-,Hide This Column,Unhide All,-,Copy Rows,-,Col Resize/x50,90,70,80,90,200,110", _
+        hGrid = control add MLGRID, cbhndl, %IDC_MLGRID, "", _
+                                        0, ToolBarH + 20, 0, 0, %WS_VISIBLE Or %WS_CHILD, Call cbGrid
+
+        mlgrid_redim hGrid, 2000, 10, 2000, 10
+
+        MLGRID_SetColumnWidth hGrid, 1, 80, 40, 40, 40, 50, 40, 80
+
+        MLGrid_SetHeaderColor hGrid, %RGB_LAVENDER
+
+        MLGrid_SetGridColors hGrid, %WHITE, Rgb(240,240,250), %RGB_LAVENDER
+        
+        '---Fill 1:1
+        mlgrid_put(hgrid, 1, 1, "Cell data in 1:1", %TRUE)
+        'print "Filling 1000 cells ramdomly ... "
+        for Counter = 1 to 5000
+          lRow = rnd(1,2000)
+          lCol = rnd(1,10)
+          mlgrid_put(hgrid, lRow, lCol, "Sample (" & lRow & "-" & lCol & ")", %TRUE)
+        next
+        'printl "Done!"
+
+        mlgrid_put(hgrid, 0, 1, "Col A", %TRUE)
+        mlgrid_put(hgrid, 1, 0, "Row 1", %TRUE)
+
+        mlgrid_refresh hGrid
+
+        
+      Case %WM_COMMAND 
+        Select Case CBCTL 
+          
+          case %MNU_FILE_CLEAR
+            MLGRID_SetSelected hGrid, 1, 1
+            MLGRID_ClearGrid hGrid, %FALSE, %TRUE
+            
+          case %MNU_FILE_LOAD
+            msgbox cbhndl, "Command File Load"
+
+          case %MNU_FILE_EXIT
+            dialog end cbhndl
+            
+          case %MNU_HELP_HELP
+            msgbox cbhndl, "Command Help"
+
+          case %MNU_HELP_ABOUT
+            msgbox cbhndl, "Command About"
+          
+          case %MNU_Data_Sort_Asc
+            mlgrid_sort hGrid, mlgrid_GetCurCol(hGrid), 0
+            mlgrid_Refresh hGrid
+
+          case %MNU_Data_Sort_Des
+            mlgrid_sort hGrid, mlgrid_GetCurCol(hGrid), 1
+            mlgrid_Refresh hGrid
+
+        end select
+
+      case %WM_SIZE
+        dialog get client cbhndl to w1, h1
+        control set size cbhndl, %IDC_MLGRID, w1, h1 - (ToolBarH) - 21
+
+      CASE %WM_NOTIFY
+
+
+      case %WM_DESTROY
+        '---Do whatever needed just before dialog is destroyed.
+
+    end select
+  
+
+  END FUNCTION
+
+  '----------------------------------------------------------
+  CallBack Function cbGrid() As Long 
+  '----------------------------------------------------------
+    LOCAL  MLGN     AS NM_MLGRID PTR
+
+    LOCAL myrow       AS LONG
+    LOCAL oldrow      AS LONG
+    LOCAL mycol       AS LONG
+    LOCAL myitem      AS LONG
+    LOCAL mytype      AS LONG
+    LOCAL mystart     AS LONG
+    LOCAL myend       AS LONG
+    LOCAL mychar      AS LONG
+    LOCAL mytotalrows AS LONG
+    LOCAL mytotalcols AS LONG
+    LOCAL hEdit       AS LONG
+    LOCAL i, j        AS LONG
+    LOCAL s           AS STRING
+    LOCAL result      AS LONG
+    LOCAL myget       AS STRING
+
+    select case cbmsg
+      case %WM_NOTIFY
+
+        MLGN = CBNMHDR
+
+         IF MLGN.hdr.idFrom = %IDC_MLGRID THEN
+             SELECT CASE MLGN.hdr.code
+
+                    CASE %MLGN_RETURN
+                         myrow=MLGN.Param1 'current row
+                         mycol=MLGN.Param2 'current col
+                         s="Column " + STR$(mycol) + " Row " + STR$(myrow) + " Return key was pressed. "
+
+                    CASE %MLGN_DELETE
+                         myrow=MLGN.Param1 'current row
+                         mycol=MLGN.Param2 'current col
+                         s="Column " + STR$(mycol) + " Row " + STR$(myrow) + " Delete key was pressed. "
+
+                    CASE %MLGN_TAB
+                         myrow=MLGN.Param1 'current row
+                         mycol=MLGN.Param2 'current col
+                         s="Column " + STR$(mycol) + " Row " + STR$(myrow) + " Tab key was pressed. "
+
+                    CASE %MLGN_CHARPRESSED ' FUNCTION=1 to abort inserting character
+                         hEdit=MLGN.Param4   ' the edit box handle - for inserting char and testing result string
+                         mychar=MLGN.Param3  ' Char
+                         mycol=MLGN.Param2   ' current col
+                         myrow=MLGN.Param1   'current row
+                         s="Column " + STR$(mycol) + " Row " + STR$(myrow) + " Character " + CHR$(mychar) + " was pressed."
+
+                    CASE %MLGN_ESCAPEPRESSED
+                         myrow=MLGN.Param1 'current row
+                         mycol=MLGN.Param2 'current col
+                         s="Column " + STR$(mycol) + " Row " + STR$(myrow) + " Escape key was pressed. "
+
+                    CASE %MLGN_ROWDIRTY
+                         myrow=MLGN.Param1        'previous row
+                         s=" Row " + STR$(myrow) + " This previous row may need to be saved. "
+
+                    CASE %MLGN_CELLDIRTY
+                         myrow=MLGN.Param1 'previous row
+                         mycol=MLGN.Param2 'previous col
+                         s="Column " + STR$(mycol) + " Row " + STR$(myrow) + " This previous cell may need to be saved. "
+
+                    CASE %MLGN_ROWALTERED
+                         myrow=MLGN.Param1 'current row
+                         mycol=MLGN.Param2 'current col
+                         s="Column " + STR$(mycol) + " Row " + STR$(myrow) + " row was altered by this cell. "
+
+                    CASE %MLGN_CELLALTERED
+                         myrow=MLGN.Param1 'current row
+                         mycol=MLGN.Param2 'current col
+                         s="Column " + STR$(mycol) + " Row " + STR$(myrow) + " cell was altered. "
+
+                    CASE %MLGN_DATEPROBLEM
+                         myrow=MLGN.Param1 'previous row where the problem occured
+                         mycol=MLGN.Param2 'previous col where the problem occured
+                         s="Column " + STR$(mycol) + " Row " + STR$(myrow) + "; MLG made some alterations to the date. " 
+
+                    CASE %MLGN_CHECKCHANGED
+                          mychar=MLGN.Param3  'before toggle - if contained 255 then was unselected else should have contained 1 which was previously selected
+                          mycol=MLGN.Param2   ' Column of check change
+                          myrow=MLGN.Param1          ' Row of check change
+                          s="Column " + STR$(mycol) + " Row " + STR$(myrow) + " checkbox toggled from " + STR$(mychar)
+
+                    CASE %MLGN_COMBOCHANGED    'this message is sent on both a dropdown and dismiss of the list
+                         myrow=MLGN.Param1 'current col
+                         mycol=MLGN.Param2 'current col
+                         s="Column " + STR$(mycol) + " Row " + STR$(myrow) + "; had combobox activity" 
+
+                    CASE %MLGN_COLWIDTHCHANGED
+                         I=MLGN.Param1     ' New Width
+                         mycol=MLGN.Param2 ' Column of Mouse
+                         s="Column " + STR$(mycol) + " has Change Width to " + STR$(I) 
+
+                    CASE %MLGN_SELCHANGE       'sent after a cell has moved
+                         myrow=MLGN.Param1 'previous row
+                         mycol=MLGN.Param2 'previous col
+                         s="Previous Column " + STR$(mycol) + " Previous Row " + STR$(myrow) + " Cell selection has changed. " 
+
+                    CASE %MLGN_ROWCHANGE       'sent after a cell has moved
+                         myrow = MLGN.Param1 ' row
+                         oldrow = MLGN.Param2'previous row
+                         s = "Current Row " + STR$(myrow) + " Previous Row " + STR$(oldrow) + " Row selection has changed. Load Record?"
+
+                    CASE %MLGN_ROWSELCHANGE      'sent after buttonup if whole row/rows selected
+                         mystart=MLGN.Param1 'start row
+                         myend=MLGN.Param2   'end row
+                         s="Start Row " + STR$(mystart) + " End Row " + STR$(myend) + " Block selection of rows has changed. " 
+
+                    CASE %MLGN_COLSELCHANGE      'sent after buttonup if whole col/cols selected
+                         mystart=MLGN.Param1 'start col
+                         myend=MLGN.Param2   'end col
+                         s="Start Column " + STR$(mystart) + " End Column " + STR$(myend) + " Block selection of columns has changed. " 
+
+                    CASE %MLGN_ROWCOLALLBLOCKSEL
+                         mytotalrows=MLGN.Param1 'total rows
+                         mytotalcols=MLGN.Param2 'total cols
+                         s="Total grid has been block selected.  Total columns= " + STR$(mytotalcols) + " and total rows= " + STR$(mytotalrows) + ". " 
+
+                    CASE %MLGN_REDIMFAILED
+                        'An automatic append fail
+                         I=MLGN.Param1 'What was the calling point for the problem 1 = PutEX, 2=auto row append, remainder are insert messages
+                         J=MLGN.Param2 'Error codes 1 to 13; Check include file for detail
+                         s="A redimensioning of the data memory has failed." : list s
+
+                    CASE %MLGN_WANTNEWREC
+                         mytotalrows=MLGN.Param1   'current total rows before record is append to bottom
+                                                 'after a validation can elect to skip append with the %MLG_SETSKIPRECFLAG message
+                         s="A row has just been asked to be auto-appended. Total rows are currently " + STR$(mytotalrows) 
+
+                    CASE %MLGN_MADENEWREC
+                         mytotalrows=MLGN.Param1    'current total rows after record is append to bottom
+                         s="A row has just been auto-appended.  Total rows now are " + STR$(mytotalrows) : list s
+
+                    CASE %MLGN_RIGHTCLICK      'sent after a right click has occur.  Make Menu modifications if necessary
+                         myrow=MLGN.Param1 ' row
+                         mycol=MLGN.Param1 ' col
+                         s="Right click Current Column " + STR$(mycol) + " Current Row " + STR$(myrow) + " Right click has occured. " 
+
+                    CASE %MLGN_RCLICKMENU
+                         myitem=MLGN.Param3  ' Menu Item
+                         mycol=MLGN.Param2   ' Column of Mouse
+                         myrow=MLGN.Param1          ' Row of Mouse
+
+                         hMenu=SendMessage(hGrid1, %MLG_GETMENUHANDLE, 0, 0)
+                         IF myitem=1 AND hMenu > 0 THEN
+                           MENU GET STATE hMenu, 1 TO I
+                           IF I= %MF_CHECKED THEN
+                             MENU SET STATE hMenu, 1, %MF_UNCHECKED
+                            ELSE
+                             MENU SET STATE hMenu, 1, %MF_CHECKED
+                           END IF
+                         END IF
+           END SELECT
+           'printl "Notify:", s
+          control set text cbhndl, %IDC_InputBox, mlgrid_get MLGN.hdr.hwndFrom, mlgrid_getcurrow(MLGN.hdr.hwndFrom), mlgrid_getcurcol(MLGN.hdr.hwndFrom)
+        END IF
+      
+    end select 
+  end function

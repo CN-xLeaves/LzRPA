@@ -1,0 +1,358 @@
+'============================================================================
+'---Define needed modules
+'------
+Uses "TBGL"
+uses "UI"
+uses "TBASS"
+uses "DIR"
+uses "FILE"
+
+'============================================================================
+'---Some global variables and equates
+'------
+DIM hMenu         AS long  '---Dialog menu handle
+DIM hPopupFile    AS long  '---File menu
+DIM hPopupHelp    AS long  '---Help menu
+
+dim gRetCode      as long   '---Used general return value
+
+Begin ControlID
+  %ID_FILE_OPEN       '---Command for menu File/Open
+  %ID_FILE_EXIT       '---Command for menu File/Exit
+
+  %ID_HELP_ABOUT      '---Command for menu Help/About
+
+  %ID_EDITOR  
+  
+  %ID_TextBoxChanLen   
+  %ID_TextBoxChanPos 
+  %ID_TextBoxFileName  
+  
+  %ID_TIMER  
+  %ID_TrackBar0
+  %ID_TrackBar1
+  %ID_TrackBar2
+  %ID_TrackBar3
+End ControlID
+
+'============================================================================
+'---Script execution start
+'------
+function Main()
+  '---Test if sound initialization is ok
+  gRetCode = Sound_Init
+
+  '---If sound initialization process was ok, execute main function
+  if gRetCode = %TRUE then
+    Main
+  end if
+  
+  '---Release sound devices
+  Sound_Free
+end function
+
+'------
+'---Script execution end
+'============================================================================
+
+
+'============================================================================
+'---Script functions
+'============================================================================
+
+'----------------------------------------------------------------------------
+'---Unified output message box
+'------
+function ShowMessage(BYVAL es AS STRING, optional byval ReturnErrorCode as long) as long
+  dim ErrorCode as long
+  
+  if ReturnErrorCode = %TRUE then
+    ErrorCode = TBASS_ErrorGetCode
+  end if
+  MSGBOX 0, es & $CRLF & $CRLF & iif$(ReturnErrorCode = %TRUE, "BASS Error code: " & ErrorCode, "")
+
+  function = ErrorCode
+  
+END SUB
+
+'----------------------------------------------------------------------------
+'---Check and init sound library and device
+'------
+function Sound_Init() as long
+  Dim detectedVersion As Long
+  
+  function = %false
+
+  '---Check if lib loads and is correct version 
+  detectedVersion = TBASS_GetVersion
+  IF HIWRD(detectedVersion) <> %TBASS_VERSION THEN
+    ShowMessage "An incorrect version of BASS.DLL was loaded. Program aborted."
+    EXIT FUNCTION
+  END IF
+
+  '---Setup output for the default device
+  IF TBASS_Init(-1, 44100, 0, 0, 0) = 0 THEN
+    ShowMessage "Can't initialize device. Program aborted"
+    EXIT FUNCTION
+  END IF
+
+  TBASS_SetVolume(50)
+
+  '---OK, if we are here all should be ok to start
+  function = %true
+  
+end function
+
+'----------------------------------------------------------------------------
+'---Release sound library and device
+'------
+function Sound_Free() as long
+  TBASS_Free
+end function
+  
+
+'----------------------------------------------------------------------------
+'---Main function
+'------
+FUNCTION Main() AS LONG
+
+  DIM hDlg    AS LONG     '---Window handle
+
+  MENU NEW BAR    TO hMenu
+
+    MENU NEW POPUP  TO hPopupFile
+      MENU ADD POPUP  , hMenu       , "&File"     , hPopupFile      , %MF_ENABLED
+        MENU ADD STRING , hPopupFile  , "&Open ..." , %ID_FILE_OPEN   , %MF_ENABLED
+        MENU ADD STRING , hPopupFile  , "-"         , 0               , 0
+        MENU ADD STRING , hPopupFile  , "&Exit"     , %ID_FILE_EXIT   , %MF_ENABLED
+
+    MENU NEW POPUP  TO hPopupHelp
+      MENU ADD POPUP  , hMenu       , "&Help"     , hPopupHelp      , %MF_ENABLED
+        MENU ADD STRING , hPopupHelp  , "&About"    , %ID_HELP_ABOUT  , %MF_ENABLED
+
+
+  '---Create the main window
+  DIALOG NEW 0, "TBASS module example: stream execution", -1, -1, 400, 230, _
+                                                %WS_DLGFRAME            OR _
+                                                %DS_CENTER              OR _
+                                                %WS_CAPTION             OR _
+                                                %WS_SYSMENU             OR _
+                                                0 TO hDlg
+
+  MENU ATTACH hMenu, hDlg
+
+  CONTROL ADD label   , hDlg, 0               , "Stream lenght (bytes)"     ,   5,  15,  80,  13
+  CONTROL ADD TEXTBOX , hDlg, %ID_TextBoxChanLen  , "0"                         , 100,  15,  80,  13, %WS_TABSTOP OR %ES_RIGHT
+  
+  CONTROL ADD label   , hDlg, 0               , "Playback speed"     ,   190,  15,  60,  15, %SS_CENTERIMAGE
+  Control Add trackbar, hDlg, %ID_TrackBar2      , ""                          , 245,  15, 150,  15, %WS_CHILD Or %TBS_horz Or %WS_VISIBLE or %TBS_TOP or %tbs_noticks Or %WS_TABSTOP
+    TrackBar_SetRange(hDlg, %ID_TrackBar2, 1, 100)
+    TrackBar_SetPos(hDlg, %ID_TrackBar2, 50)
+  
+
+  CONTROL ADD label   , hDlg, 0               , "Current position (secs)"   ,   5,  30,  80,  13
+  CONTROL ADD TEXTBOX , hDlg, %ID_TextBoxChanPos  , "0"                         , 100,  30,  80,  13, %WS_TABSTOP OR %ES_RIGHT
+  CONTROL ADD label   , hDlg, 0               , "Progress"     ,   190,  30,  60,  15, %SS_CENTERIMAGE
+  Control Add trackbar, hDlg, %ID_TrackBar1      , ""                          , 245,  30, 150,  15, %WS_CHILD Or %TBS_horz Or %WS_VISIBLE or %TBS_TOP or %tbs_noticks Or %WS_TABSTOP
+
+  CONTROL ADD label   , hDlg, 0               , "Audio file loaded"         ,   5,  55,  80,  13
+  CONTROL ADD TEXTBOX , hDlg, %ID_TextBoxFileName , ""                          , 100,  55, 290,  13, %WS_TABSTOP             
+
+  Control Add trackbar, hDlg, %ID_TrackBar0      , ""                          ,  15,  70,  20, 110, %WS_CHILD Or %TBS_vert Or %WS_VISIBLE Or %TBS_AUTOTICKS Or %TBS_BOTTOM Or %WS_TABSTOP
+    TrackBar_SetTicFreq(hDlg, %ID_TrackBar0, 100 \ 20)
+    TrackBar_SetRange(hDlg, %ID_TrackBar0, 0, 100)
+    TrackBar_SetPos(hDlg, %ID_TrackBar0, TBASS_GetVolume)
+  
+
+  CONTROL ADD label   , hDlg, 0               , "Left-right pan:"         ,   5,  190,  80,  13
+
+  CONTROL ADD rtf_GetClass, hDlg, %ID_EDITOR, "",  50,  75, 340, 100, _
+                                                  %WS_CHILD           OR _
+                                                  %WS_CLIPCHILDREN    OR _
+                                                  %WS_VISIBLE         OR _
+                                                  %ES_MULTILINE       OR _
+                                                  %WS_VSCROLL         OR _
+                                                  %WS_HSCROLL         OR _
+                                                  %ES_AUTOVSCROLL     OR _
+                                                  %ES_AUTOHSCROLL     OR _
+                                                  %ES_WANTRETURN      , _
+                                                  %WS_EX_CLIENTEDGE
+
+  Control Add trackbar, hDlg, %ID_TrackBar3      , ""                          , 50, 185, 340,  15, %WS_CHILD Or %TBS_horz Or %WS_VISIBLE or %TBS_TOP or %tbs_noticks Or %WS_TABSTOP
+    TrackBar_SetRange(hDlg, %ID_TrackBar3, -100, 100)
+    TrackBar_SetPos(hDlg, %ID_TrackBar3, 0)
+    
+  '---Show dialog in MODELESS state, the only managed state at the moment
+  DIALOG SHOW MODAL hDlg, call dlgCallback
+end function
+
+callback function dlgCallback() as long  
+  local sFile   AS STRING   '---Audio file to load
+  static Channel AS DWORD    '---Audio channel to use
+  local cLen    as long     '---Channel len    
+    '---Now test the message
+    SELECT CASE cbMsg
+      case %WM_INITDIALOG
+        dialog set timer cbhndl, %ID_TIMER, 40
+        
+      Case %WM_HSCROLL 
+        '---Position
+        If CBLPARAM = Dialog_GetControl(CBHNDL, %ID_TrackBar1) Then  
+          gRetCode = TrackBar_GetPos(CBHNDL, %ID_TrackBar1)          
+          RTF_AppendText(CBHNDL, %ID_Editor, "Position: [b]" & CBMSG & "[/b] " & CBWPARAM & " lP:" & CBLPARAM & " -" & Str$(gRetCode) & "-" & $CRLF, %RTF_UBB)
+                    
+          control send cbHndl, %ID_Editor, %EM_LINESCROLL, 1, 1
+          if Channel > 0 then TBASS_ChannelSetPosition(Channel, gRetCode)
+        end if
+        
+        '---Frequency
+        if cblParam = Dialog_GetControl(cbHndl, %ID_TrackBar2) then
+          gRetCode = TrackBar_GetPos(CBHNDL, %ID_TrackBar2)
+          if Channel > 0 then TBASS_ChannelSetAttributes(Channel, gRetCode * 1000, -1, -101) 
+        end if
+
+        '---Pan
+        if cblParam = Dialog_GetControl(cbHndl, %ID_TrackBar3) then
+          gRetCode = TrackBar_GetPos(CBHNDL, %ID_TrackBar3)
+          if Channel > 0 then TBASS_ChannelSetAttributes(Channel, -1, -1, gRetCode/100) 
+        end if
+        
+      case %WM_vscroll
+        if cblParam = Dialog_GetControl(cbHndl, %ID_TrackBar0) then
+          gRetCode = TrackBar_GetPos(CBHNDL, %ID_TrackBar0)
+          gRetCode = 100-gRetCode
+          rtf_appendtext(cbHndl, %ID_Editor, "Volume: [b]" & gRetCode & $crlf, %RTF_UBB)
+          control send cbHndl, %ID_Editor, %EM_LINESCROLL, 1, 1
+          'TBASS_ChannelSetAttributes(Channel, -1, gRetCode/100, -101)
+          TBASS_ChannelSetAttributes(Channel, -1, gRetCode/100, -101)
+        End If
+
+      CASE %WM_COMMAND
+        '---Check which command has been fired
+        select case cbCtl
+          
+          case %ID_FILE_OPEN    '---Open from File Menu
+
+            CONTROL set TEXT cbHndl, %ID_TextBoxChanLen  , "0"
+            CONTROL set TEXT cbHndl, %ID_TextBoxChanPos  , "0"
+            CONTROL set TEXT cbHndl, %ID_TextBoxFileName , ""            
+            
+            '---If an audio channel is active, first we have to stop
+            if TBASS_channelisactive(Channel) then
+              tbass_channelstop(Channel)
+            end if
+            '---In any case better to free the stream 
+            TBASS_StreamFree(Channel)
+
+            '---Now ask which file to load
+            sFile = OpenStreamFile(cbHndl)
+
+            '---Check if file exists
+            if file_exists(sFile) = %FALSE then
+              ShowMessage "File " & sFile & $crlf & "does not exixts."
+            else
+
+              Channel = TBASS_StreamCreateFile(%TBASS_FALSE, sFile, 0, 0, %TBASS_SAMPLE_LOOP or %TBASS_STREAM_PRESCAN )
+
+              IF Channel = 0 THEN  '---whatever it is, it isn't playable
+                ShowMessage("Can't play the file " & sFile)
+              else
+
+                TBASS_ChannelPlay(Channel, %TBASS_TRUE)
+
+                cLen = TBASS_ChannelGetLength(Channel)
+               
+                TrackBar_SetPos(CBHNDL, %ID_TrackBar0, TBASS_GetVolume)
+                                                                       
+                TrackBar_SetRange_Min(CBHNDL, %ID_TrackBar1, 1)                                                                       
+                TrackBar_SetRange_Max(CBHNDL, %ID_TrackBar1, clen)                                                                       
+                CONTROL set text  cbHndl, %ID_TextBoxChanLen, clen
+                control set text cbHndl, %ID_TextBoxFileName, sFile
+
+              End If     
+              
+              TrackBar_SetPos(CBHNDL, %ID_TrackBar2, 50)
+
+            end if
+            
+          case %ID_HELP_ABOUT
+            menu_HelpAbout(cbHndl)
+            
+          CASE %ID_FILE_EXIT    '---Exit from File menu
+            dialog end cbhndl
+          
+        end select
+        
+        
+      CASE %WM_TIMER
+          If Channel <> 0 Then  '---If we have an open channel ... 
+            TrackBar_SetPos(CBHNDL, %ID_TrackBar1, TBASS_ChannelGetPosition(Channel))
+            
+            CONTROL_SetText(cbHndl, %ID_TextBoxChanPos, TBASS_ChannelGetPosition(Channel))
+            CONTROL_SetText(cbHndl, %ID_TextBoxChanPos, format$(tBASS_ChannelBytes2Seconds ( Channel, TBASS_ChannelGetPosition(Channel) ), "#0.00") )
+            
+          end if
+          
+      case %WM_CLOSE
+        dialog kill timer cbhndl, %ID_TIMER
+        
+    END SELECT 
+  
+END FUNCTION
+
+
+'----------------------------------------------------------------------------
+'---Open file function used to load stream audio file
+'------
+function OpenStreamFile(byval hDlg as long) as string
+  dim sFile   as string
+  dim sFilter as string
+
+  sFilter  = "MP3, MP2, MP1, OGG, WAV, AIFF  (Streams audio files)|*.MP3;*.MP2;*.MP1;*.OGG;*.WAV;*.AIFF|"
+  sFilter += "All Files (*.*)|*.*"
+
+  sFile = Dialog_OpenFile(hDlg, _
+                          "Open a stream audio file", _
+                          DIR_GetCurrent, _
+                          sFilter, _
+                          "MP3", _
+                          %OFN_FILEMUSTEXIST OR %OFN_HIDEREADONLY or %OFN_ENABLESIZING)
+  function = sFile
+end function
+
+
+'----------------------------------------------------------------------------
+'---About box
+'------
+FUNCTION menu_HelpAbout(byval hParent as long) AS LONG
+
+  dim hDlg    as long     '---About dialog handle
+  
+  DIALOG NEW hParent, "About", 0, 0, 170, 55, _
+                                              %WS_DLGFRAME    OR _
+                                              %DS_CENTER      OR _
+                                              %WS_CAPTION, 0 TO hDlg
+
+  CONTROL ADD LABEL   , hDlg, 10, "TBASS module demo, based on BASS DLL",   0,   0, 170, 25, %SS_CENTER OR %SS_CENTERIMAGE or %SS_SUNKEN
+                
+  Control Add TBURL32 , hDlg, 20, "thinBasic;http://www.thinbasic.com/" ,   5, 30, 100,  10, %WS_VISIBLE Or %WS_CHILD
+  Control Add TBURL32 , hDlg, 30, "un4seen;http://www.un4seen.com/"     ,   5, 40, 100,  10, %WS_VISIBLE Or %WS_CHILD
+  CONTROL ADD BUTTON    , hDlg, %IDOK, "Ok"                                  , 130, 30,  35,  20
+
+  DIALOG SHOW MODAL hDlg, call dlgAboutCallback
+end function
+
+callback function dlgAboutCallback() as long
+    
+    '---Now test the message
+    SELECT CASE cbMsg
+      
+      CASE %WM_COMMAND
+        SELECT CASE cbCtl
+          CASE %IDOK
+            DIALOG END cbhndl
+        END SELECT
+
+    END SELECT
+
+END FUNCTION

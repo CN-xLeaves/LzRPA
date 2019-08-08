@@ -1,0 +1,10 @@
+Uses "OS", "Console"
+
+printl "This script will show all running process. It can takes some seconds before giving results ..."  
+printl "-----"  
+printl OS_ProcessGetList($CRLF)
+printl "-----"
+printl "Is Thinbasic.exe running? " & IIF$(OS_ProcessIsRunning("Thinbasic.exe"), "YES", "NO")  
+printl "Is SuperThinbasic.exe running? " & IIF$(OS_ProcessIsRunning("SuperThinbasic.exe"), "YES", "NO")
+
+waitkey

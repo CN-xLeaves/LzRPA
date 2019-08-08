@@ -1,0 +1,113 @@
+  '------------------------------------------------------------------------------
+  ' Background image in dialog windows
+  '------------------------------------------------------------------------------
+  
+  uses "UI"
+
+  Begin ControlID
+    %ID_IMG0_t 
+    %ID_IMG1_t 
+    %ID_IMG2_t 
+
+    %ID_IMG0_s 
+    %ID_IMG1_s 
+    %ID_IMG2_s 
+
+    %ID_IMG0_i 
+    %ID_IMG1_i 
+    %ID_IMG2_i 
+  End ControlID
+
+  dim sImage1 as string value app_sourcepath & "\Images\BKImage.BMP"
+  dim sImage2 as string value app_sourcepath & "\Images\frogduck.bmp"
+  dim sImage3 as string value app_sourcepath & "\Images\hippo.bmp"
+
+  '------------------------------------------------------------------------------
+  ' Program start point
+  '------------------------------------------------------------------------------
+  '----------------------------------------------------------------------------
+  FUNCTION Main() as long
+  '----------------------------------------------------------------------------
+    LOCAL hDlg    AS DWORD    '---Used to store window handle
+    
+    '---Create a new dialog
+    DIALOG NEW 0, "thinBasic test background image", -1, -1, 410, 330, %WS_DLGFRAME OR %DS_CENTER OR %WS_CAPTION OR %WS_SYSMENU OR %WS_OVERLAPPEDWINDOW, 0 TO hDlg
+    '---Set window minimum size
+      DIALOG SET MINSIZE hDlg, 80, 80
+    '---Set window background image
+      dialog set image hDlg, sImage1
+    
+    '---Add controls
+    control add button, hDlg, %ID_IMG0_t, "Image 0 tile"    , 200, 270, 65, 14, %WS_CHILD or %WS_VISIBLE or %WS_TABSTOP or %BS_FLAT
+    control add button, hDlg, %ID_IMG1_t, "Image 1 tile"    , 270, 270, 65, 14, %WS_CHILD or %WS_VISIBLE or %WS_TABSTOP or %BS_FLAT
+    control add button, hDlg, %ID_IMG2_t, "Image 2 tile"    , 340, 270, 65, 14, %WS_CHILD or %WS_VISIBLE or %WS_TABSTOP or %BS_FLAT
+
+    control add button, hDlg, %ID_IMG0_s, "Image 0 Stretch" , 200, 290, 65, 14, %WS_CHILD or %WS_VISIBLE or %WS_TABSTOP or %BS_FLAT
+    control add button, hDlg, %ID_IMG1_s, "Image 1 Stretch" , 270, 290, 65, 14, %WS_CHILD or %WS_VISIBLE or %WS_TABSTOP or %BS_FLAT
+    control add button, hDlg, %ID_IMG2_s, "Image 2 Stretch" , 340, 290, 65, 14, %WS_CHILD or %WS_VISIBLE or %WS_TABSTOP or %BS_FLAT
+
+    control add button, hDlg, %ID_IMG0_i, "Image 0 iSize"   , 200, 310, 65, 14, %WS_CHILD or %WS_VISIBLE or %WS_TABSTOP or %BS_FLAT
+    control add button, hDlg, %ID_IMG1_i, "Image 1 iSize"   , 270, 310, 65, 14, %WS_CHILD or %WS_VISIBLE or %WS_TABSTOP or %BS_FLAT
+    control add button, hDlg, %ID_IMG2_i, "Image 2 iSize"   , 340, 310, 65, 14, %WS_CHILD or %WS_VISIBLE or %WS_TABSTOP or %BS_FLAT
+
+    '---Set resize properties
+    control set resize  hDlg, %ID_IMG0_t , 0, 1, 0, 1    
+    control set resize  hDlg, %ID_IMG1_t , 0, 1, 0, 1    
+    control set resize  hDlg, %ID_IMG2_t , 0, 1, 0, 1    
+
+    control set resize  hDlg, %ID_IMG0_s , 0, 1, 0, 1    
+    control set resize  hDlg, %ID_IMG1_s , 0, 1, 0, 1    
+    control set resize  hDlg, %ID_IMG2_s , 0, 1, 0, 1    
+
+    control set resize  hDlg, %ID_IMG0_i , 0, 1, 0, 1    
+    control set resize  hDlg, %ID_IMG1_i , 0, 1, 0, 1    
+    control set resize  hDlg, %ID_IMG2_i , 0, 1, 0, 1    
+
+    '---Show dialog
+    DIALOG SHOW MODAL hDlg, call dlgCallback
+    
+  END FUNCTION
+
+  '------------------------------------------------------------------------------
+  ' Callback procedure for main window
+  CALLBACK FUNCTION dlgCallback() as long
+  '------------------------------------------------------------------------------
+    local hRegion as long
+    local hBMP    as long
+    local Count   as long
+
+    '---Now test the message 
+    SELECT CASE cbMsg
+
+      case %WM_COMMAND
+        select case cbCtl
+          case %ID_IMG0_s
+            dialog set image cbHndl, sImage1
+          case %ID_IMG1_s
+            dialog set image cbHndl, sImage2
+          case %ID_IMG2_s
+            dialog set image cbHndl, sImage3
+
+          case %ID_IMG0_t
+            dialog set image cbHndl, sImage1, %BK_DrawMode_Tile
+          case %ID_IMG1_t
+            dialog set image cbHndl, sImage2, %BK_DrawMode_Tile
+          case %ID_IMG2_t
+            dialog set image cbHndl, sImage3, %BK_DrawMode_Tile
+
+          case %ID_IMG0_i
+            dialog set image cbHndl, sImage1, %BK_DrawMode_WinResize
+            dialog redraw cbHndl
+          case %ID_IMG1_i
+            dialog set image cbHndl, sImage2, %BK_DrawMode_WinResize
+            dialog redraw cbHndl
+          case %ID_IMG2_i
+            dialog set image cbHndl, sImage3, %BK_DrawMode_WinResize
+            dialog redraw cbHndl
+
+        End Select
+               
+    END SELECT
+           
+  END FUNCTION
+        

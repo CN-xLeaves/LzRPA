@@ -1,0 +1,59 @@
+'---Windows API usage example
+'   - declare the function inside thinBasic script
+'   - use the declared function exactly like a normal thinBasic function
+
+'---Here we declare inside thinBasic "WinBeep" function instructing thinBasic to find it
+'   into KERNEL32.DLL library under the name "Beep" (case sensitive!).
+'   "WinBeep" function expect 2 numeric parameters passed by value both double word type
+DECLARE FUNCTION WinBeep LIB "KERNEL32.DLL" ALIAS "Beep" (BYVAL dwFreq AS DWORD, BYVAL dwDuration AS DWORD) AS LONG
+
+Function Main()
+  '---Here call above functions using "WinBeep"
+  
+  MsgBox(0, "This example requires presence of PC Speaker", %MB_ICONINFORMATION or %MB_OK)
+  '  Bounce 32767, 246
+  '  Fall 2000, 550, 500
+  '  MaryLamb
+  ' Siren 780, 650, 2
+
+End Function
+
+'---Now some dummy functions using "WinBeep" ...
+function Bounce (High As Long, Low As Long) as long
+  Local Count As Long
+  For Count = 60 To 1 Step -2
+      WinBeep (Low - Count / 2, Count / 20)
+      WinBeep (High, Count / 15)
+  Next
+End function
+
+function Fall (High As Long, Low As Long, Del As Long) as long
+  Local Count As Long
+  For Count = High To Low Step -10
+      WinBeep (Count, Del / Count)
+  Next
+End function
+
+function Siren (High As Long, Range As Long, Nmb As Long) as long
+  Local Count1 As Long, Count2 As Long
+  For Count1 = 1 To Nmb
+      Count2 = Range
+      Do
+          If Count2 < -Range Then Exit Do
+          WinBeep (High - Abs(Count2), 1)
+          Count2 = Count2 - 2 / Range
+          Count2 = Count2 - 4
+      Loop
+  Next
+End function
+
+function MaryLamb() as long
+  WinBeep (330, 100): WinBeep (294, 100): WinBeep (262, 100): WinBeep (294, 100)
+  WinBeep (330, 100): WinBeep (330, 100): WinBeep (330, 200)
+  WinBeep (294, 100): WinBeep (294, 100): WinBeep (294, 200): WinBeep (330, 100)
+  WinBeep (392, 100): WinBeep (392, 200): WinBeep (330, 100)
+  WinBeep (294, 100): WinBeep (262, 100): WinBeep (294, 100): WinBeep (330, 100)
+  WinBeep (330, 100): WinBeep (330, 100): WinBeep (330, 100)
+  WinBeep (294, 100): WinBeep (294, 100): WinBeep (330, 100)
+  WinBeep (294, 100): WinBeep (262, 100)
+End Function

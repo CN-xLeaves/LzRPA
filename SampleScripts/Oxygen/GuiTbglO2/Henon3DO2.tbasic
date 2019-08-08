@@ -1,0 +1,126 @@
+'
+' The 2D primitive skeleton for TBGL
+' , started on 09-15-2013
+'
+
+Uses "TBGL"   , "oxygen"
+
+Dim x , y , hk , a , b As Single
+Dim scr , s As String 
+Integer flag=0
+Dim it As Integer
+Const Pi = 4 * Atn(1)
+
+
+
+ 
+ 
+
+
+  scr = "
+  Dim dup As Single
+  Dim x At #x As Single
+  Dim y At #y As Single
+  Dim a At #a As Single
+  Dim b At #b As Single
+  dim flag at #flag as integer
+  dim it at #it as integer
+   flag=0
+   dup=x
+   x=a*x-b*(y-x*x)
+   y=b*dup+a*(y-dup*dup)  
+   If Abs(x)+Abs(y) > 10 Then flag=1  
+   it=it+1                   
+  "
+  
+O2_BASIC scr
+If Len(O2_ERROR) Then
+MsgBox 0,O2_ERROR
+End If
+
+
+ 
+s=InputBox$(0,"Iteration Angle","Input","17") 
+
+hk=Val(s)*Pi/180 
+a=Sin(hk) : b=Cos(hk)
+
+ 
+
+
+      
+
+Function Main()
+  Local hWnd          As DWord
+  Local FrameRate     As Double
+  Local width, height As Long
+  Local i , j , rx , ry   As Single               
+  Local nit     As Single
+                      
+  ' -- Create and show window
+  hWnd = TBGL_CreateWindowEx("  Hénon Cloud - press ESC to quit / arrow keys to rotate / PGUP-PGDN +- a", 480, 480, 32, %TBGL_WS_WINDOWED Or %TBGL_WS_CLOSEBOX)
+  TBGL_ShowWindow
+  
+  ' -- Retrieve window client, to setup 2D render matrix later 
+  TBGL_GetWindowClient( hWnd, width, height )
+
+  ' -- The following line enables order dependent drawing
+  TBGL_DepthFunc(%TBGL_ALWAYS)
+
+  ' -- Resets status of all keys 
+  TBGL_ResetKeyState()   
+  rx=0 : ry=0
+  ' -- Main loop  
+  
+
+   'FrameRate = TBGL_GetFrameRate
+
+                  
+  
+  
+  While TBGL_IsWindow(hWnd) 
+    ' -- Read the current frame rate.
+    
+
+     
+    TBGL_ClearFrame
+       
+      TBGL_RenderMatrix3D  
+      TBGL_Camera(0, 0, 6, 0, 0, 0)
+      TBGL_Rotate rx,0,1,0  
+      TBGL_Rotate ry,1,0,0
+      TBGL_Color(0,200,0) 
+      nit=0
+      TBGL_BeginPoly %GL_POINTS
+      For i = 0 To 2 Step 0.3
+       For j = 0 To 2 Step 0.3  
+               x=i : y=j : Incr nit : it=0
+        While it < 500 
+         O2_EXEC  
+         If flag Then Exit While
+         TBGL_Vertex x , y , nit/60
+         
+        Wend
+         
+       Next  
+             
+      Next
+       
+      TBGL_EndPoly
+      TBGL_DrawFrame 
+      
+    If TBGL_GetWindowKeyState(hWnd, %VK_UP) Then ry=ry+3 
+    If TBGL_GetWindowKeyState(hWnd, %VK_DOWN) Then ry=ry-3               
+    If TBGL_GetWindowKeyState(hWnd, %VK_LEFT) Then rx=rx-3 
+    If TBGL_GetWindowKeyState(hWnd, %VK_RIGHT) Then rx=rx+3 
+    If TBGL_GetWindowKeyState(hWnd, %VK_PGUP) Then hk=hk+0.005   :    a=Sin(hk) : b=Cos(hk)
+    If TBGL_GetWindowKeyState(hWnd, %VK_PGDN) Then hk=hk-0.005   :    a=Sin(hk) : b=Cos(hk)
+    If TBGL_GetWindowKeyState(hWnd, %VK_ESCAPE) Then Exit While 
+  
+  Wend 
+
+  TBGL_DestroyWindow
+  
+End Function 
+                                                           
+                                                     

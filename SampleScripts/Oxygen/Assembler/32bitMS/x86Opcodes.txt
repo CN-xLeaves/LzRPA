@@ -1,0 +1,1339 @@
+Notes on x86 OpCodes
+--------------------
+
+
+
+Full information: Intel document 24319102.pdf
+http://developer.intel.com/design/pentiumii/manuals/243191.htm
+
+
+
+general structure of an instruction
+-----------------------------------
+
+opcode prefix 0..n bytes
+escape byte 0..1 bytes
+opcode 1 byte
+address mode byte 0..1 bytes
+sib 0..1 byte
+displacement 0 1 2 4
+data 0 1 2 4 8 10 bytes
+
+
+address mode byte
+mod : reg : r/m 
+
+mod
+ 
+00 r/m indirect no displacement
+01 r/m indirect 1 byte displacement
+10 r/m indirect full displacement (2 or 4 bytes)
+11 r/m reg direct
+
+reg
+
+EAX/AX/AL/MM0/XMM0  000
+ECX/CX/CL/MM1/XMM1  001
+EDX/DX/DL/MM2XMM2   010
+EBX/BX/BL/MM3/XMM3  011
+ESP/SP/AH/MM4/XMM4  100
+EBP/BP/CH/MM5/XMM5  101
+ESI/SI/DH/MM6/XMM6  110
+EDI/DI/BH/MM7/XMM7  111
+
+
+32 bit mode mod 00 reg 000 (100=sib follows if mod not 11) (101=displ only if mod=00) r/m 000
+
+r/m 
+eax  000 
+ecx  001
+edx  010
+ebx  011
+SIB  100 (except mod=11 then esp)
+ebp  101
+esi  110
+edi  111
+
+
+SIB byte  scale 00 index 000 (100=none) base 000 (if mod=00 101 then no base)
+
+
+SIB byte
+scale : index : base
+
+scale 
+00 index x 1
+01 index x 2
+10 index x 4
+11 index x 8
+
+index 
+eax  000 
+ecx  001
+edx  010
+ebx  011
+none 100
+ebp  101
+esi  110
+edi  111
+
+base
+
+eax  000 
+ecx  001
+edx  010
+ebx  011
+esp  100
+ebp  101 (except mod=0 no base)
+esi  110
+edi  111
+
+
+
+
+  0000 O Overflow
+  0001 NO No overflow
+  0010 B, NAE Below, Not above or equal
+  0011 NB, AE Not below, Above or equal
+  0100 E, Z Equal, Zero
+  0101 NE, NZ Not equal, Not zero
+  0110 BE, NA Below or equal, Not above
+  0111 NBE, A Not below or equal, Above
+  1000 S Sign
+  1001 NS Not sign
+  1010 P, PE Parity, Parity Even
+  1011 NP, PO Not parity, Parity Odd
+  1100 L, NGE Less than, Not greater than or equal to
+  1101 NL, GE Not less than, Greater than or equal to
+  1110 LE, NG Less than or equal to, Not greater than
+  1111 NLE, G Not less than or equal to, Greater than
+
+
+
+d Source Destination
+0 reg Field ModR/M or SIB Byte
+1 ModR/M or SIB Byte reg Field
+
+
+AAA – ASCII Adjust after Addition 0011 0111
+
+AAD – ASCII Adjust AX before Division 1101 0101 : 0000 1010
+
+AAM – ASCII Adjust AX after Multiply 1101 0100 : 0000 1010
+
+AAS – ASCII Adjust AL after Subtraction 0011 1111
+
+ADC – ADD with Carry
+  register1 to register2 0001 000w : 11 reg1 reg2
+  register2 to register1 0001 001w : 11 reg1 reg2
+  memory to register 0001 001w : mod reg r/m
+  register to memory 0001 000w : mod reg r/m
+  immediate to register 1000 00sw : 11 010 reg : immediate data
+  immediate to AL, AX, or EAX 0001 010w : immediate data
+  immediate to memory 1000 00sw : mod 010 r/m : immediate data
+
+ADD – Add
+  register1 to register2 0000 000w : 11 reg1 reg2
+  register2 to register1 0000 001w : 11 reg1 reg2
+  memory to register 0000 001w : mod reg r/m
+  register to memory 0000 000w : mod reg r/m
+  immediate to register 1000 00sw : 11 000 reg : immediate data
+  immediate to AL, AX, or EAX 0000 010w : immediate data
+  immediate to memory 1000 00sw : mod 000 r/m : immediate data
+
+B-7
+INSTRUCTION FORMATS AND ENCODINGS
+
+AND – Logical AND
+  register1 to register2 0010 000w : 11 reg1 reg2
+  register2 to register1 0010 001w : 11 reg1 reg2
+  memory to register 0010 001w : mod reg r/m
+  register to memory 0010 000w : mod reg r/m
+  immediate to register
+  immediate to AL, AX, or EAX 0010 010w : immediate data
+  immediate to memory 1000 00sw : mod 100 r/m : immediate data
+
+ARPL – Adjust RPL Field of Selector
+  from register 0110 0011 : 11 reg1 reg2
+  from memory 0110 0011 : mod reg r/m
+
+BOUND – Check Array Against Bounds 0110 0010 : mod reg r/m
+
+BSF – Bit Scan Forward
+  register1, register2 0000 1111 : 1011 1100 : 11 reg2 reg1
+  memory, register 0000 1111 : 1011 1100 : mod reg r/m
+
+BSR – Bit Scan Reverse
+  register1, register2 0000 1111 : 1011 1101 : 11 reg2 reg1
+  memory, register 0000 1111 : 1011 1101 : mod reg r/m
+
+BSWAP – Byte Swap 0000 1111 : 1100 1 reg
+
+BT – Bit Test
+  register, immediate 0000 1111 : 1011 1010 : 11 100 reg: imm8 data
+  memory, immediate 0000 1111 : 1011 1010 : mod 100 r/m : imm8 data
+  register1, register2 0000 1111 : 1010 0011 : 11 reg2 reg1
+  memory, reg 0000 1111 : 1010 0011 : mod reg r/m
+
+BTC – Bit Test and Complement
+  register, immediate 0000 1111 : 1011 1010 : 11 111 reg: imm8 data
+  memory, immediate 0000 1111 : 1011 1010 : mod 111 r/m : imm8 data
+  register1, register2 0000 1111 : 1011 1011 : 11 reg2 reg1
+  memory, reg 0000 1111 : 1011 1011 : mod reg r/m
+
+BTR – Bit Test and Reset
+  register, immediate 0000 1111 : 1011 1010 : 11 110 reg: imm8 data
+  memory, immediate 0000 1111 : 1011 1010 : mod 110 r/m : imm8 data
+  register1, register2 0000 1111 : 1011 0011 : 11 reg2 reg1
+  memory, reg 0000 1111 : 1011 0011 : mod reg r/m
+
+BTS – Bit Test and Set
+  register, immediate 0000 1111 : 1011 1010 : 11 101 reg: imm8 data
+  memory, immediate 0000 1111 : 1011 1010 : mod 101 r/m : imm8 data
+  register1, register2 0000 1111 : 1010 1011 : 11 reg2 reg1
+  memory, reg 0000 1111 : 1010 1011 : mod reg r/m
+
+CALL – Call Procedure (in same segment)
+  direct 1110 1000 : full displacement
+  register indirect 1111 1111 : 11 010 reg
+  memory indirect 1111 1111 : mod 010 r/m
+
+CALL – Call Procedure (in other segment)
+  direct 1001 1010 : unsigned full offset, selector
+  indirect 1111 1111 : mod 011 r/m
+
+CBW – Convert Byte to Word 1001 1000
+
+CDQ – Convert Doubleword to Qword 1001 1001
+
+CLC – Clear Carry Flag 1111 1000
+
+CLD – Clear Direction Flag 1111 1100
+
+CLI – Clear Interrupt Flag 1111 1010
+
+CLTS – Clear Task-Switched Flag in CR0 0000 1111 : 0000 0110
+
+CMC – Complement Carry Flag 1111 0101
+
+CMOVcc – Conditional Move
+  register2 to register1 0000 1111: 0100 tttn : 11 reg1 reg2
+  memory to register 0000 1111: 0100 tttn : mod mem r/m
+
+CMP – Compare Two Operands
+  register1 with register2 0011 100w : 11 reg1 reg2
+  register2 with register1 0011 101w : 11 reg1 reg2
+  memory with register 0011 100w : mod reg r/m
+  register with memory 0011 101w : mod reg r/m
+  immediate with register 1000 00sw : 11 111 reg : immediate data
+  immediate with AL, AX, or EAX 0011 110w : immediate data
+  immediate with memory 1000 00sw : mod 111 r/m
+
+CMPS/CMPSB/CMPSW/CMPSD – Compare String  Operands
+  1010 011w
+
+CMPXCHG – Compare and Exchange
+  register1, register2 0000 1111 : 1011 000w : 11 reg2 reg1
+  memory, register 0000 1111 : 1011 000w : mod reg r/m
+
+CMPXCHG8B – Compare and Exchange 8 Bytes
+  memory, register 0000 1111 : 1100 0111 : mod reg r/m
+
+CPUID – CPU Identification 0000 1111 : 1010 0010
+
+CWD – Convert Word to Doubleword 1001 1001
+
+CWDE – Convert Word to Doubleword 1001 1000
+
+DAA – Decimal Adjust AL after Addition 0010 0111
+
+DAS – Decimal Adjust AL after Subtraction 0010 1111
+
+DEC – Decrement by 1
+  register 1111 111w : 11 001 reg
+  register (alternate encoding) 0100 1 reg
+  memory 1111 111w : mod 001 r/m
+
+DIV – Unsigned Divide
+  AL, AX, or EAX by register 1111 011w : 11 110 reg
+  AL, AX, or EAX by memory 1111 011w : mod 110 r/m
+
+ENTER – Make Stack Frame for High Level Procedure
+  1100 1000 : 16-bit displacement : 8-bit level (L)
+
+HLT – Halt 1111 0100
+
+IDIV – Signed Divide
+  AL, AX, or EAX by register 1111 011w : 11 111 reg
+  AL, AX, or EAX by memory 1111 011w : mod 111 r/m
+
+IMUL – Signed Multiply
+  AL, AX, or EAX with register 1111 011w : 11 101 reg
+  AL, AX, or EAX with memory 1111 011w : mod 101 reg
+  register1 with register2 0000 1111 : 1010 1111 : 11 : reg1 reg2
+  register with memory 0000 1111 : 1010 1111 : mod reg r/m
+  register1 with immediate to register2 0110 10s1 : 11 reg1 reg2 : immediate data
+  memory with immediate to register 0110 10s1 : mod reg r/m : immediate data
+
+IN – Input From Port
+  fixed port 1110 010w : port number 
+  variable port 1110 110w
+
+INC – Increment by 1
+  reg 1111 111w : 11 000 reg
+  reg (alternate encoding) 0100 0 reg
+  memory 1111 111w : mod 000 r/m
+
+INS – Input from DX Port 0110 110w
+
+
+INT n – Interrupt Type n 1100 1101 : type
+
+INT – Single-Step Interrupt 3 1100 1100
+
+INTO – Interrupt 4 on Overflow 1100 1110
+
+INVD – Invalidate Cache 0000 1111 : 0000 1000
+
+INVLPG – Invalidate TLB Entry 0000 1111 : 0000 0001 : mod 111 r/m
+
+IRET/IRETD – Interrupt Return 1100 1111
+
+Jcc – Jump if Condition is Met
+  8-bit displacement 0111 tttn : 8-bit displacement
+  full displacement 0000 1111 : 1000 tttn : full displacement
+
+JCXZ/JECXZ – Jump on CX/ECX Zero Address-size prefix differentiates JCXZ and JECXZ
+  1110 0011 : 8-bit displacement
+
+JMP – Unconditional Jump (to same segment)
+  short 1110 1011 : 8-bit displacement
+  direct 1110 1001 : full displacement
+  register indirect 1111 1111 : 11 100 reg
+  memory indirect 1111 1111 : mod 100 r/m
+
+JMP – Unconditional Jump (to other segment)
+  direct intersegment 1110 1010 : unsigned full offset, selector
+  indirect intersegment 1111 1111 : mod 101 r/m
+
+LAHF – Load Flags into AHRegister 1001 1111
+
+LAR – Load Access Rights Byte
+  from register 0000 1111 : 0000 0010 : 11 reg1 reg2
+  from memory 0000 1111 : 0000 0010 : mod reg r/m
+
+LDS – Load Pointer to DS 1100 0101 : mod reg r/m
+
+LEA – Load Effective Address 1000 1101 : mod reg r/m
+
+LEAVE – High Level Procedure Exit 1100 1001
+
+LES – Load Pointer to ES 1100 0100 : mod reg r/m
+
+LFS – Load Pointer to FS 0000 1111 : 1011 0100 : mod reg r/m
+
+LGDT – Load Global Descriptor Table Register 0000 1111 : 0000 0001 : mod 010 r/m
+
+LGS – Load Pointer to GS 0000 1111 : 1011 0101 : mod reg r/m
+
+LIDT – Load Interrupt Descriptor Table Register
+
+LLDT – Load Local Descriptor Table Register
+
+LDTR from register 0000 1111 : 0000 0000 : 11 010 reg
+
+LDTR from memory 0000 1111 : 0000 0000 : mod 010 r/m
+
+
+LMSW – Load Machine Status Word
+  from register 0000 1111 : 0000 0001 : 11 110 reg
+  from memory 0000 1111 : 0000 0001 : mod 110 r/m
+
+LOCK – Assert LOCK# Signal Prefix 1111 0000
+
+LODS/LODSB/LODSW/LODSD – Load String Operand
+  1010 110w
+
+LOOP – Loop Count 1110 0010 : 8-bit displacement
+
+LOOPZ/LOOPE – Loop Count while Zero/Equal 1110 0001 : 8-bit displacement
+
+LOOPNZ/LOOPNE – Loop Count while not Zero/Equal
+  1110 0000 : 8-bit displacement
+
+LSL – Load Segment Limit
+  from register 0000 1111 : 0000 0011 : 11 reg1 reg2
+  from memory 0000 1111 : 0000 0011 : mod reg r/m
+
+LSS – Load Pointer to SS 0000 1111 : 1011 0010 : mod reg r/m
+
+LTR – Load Task Register
+  from register 0000 1111 : 0000 0000 : 11 011 reg
+  from memory 0000 1111 : 0000 0000 : mod 011 r/m
+
+MOV – Move Data
+  register1 to register2 1000 100w : 11 reg1 reg2
+  register2 to register1 1000 101w : 11 reg1 reg2
+  memory to reg 1000 101w : mod reg r/m
+  reg to memory 1000 100w : mod reg r/m
+  immediate to register 1100 011w : 11 000 reg : immediate data
+  immediate to register (alternate encoding) 1011 w reg : immediate data
+  immediate to memory 1100 011w : mod 000 r/m : immediate data
+  memory to AL, AX, or EAX 1010 000w : full displacement
+  AL, AX, or EAX to memory 1010 001w : full displacement
+
+MOV – Move to/from Control Registers
+  CR0 from register 0000 1111 : 0010 0010 : 11 000 reg
+  CR2 from register 0000 1111 : 0010 0010 : 11 010reg
+  CR3 from register 0000 1111 : 0010 0010 : 11 011 reg
+  CR4 from register 0000 1111 : 0010 0010 : 11 100 reg
+  register from CR0-CR4 0000 1111 : 0010 0000 : 11 eee reg
+
+ 
+MOV – Move to/from Debug Registers
+  DR0-DR3 from register 0000 1111 : 0010 0011 : 11 eee reg
+  DR4-DR5 from register 0000 1111 : 0010 0011 : 11 eee reg
+  DR6-DR7 from register 0000 1111 : 0010 0011 : 11 eee reg
+  register from DR6-DR7 0000 1111 : 0010 0001 : 11 eee reg
+  register from DR4-DR5 0000 1111 : 0010 0001 : 11 eee reg
+  register from DR0-DR3 0000 1111 : 0010 0001 : 11 eee reg
+
+MOV – Move to/from Segment Registers
+  register to segment register 1000 1110 : 11 sreg3 reg
+  register to SS 1000 1110 : 11 sreg3 reg
+  memory to segment reg 1000 1110 : mod sreg3 r/m
+  memory to SS 1000 1110 : mod sreg3 r/m
+  segment register to register 1000 1100 : 11 sreg3 reg
+  segment register to memory 1000 1100 : mod sreg3 r/m
+
+MOVS/MOVSB/MOVSW/MOVSD – Move Data from String to String
+  1010 010w
+
+MOVSX – Move with Sign-Extend
+  register2 to register1 0000 1111 : 1011 111w : 11 reg1 reg2
+  memory to reg 0000 1111 : 1011 111w : mod reg r/m
+
+MOVZX – Move with Zero-Extend
+  register2 to register1 0000 1111 : 1011 011w : 11 reg1 reg2
+  memory to register 0000 1111 : 1011 011w : mod reg r/m
+
+MUL – Unsigned Multiply
+  AL, AX, or EAX with register 1111 011w : 11 100 reg
+  AL, AX, or EAX with memory 1111 011w : mod 100 reg
+
+NEG – Two's Complement Negation
+  register 1111 011w : 11 011 reg
+  memory 1111 011w : mod 011 r/m
+  NOP – No Operation 1001 0000
+
+NOT – One's Complement Negation
+  register 1111 011w : 11 010 reg
+  memory 1111 011w : mod 010 r/m
+
+
+OR – Logical Inclusive OR
+  register1 to register2 0000 100w : 11 reg1 reg2
+  register2 to register1 0000 101w : 11 reg1 reg2
+  memory to register 0000 101w : mod reg r/m
+  register to memory 0000 100w : mod reg r/m
+  immediate to register 1000 00sw : 11 001 reg : immediate data
+  immediate to AL, AX, or EAX 0000 110w : immediate data
+  immediate to memory 1000 00sw : mod 001 r/m : immediate data
+
+OUT – Output to Port
+  fixed port 1110 011w : port number
+  variable port 1110 111w
+
+OUTS – Output to DX Port 0110 111w
+
+POP – Pop a Word from the Stack
+  register 1000 1111 : 11 000 reg
+  register (alternate encoding) 0101 1 reg
+  memory 1000 1111 : mod 000 r/m
+
+POP – Pop a Segment Register from the Stack
+  segment register CS, DS, ES 000 sreg2 111
+  segment register SS 000 sreg2 111
+  segment register FS, GS 0000 1111: 10 sreg3 001
+
+POPA/POPAD – Pop All General Registers 0110 0001
+
+POPF/POPFD – Pop Stack into FLAGS or EFLAGS Register
+  1001 1101
+
+PUSH – Push Operand onto the Stack
+  register 1111 1111 : 11 110 reg
+  register (alternate encoding) 0101 0 reg
+  memory 1111 1111 : mod 110 r/m
+  immediate 0110 10s0 : immediate data
+
+PUSH – Push Segment Register onto the Stack
+  segment register CS,DS,ES,SS 000 sreg2 110
+  segment register FS,GS 0000 1111: 10 sreg3 000
+
+PUSHA/PUSHAD – Push All General Registers 0110 0000
+
+PUSHF/PUSHFD – Push Flags Register onto the Stack
+  1001 1100
+
+
+RCL – Rotate thru Carry Left
+  register by 1 1101 000w : 11 010 reg
+  memory by 1 1101 000w : mod 010 r/m
+  register by CL 1101 001w : 11 010 reg
+  memory by CL 1101 001w : mod 010 r/m
+  register by immediate count 1100 000w : 11 010 reg : imm8 data
+  memory by immediate count 1100 000w : mod 010 r/m : imm8 data
+
+RCR – Rotate thru Carry Right
+  register by 1 1101 000w : 11 011 reg
+  memory by 1 1101 000w : mod 011 r/m
+  register by CL 1101 001w : 11 011 reg
+  memory by CL 1101 001w : mod 011 r/m
+  register by immediate count 1100 000w : 11 011 reg : imm8 data
+  memory by immediate count 1100 000w : mod 011 r/m : imm8 data
+
+RDMSR – Read from Model-Specific Register 0000 1111 : 0011 0010
+
+RDPMC – Read Performance Monitoring Counters
+  0000 1111 : 0011 0011
+
+RDTSC – Read Time-Stamp Counter 0000 1111 : 0011 0001
+
+REP INS – Input String 1111 0011 : 0110 110w
+
+REP LODS – Load String 1111 0011 : 1010 110w
+
+REP MOVS – Move String 1111 0011 : 1010 010w
+
+REP OUTS – Output String 1111 0011 : 0110 111w
+
+REP STOS – Store String 1111 0011 : 1010 101w
+
+REPE CMPS – Compare String 1111 0011 : 1010 011w
+
+REPE SCAS – Scan String 1111 0011 : 1010 111w
+
+REPNE CMPS – Compare String 1111 0010 : 1010 011w
+
+REPNE SCAS – Scan String 1111 0010 : 1010 111w
+
+RET – Return from Procedure (to same segment)
+  no argument 1100 0011
+  adding immediate to SP 1100 0010 : 16-bit displacement
+
+RET – Return from Procedure (to other segment)
+  intersegment 1100 1011
+  adding immediate to SP 1100 1010 : 16-bit displacement
+
+ROL – Rotate Left
+  register by 1 1101 000w : 11 000 reg
+  memory by 1 1101 000w : mod 000 r/m
+  register by CL 1101 001w : 11 000 reg
+  memory by CL 1101 001w : mod 000 r/m
+  register by immediate count 1100 000w : 11 000 reg : imm8 data
+  memory by immediate count 1100 000w : mod 000 r/m : imm8 data
+
+ROR – Rotate Right
+register by 1 1101 000w : 11 001 reg
+  memory by 1 1101 000w : mod 001 r/m
+  register by CL 1101 001w : 11 001 reg
+  memory by CL 1101 001w : mod 001 r/m
+  register by immediate count 1100 000w : 11 001 reg : imm8 data
+  memory by immediate count 1100 000w : mod 001 r/m : imm8 data
+
+RSM – Resume from System Management Mode 0000 1111 : 1010 1010
+
+SAHF – Store AH into Flags 1001 1110
+
+SAL – Shift Arithmetic Left same instruction as SHL
+
+SAR – Shift Arithmetic Right
+  register by 1 1101 000w : 11 111 reg
+  memory by 1 1101 000w : mod 111 r/m
+  register by CL 1101 001w : 11 111 reg
+  memory by CL 1101 001w : mod 111 r/m
+  register by immediate count 1100 000w : 11 111 reg : imm8 data
+  memory by immediate count 1100 000w : mod 111 r/m : imm8 data
+
+SBB – Integer Subtraction with Borrow
+  register1 to register2 0001 100w : 11 reg1 reg2
+  register2 to register1 0001 101w : 11 reg1 reg2
+  memory to register 0001 101w : mod reg r/m
+  register to memory 0001 100w : mod reg r/m
+  immediate to register 1000 00sw : 11 011 reg : immediate data
+  immediate to AL, AX, or EAX 0001 110w : immediate data
+  immediate to memory 1000 00sw : mod 011 r/m : immediate data
+
+SCAS/SCASB/SCASW/SCASD – Scan String 1101 111w
+
+
+SETcc – Byte Set on Condition
+  register 0000 1111 : 1001 tttn : 11 000 reg
+  memory 0000 1111 : 1001 tttn : mod 000 r/m
+
+SGDT – Store Global Descriptor Table Register 0000 1111 : 0000 0001 : mod 000 r/m
+
+SHL – Shift Left
+  register by 1 1101 000w : 11 100 reg
+  memory by 1 1101 000w : mod 100 r/m
+  register by CL 1101 001w : 11 100 reg
+  memory by CL 1101 001w : mod 100 r/m
+  register by immediate count 1100 000w : 11 100 reg : imm8 data
+  memory by immediate count 1100 000w : mod 100 r/m : imm8 data
+
+SHLD – Double Precision Shift Left
+  register by immediate count 0000 1111 : 1010 0100 : 11 reg2 reg1 : imm8
+  memory by immediate count 0000 1111 : 1010 0100 : mod reg r/m : imm8
+  register by CL 0000 1111 : 1010 0101 : 11 reg2 reg1
+  memory by CL 0000 1111 : 1010 0101 : mod reg r/m
+
+SHR – Shift Right
+  register by 1 1101 000w : 11 101 reg
+  memory by 1 1101 000w : mod 101 r/m
+  register by CL 1101 001w : 11 101 reg
+  memory by CL 1101 001w : mod 101 r/m
+  register by immediate count 1100 000w : 11 101 reg : imm8 data
+  memory by immediate count 1100 000w : mod 101 r/m : imm8 data
+
+SHRD – Double Precision Shift Right
+  register by immediate count 0000 1111 : 1010 1100 : 11 reg2 reg1 : imm8
+  memory by immediate count 0000 1111 : 1010 1100 : mod reg r/m : imm8
+  register by CL 0000 1111 : 1010 1101 : 11 reg2 reg1
+  memory by CL 0000 1111 : 1010 1101 : mod reg r/m
+
+SIDT – Store Interrupt Descriptor Table Register 0000 1111 : 0000 0001 : mod 001 r/m
+
+SLDT – Store Local Descriptor Table Register
+  to register 0000 1111 : 0000 0000 : 11 000 reg
+  to memory 0000 1111 : 0000 0000 : mod 000 r/m
+
+
+SMSW – Store Machine Status Word
+to register 0000 1111 : 0000 0001 : 11 100 reg
+to memory 0000 1111 : 0000 0001 : mod 100 r/m
+
+STC – Set Carry Flag 1111 1001
+
+STD – Set Direction Flag 1111 1101
+
+STI – Set Interrupt Flag 1111 1011
+
+STOS/STOSB/STOSW/STOSD – Store String Data 1010 101w
+
+STR – Store Task Register
+  to register 0000 1111 : 0000 0000 : 11 001 reg
+  to memory 0000 1111 : 0000 0000 : mod 001 r/m
+
+SUB – Integer Subtraction
+  register1 to register2 0010 100w : 11 reg1 reg2
+  register2 to register1 0010 101w : 11 reg1 reg2
+  memory to register 0010 101w : mod reg r/m
+  register to memory 0010 100w : mod reg r/m
+  immediate to register 1000 00sw : 11 101 reg : immediate data
+  immediate to AL, AX, or EAX 0010 110w : immediate data
+  immediate to memory 1000 00sw : mod 101 r/m : immediate data
+
+TEST – Logical Compare
+  register1 and register2 1000 010w : 11 reg1 reg2
+  memory and register 1000 010w : mod reg r/m
+  immediate and register 1111 011w : 11 000 reg : immediate data
+  immediate and AL, AX, or EAX 1010 100w : immediate data
+  immediate and memory 1111 011w : mod 000 r/m : immediate data
+
+
+UD2 – Undefined instruction 0000 FFFF : 0000 1011
+
+VERR – Verify a Segment for Reading
+  register 0000 1111 : 0000 0000 : 11 100 reg
+  memory 0000 1111 : 0000 0000 : mod 100 r/m
+
+VERW – Verify a Segment for Writing
+  register 0000 1111 : 0000 0000 : 11 101 reg
+  memory 0000 1111 : 0000 0000 : mod 101 r/m
+
+WAIT – Wait 1001 1011
+
+WBINVD – Writeback and Invalidate Data Cache 0000 1111 : 0000 1001
+
+WRMSR – Write to Model-Specific Register 0000 1111 : 0011 0000
+
+XADD – Exchange and Add
+  register1, register2 0000 1111 : 1100 000w : 11 reg2 reg1
+  memory, reg 0000 1111 : 1100 000w : mod reg r/m
+
+XCHG – Exchange Register/Memory with
+  Register
+  register1 with register2 1000 011w : 11 reg1 reg2
+  AL, AX, or EAX with reg 1001 0 reg
+  memory with reg 1000 011w : mod reg r/m
+
+XLAT/XLATB – Table Look-up Translation 1101 0111
+
+XOR – Logical Exclusive OR
+  register1 to register2 0011 000w : 11 reg1 reg2
+  register2 to register1 0011 001w : 11 reg1 reg2
+  memory to register 0011 001w : mod reg r/m
+  register to memory 0011 000w : mod reg r/m
+  immediate to register 1000 00sw : 11 110 reg : immediate data
+  immediate to AL, AX, or EAX 0011 010w : immediate data
+  immediate to memory 1000 00sw : mod 110 r/m : immediate data
+
+
+Prefix Bytes
+  address size 0110 0111
+  LOCK 1111 0000
+  operand size 0110 0110
+  CS segment override 0010 1110
+  DS segment override 0011 1110
+  ES segment override 0010 0110
+  FS segment override 0110 0100
+  GS segment override 0110 0101
+  SS segment override
+
+
+
+Table B-14. MMX™ Instruction Formats and Encodings
+Instruction and Format Encoding B W D Q
+--------------------------------------------------
+
+
+EMMS - Empty MMX™ state 0000 1111:01110111 n/a n/a n/a n/a
+
+MOVD - Move doubleword N N Y N
+  reg to mmreg 0000 1111:01101110: 11 mmxreg reg
+  reg from mmxreg 0000 1111:01111110: 11 mmxreg reg
+  mem to mmxreg 0000 1111:01101110: mod mmxreg r/m
+  mem from mmxreg 0000 1111:01111110: mod mmxreg r/m
+
+MOVQ - Move quadword N N N Y
+  mmxreg2 to mmxreg1 0000 1111:01101111: 11 mmxreg1 mmxreg2
+  mmxreg2 from mmxreg1 0000 1111:01111111: 11 mmxreg1 mmxreg2
+  mem to mmxreg 0000 1111:01101111: mod mmxreg r/m
+  mem from mmxreg 0000 1111:01111111: mod mmxreg r/m
+
+PACKSSDW1 - Pack dword to word data (signed with saturation)
+  n/a O I n/a
+  mmxreg2 to mmxreg1 0000 1111:01101011: 11 mmxreg1 mmxreg2
+  memory to mmxreg 0000 1111:01101011: mod mmxreg r/m
+
+PACKSSWB1 - Pack word to byte data (signed with saturation)
+  O I n/a n/a
+  mmxreg2 to mmxreg1 0000 1111:01100011: 11 mmxreg1 mmxreg2
+  memory to mmxreg 0000 1111:01100011: mod mmxreg r/m
+
+PACKUSWB1 - Pack word to byte data (unsigned with saturation)
+  O I n/a n/a
+  mmxreg2 to mmxreg1 0000 1111:01100111: 11 mmxreg1 mmxreg2
+  memory to mmxreg 0000 1111:01100111: mod mmxreg r/m
+
+PADD - Add with wrap-around Y Y Y N
+  mmxreg2 to mmxreg1 0000 1111: 111111gg: 11 mmxreg1 mmxreg2
+  memory to mmxreg 0000 1111: 111111gg: mod mmxreg r/m
+
+PADDS - Add signed with saturation Y Y N N
+  mmxreg2 to mmxreg1 0000 1111: 111011gg: 11 mmxreg1 mmxreg2
+  memory to mmxreg 0000 1111: 111011gg: mod mmxreg r/m
+
+PADDUS - Add unsigned with saturation Y Y N N
+  mmxreg2 to mmxreg1 0000 1111: 110111gg: 11 mmxreg1 mmxreg2
+  memory to mmxreg 0000 1111: 110111gg: mod mmxreg r/m
+
+PAND - Bitwise And N N N Y
+  mmxreg2 to mmxreg1 0000 1111:11011011: 11 mmxreg1 mmxreg2
+  memory to mmxreg   0000 1111:11011011: mod mmxreg r/m
+
+PANDN - Bitwise AndNot N N N Y
+  mmxreg2 to mmxreg1 0000 1111:11011111: 11 mmxreg1 mmxreg2
+  memory to mmxreg   0000 1111:11011111: mod mmxreg r/m
+
+PCMPEQ - Packed compare for equality Y Y Y N
+  mmxreg1 with mmxreg2 0000 1111:011101gg: 11 mmxreg1 mmxreg2
+  mmxreg with memory 0000 1111:011101gg: mod mmxreg r/m
+
+PCMPGT - Packed compare greater (signed) Y Y Y N
+  mmxreg1 with mmxreg2 0000 1111:011001gg: 11 mmxreg1 mmxreg2
+  mmxreg with memory 0000 1111:011001gg: mod mmxreg r/m
+
+PMADD - Packed multiply add n/a I O n/a
+  mmxreg2 to mmxreg1 0000 1111:11110101: 11 mmxreg1 mmxreg2
+  memory to mmxreg 0000 1111:11110101: mod mmxreg r/m
+
+PMULH - Packed multiplication N Y N N
+  mmxreg2 to mmxreg1 0000 1111:11100101: 11 mmxreg1 mmxreg2
+  memory to mmxreg 0000 1111:11100101: mod mmxreg r/m
+
+PMULL - Packed multiplication N Y N N
+  mmxreg2 to mmxreg1 0000 1111:11010101: 11 mmxreg1 mmxreg2
+  memory to mmxreg 0000 1111:11010101: mod mmxreg r/m
+
+POR - Bitwise Or N N N Y
+  mmxreg2 to mmxreg1 0000 1111:11101011: 11 mmxreg1 mmxreg2
+  memory to mmxreg 0000 1111:11101011: mod mmxreg r/m
+
+Instruction and Format Encoding B W D Q
+
+PSLL2 - Packed shift left logical N Y Y Y
+  mmxreg1 by mmxreg2 0000 1111:111100gg: 11 mmxreg1 mmxreg2
+  mmxreg by memory 0000 1111:111100gg: mod mmxreg r/m
+  mmxreg by immediate 0000 1111:011100gg: 11 110 mmxreg: imm8 data
+
+PSRA2 - Packed shift right arithmetic N Y Y N
+  mmxreg1 by mmxreg2 0000 1111:111000gg: 11 mmxreg1 mmxreg2
+  mmxreg by memory 0000 1111:111000gg: mod mmxreg r/m
+  mmxreg by immediate 0000 1111:011100gg: 11 100 mmxreg: imm8 data
+
+PSRL2 - Packed shift right logical N Y Y Y
+  mmxreg1 by mmxreg2  0000 1111:110100gg: 11 mmxreg1 mmxreg2
+  mmxreg by memory    0000 1111:110100gg: mod mmxreg r/m
+  mmxreg by immediate 0000 1111:011100gg: 11 010 mmxreg: imm8 data
+
+PSUB - Subtract with wraparound Y Y Y N
+  mmxreg2 from mmxreg1 0000 1111:111110gg: 11 mmxreg1 mmxreg2
+  memory from mmxreg 0000 1111:111110gg: mod mmxreg r/m
+
+PSUBS - Subtract signed with saturation Y Y N N
+  mmxreg2 from mmxreg1 0000 1111:111010gg: 11 mmxreg1 mmxreg2
+  memory from mmxreg 0000 1111:111010gg: mod mmxreg r/m
+
+PSUBUS - Subtract unsigned with saturation Y Y N N
+  mmxreg2 from mmxreg1 0000 1111:110110gg: 11 mmxreg1 mmxreg2
+  memory from mmxreg 0000 1111:110110gg: mod mmxreg r/m
+
+PUNPCKH - Unpack high data to next larger type Y Y Y N
+  mmxreg2 to mmxreg1 0000 1111:011010gg: 11 mmxreg1 mmxreg2
+  memory to mmxreg 0000 1111:011010gg: mod mmxreg r/m
+
+Instruction and Format Encoding B W D Q
+
+NOTES:
+1. The pack instructions perform saturation from signed packed data of one type to signed or unsigned
+data of the next smaller type.
+2. The format of the shift instructions has one additional format to support shifting by immediate shiftcounts.
+The shift operations are not supported equally for all data types.
+
+
+
+ B-19. Encoding of the SIMD Floating-Point Register Field
+Instruction and Format Encoding B W D Q DQ
+
+ADDPS - Packed Single-
+FP Add n/a n/a n/a n/a Y
+  xmmreg to xmmreg 00001111:01011000:11 xmmreg1 xmmreg2
+  mem to xmmreg 00001111:01011000: mod xmmreg r/m
+
+ADDSS - Scalar Single- FP Add n/a n/a Y n/a n/a
+  xmmreg to xmmreg 11110011:00001111:01011000:11 xmmreg1
+  xmmreg2
+  mem to xmmreg 11110011:00001111:01011000: mod xmmreg r/m
+
+ANDNPS - Bit-wise Logical And Not for Single-FP n/a n/a n/a n/a Y
+  xmmreg to xmmreg 00001111:01010101:11 xmmreg1 xmmreg2
+  mem to xmmreg 00001111:01010101: mod xmmreg r/m
+
+ANDPS - Bit-wise Logical And for Single-FP n/a n/a n/a n/a Y
+  xmmreg to xmmreg 00001111:01010100:11 xmmreg1 xmmreg2
+  mem to xmmreg 00001111:01010100: mod xmmreg r/m
+
+CMPPS - Packed Single-FP Compare n/a n/a n/a n/a Y 
+  xmmreg to xmmreg, imm8 00001111:11000010:11 xmmreg1 xmmreg2: imm8
+  mem to xmmreg, imm8 00001111:11000010: mod xmmreg r/m: imm8
+
+CMPSS - Scalar Single-FP Compare n/a n/a Y n/a n/a
+  xmmreg to xmmreg, imm8 11110011:00001111:11000010:11 xmmreg1
+  xmmreg2: imm8
+  mem to xmmreg, imm8 11110011:00001111:11000010: mod xmmreg r/m: imm8
+
+COMISS - Scalar Ordered Single-FP compare and set EFLAGS n/a n/a Y n/a n/a
+  xmmreg to xmmreg 00001111:00101111:11 xmmreg1 xmmreg2
+  mem to xmmreg 00001111:00101111: mod xmmreg r/m
+
+CVTPI2PS - Packed signed INT32 to Packed Single-FP conversion n/a n/a n/a n/a Y
+  mmreg to xmmreg 00001111:00101010:11 xmmreg1 mmreg1
+  mem to xmmreg 00001111:00101010: mod xmmreg r/m
+
+CVTPS2PI - Packed Single-FP to Packed INT32 conversion n/a n/a n/a n/a Y
+  xmmreg to mmreg 00001111:00101101:11 mmreg1 xmmreg1
+  mem to mmreg 00001111:00101101: mod mmreg r/m
+
+CVTSI2SS - Scalar signed INT32 to Single- FP conversion n/a n/a Y n/a n/a
+  r32 to xmmreg1 11110011:00001111:00101010:11 xmmreg r32
+  mem to xmmreg 11110011:00001111:00101010: mod xmmreg r/m
+
+CVTSS2SI - Scalar Single-FP to signed INT32 conversion n/a n/a Y n/a n/a
+  xmmreg to r32 11110011:00001111:00101101:11 r32 xmmreg
+  mem to r32 11110011:00001111:00101101: mod r32 r/m
+
+CVTTPS2PI - Packed Single-FP to Packed INT32 Conversion (truncate) n/a n/a n/a n/a Y
+  xmmreg to mmreg 00001111:00101100:11 mmreg1 xmmreg1
+  mem to mmreg 00001111:00101100: mod mmreg r/m
+
+
+CVTTSS2SI - Scalar Single-FP to signed INT32 conversion (truncate) n/a n/a Y n/a n/a
+  xmmreg to r32 11110011:00001111:00101100:11 r32 xmmreg1
+  mem to r32 11110011:00001111:00101100: mod r32 r/m
+
+DIVPS - Packed Single-FP Divide n/a n/a n/a n/a Y
+  xmmreg to xmmreg 00001111:01011110:11 xmmreg1 xmmreg2
+  mem to xmmreg 00001111:01011110: mod xmmreg r/m
+
+DIVSS - Scalar Single-FP 
+  Divide 11110011:00001111:01011110:11 xmmreg1
+  xmmreg2
+  xmmreg to xmmreg n/a n/a Y n/a n/a
+  mem to xmmreg 11110011:00001111:01011110: mod xmmreg r/m
+
+FXRSTOR - Restore FP/MMX™ and Streaming SIMD Extensions state
+  00001111:10101110:01 m512 n/a n/a n/a n/a n/a
+
+FXSAVE - Store FP/MMX™ and Streaming SIMD Extensions state
+  00001111:10101110:00 m512 n/a n/a n/a n/a n/a
+
+LDMXCSR - Load Streaming SIMD Extensions Technology Control/Status Register n/a n/a n/a n/a n/a
+  m32 to MXCSR 00001111:10101110:10 m32
+
+MAXPS - Packed Single-FP Maximum n/a n/a n/a n/a Y
+  xmmreg to xmmreg 00001111:01011111:11 xmmreg1 xmmreg2
+  mem to xmmreg 00001111:01011111: mod xmmreg r/m
+
+MAXSS - Scalar Single-FP Maximum n/a n/a Y n/a n/a
+  xmmreg to xmmreg 11110011:00001111:01011111:11 xmmreg1
+  xmmreg2
+  mem to xmmreg 11110011:00001111:01011111: mod xmmreg r/m
+
+MINPS - Packed Single- FP Minimum n/a n/a n/a n/a Y
+  xmmreg to xmmreg 00001111:01011101:11 xmmreg1 xmmreg2
+  mem to xmmreg 00001111:01011101: mod xmmreg r/m
+
+
+MINSS - Scalar Single-FP Minimum n/a n/a Y n/a n/a
+  xmmreg to xmmreg 11110011:00001111:01011101:11 xmmreg1
+  xmmreg2
+  mem to xmmreg 11110011:00001111:01011101: mod xmmreg r/m
+
+MOVAPS - Move Aligned Four Packed Single-FP n/a n/a n/a n/a Y
+  xmmreg2 to xmmreg1 00001111:00101000:11 xmmreg2 xmmreg1
+  mem to xmmreg1 00001111:00101000: mod xmmreg r/m
+  xmmreg1 to xmmreg2 00001111:00101001:11 xmmreg1 xmmreg2
+  xmmreg1 to mem 00001111:00101001: mod xmmreg r/m
+
+MOVHLPS - Move High to Low Packed Single-FP n/a n/a n/a Y n/a
+  xmmreg to xmmreg 00001111:00010010:11 xmmreg1 xmmreg2
+
+MOVHPS - Move High Packed Single-FP n/a n/a n/a Y n/a
+  mem to xmmreg 00001111:00010110: mod xmmreg r/m
+  xmmreg to mem 00001111:00010111: mod xmmreg r/m
+
+MOVLHPS - Move Low to High Packed Single-FP n/a n/a n/a Y n/a
+  xmmreg to xmmreg 00001111:00010110:11 xmmreg1 xmmreg2
+
+MOVLPS - Move Low Packed Single-FP
+  mem to xmmreg 00001111:00010010: mod xmmreg r/m n/a n/a n/a Y n/a
+  xmmreg to mem 00001111:00010011: mod xmmreg r/m
+
+MOVMSKPS - Move Mask To Integer n/a n/a n/a n/a Y
+  xmmreg to r32 00001111:01010000:11 r32 xmmreg
+
+MOVSS - Move Scalar Single-FP n/a n/a Y n/a n/a
+  xmmreg2 to xmmreg1 11110011:00001111:00010000:11 xmmreg2
+  xmmreg1
+  mem to xmmreg1 11110011:00001111:00010000: mod xmmreg r/m
+  xmmreg1 to xmmreg2 11110011:00001111:00010000:11 xmmreg1
+  xmmreg2
+  xmmreg1 to mem 11110011:00001111:00010000: mod xmmreg r/m
+
+
+
+Table B-19. Encoding of the SIMD Floating-Point Register Field
+
+MOVUPS - Move Unaligned Four Packed  single-FP n/a n/a n/a n/a Y
+  xmmreg2 to xmmreg1 00001111:00010000:11 xmmreg2 xmmreg1
+  mem to xmmreg1 00001111:00010000: mod xmmreg r/m
+  xmmreg1 to xmmreg2 00001111:00010001:11 xmmreg1 xmmreg2
+  xmmreg1 to mem 00001111:00010001: mod xmmreg r/m
+
+MULPS - Packed Single-FP Multiply n/a n/a n/a n/a Y
+  xmmreg to xmmreg 00001111:01011001:11 xmmreg1 xmmreg2
+  mem to xmmreg 00001111:01011001: mod xmmreg rm
+
+MULSS - Scalar Single-FP Multiply n/a n/a Y n/a n/a
+  xmmreg to xmmreg 11110011:00001111:010111001:11 xmmreg1
+  xmmreg2
+  mem to xmmreg 11110011:00001111:010111001: mod xmmreg r/m
+
+ORPS: Bit-wise Logical OR for Single-FP Data n/a n/a n/a n/a Y
+  xmmreg to xmmreg 00001111:01010110:11 xmmreg1 xmmreg2
+  mem to xmmreg 00001111:01010110 mod xmmreg r/m
+
+RCPPS - Packed Single-FP Reciprocal n/a n/a n/a n/a Y
+  xmmreg to xmmreg 00001111:01010011:11 xmmreg1 xmmreg2
+  mem to xmmreg 00001111:01010011: mod xmmreg r/m
+
+RCPSS - Scalar Single-FP Reciprocal n/a n/a Y n/a n/a
+  xmmreg to xmmreg 11110011:00001111:01010011:11 xmmreg1
+  xmmreg2
+  mem to xmmreg 11110011:00001111:01010011: mod xmmreg r/m
+
+RSQRTPS - Packed Single-FP Square Root Reciprocal n/a n/a n/a n/a Y
+  xmmreg to xmmreg 00001111:01010010:11 xmmreg1 xmmreg2
+  mem to xmmreg 00001111:01010010 mode xmmreg r/m
+
+RSQRTSS - Scalar Single-FP Square Root Reciprocal n/a n/a Y n/a n/a
+  xmmreg to xmmreg 11110011:00001111:01010010:11 xmmreg1
+  xmmreg2
+  mem to xmmreg 11110011:00001111:01010010 mod xmmreg r/m
+
+SHUFPS - Shuffle Single-FP n/a n/a n/a n/a Y
+  xmmreg to xmmreg, imm8 00001111:11000110:11 xmmreg1 xmmreg2: imm8
+  mem to xmmreg, imm8 00001111:11000110: mod xmmreg r/m: imm8
+
+SQRTPS - Packed Single-FP Square Root n/a n/a n/a n/a Y
+  xmmreg to xmmreg 00001111:01010001:11 xmmreg1 xmmreg 2
+  mem to xmmreg 00001111:01010001 mod xmmreg r/m
+
+SQRTSS - Scalar Single-FP Square Root n/a n/a Y n/a n/a
+  xmmreg to xmmreg 01010011:00001111:01010001:11 xmmreg1
+  xmmreg 2
+  mem to xmmreg 01010011:00001111:01010001 mod xmmreg r/m
+
+STMXCSR - Store Streaming SIMD Extensions Technology Control/Status Register n/a n/a Y n/a n/a
+  MXCSR to mem 00001111:10101110:11 m32
+
+SUBPS: Packed Single-FP Subtract n/a n/a n/a n/a Y
+  xmmreg to xmmreg 00001111:01011100:11 xmmreg1 xmmreg2
+  mem to xmmreg 00001111:01011100 mod xmmreg r/m
+
+SUBSS: Scalar Single-FP Subtract n/a n/a Y n/a n/a
+  xmmreg to xmmreg 11110011:00001111:01011100:11 xmmreg1
+  xmmreg2
+  mem to xmmreg 11110011:00001111:01011100 mod xmmreg r/m
+
+UCOMISS: Unordered Scalar Single-FP compare and set EFLAGS n/a n/a Y n/a n/a
+  xmmreg to xmmreg 00001111:00101110:11 xmmreg1 xmmreg2
+  mem to xmmreg 00001111:00101110 mod xmmreg r/m
+
+
+UNPCKHPS: Unpack
+High Packed Sing  le-FP Data n/a n/a n/a n/a Y
+  xmmreg to xmmreg 00001111:00010101:11 xmmreg1 xmmreg2
+  mem to xmmreg 00001111:00010101 mod xmmreg r/m
+
+UNPCKLPS: Unpack Low Packed Single-FP Data n/a n/a n/a n/a Y
+  xmmreg to xmmreg 00001111:00010100:11 xmmreg1 xmmreg2
+  mem to xmmreg 00001111:00010100 mod xmmreg r/m
+
+XORPS: Bit-wise Logical Xor for Single-FP Data n/a n/a n/a n/a Y
+  xmmreg to xmmreg 00001111:01010111:11 xmmreg1 xmmreg2
+  mem to xmmreg 00001111:01010111 mod xmmreg r/m
+
+PAVGB/PAVGW - Packed Average Y Y n/a n/a n/a
+  mmreg to mmreg 00001111:11100000:11 mmreg1 mmreg2
+  00001111:11100011:11 mmreg1 mmreg2
+  mem to mmreg 00001111:11100000 mod mmreg r/m
+  00001111:11100011 mod mmreg r/m
+
+PEXTRW - Extract Word n/a Y n/a n/a n/a
+  mmreg to reg32, imm8 00001111:11000101:11 mmreg r32: imm8
+
+PINSRW - Insert Word n/a Y n/a n/a n/a
+  reg32 to mmreg, imm8 00001111:11000100:11 r32 mmreg1: imm8
+  m16 to mmreg, imm8 00001111:11000100 mod mmreg r/m: imm8
+
+PMAXSW - Packed Signed Integer Word Maximum n/a Y n/a n/a n/a
+  mmreg to mmreg 00001111:11101110:11 mmreg1 mmreg2
+  mem to mmreg 00001111:11101110 mod mmreg r/m
+
+PMAXUB - Packed Unsigned Integer Byte Maximum Y n/a n/a n/a n/a
+  mmreg to mmreg 00001111:11011110:11 mmreg1 mmreg2
+  mem to mmreg 00001111:11011110 mod mmreg r/m
+
+PMINSW - Packed Signed Integer Word Minimum n/a Y n/a n/a n/a
+  mmreg to mmreg 00001111:11101010:11 mmreg1 mmreg2
+  mem to mmreg 00001111:11101010 mod mmreg r/m
+
+PMINUB - Packed Unsigned Integer Byte Minimum Y’ n/a n/a n/a n/a
+  mmreg to mmreg 00001111:11011010:11 mmreg1 mmreg2
+  mem to mmreg 00001111:11011010 mod mmreg r/m
+
+PMOVMSKB - Move Byte Mask To Integer O n/a n/a I n/a
+  mmreg to reg32 00001111:11010111:11 mmreg1 r32
+
+PMULHUW - Packed Multiply High Unsigned n/a O n/a I n/a
+  mmreg to mmreg 00001111:11100100:11 mmreg1 mmreg2
+  mem to mmreg 00001111:11100100 mod mmreg r/m
+
+PSADBW - Packed Sum of Absolute Differences I O n/a Y n/a
+  mmreg to mmreg 00001111:11110110:11 mmreg1 mmreg2
+  mem to mmreg 00001111:11110110 mod mmreg r/m
+
+PSHUFW - Packed Shuffle Word n/a Y n/a I n/a
+  mmreg to mmreg, imm8 00001111:01110000:11 mmreg1 mmreg2: imm8
+  mem to mmreg, imm8 00001111:01110000:11 mod mmreg r/m: imm8
+
+MASKMOVQ - Byte Mask Write n/a n/a n/a Y n/a
+  mmreg to mmreg 00001111:11110111:11 mmreg1 mmreg2
+
+MOVNTPS - Move Aligned Four Packed Single-FP Non Temporal n/a n/a n/a n/a Y
+  xmmreg to mem 00001111:00101011 mod xmmreg r/m
+
+MOVNTQ - Move 64 Bits Non Temporal n/a n/a n/a Y n/a
+  mmreg to mem 00001111:11100111 mod mmreg r/m
+
+PREFETCHT0 - Prefetch to all cache levels 
+  00001111:00011000:01 mem Y Y Y Y Y
+
+PREFETCHT1 - Prefetch to all cache levels
+  00001111:00011000:10 mem Y Y Y Y Y
+
+PREFETCHT2 - Prefetch to L2 cache 00001111:00011000:11 mem Y Y Y Y Y
+
+PREFETCHNTA -Prefetch to L1 cache 00001111:00011000:00 mem Y Y Y Y Y
+
+SFENCE - Store Fence 00001111:10101110:11111000 Y Y Y Y Y
+
+
+
+
+FPU
+
+
+F2XM1 – Compute 2ST(0) – 1 11011 001 : 1111 0000
+
+FABS – Absolute Value 11011 001 : 1110 0001
+
+FADD – Add
+  ST(0) ¬ ST(0) + 32-bit memory 11011 000 : mod 000 r/m
+  ST(0) ¬ ST(0) + 64-bit memory 11011 100 : mod 000 r/m
+  ST(d) ¬ ST(0) + ST(i) 11011 d00 : 11 000 ST(i)
+
+FADDP – Add and Pop
+  ST(0) ¬ ST(0) + ST(i) 11011 110 : 11 000 ST(i)
+
+FBLD – Load Binary Coded Decimal 11011 111 : mod 100 r/m
+
+FBSTP – Store Binary Coded Decimal and Pop 11011 111 : mod 110 r/m
+
+FCHS – Change Sign 11011 001 : 1110 0000
+
+FCLEX – Clear Exceptions 11011 011 : 1110 0010
+
+FCMOVcc – Conditional Move on EFLAG
+  Register Condition Codes
+  move if below (B) 11011 010 : 11 000 ST(i)
+  move if equal (E) 11011 010 : 11 001 ST(i)
+  move if below or equal (BE) 11011 010 : 11 010 ST(i)
+  move if unordered (U) 11011 010 : 11 011 ST(i)
+  move if not below (NB) 11011 011 : 11 000 ST(i)
+  move if not equal (NE) 11011 011 : 11 001 ST(i)
+  move if not below or equal (NBE) 11011 011 : 11 010 ST(i)
+  move if not unordered (NU) 11011 011 : 11 011 ST(i)
+
+FCOM – Compare Real
+  32-bit memory 11011 000 : mod 010 r/m
+  64-bit memory 11011 100 : mod 010 r/m
+  ST(i) 11011 000 : 11 010 ST(i)
+
+FCOMP – Compare Real and Pop
+  32-bit memory 11011 000 : mod 011 r/m
+  64-bit memory 11011 100 : mod 011 r/m
+  ST(i) 11011 000 : 11 011 ST(i)
+
+FCOMPP – Compare Real and Pop Twice 11011 110 : 11 011 001
+
+FCOMI – Compare Real and Set EFLAGS 11011 011 : 11 110 ST(i)
+
+FCOMIP – Compare Real, Set EFLAGS, and Pop 11011 111 : 11 110 ST(i)
+
+FCOS – Cosine of ST(0) 11011 001 : 1111 1111
+
+FDECSTP – Decrement Stack-Top Pointer 11011 001 : 1111 0110
+
+FDIV – Divide
+  ST(0) ¬ ST(0) ÷ 32-bit memory 11011 000 : mod 110 r/m
+  ST(0) ¬ ST(0) ÷ 64-bit memory 11011 100 : mod 110 r/m
+  ST(d) ¬ ST(0) ÷ ST(i) 11011 d00 : 1111 R ST(i)
+
+FDIVP – Divide and Pop
+  ST(0) ¬ ST(0) ÷ ST(i) 11011 110 : 1111 1 ST(i)
+
+FDIVR – Reverse Divide
+  ST(0) ¬ 32-bit memory ÷ ST(0) 11011 000 : mod 111 r/m
+  ST(0) ¬ 64-bit memory ÷ ST(0) 11011 100 : mod 111 r/m
+  ST(d) ¬ ST(i) ÷ ST(0) 11011 d00 : 1111 R ST(i)
+
+FDIVRP – Reverse Divide and Pop
+  ST(0) ¨ ST(i) ÷ ST(0) 11011 110 : 1111 0 ST(i)
+
+FFREE – Free ST(i) Register 11011 101 : 1100 0 ST(i)
+
+FIADD – Add Integer
+  ST(0) ¬ ST(0) + 16-bit memory 11011 110 : mod 000 r/m
+  ST(0) ¬ ST(0) + 32-bit memory 11011 010 : mod 000 r/m
+
+FICOM – Compare Integer
+  16-bit memory 11011 110 : mod 010 r/m
+  32-bit memory 11011 010 : mod 010 r/m
+
+FICOMP – Compare Integer and Pop
+  16-bit memory 11011 110 : mod 011 r/m
+  32-bit memory 11011 010 : mod 011 r/m
+
+FIDIV
+  ST(0) ¬ ST(0) + 16-bit memory 11011 110 : mod 110 r/m
+  ST(0) ¬ ST(0) + 32-bit memory 11011 010 : mod 110 r/m
+
+FIDIVR
+  ST(0) ¬ ST(0) + 16-bit memory 11011 110 : mod 111 r/m
+  ST(0) ¬ ST(0) + 32-bit memory 11011 010 : mod 111 r/m
+
+FILD – Load Integer
+  16-bit memory 11011 111 : mod 000 r/m
+  32-bit memory 11011 011 : mod 000 r/m
+  64-bit memory 11011 111 : mod 101 r/m
+
+FIMUL
+  ST(0) ¬ ST(0) + 16-bit memory 11011 110 : mod 001 r/m
+  ST(0) ¬ ST(0) + 32-bit memory 11011 010 : mod 001 r/m
+
+FINCSTP – Increment Stack Pointer 11011 001 : 1111 0111
+
+FINIT – Initialize Floating-Point Unit
+
+FIST – Store Integer
+  16-bit memory 11011 111 : mod 010 r/m
+  32-bit memory 11011 011 : mod 010 r/m
+
+FISTP – Store Integer and Pop
+  16-bit memory 11011 111 : mod 011 r/m
+  32-bit memory 11011 011 : mod 011 r/m
+  64-bit memory 11011 111 : mod 111 r/m
+
+FISUB
+  ST(0) ¬ ST(0) + 16-bit memory 11011 110 : mod 100 r/m
+  ST(0) ¬ ST(0) + 32-bit memory 11011 010 : mod 100 r/m
+
+
+FISUBR
+  ST(0) ¬ ST(0) + 16-bit memory 11011 110 : mod 101 r/m
+  ST(0) ¬ ST(0) + 32-bit memory 11011 010 : mod 101 r/m
+
+FLD – Load Real
+  32-bit memory 11011 001 : mod 000 r/m
+  64-bit memory 11011 101 : mod 000 r/m
+  80-bit memory 11011 011 : mod 101 r/m
+  ST(i) 11011 001 : 11 000 ST(i)
+
+FLD1 – Load +1.0 into ST(0) 11011 001 : 1110 1000
+
+FLDCW – Load Control Word 11011 001 : mod 101 r/m
+
+FLDENV – Load FPU Environment 11011 001 : mod 100 r/m
+
+FLDL2E – Load log2(e) into ST(0) 11011 001 : 1110 1010
+
+FLDL2T – Load log2(10) into ST(0) 11011 001 : 1110 1001
+
+FLDLG2 – Load log10(2) into ST(0) 11011 001 : 1110 1100
+
+FLDLN2 – Load loge(2) into ST(0) 11011 001 : 1110 1101
+
+FLDPI – Load p into ST(0) 11011 001 : 1110 1011
+
+FLDZ – Load +0.0 into ST(0) 11011 001 : 1110 1110
+
+FMUL – Multiply
+  ST(0) ¬ ST(0) ´ 32-bit memory 11011 000 : mod 001 r/m
+  ST(0) ¬ ST(0) ´ 64-bit memory 11011 100 : mod 001 r/m
+  ST(d) ¬ ST(0) ´ ST(i) 11011 d00 : 1100 1 ST(i)
+
+FMULP – Multiply
+  ST(0) ¬ ST(0) ´ ST(i) 11011 110 : 1100 1 ST(i)
+
+FNOP – No Operation 11011 001 : 1101 0000
+
+FPATAN – Partial Arctangent 11011 001 : 1111 0011
+
+FPREM – Partial Remainder 11011 001 : 1111 1000
+
+FPREM1 – Partial Remainder (IEEE) 11011 001 : 1111 0101
+
+FPTAN – Partial Tangent 11011 001 : 1111 0010
+
+FRNDINT – Round to Integer 11011 001 : 1111 1100
+
+FRSTOR – Restore FPU State 11011 101 : mod 100 r/m
+
+FSAVE – Store FPU State 11011 101 : mod 110 r/m
+
+FSCALE – Scale 11011 001 : 1111 1101
+
+FSIN – Sine 11011 001 : 1111 1110
+
+FSINCOS – Sine and Cosine 11011 001 : 1111 1011
+
+FSQRT – Square Root 11011 001 : 1111 1010
+
+FST – Store Real
+  32-bit memory 11011 001 : mod 010 r/m
+  64-bit memory 11011 101 : mod 010 r/m
+  ST(i) 11011 101 : 11 010 ST(i)
+
+FSTCW – Store Control Word 11011 001 : mod 111 r/m
+
+FSTENV – Store FPU Environment 11011 001 : mod 110 r/m
+
+FSTP – Store Real and Pop
+  32-bit memory 11011 001 : mod 011 r/m
+  64-bit memory 11011 101 : mod 011 r/m
+  80-bit memory 11011 011 : mod 111 r/m
+  ST(i) 11011 101 : 11 011 ST(i)
+
+FSTSW – Store Status Word into AX 11011 111 : 1110 0000
+
+FSTSW – Store Status Word into Memory 11011 101 : mod 111 r/m
+
+FSUB – Subtract
+  ST(0) ¬ ST(0) – 32-bit memory 11011 000 : mod 100 r/m
+  ST(0) ¬ ST(0) – 64-bit memory 11011 100 : mod 100 r/m
+  ST(d) ¬ ST(0) – ST(i) 11011 d00 : 1110 R ST(i)
+
+FSUBP – Subtract and Pop
+  ST(0) ¬ ST(0) – ST(i) 11011 110 : 1110 1 ST(i)
+
+FSUBR – Reverse Subtract
+  ST(0) ¬ 32-bit memory – ST(0) 11011 000 : mod 101 r/m
+  ST(0) ¬ 64-bit memory – ST(0) 11011 100 : mod 101 r/m
+  ST(d) ¬ ST(i) – ST(0) 11011 d00 : 1110 R ST(i)
+
+FSUBRP – Reverse Subtract and Pop
+  ST(i) ¬ ST(i) – ST(0) 11011 110 : 1110 0 ST(i)
+
+FTST – Test 11011 001 : 1110 0100
+
+FUCOM – Unordered Compare Real 11011 101 : 1110 0 ST(i)
+
+FUCOMP – Unordered Compare Real and Pop 11011 101 : 1110 1 ST(i)
+
+FUCOMPP – Unordered Compare Real and Pop Twice
+  11011 010 : 1110 1001
+
+FUCOMI – Unordered Compare Real and Set EFLAGS
+  11011 011 : 11 101 ST(i)
+
+FUCOMIP – Unordered Compare Real, Set
+
+EFLAGS, and Pop 11011 111 : 11 101 ST(i)
+
+FXAM – Examine 11011 001 : 1110 0101
+
+FXCH – Exchange ST(0) and ST(i) 11011 001 : 1100 1 ST(i)
+
+FXTRACT – Extract Exponent and Significand 11011 001 : 1111 0100
+
+FYL2X – ST(1) ´ log2(ST(0)) 11011 001 : 1111 0001
+
+FYL2XP1 – ST(1) ´ log2(ST(0) + 1.0) 11011 001 : 1111 1001
+
+FWAIT – Wait until FPU Ready 1001 1011
+
+

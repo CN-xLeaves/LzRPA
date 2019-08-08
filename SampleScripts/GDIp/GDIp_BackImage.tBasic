@@ -1,0 +1,87 @@
+'------------------------------------------------------------------------------
+' Load needed modules
+'------------------------------------------------------------------------------
+Uses "UI"
+Uses "GDIP"
+
+'------------------------------------------------------------------------------
+' Equates for controls 
+'------------------------------------------------------------------------------
+Begin ControlID    
+  %lImage             
+  %lText
+End ControlID
+
+Function Main()
+  
+  '------------------------------------------------------------------------------
+  ' Create dialog
+  '------------------------------------------------------------------------------
+  Dim hDlg As DWord    
+  
+  Dialog NEW PIXELS, 0, "thinBasic using GDI+", -1, -1, 400, 326, _
+                        %WS_DLGFRAME          Or _
+                        %DS_CENTER            Or _
+                        %WS_CAPTION           Or _
+                        %WS_SYSMENU           Or _
+                        %WS_CLIPCHILDREN      Or _
+                        %WS_OVERLAPPEDWINDOW, _
+                        0 To hDlg
+
+  '------------------------------------------------------------------------------
+  ' Show dialog
+  '------------------------------------------------------------------------------
+  Dialog SHOW MODAL hDlg, Call dlgCallback
+  
+End Function
+'------------------------------------------------------------------------------
+' Main loop
+'------------------------------------------------------------------------------
+CallBack Function dlgCallback() As Long
+  Dim JPGFileName As String = APP_SourcePath + "Images\ferrari-enzo.png"
+  Dim lWidth      As Long
+  Dim lHeight     As Long
+  Dim hBitmap, hGpBitmap As Long  
+
+  Select Case CBMSG
+
+    Case %WM_INITDIALOG
+      '------------------------------------------------------------------------------
+      ' Create constrols and Load images
+      '------------------------------------------------------------------------------
+      Control ADD LABEL, CBHNDL, %lImage,"", 0, 0, 400, 310, %SS_BITMAP
+
+      '---Create an image handle
+      hGpBitmap = GDIp_CreateBitMapFromFile(JPGFileName)
+      '---Convert to a BMP handle
+      hBitmap = GDIp_CreateHBitMapFromBitmap(hGpBitmap, 0)
+
+      Control SEND        CBHNDL, %lImage, %STM_SETIMAGE, %IMAGE_BITMAP, hBitmap 
+      Control REDRAW      CBHNDL, %lImage
+
+      '---Get image W and H
+      lWidth  = GDIP_GetImageWidth(hGpBitmap)
+      lHeight = GDIP_GetImageHeight(hGpBitmap)
+
+      Control ADD LABEL,  CBHNDL, %lText, "thinBasic GDI+ module wrapper example (" & lWidth & " x " & lHeight &  ")", 0, 311, 400, 15, %SS_CENTER 
+      Control SET COLOR   CBHNDL, %lText, RGB(0,0,0), RGB(255,128,0)
+      Control REDRAW      CBHNDL, %lText
+
+      Control SET RESIZE  CBHNDL, %lImage, 1, 1, 1, 1
+      Control SET RESIZE  CBHNDL, %lText , 1, 1, 0, 1
+
+      DoEvents
+      
+    Case %WM_SIZE
+      Control REDRAW CBHNDL, %lImage 
+
+    Case %WM_CLOSE
+      ' -- Erase resources
+      '---Release temp hBitmap
+      Object_Delete(hBitmap)
+      '---Release GDI image
+      GDIP_DisposeImage(hGpBitmap)
+
+  End Select    
+
+End Function

@@ -1,0 +1,58 @@
+' ========================================================================================
+' Demonstrates the use of the addParameter method.
+' ========================================================================================
+
+uses "Console"
+
+#default declare Checkduplicates    %TRUE
+#default declare CheckMissing       %TRUE
+
+#INCLUDE "%APP_INCLUDEPATH%\TB_XML60.INC"
+
+' ========================================================================================
+' Main
+' ========================================================================================
+Function Main() As Long
+
+   LOCAL pXmlDoc AS DWORD
+   LOCAL pXslt AS DWORD
+   LOCAL pXslDoc AS DWORD
+   LOCAL pXslProc AS DWORD
+   LOCAL pStyleSheet AS DWORD
+   LOCAL pTemplate AS DWORD
+   LOCAL vRes AS VARIANT
+
+   pXmlDoc = XmlCreateObject("Msxml2.DOMDocument.6.0")
+   pXslt = XmlCreateObject("Msxml2.XSLTemplate.6.0")
+   pXslDoc = XmlCreateObject("Msxml2.FreeThreadedDOMDocument.6.0")
+
+   IXMLDOMDocument_put_async pXslDoc, %FALSE
+   IXMLDOMDocument_load pXslDoc, "sample.xsl"
+   IXSLTemplate_putref_stylesheet pXslt, pXslDoc
+   IXMLDOMDocument_put_async pXmlDoc, %False
+
+   IXMLDOMDocument_load pXmlDoc, "books.xml"
+   IF XmlParseError_get_errorCode(pXmlDoc) <> 0 THEN
+      console_writeline "You have error " & XmlParseError_get_reason(pXmlDoc)
+   ELSE
+      pXslProc = IXSLTemplate_createProcessor(pXslt)
+      IF ISTRUE pXslProc THEN
+         IXSLProcessor_put_input pXslProc, pXmlDoc
+         IXSLProcessor_addParameter pXslProc, "param1", "Hello"
+         IXSLProcessor_transform pXslProc
+         IXSLProcessor_get_output(pXslProc, vRes)
+         console_writeline VARIANT$(vRes)
+         XmlRelease pXslProc
+      END IF
+   END IF
+
+   ' Cleanup
+   XmlRelease pXslt
+   XmlRelease pXslDoc
+   XmlRelease pXmlDoc
+   
+   console_writeline "--- Press any key to finish ---"
+   console_WAITKEY
+
+END FUNCTION
+

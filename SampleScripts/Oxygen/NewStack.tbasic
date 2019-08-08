@@ -1,0 +1,48 @@
+
+'=========================================
+'SAFE HUGE RECURSION WITH CUSTOMISED STACK
+'=========================================
+
+ 
+Uses "oxygen"
+Dim src As String
+
+src="
+
+
+dim as long espSave,espLimit,espSpace,i
+
+
+function f(byval v as long) as long
+  '
+  'STACKSPACE LIMITED RECURSION
+  '
+  if esp>=espLimit then
+    function=f(v+1) : inc i
+  end if
+end function
+
+
+
+  'USING A BSTRING FOR THE NEW STACK
+  '---------------------------------
+  '
+  espSpace=getmemory 4e7  'ALLOCATE BSTR SPACE FOR NEW STACK
+  espSave=esp             'SAVE ORIGINAL STACK POINTER
+  espLimit=espSpace+10000 'LOWER LIMIT FOR NEW STACK POINTER
+  esp=espSpace+4e7        'SET NEW STACK POINTER
+  '
+  f(0)                    'CALL RECURSIVE FUNCTION
+  '
+  esp=espSave             'RESTORE ORIGINAL STACK POINTER
+  freememory espspace     'FREE ALLOCATED STACK SPACE
+  '
+  print "Recursions: " i  'SHOW RESULT
+  '
+
+"
+
+'MsgBox 0,O2_prep src ': Stop
+O2_ASMO src
+If Len(O2_ERROR) Then MsgBox 0, O2_ERROR
+O2_EXEC

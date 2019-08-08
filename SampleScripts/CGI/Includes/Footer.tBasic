@@ -1,0 +1,14 @@
+  '-------------------------------------------------------------------------
+  ' Write page footer
+  '-------------------------------------------------------------------------
+
+  FUNCTION Page_Footer(T AS quad) AS string
+    dim sBuffer as string
+    
+    sBuffer =  "<br><div id='footnav'>Script execution time: " & FORMAT$((gettickcount - T)/1000, "#0.000") & " secs</div>"
+    sBuffer += "<div id='pagefooter'><a href='" &  "?showsource=true' title=''>Script source code</a></div>"
+    sBuffer += "</body></html>"
+    
+    function = sBuffer
+    
+  END FUNCTION

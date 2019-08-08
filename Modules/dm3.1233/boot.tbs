@@ -1,0 +1,39 @@
+
+' ×¢²á´óÄ®²å¼þ
+RegCom(APP_ScriptPath & "dm.dll")
+
+' ´óÄ®²å¼þ´ò²¹¶¡
+Function DM_Plugin_Crack(ByVal sVer As String) As Boolean
+	Declare Function GetModuleHandle Lib "kernel32.dll" Alias "GetModuleHandleA" (ByVal lpModuleName As String) As Long
+    Declare Sub FillMemory Lib "kernel32.dll" Alias "RtlFillMemory" (ByVal Destination As Long, ByVal length As Long, ByVal Fill As Byte)
+	Dim ModuleAddr As Long = GetModuleHandle("dm.dll")
+    If ModuleAddr Then
+		Select Case sVer
+			Case "3.1233"
+				FillMemory(ModuleAddr + 883572, 1, 1)
+				FillMemory(ModuleAddr + 883692, 1, 1)
+				FillMemory(ModuleAddr + 883696, 1, 1)
+				FillMemory(ModuleAddr + 883707, 1, 1)
+				FillMemory(ModuleAddr + 883734, 1, 1)
+				FillMemory(ModuleAddr + 884224, 1, 1)
+				FillMemory(ModuleAddr + 884264, 1, 1)
+                Return true
+			Case "5.1423"
+				FillMemory(ModuleAddr + 1074128, 1, 1)
+				FillMemory(ModuleAddr + 1074132, 1, 1)
+				FillMemory(ModuleAddr + 1074660, 1, 1)
+				FillMemory(ModuleAddr + 1074708, 1, 1)
+				FillMemory(ModuleAddr + 1074712, 1, 1)
+				FillMemory(ModuleAddr + 1076388, 1, 1)
+                Return true
+			Case "6.1538"
+				FillMemory(ModuleAddr + 1078240, 1, 1)
+				FillMemory(ModuleAddr + 1078244, 1, 1)
+				FillMemory(ModuleAddr + 1078772, 1, 1)
+				FillMemory(ModuleAddr + 1078820, 1, 1)
+				FillMemory(ModuleAddr + 1078824, 1, 1)
+                Return true
+		End Select
+    End If
+    Return false
+End Function

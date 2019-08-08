@@ -1,0 +1,27 @@
+Function MySum( 
+                N01 As Ext  ,
+       Optional                  '---From here all parameters will be considered optional
+                N02 As Ext  , 
+                N03 As Ext  , 
+                N04 As Ext  , 
+                N05 As Ext  , 
+                N06 As Ext  , 
+                N07 As Ext  , 
+                N08 As Ext  , 
+                N09 As Long =  100 ,   '---Default value
+                N10 As Long = 1000     '---Default value
+            ) As Ext 
+
+  
+    Function =  N01 + 
+                N02 + 
+                N03 + 
+                N04 + N05 + N06 + N07 + N08 + N09 + N10
+                
+    MsgBox 0, "We are inside function: "            & Function_Name     & $CRLF & 
+              "Function has been declared to have " & Function_NParams  & " parameters."  & $CRLF & 
+              "Function has been called with "      & Function_CParams  & " parameters."
+    
+End Function
+
+MsgBox 0, "Sum of passed parameters: " & MySum(1,2,3) & $CRLF + "(9th and 10th parameter are predefined to be 100 and 1000)"

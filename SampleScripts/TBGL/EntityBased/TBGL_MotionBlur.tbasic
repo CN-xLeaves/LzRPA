@@ -1,0 +1,181 @@
+'
+' Attempt to create motion blur effect
+' Petr Schreiber, started on 07-10-2008
+'
+
+uses "TBGL" 
+uses "MATH"
+
+' -- Create and show window
+Dim hWnd As Dword  = TBGL_CreateWindowEx("Attempt to do motion blur, press SPACE to switch use of effect - press ESC to quit", 640, 480, 32, %TBGL_WS_WINDOWED or %TBGL_WS_CLOSEBOX) 
+TBGL_ShowWindow 
+
+' -- Create scene
+%SCENE1 = 1
+TBGL_SceneCreate(%SCENE1)
+
+' -- Create basic entities
+%eCamera = 1
+%eLight  = 10
+%eEntity = 1000
+%numEntity = 20
+' -- Create camera to look from 15, 15, 15 to 0, 0, 0 
+TBGL_EntityCreateCamera(%SCENE1, %eCamera)
+  TBGL_EntitySetPos(%SCENE1, %eCamera, 45, 45, 45)
+  TBGL_EntitySetTargetPos(%SCENE1, %eCamera, 0, 0, 0)  
+  
+' -- Create point light  
+TBGL_EntityCreateLight(%SCENE1, %eLight)
+  TBGL_EntitySetPos(%SCENE1, %eLight, 30, 30, 30)
+
+
+local i as long
+' -- Create something to look at
+for i = 1 to %numEntity
+  select case rnd(1, 2)
+    case 1
+      TBGL_EntityCreatebox(%SCENE1, %eEntity+i, 0, rndf(2, 10), rndf(1, 2), rndf(3, 5), 0, rndf(128,255), rndf(128,255), rndf(128,255))  
+    case 2  
+      TBGL_EntityCreatesphere(%SCENE1, %eEntity+i, 0, rndf(1, 2), 0, rndf(128,255), rndf(128,255), rndf(128,255))  
+  end select    
+next
+
+DIM FrameRate AS DOUBLE
+DIM UseMotionBlur AS long = 1
+dim FrameTime as long
+
+' -- How many trails, timeout, how big texture
+MotionBlur_Init(20, 10, 256)
+
+HiResTimer_Init
+
+' -- Resets status of all keys 
+TBGL_ResetKeyState() 
+                              
+tbgl_BlendFunc %GL_ONE, %GL_ONE_MINUS_SRC_COLOR
+ 
+' -- Main loop
+While TBGL_IsWindow(hWnd) 
+'  doevents
+  FrameRate = TBGL_GetFrameRate
+  FrameTime = HiResTimer_Get/1000 ' ms
+
+  for i = 1 to %numEntity
+    tbgl_EntitySetPos(%SCENE1, %eEntity+i, sin(FrameTime/(700+i)+i)*(i+2), -sin(FrameTime/(700+i*2)+i)*(i+2), cos(FrameTime/(700+i*3)+i)*(i+2))
+  next  
+
+  TBGL_RenderMatrix3D 
+  
+  ' -- First pass = render to texture
+  if UseMotionBlur <> 0 then    
+    MotionBlur_BeginPass()
+    TBGL_ClearFrame 
+      TBGL_SceneRender(%SCENE1)
+    MotionBlur_EndPass()
+    
+  end if
+    
+  ' -- Second pass = rendering scene at full resolution, with MB overlay  
+  TBGL_ClearFrame     
+    
+    TBGL_SceneRender(%SCENE1)        
+    if UseMotionBlur <> 0 then MotionBlur_RenderOverlay()
+
+  TBGL_DrawFrame 
+  
+  ' -- ESCAPE key to exit application
+  If TBGL_GetWindowKeyState(hWnd, %VK_ESCAPE) Then Exit While 
+  If TBGL_GetWindowKeyonce(hWnd, %VK_SPACE) Then 
+    UseMotionBlur = UseMotionBlur xor 1
+    if UseMotionBlur = 0 then MotionBlur_ResetTextures()' -- Clear contents of the old fx textures
+  end if  
+
+Wend 
+
+TBGL_DestroyWindow
+
+sub MotionBlur_Init( Passes as long, TimeOut as long, TexSize as long  )
+
+  local i as long
+  local tempS as string = repeat$( TexSize * TexSize * 3, CHR$(0) )
+  
+  global MB_Passes  as long = Passes
+  global MB_PassID  as LONG = 1
+  global MB_TimeOut as LONG = TimeOut
+  global MB_Size    as long = TexSize
+  global MB_Last    as long = gettickcount
+  
+  for i = 501 to 500+MB_Passes
+    tbgl_MakeTexture tempS, %TBGL_DATA_RGB, MB_Size, MB_Size, i, %TBGL_TEX_LINEAR 
+  next 
+  
+  %MB_Frame = 501
+  TBGL_NewList %MB_Frame
+     tbgl_BeginPoly %GL_QUADS    
+        tbgl_TexCoord2d 0,0 : tbgl_Vertex   0,   0
+        tbgl_TexCoord2d 0,1 : tbgl_Vertex   0, 480
+        tbgl_TexCoord2d 1,1 : tbgl_Vertex 640, 480
+        tbgl_TexCoord2d 1,0 : tbgl_Vertex 640,   0
+      tbgl_EndPoly   
+  tbgl_EndList
+    
+end sub
+
+sub MotionBlur_ResetTextures()
+
+  local i as long
+  local tempS as string = repeat$( MB_Size * MB_Size * 3, CHR$(0) )
+ 
+  for i = 501 to 500+MB_Passes
+    tbgl_MakeTexture tempS, %TBGL_DATA_RGB, MB_Size, MB_Size, i, %TBGL_TEX_LINEAR 
+  next 
+   
+end sub
+
+sub MotionBlur_BeginPass()  
+  TBGL_Viewport(0, 0, MB_Size, MB_Size, %TBGL_PARAM_PIXELS )
+  
+end sub
+ 
+Sub MotionBlur_EndPass()
+  TBGL_Viewport(0, 0, 1, 1 )  
+  if FrameTime - MB_TimeOut > MB_Last then 
+    MB_Last = FrameTime
+    incr MB_PassID
+    if MB_PassID > MB_Passes then MB_PassID = 1
+
+    TBGL_RenderToTexture(500+MB_PassID, 0, 0, MB_Size, MB_Size )
+  
+  end if  
+  
+end sub
+
+sub MotionBlur_RenderOverlay()
+  local i, c as long
+  local channel as single
+                       
+  TBGL_RenderMatrix2D(0, 0, 640, 480)
+  
+  TBGL_PushStateProtect %TBGL_LIGHTING Or %TBGL_DEPTH Or %TBGL_DEPTHMASK
+    TBGL_PushState %TBGL_TEXTURING Or %TBGL_BLEND
+             
+    i = MB_PassID
+    While c < MB_Passes
+      Incr c
+     
+      If i < 1 Then i = MB_Passes
+  
+       TBGL_BindTexture 500+i
+            
+       channel = Cos(DegToRad((c-1)*90/(MB_Passes))+0.001)*64
+  
+       TBGL_Color channel, channel, channel
+       TBGL_CallList %MB_Frame
+      
+      Decr i
+    Wend  
+  
+    TBGL_PopState
+  TBGL_PopStateProtect 
+  
+end sub

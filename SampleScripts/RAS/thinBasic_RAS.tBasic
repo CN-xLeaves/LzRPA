@@ -1,0 +1,18 @@
+uses "RAS"
+uses "INet"
+
+DIM NumberOfRas AS LONG = RAS_LoadEntries
+  
+MSGBOX 0, "Number of RAS connections: " & NumberOfRas
+
+IF NumberOfRas > 0 THEN
+  
+  DIM Count AS LONG
+  FOR Count = 1 TO NumberOfRas
+    MSGBOX 0, "Connection name " & Count & " out of " & NumberOfRas & ": " & RAS_GetEntry(Count)
+  NEXT
+  
+  MSGBOX 0, "GetState: " & INET_GetState
+  MSGBOX 0, "GetMode: " & INET_GetConnectionMode
+  
+End If

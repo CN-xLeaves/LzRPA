@@ -1,0 +1,61 @@
+Uses "TBASS", "UI", "FILE"
+
+function Main()
+  DIM sFile   AS STRING   '---Filename to load
+  DIM sSample as STRING   '---The Sample File Storage
+  DIM Channel AS DWORD    '---Audio channel to use
+  DIM SamChannel AS DWORD '---Sample audio channel to use
+
+  ' Setup output for the default device
+  ' n = TBASS_Init (Device, Frequency, Flags, Win, clsID)
+  IF TBASS_Init(-1, 44100, 0, 0, 0) = 0 THEN
+    msgbox 0, "Can't initialize device. Program aborted"
+    stop
+  end if  
+  
+  ' Set the volume level
+  TBASS_SetVolume(50)
+
+  ' Now ask which file to load
+  sFile = OpenStreamFile(0)
+  ' Check if file exists
+  if file_exists(sFile) = %FALSE then
+    MSGBOX 0, "File " & sFile & $crlf & "does not exixts."
+  else
+    ' Load the Sample into memory
+    sSample = FILE_LOAD(sFile)
+    ' File does exist now load as a sample from memory
+    Channel = TBASS_SampleLoad(%TBASS_TRUE, sSample, 0, Len(sSample), 1, %TBASS_SAMPLE_LOOP ) 
+    IF Channel = 0 THEN
+      ' whatever it is, it isn't playable
+      MsgBox 0, "Can't play the file " & sFile & " " & TBASS_ErrorGetCode
+    else
+      ' Create a Sample playback Channel
+      SamChannel = TBASS_SampleGetChannel(Channel,%TBASS_FALSE) 
+      IF SamChannel = -1 THEN
+        ' Error trying to get a channel
+        MSGBOX 0, "No Channel. Can't play the file " & sFile
+      else
+        ' Valid File now set it to play
+        TBASS_ChannelPlay(SamChannel, %TBASS_TRUE)
+        MSGBOX 0, "Click me to stop playback"
+      ENDIF
+    ENDIF
+  ENDIF
+
+  ' Clearup TBASS
+  TBASS_Free
+
+end function
+
+'---Open file function used to load stream audio file
+function OpenStreamFile(byval hDlg as long) as string
+  dim sFile   as string
+  dim sFilter as string
+
+  sFilter  = "MP3, MP2, MP1, OGG, WAV, AIFF  (Streams audio files)|*.MP3;*.MP2;*.MP1;*.OGG;*.WAV;*.AIFF|"
+  sFilter += "All Files (*.*)|*.*"
+  sFile = Dialog_OpenFile(hDlg, "Open a stream audio file", DIR_GetCurrent, sFilter, "MP3", _
+                            %OFN_FILEMUSTEXIST OR %OFN_HIDEREADONLY or %OFN_ENABLESIZING)
+  function = sFile
+end function

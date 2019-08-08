@@ -1,0 +1,149 @@
+' Redis API 声明
+Declare Function RedisConnect Lib "hiredis.dll" Alias "LzBot_Redis_Connect" (ByVal ip As ZString, ByVal port As Long) As Long
+Declare Function RedisConnectWithTimeout Lib "hiredis.dll" Alias "LzBot_Redis_ConnectWithTimeout" (ByVal ip As ZString, ByVal port As Long, ByVal ms As Long) As Long
+Declare Sub RedisFree Lib "hiredis.dll" Alias "redisFree" (ByVal c As Long)
+Declare Function Redis_Command Lib "hiredis.dll" Alias "LzBot_Redis_Command" (ByVal c As Long, ByVal cmd As ZString) As Long
+Declare Function RedisLastError Lib "hiredis.dll" Alias "LzBot_Redis_LastError" () As String
+Declare Function Redis_RetStr Lib "hiredis.dll" Alias "LzBot_Redis_RetStr" () As String
+Declare Function Redis_RetInt Lib "hiredis.dll" Alias "LzBot_Redis_RetInt" () As Int64
+Declare Function Redis_Ping Lib "hiredis.dll" Alias "LzBot_Redis_Ping" (ByVal c As Long, ByVal s As ZString) As String
+Declare Function Redis_Set Lib "hiredis.dll" Alias "LzBot_Redis_Set" (ByVal c As Long, ByVal k As ZString, ByVal v As ZString) As String
+Declare Function Redis_SetBin Lib "hiredis.dll" Alias "LzBot_Redis_SetBin" (ByVal c As Long, ByVal k As ZString, ByVal kl As Long, ByVal v As ZString, ByVal vl As Long) As String
+Declare Function Redis_Get Lib "hiredis.dll" Alias "LzBot_Redis_Get" (ByVal c As Long, ByVal k As ZString) As String
+Declare Function Redis_Append Lib "hiredis.dll" Alias "LzBot_Redis_Append" (ByVal c As Long, ByVal k As ZString, ByVal v As ZString) As String
+Declare Sub Redis_Del Lib "hiredis.dll" Alias "LzBot_Redis_Del" (ByVal c As Long, ByVal k As ZString)
+Declare Sub Redis_Rename Lib "hiredis.dll" Alias "LzBot_Redis_Rename" (ByVal c As Long, ByVal k As ZString, ByVal nk As ZString)
+Declare Function Redis_Exists Lib "hiredis.dll" Alias "LzBot_Redis_Exists" (ByVal c As Long, ByVal k As ZString) As Long
+Declare Function Redis_Incr Lib "hiredis.dll" Alias "LzBot_Redis_Incr" (ByVal c As Long, ByVal k As ZString) As Int64
+Declare Function Redis_Incrby Lib "hiredis.dll" Alias "LzBot_Redis_Incrby" (ByVal c As Long, ByVal k As ZString, ByVal v As Long) As Int64
+Declare Function Redis_Decr Lib "hiredis.dll" Alias "LzBot_Redis_Decr" (ByVal c As Long, ByVal k As ZString) As Int64
+Declare Function Redis_Decrby Lib "hiredis.dll" Alias "LzBot_Redis_Decrby" (ByVal c As Long, ByVal k As ZString, ByVal v As Long) As Int64
+Declare Function Redis_Type Lib "hiredis.dll" Alias "LzBot_Redis_Type" (ByVal c As Long, ByVal s As ZString) As String
+Declare Function Redis_Info Lib "hiredis.dll" Alias "LzBot_Redis_Info" (ByVal c As Long, ByVal s As ZString) As String
+Declare Function Redis_Keys Lib "hiredis.dll" Alias "LzBot_Redis_Keys" (ByVal c As Long, ByVal s As ZString) As String
+
+const %REDIS_REPLY_STRING As Long = 1
+const %REDIS_REPLY_ARRAY As Long = 2
+const %REDIS_REPLY_INTEGER As Long = 3
+const %REDIS_REPLY_NIL As Long = 4
+const %REDIS_REPLY_STATUS As Long = 5
+const %REDIS_REPLY_ERROR As Long = 6
+
+Function RedisCommand(ByVal c As Long, ByVal cmd As String) As String
+	Select Case Redis_Command(c, cmd)
+		Case %REDIS_REPLY_INTEGER
+			Return Redis_RetInt
+        Case %REDIS_REPLY_NIL
+			Return NULL
+        Case Else
+			Return Redis_RetStr()
+    End Select
+End Function
+
+Function RedisOnServer(ByVal sExePath As String, ByVal sOptPath As String, ByVal iShow As String) As Integer
+	
+End Function
+
+Type Redis
+
+	' 属性
+	redisContext As Long
+
+	' 析构函数
+	Sub _Destroy()
+		If Me.redisContext Then
+			RedisFree(Me.redisContext)
+        End If
+	End Sub
+    
+    ' 连接到服务器
+    Function Connect(ByVal ip As ZString, ByVal port As Long, Optional ByVal Timeout As Long = 0) As Long
+		If Timeout Then
+			Me.redisContext = RedisConnectWithTimeout(ip, port, Timeout)
+        Else
+			Me.redisContext = RedisConnect(ip, port)
+        End If
+        Return Me.redisContext
+    End Function
+    
+    ' 执行命令
+    Function Command(ByVal cmd As String) As String
+		Return RedisCommand(Me.redisContext, cmd)
+	End Function
+    
+    ' Ping
+    Function Ping(ByVal s As ZString) As String
+		Return Redis_Ping(Me.redisContext, s)
+    End Function
+    
+    ' 获取键值
+    Function GetVal(ByVal k As ZString) As String
+		Return Redis_Get(Me.redisContext, k)
+    End Function
+    
+    ' 设置键值
+    Function SetVal(ByVal k As ZString, ByVal v As ZString) As String
+		Return Redis_Set(Me.redisContext, k, v)
+    End Function
+    
+    ' 追加键值
+    Function AppendVal(ByVal k As ZString, ByVal v As ZString) As String
+		Return Redis_Append(Me.redisContext, k, v)
+    End Function
+    
+    ' 原子累加
+    Function IncrVal(ByVal k As ZString) As String
+		Return Redis_Incr(Me.redisContext, k)
+    End Function
+    
+    ' 原子累加 [特定值]
+    Function Incrby(ByVal k As ZString, ByVal v As ZString) As String
+		Return Redis_Incrby(Me.redisContext, k, v)
+    End Function
+    
+    ' 原子累减
+    Function DecrVal(ByVal k As ZString) As String
+		Return Redis_Decr(Me.redisContext, k)
+    End Function
+    
+    ' 原子累减 [特定值]
+    Function Decrby(ByVal k As ZString, ByVal v As ZString) As String
+		Return Redis_Decrby(Me.redisContext, k, v)
+    End Function
+    
+    ' 判断键是否存在
+    Function Exists(ByVal k As ZString) As String
+		Return Redis_Exists(Me.redisContext, k)
+    End Function
+    
+    ' 删除键值
+    Function Del(ByVal k As ZString) As String
+		Return Redis_Del(Me.redisContext, k)
+    End Function
+    
+    ' 重命名键
+    Function Rename(ByVal sName As ZString, ByVal sNewName As ZString) As String
+		Return Redis_Rename(Me.redisContext, sName, sNewName)
+    End Function
+    
+    ' 获取键的数据类型
+    Function DataType(ByVal k As ZString) As String
+		Return Redis_Type(Me.redisContext, k)
+    End Function
+    
+    ' 获取键列表
+    Function Keys(ByVal s As ZString) As String
+		Return Redis_Keys(Me.redisContext, s)
+    End Function
+    
+    ' 获取服务器信息
+    Function Info(ByVal s As ZString) As String
+		Return Redis_Info(Me.redisContext, s)
+    End Function
+    
+    ' 关闭服务器
+    Function Shutdown() As String
+		Return RedisCommand(Me.redisContext, "SHUTDOWN SAVE")
+    End Function
+
+End Type

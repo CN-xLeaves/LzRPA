@@ -1,0 +1,5 @@
+uses "LAN"
+
+dim sResource as string = "" 'If empty returns the name of the current user for the process.
+
+msgbox 0, "User: " + LAN_GetUser(sResource), %MB_OK, "User associated with '" + sResource + "' resource"

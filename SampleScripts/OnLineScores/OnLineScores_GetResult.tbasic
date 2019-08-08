@@ -1,0 +1,34 @@
+uses "Console"
+uses "OnlineScores"
+ 
+'---GUID for testing game
+dim sGameCode   as string = "{00000000-0000-0000-0000-000000000000}"
+ 
+dim sResult     as string
+dim sBuffer     as string
+dim vResults()  as string
+dim nResults    as long
+dim Counter     as long
+dim nTop        as long
+
+ 
+nResults = OnlineScores_GetHiScores(sGameCode, %TRUE )
+printl    "Number of scores present: " & nResults
+ 
+nTop = 30
+sBuffer = OnlineScores_GetHiScores(sGameCode, 0, nTop)
+'msgbox 0, tally(sBuffer, $CRLF)
+
+nResults = Parse (sBuffer, vResults, $crlf, $tab ) 
+printl nResults 
+printl    "We will return only the first " & nTop & ". They are: "
+for Counter = 1 to nResults
+  printl  vResults(Counter, %OLS_ScoreCol_UserName)   , _
+          vResults(Counter, %OLS_ScoreCol_Score)      , _
+          vResults(Counter, %OLS_ScoreCol_Date)       , _
+          vResults(Counter, %OLS_ScoreCol_Comment)    , _
+          vResults(Counter, %OLS_ScoreCol_Obfuscated)
+next
+ 
+printl "--- All done. Press akey to finish ---"
+waitkey

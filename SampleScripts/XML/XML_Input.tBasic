@@ -1,0 +1,52 @@
+' ========================================================================================
+' Demonstrates the use of the input property.
+' ========================================================================================
+
+uses "Console"
+
+#default declare Checkduplicates    %TRUE
+#default declare CheckMissing       %TRUE
+
+#INCLUDE "%APP_INCLUDEPATH%\TB_XML60.INC"
+
+' ========================================================================================
+' Main
+' ========================================================================================
+FUNCTION MAIN() as long
+
+   LOCAL pXmlDoc AS DWORD
+   LOCAL pXslt AS DWORD
+   LOCAL pXslDoc AS DWORD
+   LOCAL pXslProc AS DWORD
+   LOCAL pStyleSheet AS DWORD
+   LOCAL vRes AS VARIANT
+
+   pXmlDoc = XmlCreateObject("Msxml2.DOMDocument.6.0")
+   pXslt = XmlCreateObject("Msxml2.XSLTemplate.6.0")
+   pXslDoc = XmlCreateObject("Msxml2.FreeThreadedDOMDocument.6.0")
+
+   IXMLDOMDocument_put_async pXslDoc, %FALSE
+   IF ISTRUE IXMLDOMDocument_load(pXslDoc, "Sample2.xsl") THEN
+      IXSLTemplate_putref_stylesheet pXslt, pXslDoc
+      IXMLDOMDocument_put_async pXmlDoc, %FALSE
+      IF ISTRUE IXMLDOMDocument_load(pXmlDoc, "books.xml") THEN
+         pXslProc = IXSLTemplate_createProcessor(pXslt)
+         IXSLProcessor_put_input pXslProc, pXmlDoc
+         IXSLProcessor_transform pXslProc
+         IXSLProcessor_get_output pXslProc, vRes
+         XmlRelease pXslProc
+         console_writeline VARIANT$(vRes)
+      END IF
+   END IF
+
+   XmlRelease pXslt
+   XmlRelease pXslDoc
+   XmlRelease pXmlDoc
+   
+   console_writeline "--- Press any key to finish ---"
+   console_WAITKEY
+
+END FUNCTION
+
+Main
+

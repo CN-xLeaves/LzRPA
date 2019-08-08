@@ -1,0 +1,207 @@
+  '=============================================================================
+  '=                                 Lighting                                  =
+  '=                                                                           =
+  '=                           Petr Schreiber, 2007                            =
+  '=============================================================================
+
+  Uses "TBGL"
+
+  dim hWnd as dword
+
+  Dim Tempo As Single
+  dim PrimitiveDetail as long = 24
+
+  hWnd = TBGL_CreateWindowex("Lighting demo - press ESC to quit", 640, 480, 32, %TBGL_WS_WINDOWED)   ' Creates OpenGL window
+  TBGL_ShowWindow                     ' Shows the window
+
+  TBGL_LoadbmpFont app_sourcepath+"Textures\tbgl_Font.bmp", 30
+
+  TBGL_UseLighting %TRUE              ' We want to use lighting generally
+  
+  TBGL_UseLightSource %GL_LIGHT0, %TRUE ' We want use light source %GL_LIGHT0
+  TBGL_UseLightSource %GL_LIGHT1, %TRUE ' We want use light source %GL_LIGHT1
+  
+  tbgl_SetLightParameter %GL_LIGHT0, %TBGL_LIGHT_DIFFUSE, 1, 0, 0, 1          ' Light color - RGBA are clamped to range [0,1]
+  tbgl_SetLightParameter %GL_LIGHT1, %TBGL_LIGHT_DIFFUSE, 0, 1, 0, 1          ' Light color - RGBA are clamped to range [0,1]
+
+  tbgl_GetAsyncKeyState( %VK_ESCAPE)        ' Resets key status before keypress checking
+
+  while tbgl_isWindow(hWnd)
+    Tempo = Sin(GetTickCount/500)
+
+    TBGL_ClearFrame                   ' Prepares clear frame
+
+    TBGL_Camera 2,2,2,0,0,0           ' Setups camera to look from 2,2,2 to 0,0,0
+
+    TBGL_Rotate GetTickCount/10,0,1,0 ' Rotates scene around Y axis ( 1 enables axis, 0 disables )
+
+    ' Here we start to build the "men"
+    ' Using TBGL_PushMatrix and TBGL_PopMatrix we isolate some parts of matrix from other ones
+    ' Using TBGL_Translate and TBGL_Rotate allows us to modify positions
+
+    TBGL_PushMatrix
+      TBGL_Color 255,200,168
+
+      TBGL_PushMatrix                 ' Neck and Head
+        TBGL_Translate 0,0.85,0
+        DrawElipsoid 0.1,0.2,0.1      ' Neck  
+
+        TBGL_Rotate -10+Tempo*10,0,1,0
+        TBGL_Translate 0,0.15,0
+        DrawElipsoid 0.25,0.25,0.2    ' Head
+
+        TBGL_Translate 0,-0.1,0.1
+        DrawElipsoid 0.02,0.05,0.03   ' Nose
+
+        TBGL_Translate 0.12,0,-0.1
+        DrawElipsoid 0.02,0.07,0.05   ' Left Ear
+
+        TBGL_Translate -0.24,0,0
+        DrawElipsoid 0.02,0.07,0.05   ' Right Ear
+
+        TBGL_Color 0,0,0
+        TBGL_Translate 0.075,0,0.1
+        DrawElipsoid 0.02,0.02,0.02   ' Left Eye
+
+        TBGL_Translate 0.1,0,0
+        DrawElipsoid 0.02,0.02,0.02   ' Right Eye
+      TBGL_PopMatrix
+
+      TBGL_Color 128,128,128
+
+      TBGL_PushMatrix                 ' Body 
+        TBGL_Translate 0,0.75,0
+
+        TBGL_Rotate -10+Tempo*15,0,1,0
+        DrawElipsoid 0.45,0.75,0.25     
+      TBGL_PopMatrix
+
+      TBGL_PushMatrix                 ' Shoulders 
+        TBGL_Translate 0,0.75,0
+
+        TBGL_Rotate -10+Tempo*15,0,1,0
+        DrawElipsoid 0.5,0.30,0.25     
+
+        TBGL_PushMatrix               ' First arm
+          TBGL_Translate 0.23,-0.1,0
+          TBGL_Rotate -10+Tempo*45,1,0,0
+          DrawElipsoid 0.1,0.375,0.17     
+
+          TBGL_Translate 0,-0.35,0
+          TBGL_Rotate -45+Tempo*30,1,0,0
+          DrawElipsoid 0.1,0.375,0.1     
+        TBGL_PopMatrix
+
+        TBGL_PushMatrix               ' Second arm
+             
+          TBGL_Translate -0.23,-0.1,0
+          TBGL_Rotate 10-Tempo*45,1,0,0
+          DrawElipsoid 0.1,0.375,0.17     
+
+          TBGL_Translate 0,-0.35,0
+          TBGL_Rotate -90-Tempo*30,1,0,0
+          DrawElipsoid 0.1,0.375,0.1     
+
+        TBGL_PopMatrix
+
+      TBGL_PopMatrix
+
+
+      TBGL_PushMatrix                 ' Ass :)
+
+        TBGL_Color 0,0,128
+        TBGL_Translate 0,0.125,0
+        TBGL_Rotate -10-Tempo*30,0,1,0
+        DrawElipsoid 0.5,0.3,0.25     
+
+        TBGL_PopMatrix
+
+          TBGL_PushMatrix             ' First leg
+            TBGL_Color 0,0,128
+            TBGL_Translate 0.125,0,0
+            TBGL_Rotate -10-Tempo*45,1,0,0
+            DrawElipsoid 0.25,0.5,0.2    
+
+            TBGL_Translate 0,-0.45,0
+            TBGL_Rotate 45-Tempo*10,1,0,0
+            DrawElipsoid 0.2,0.75,0.15     
+
+            TBGL_Color 128,64,0
+            TBGL_Translate 0,-0.75,0
+            TBGL_Rotate -90+Tempo*10,1,0,0
+            DrawElipsoid 0.15,0.3,0.1     
+
+          TBGL_PopMatrix
+
+          TBGL_PushMatrix             ' Second leg
+
+            TBGL_Color 0,0,128
+            TBGL_Translate -0.125,0,0
+            TBGL_Rotate -10+Tempo*45,1,0,0
+             DrawElipsoid 0.25,0.5,0.2     
+
+            TBGL_Translate 0,-0.45,0
+            TBGL_Rotate 45-Tempo*10,1,0,0
+            DrawElipsoid 0.2,0.75,0.15     
+
+            TBGL_Color 128,64,0
+            TBGL_Translate 0,-0.75,0
+            TBGL_Rotate -90+Tempo*10,1,0,0
+            DrawElipsoid 0.15,0.3,0.1     
+
+          TBGL_PopMatrix
+
+        TBGL_PopMatrix
+
+
+    ' Here we set properties
+    ' for light %GL_LIGHT0 and %GL_LIGHT1 
+    
+    TBGL_SetLightParameter %GL_LIGHT0, %TBGL_LIGHT_POSITION, cos(tempo), 1, sin(tempo), 1
+    TBGL_SetLightParameter %GL_LIGHT1, %TBGL_LIGHT_POSITION, sin(tempo*2), cos(tempo*2), 1, 1
+    
+    TBGL_ResetMatrix
+    TBGL_UseBlend %TRUE
+    TBGL_UseLighting %FALSE
+    
+    TBGL_PrintBMP "Use PageUp, PageDown to modify detail",0,-1, %TBGL_ALIGN_CENTER_DOWN  
+    TBGL_PrintBMP "Current detail:"+STR$(PrimitiveDetail),0,0, %TBGL_ALIGN_CENTER_DOWN  
+    
+    TBGL_UseLighting %TRUE
+    TBGL_UseBlend %FALSE
+    TBGL_DrawFrame               ' Swaps the buffers - displays rendered image
+    
+    if tbgl_GetWindowKeyState( hWnd, %VK_ESCAPE) then exit while
+    
+    if tbgl_GetWindowKeyonce( hWnd, %VK_PGUP) then 
+      PrimitiveDetail += 2
+      tbgl_SetPrimitiveQuality PrimitiveDetail
+    end if
+          
+    if tbgl_GetWindowKeyonce( hWnd, %VK_PGDn) then
+      PrimitiveDetail -=  2
+      if PrimitiveDetail < 4 then PrimitiveDetail = 4
+      tbgl_SetPrimitiveQuality PrimitiveDetail
+    end if
+
+           
+  wend
+
+  TBGL_DestroyWindow               ' Closes OpenGL window
+
+
+  Function DrawElipsoid(x AS single, y As single, z As Single) As Long
+    TBGL_PushMatrix
+
+      TBGL_Scale x,y,z            ' We will deform the default sphere
+      TBGL_Translate 0,-0.5,0
+      TBGL_Sphere 0.5
+      
+    TBGL_PopMatrix
+  End Function
+
+
+
+
+
+

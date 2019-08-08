@@ -1,0 +1,56 @@
+
+
+'USER DEFINED TYPES
+'INHERITANCE / DERIVED TYPES
+
+uses "oxygen","file"
+dim src as string
+
+
+src = "
+
+  basic
+  
+  type color32
+  
+    r as byte
+    g as byte
+    b as byte
+    a as byte
+    =
+    rgba as long  'UNION
+    
+  end type
+
+'-------------
+'DERIVED TYPE:
+'=============
+  
+  type colortext
+  
+    c as color32
+    txt as string
+    
+  end type
+  
+  
+  dim t as colortext
+  
+  t.c.r=16
+  t.c.b=16
+  t.c.g=16
+  t.c.a=32
+  t.txt=`Color code `
+  
+  print t.txt hex t.c.rgba
+     
+  "
+o2_asmo src
+
+'msgbox 0, o2_view src
+
+if len(o2_error) then
+  msgbox 0, o2_error : stop
+end if
+
+o2_exec

@@ -1,0 +1,21 @@
+
+'APPENDING INTO STRING BUFFER
+
+uses "oxygen","file"
+dim src as string
+src = "
+  basic
+  dim i,j=1 as long
+  dim s,t as string
+  s=space 500
+  for i=1 to 10
+    t=str(i)+chr(13)+chr(10)
+    mid (s,j)=t
+    j+=len t
+  next
+  dec j
+  print left s,j
+  "
+'file_save ("t.txt", o2_prep src)
+o2_asmo src
+o2_exec

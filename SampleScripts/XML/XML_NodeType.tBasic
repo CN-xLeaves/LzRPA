@@ -1,0 +1,48 @@
+' ========================================================================================
+' Demonstrates the use of the nodeType property.
+' ========================================================================================
+
+uses "Console"
+
+#default declare Checkduplicates    %TRUE
+#default declare CheckMissing       %TRUE
+
+#INCLUDE "%APP_INCLUDEPATH%\TB_XML60.INC"
+
+' ========================================================================================
+' Main
+' ========================================================================================
+Function Main() As Long
+
+   Local pXmlDoc      As DWord
+   Local pRootNode    As DWord
+   Local pChildNodes  As DWord
+   Local pCurrNode    As DWord
+   Local vVal         As Variant
+
+   pXmlDoc = XmlCreateObject("Msxml2.DOMDocument.6.0")
+   IXMLDOMDocument_put_async pXmlDoc, %FALSE
+
+   IXMLDOMDocument_loadXML pXmlDoc, "<root><!-- Hello --></root>"
+   IF XmlParseError_get_errorCode(pXmlDoc) <> 0 THEN
+      console_writeline "You have error " & XmlParseError_get_reason(pXmlDoc)
+   ELSE
+      pRootNode = IXMLDOMDocument_get_documentElement(pXmlDoc)
+      pChildNodes = IXMLDOMNode_get_childNodes(pRootNode)
+      pCurrNode = IXMLDOMNodeList_get_item(pChildNodes, 0)
+      IF IXMLDOMNode_get_nodeType(pCurrNode) = %NODE_COMMENT THEN
+         IXMLDOMNode_get_nodeValue(pCurrNode, vVal)
+         console_writeline VARIANT$(vVal)
+      END IF
+   END IF
+
+   '---cleanup
+   XmlRelease pCurrNode
+   XmlRelease pChildNodes
+   XmlRelease pRootNode
+   XmlRelease pXmlDoc
+   
+   console_writeline "--- Press any key to finish ---"
+   console_WAITKEY
+
+END FUNCTION

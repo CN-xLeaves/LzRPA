@@ -1,0 +1,160 @@
+  USES "UI"
+  uses "Console"
+
+  DIM hDlg      AS LONG         '---Dialog handle
+
+  dim wx        as long         '---Used to get client width
+  dim hy        as long         '---Used to get client height
+  
+  DIM Counter   AS LONG         '---Counter to count output lines
+
+  '---Control IDs
+  %MAX_TEXTBOX  = 10
+  %MAX_LABELS   = 10
+  dim ID_LABELS_D (%MAX_LABELS ) as long value 10, 11, 12, 13, 14, 15, 16, 17, 18, 19
+  dim ID_TEXTBOX  (%MAX_TEXTBOX) as long value 20, 21, 22, 23, 24, 25, 26, 27, 28, 29
+  dim ID_LABELS_E (%MAX_LABELS ) as long value 30, 31, 32, 33, 34, 35, 36, 37, 38, 39
+  
+  '---Set starting width and height of the window
+  wx = 300
+  hy = 250
+  
+  '------------------------------------------------------------------------
+  '---Create main dialog
+  '------------------------------------------------------------------------
+  DIALOG NEW 0, "Callbacks for dialog, label, textbox", -1, -1, wx, hy, _
+                                                %WS_DLGFRAME          | _
+                                                %DS_CENTER            | _
+                                                %WS_CAPTION           | _
+                                                %WS_SYSMENU           | _
+                                                %WS_OVERLAPPEDWINDOW  | _
+                                                %ws_clipsiblings      | _
+                                                %ws_clipchildren      , _
+                                                0 TO hDlg
+
+  DIALOG SET MINSIZE hDlg, wx, hy
+ 
+  '---Show dialog
+  DIALOG SHOW modal hDlg, call cbDialog
+
+
+  '------------------------------------------------------------------------
+  callback function cbDialog() as long
+  '------------------------------------------------------------------------
+    
+    select case cbmsg
+
+      case %WM_INITDIALOG
+        for Counter = 1 to %MAX_TEXTBOX
+
+          CONTROL ADD label   , CBHNDL, ID_LABELS_D(Counter), "Disable " & Counter,  5, 50 + (Counter-1) * 15,  40, 12 _
+                                                      , %SS_NOTIFY, , call cbLabels
+          CONTROL ADD TEXTBOX , CBHNDL, ID_TEXTBOX(Counter),  "", 55, 49 + (Counter-1) * 15, 230, 12 _
+                                                      , , , call cbTextBoxes '<<<--The same callback for all text fields
+          CONTROL ADD label   , CBHNDL, ID_LABELS_E(Counter), "Enable " & Counter,  260, 50 + (Counter-1) * 15,  40, 12 _
+                                                      , %SS_NOTIFY, , call cbLabels
+          control disable CBHNDL, ID_LABELS_E(Counter)
+
+        next
+        
+      CASE %WM_CTLCOLOREDIT
+
+      Case %WM_COMMAND
+        Select Case CbCtl
+          Case %IDOK
+            msgbox cbhndl, "'---<< Ok or ENTER key was pressed"
+          case %IDCANCEL
+            msgbox cbhndl, "'---<< Calcel or ESC key was pressed"
+        end select
+ 
+      case %WM_SIZE
+        '---Real time sizing !!!!!!!!!!!!!!!
+        dialog get client CBHNDL to wx, hy
+        for Counter = 1 to %MAX_TEXTBOX
+          CONTROL set size  CBHNDL, ID_TEXTBOX (Counter) ,  wx - 100, 12
+          CONTROL set loc   CBHNDL, ID_LABELS_E(Counter) ,  wx - 40, control_getlocy(CBHNDL, ID_LABELS_E(Counter))
+        next
+ 
+      case %WM_DESTROY
+        '---Do whatever needed just before dialog is destroyed.
+
+      Case %WM_SYSCOMMAND
+
+        '---To prevent from closing with [X] button, uncomment following lines
+        'If (cbwParam And &HFFF0) = %SC_CLOSE Then
+        '  '---MUST return TRUE to stop the dialog being destroyed...
+        '  Function = %TRUE
+        'End If
+ 
+    end select
+
+  end function
+
+
+
+  '------------------------------------------------------------------------
+  callback function cbTextBoxes() as long
+  '------------------------------------------------------------------------
+    select case cbmsg
+      case %WM_COMMAND
+
+        select case CBCTLMSG
+          case %EN_SETFOCUS
+            '---When textbox get focus, change colors
+            'CONTROL SET COLOR CBHNDL, CBCTL, rgb(255, 0, 0), rgb(255, 255, 128)
+            '---Select all the text inside.
+            'control send CBHNDL, CBCTL, %EM_SETSEL, 0, -1
+            printl time$, function_name, "%WM_COMMAND %EN_SETFOCUS", cbctl
+            'return %TRUE
+
+          case %EN_KILLFOCUS
+            '---When the control lost its focus, change colors to standard one.
+            'CONTROL SET COLOR CBHNDL, CBCTL, 0             , rgb(255, 255, 255)
+            printl time$, function_name, "%WM_COMMAND %EN_KILLFOCUS", cbctl
+            'return %TRUE
+
+          case %EN_CHANGE
+            printl time$, function_name, "%WM_COMMAND %EN_CHANGE", cbctl, cbwparam, cblparam
+ 
+          case %EN_UPDATE
+            printl time$, function_name, "%WM_COMMAND %EN_UPDATE", cbctl, cbwparam, cblparam
+ 
+         end select    
+
+      case %WM_NOTIFY
+        printl time$, function_name, "%WM_NOTIFY", cbctl, cbctlmsg
+    end select  
+
+  end function
+
+  '------------------------------------------------------------------------
+  callback function cbLabels() as long
+  '------------------------------------------------------------------------
+    select case cbmsg
+      case %WM_COMMAND
+
+        select case CBCTLMSG
+          case %STN_CLICKED
+            printl time$, function_name, "%WM_COMMAND %STN_CLICKED", cbmsg, cbctl, cbctlmsg
+            
+            if between(cbctl, ID_LABELS_D(1), ID_LABELS_D(%MAX_LABELS)) then
+              control disable cbhndl, cbctl
+              control disable cbhndl, cbctl + 10
+              control enable cbhndl , cbctl + 20
+            else
+              control disable cbhndl, cbctl
+              control enable cbhndl , cbctl - 10
+              control enable cbhndl , cbctl - 20
+            end if
+          case %STN_DBLCLK
+            printl time$, function_name, "%WM_COMMAND %STN_DBLCLK", cbmsg, cbctl, cbctlmsg
+          case %STN_ENABLE
+            printl time$, function_name, "%WM_COMMAND %STN_ENABLE", cbmsg, cbctl, cbctlmsg
+          case %STN_DISABLE
+            printl time$, function_name, "%WM_COMMAND %STN_DISABLE", cbmsg, cbctl, cbctlmsg
+        end select
+    end select
+            
+
+  end function
+    

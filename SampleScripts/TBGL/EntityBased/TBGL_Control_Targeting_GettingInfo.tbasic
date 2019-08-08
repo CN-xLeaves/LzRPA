@@ -1,0 +1,154 @@
+'===============================================================================
+'=                             TBGL 0.2.2+ sample                              =
+'=                                                                             =
+'=                  Example demonstrating use of TBGL canvas,                  =
+'=           entity targeting and getting information about hardware           =
+'===============================================================================
+
+#MINVERSION 1.7.0.0
+ 
+USES "UI", "TBGL"
+
+DIM hDlg AS DWORD
+
+' -- ID numbers of controls
+Begin Const
+  %lblCanvas = 1000
+  %btnClose 
+  %btnInfo
+  %myTimer 
+  %timeOut   = 10
+  
+  %sScene    = 1
+  %eCamera   
+  %eLight
+  %eArrow   
+  %eTarget   
+End Const
+
+DIALOG New 0, "TBGL 0.2.2 enhancements in one script :)",-1,-1, 320, 230, _
+                                   %WS_POPUP Or %WS_VISIBLE Or _
+                                   %WS_CLIPCHILDREN Or %WS_CAPTION OR _
+                                   %WS_SYSMENU Or %WS_MINIMIZEBOX or %WS_THICKFRAME, 0 To hDlg
+  dialog set color hDlg, rgb(224,224,224), rgb(224,224,224)
+  
+  ' -- Place controls here
+  CONTROL ADD label, hDlg, %lblCanvas, "", 5, 5, 310, 200
+    control set color hDlg, %lblCanvas, rgb(224,224,224), rgb(224,224,224)
+    control set resize hDlg, %lblCanvas, 1, 1, 1, 1    
+
+  CONTROL ADD BUTTON, hDlg, %btnInfo, "Info", 5, 210, 60, 14
+    control set resize hDlg, %btnInfo, 1, 0, 0, 1    
+    
+  CONTROL ADD BUTTON, hDlg, %btnClose, "Close", 255, 210, 60, 14
+    control set resize hDlg, %btnClose, 0, 1, 0, 1    
+ 
+  dialog set minsize hDlg, 320, 230
+DIALOG SHOW MODal hDlg, call dlgCallback
+
+ 
+CALLBACK FUNCTION dlgCallback()
+  static hCtrl as dword
+  local texInfo AS TBGL_tTexturingInfo
+  
+  SELECT CASE CBMSG
+    
+    CASE %WM_INITDIALOG
+      DIALOG SET TIMER CBHNDL, %myTimer, %timeOut, %NULL
+      control handle cbhndl, %lblCanvas to hCtrl
+      
+      ' -- Init OpenGL
+      TBGL_BindCanvas(hCtrl)
+      TBGL_BackColor 224,224,224      
+      
+      ' -- Prepare scene
+      TBGL_SceneCreate(%sScene)
+      
+      TBGL_EntityCreateCamera(%sScene, %eCamera)
+        TBGL_EntitySetPos(%sScene, %eCamera, 0, 0, 15)
+        TBGL_EntitySetTargetPos(%sScene, %eCamera, 0, 0, 0)
+        
+      TBGL_EntityCreateLight(%sScene, %eLight)
+        TBGL_EntitySetPos(%sScene, %eLight, 0, 0, 5)
+        
+      TBGL_NewList 1
+        TBGL_BeginPoly %GL_TRIANGLES
+          TBGL_NORMAL 0, 0, 1
+          TBGL_Vertex -1,  0.5
+          TBGL_Vertex -1, -0.5
+          TBGL_Vertex  1,  0
+        TBGL_ENDPOLY
+      TBGL_EndList
+      
+      TBGL_EntityCreateDLSlot(%sScene, %eArrow, 0, 1)
+        TBGL_EntitySetPos(%sScene, %eArrow, 1, 1, 0)      
+        TBGL_EntitySetColor(%sScene, %eArrow, 255, 0, 0)
+        
+      TBGL_EntityCreateSphere(%sScene, %eTarget, 0, 0.5)   
+
+
+    CASE %WM_SIZE, %WM_SIZING
+      TBGL_UpdateCanvasProportions(hCtrl)
+      RenderMyImage(hCtrl)
+
+    CASE %WM_TIMER
+      RenderMyImage(hCtrl)
+
+    CASE %WM_CLOSE 
+      TBGL_ReleaseCanvas(hCtrl)      
+      DIALOG KILL TIMER CBHNDL, %myTimer
+      
+    case %WM_COMMAND
+      select case cbctl
+        case %btnClose
+          if CBCTLMSG = %BN_CLICKED THEN DIALOG End hDlg
+        
+        case %btnInfo            
+          if CBCTLMSG = %BN_CLICKED THEN
+            ' Get info on texturing subsystem
+            TBGL_TexturingQuery(texInfo)
+            
+            ' Get some more
+            msgbox cbhndl, "Did you know your card supports textures as big as"+ _
+                            STR$(texInfo.maxWidth)+" x"+STR$(texInfo.maxHeight)+"?"+$CRLF+ _
+                            IIF$(texInfo.NPOTSupport, "You can use NPOT textures as well", "But your HW sadly does not support NPOT textures") + $CRLF(2) + _
+                            IIF$(TBGL_oglVersionSupport(2, 0), "You have support for OpenGL 2.0 at least, no need to upgrade soon", "No support for OpenGL 2.0") +$CRLF+ _
+                            IIF$(TBGL_oglExtensionSupport("GL_ARB_fragment_program GL_ARB_vertex_program"), "Support for some form of shaders", "No support for shaders, good TBGL does not require it :)"), _
+                            %MB_ICONINFORMATION, _
+                            "Info"
+          end if                  
+      end select    
+      
+  END SELECT
+END FUNCTION
+
+function RenderMyImage( hCtrl as dword )
+  static FrameRate as double
+  local angle as double
+  
+  if TBGL_CanvasBound(hCtrl) then
+    
+    FrameRate = TBGL_GetFrameRate
+    tbgl_ClearFrame
+    
+      ' Move target
+      TBGL_EntitySetColor(%sScene, %eTarget, 128+sin(GetTickCount/1000)*127,128+sin(GetTickCount/1000+1)*127,128+sin(GetTickCount/1000+2)*127)
+      TBGL_EntitySetpos(%sScene, %eTarget, sin(GetTickCount/1000)*5, cos(GetTickCount/2000)*5,0)
+      
+      ' Get angle hunter-target  
+      angle = TBGL_EntityGetAngleXY(%sScene, %eArrow, %eTarget, %TBGL_X)      
+      
+      ' Slowly turn towards target
+      TBGL_EntityTurn(%sScene, %eArrow, 0, 0, 5*angle/FrameRate )      
+      
+      ' Move towards the target, with speed proportional to the distance
+      TBGL_EntityPush(%sScene, %eArrow, TBGL_EntityGetDistance(%sScene, %eArrow, %eTarget)/FrameRate, 0, 0 )
+      
+      ' Render it please
+      TBGL_SceneRender(%sScene)
+      
+    tbgl_DrawFrame
+    
+  end if  
+end function
+ 

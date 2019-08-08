@@ -1,0 +1,285 @@
+﻿  '-----------------------------------------------------------------------------
+  ' List needed modules
+  '-----------------------------------------------------------------------------
+  uses "UI"
+  
+  '-----------------------------------------------------------------------------
+  ' Define external functions (usually Windows API)
+  '-----------------------------------------------------------------------------
+
+  '-----------------------------------------------------------------------------
+  ' Global variables and equates
+  '-----------------------------------------------------------------------------
+  Begin ControlID
+    %ID_LV_LEFT    '---Control ID for left list-view
+    %ID_LV_RIGHT   '---Control ID for right list-view
+    %ID_LV_LOG     '---Control ID for bottom list-view
+    
+    %CMD_SelectAll    
+    %CMD_UnSelectAll   
+    %CMD_SelectItem    
+  End ControlID  
+  
+  dim hMenuRightClickFile AS LONG
+
+  '-----------------------------------------------------------------------------
+  ' Global menues
+  '-----------------------------------------------------------------------------
+
+    MENU NEW POPUP TO hMenuRightClickFile
+    MENU ADD String, hMenuRightClickFile, "Select all"            , %CMD_SelectAll      , %MF_ENABLED
+    MENU ADD String, hMenuRightClickFile, "UnSelect all"          , %CMD_UnSelectAll    , %MF_ENABLED
+    MENU ADD String, hMenuRightClickFile, "-"                     , 0                   , %MF_SEPARATOR
+    MENU ADD String, hMenuRightClickFile, "UnSelect single Item"  , %CMD_SelectItem     , %MF_ENABLED
+
+  '-----------------------------------------------------------------------------
+  ' Main script
+  '-----------------------------------------------------------------------------
+    randomize   '---Seed random number generator: script uses RND function
+  '-----------------------------------------------------------------------------
+  FUNCTION Main() AS LONG
+    '-----------------------------------------------------------------------------
+    ' Contains the window creation, controls handling 
+    '-----------------------------------------------------------------------------
+  
+    LOCAL hDlg          AS DWORD
+    
+    LOCAL lvStyle       AS DWORD
+    LOCAL Counter as long
+
+    DIALOG NEW 0, "ListView test", -1, -1, 640, 400, %WS_CLIPCHILDREN or %WS_OVERLAPPEDWINDOW TO hDlg
+    DIALOG SET MINSIZE hDlg, 350, 200
+   
+    '---Save dialog size/client
+    DIM lx, ly, wx, hy AS LONG
+    DIALOG GET SIZE   hdlg TO lx, ly
+    DIALOG GET CLIENT hdlg TO wx, hy
+'%LVS_SINGLESEL |
+    lvStyle =   %LV_VIEW_DETAILS |  %WS_VISIBLE | %WS_CHILD | %LVS_SHOWSELALWAYS | %WS_BORDER 
+    CONTROL ADD listview, hDlg, %ID_LV_LEFT  , "", 5       , 35, wx/3 - 5      , hy - 140, lvStyle, %LVS_EX_FULLROWSELECT  | %LVS_EX_GRIDLINES
+    CONTROL ADD listview, hDlg, %ID_LV_RIGHT , "", wx/3 + 2, 35, wx - wx/3 - 8 , hy - 140, lvStyle, %LVS_EX_FULLROWSELECT
+    CONTROL ADD listview, hDlg, %ID_LV_LOG   , "", 5       , hy - 102, wx - 11 , 95      , lvStyle, %LVS_EX_FULLROWSELECT | %LVS_EX_GRIDLINES
+
+          '---Automatic resizing control
+          control set resize hDlg, %ID_LV_LEFT  , 1, 0, 1, 1
+          listview_Setview      hDlg, %ID_LV_LEFT, %LV_VIEW_DETAILS
+          listview_insertcolumn hDlg, %ID_LV_LEFT, 1, 100, "Folders"      , %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_LEFT
+          listview_insertcolumn hDlg, %ID_LV_LEFT, 2,  50, "Size"         , %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_RIGHT
+          listview_insertcolumn hDlg, %ID_LV_LEFT, 3, 120, "Description"  , %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_LEFT
+
+          dim s(5, 3) as string
+          s(1,1) = "Folder 1", "1", "Whatever data here regarding Folder 1"
+          s(2,1) = "Folder 2", "2", "Whatever data here regarding Folder 2"
+          s(3,1) = "Folder 3", "3", "Whatever data here regarding Folder 3"
+          s(4,1) = "Folder 4", "4", "Whatever data here regarding Folder 4"
+          s(5,1) = "Folder 5", "5", "Whatever data here regarding Folder 5"
+
+          for Counter = 1 to 1000
+            ListView_InsertData hDlg, %ID_LV_LEFT, s()
+          next
+          reset s
+                    
+          control set resize    hDlg, %ID_LV_RIGHT , 1, 1, 1, 1
+          listview_Setview      hDlg, %ID_LV_RIGHT, %LV_VIEW_DETAILS
+          listview_insertcolumn hDlg, %ID_LV_RIGHT, 1, 200, "Name", %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_LEFT
+          listview_insertcolumn hDlg, %ID_LV_RIGHT, 2,  80, "Size", %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_right
+          listview_insertcolumn hDlg, %ID_LV_RIGHT, 3,  80, "Ext" , %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_LEFT
+          listview_insertcolumn hDlg, %ID_LV_RIGHT, 4, 250, "Last modified", %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_LEFT
+          ListView_SetBkImage   hDlg, %ID_LV_RIGHT, app_sourcepath & "TB_01_50.jpg", %LVBKIF_STYLE_NORMAL | %LVBKIF_SOURCE_URL, 100, 100
+          
+
+          ListView_BeginUpdate hDlg, %ID_LV_RIGHT   '---To minimize video redraw, better to stop control updates
+            for Counter = 1 to 500
+              listview_Insertitem hDlg, %ID_LV_RIGHT, Counter, "Test file name " & format$(Counter, "0000")
+              listview_Setitem hDlg, %ID_LV_RIGHT, Counter, 2, format$(rnd(1024, 1024^2), "0000")
+              listview_Setitem hDlg, %ID_LV_RIGHT, Counter, 3, "Ext " & format$(Counter, "0000")
+              listview_Setitem hDlg, %ID_LV_RIGHT, Counter, 4, format$(rnd(2000, 2008), "0000") & "/" & format$(rnd(1, 12), "00") & "/" & format$(rnd(1, 28), "00") & "  " & _
+                                                               format$(rnd(0, 23), "00") & ":" & format$(rnd(0, 59), "00") & ":" & format$(rnd(0, 59), "00")
+            next
+          ListView_EndUpdate hDlg, %ID_LV_RIGHT   '---Restart control updates
+
+          control set resize hDlg, %ID_LV_LOG  , 1, 1, 0, 1
+          listview_Setview      hDlg, %ID_LV_LOG, %LV_VIEW_DETAILS
+          listview_insertcolumn hDlg, %ID_LV_LOG,  1, 120, "Time"   , %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_LEFT
+          listview_insertcolumn hDlg, %ID_LV_LOG,  2,  30, "#"      , %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_right
+          listview_insertcolumn hDlg, %ID_LV_LOG,  3, 100, "Message", %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_LEFT
+          listview_insertcolumn hDlg, %ID_LV_LOG,  4, 150, "Object" , %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_LEFT
+          listview_insertcolumn hDlg, %ID_LV_LOG,  5, 150, "Details", %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_LEFT
+          listview_insertcolumn hDlg, %ID_LV_LOG,  6,  40, "P1"     , %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_LEFT
+          listview_insertcolumn hDlg, %ID_LV_LOG,  7,  40, "P2"     , %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_LEFT
+          listview_insertcolumn hDlg, %ID_LV_LOG,  8,  40, "P3"     , %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_LEFT
+          listview_insertcolumn hDlg, %ID_LV_LOG,  9,  40, "P4"     , %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_LEFT
+          listview_insertcolumn hDlg, %ID_LV_LOG, 10,  40, "P5"     , %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_LEFT
+          listview_insertcolumn hDlg, %ID_LV_LOG, 11,  40, "P6"     , %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_LEFT
+          listview_insertcolumn hDlg, %ID_LV_LOG, 12,  40, "P7"     , %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_LEFT
+          listview_insertcolumn hDlg, %ID_LV_LOG, 13,  40, "P8"     , %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_LEFT
+          listview_insertcolumn hDlg, %ID_LV_LOG, 14,  40, "P9"     , %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_LEFT
+          listview_insertcolumn hDlg, %ID_LV_LOG, 15,  40, "P10"    , %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_LEFT
+          listview_insertcolumn hDlg, %ID_LV_LOG, 16,  40, "P11"    , %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_LEFT
+          listview_insertcolumn hDlg, %ID_LV_LOG, 17,  40, "P12"    , %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_LEFT
+          listview_insertcolumn hDlg, %ID_LV_LOG, 18,  40, "P13"    , %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_LEFT
+          listview_insertcolumn hDlg, %ID_LV_LOG, 19,  40, "P14"    , %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_LEFT
+          Log_AddMessage(hDlg, ("StartUp", "", "%wm_initdialog"))
+
+
+      '---Show dialog in MODAL state
+      DIALOG SHOW MODAL hDlg, call dlgCallback
+    end function
+    
+    callback function dlgCallback() as long           
+      local nm            as NMHDR at cbNmhdr
+      local lvnm          AS NM_LISTVIEW ptr
+      local idx           as long
+      local LastSortDir   as long
+      
+      
+      '---Now test the message
+      SELECT CASE cbMsg
+
+        case %WM_Command
+
+          select case cbCTL
+            case %CMD_SelectAll
+              ON_CMD_SelectAll(CBHNDL, %ID_LV_RIGHT)
+              
+            Case %CMD_UnSelectAll
+              ON_CMD_UnSelectAll(CBHNDL, %ID_LV_RIGHT)
+
+            Case %CMD_SelectItem
+              ON_CMD_SelectItem(CBHNDL, %ID_LV_RIGHT)
+              
+          end select
+          
+        case %WM_NOTIFY
+
+          select case cbCTL
+            case %ID_LV_RIGHT
+              
+              '---cbLParam contains a pointer to a listview notification structure
+              '---so assign it to our lvnm pointer
+              '---Now check the notification event occurred
+              lvnm = cbLParam  
+                            
+              select case nm.code
+                case %LVN_COLUMNCLICK
+                  Log_AddMessage CBHNDL, ("%WM_NOTIFY", "%ID_LV_RIGHT", "%LVN_COLUMNCLICK", Hex$(CBMSG), CBWPARAM, CBLPARAM, HIWRD(CBWPARAM), LOWRD(CBWPARAM), HIWRD(CBLPARAM), LOWRD(CBLPARAM), "--", nm.hwndFrom, nm.idfrom, nm.code, lvnm.iItem, lvnm.iSubItem)
+
+                  '---Api starts from zero
+                  if lvnm.iSubItem = 1 then 
+                    listview_sortItems(cbHndl, %ID_LV_RIGHT, lvnm.iSubItem + 1, LastSortDir, %TRUE)
+                  else
+                    listview_sortItems(cbHndl, %ID_LV_RIGHT, lvnm.iSubItem + 1, LastSortDir, %FALSE)
+                  end if
+                  LastSortDir = iif(LastSortDir = %TRUE, %FALSE, %TRUE)
+                  
+                  ListView_EnsureVisible(cbHndl, %ID_LV_RIGHT, -1, 0)
+
+                case %LVN_ITEMACTIVATE
+                  Log_AddMessage cbHndl, "%WM_NOTIFY", "%ID_LV_RIGHT", "%LVN_ITEMACTIVATE", idx
+                  dialog set text  cbHndl, listview_getitemtext(cbHndl, %ID_LV_RIGHT)
+
+                case %LVN_ITEMCHANGED
+                  '---When a selection change takes place, more %LVN_ITEMCHANGED are fired.
+                  '---To catch only the needed notification, check .uNewState notification member to have %LVIS_SELECTED on.
+                  if lvnm.uNewState and %LVIS_SELECTED then
+                    idx = ListView_GetNextItem(cbHndl, %ID_LV_RIGHT, -1, %LVNI_SELECTED)
+                    Log_AddMessage CBHNDL, ("%WM_NOTIFY", "%ID_LV_RIGHT", "%LVN_ITEMCHANGED", idx, nm.hwndFrom, nm.idfrom, nm.code, lvnm.iItem, lvnm.iSubItem, lvnm.uNewState, lvnm.uOldState)
+                  end if
+
+                case %NM_RCLICK
+                  Log_AddMessage CBHNDL, ("%WM_NOTIFY", "%ID_LV_RIGHT", "%NM_RCLICK", Hex$(CBMSG), CBWPARAM, CBLPARAM, HIWRD(CBWPARAM), LOWRD(CBWPARAM), HIWRD(CBLPARAM), LOWRD(CBLPARAM), "--", nm.hwndFrom, nm.idfrom, nm.code, lvnm.iItem, lvnm.iSubItem)
+                  PopUpMenu(cbHndl, hMenuRightClickFile, %TPM_TOPALIGN | %TPM_LEFTALIGN)
+
+              end select
+              
+            case %ID_LV_LEFT
+              '---cbLParam contains a pointer to a listview notification structure
+              '---so assign it to our lvnm pointer
+                lvnm = cbLParam
+
+              '---Now check the notification event occurred
+              select case nm.code
+                case %LVN_COLUMNCLICK
+                  Log_AddMessage CBHNDL, ("%WM_NOTIFY", "%ID_LV_LEFT", "%LVN_COLUMNCLICK", Hex$(CBMSG), CBWPARAM, CBLPARAM, HIWRD(CBWPARAM), LOWRD(CBWPARAM), HIWRD(CBLPARAM), LOWRD(CBLPARAM), "--", nm.hwndFrom, nm.idfrom, nm.code, lvnm.iItem, lvnm.iSubItem)
+
+                case %LVN_ITEMCHANGED
+                  '---When a selection change takes place, more %LVN_ITEMCHANGED are fired.
+                  '---To catch only the needed notification, check .uNewState notification member to have %LVIS_SELECTED on.
+                  if lvnm.uNewState and %LVIS_SELECTED then
+                    idx = ListView_GetNextItem(cbHndl, %ID_LV_LEFT, -1, %LVNI_SELECTED)
+                    Log_AddMessage CBHNDL, ("%WM_NOTIFY", "%ID_LV_RIGHT", "%LVN_ITEMCHANGED", idx)
+                  end if
+
+              end select      
+          end select
+      END SELECT
+  END FUNCTION
+
+
+  '-----------------------------------------------------------------------------
+  Function Log_AddMessage(hDlg As Long, Details(Any)   As String  )
+  '-----------------------------------------------------------------------------
+    '---Will count events
+    Static CountLog As Long
+    Incr CountLog
+
+    ListView_BeginUpdate hDlg, %ID_LV_LOG   '---To minimize video redraw, better to stop control updates
+      '---Always add new item at position 1. In this way it is added on top of all others.
+      listview_Insertitem hDlg, %ID_LV_LOG, 1 , format$(right$(date$, 4), "0000") & "/" & format$(mid$(Date$, 4, 2), "00") & "/" & format$(left$(date$, 2), "00") & " " & time$
+
+      'ListView_SetItem  hDlg, %ID_LV_LOG, 1,  2, CountLog
+      'listview_Setitem  hDlg, %ID_LV_LOG, 1,  3, Message
+      'ListView_SetItem  hDlg, %ID_LV_LOG, 1,  4, lObject
+      
+      '---Here we print out undefined parameters.
+      '---If undefined, parameters are considered passed as BYVAL VARIANT
+      '---In order to avoid to print zeroes when parameter as not been passed,
+      '---script tests if variants are empty or not. If not, they are printed
+      Local lItem As Long
+      For lItem = 1 To UBound(Details)
+        ListView_SetItem  hDlg, %ID_LV_LOG, 1,  lItem + 1, Details(lItem)
+      Next
+'      ListView_SetItem  hDlg, %ID_LV_LOG, 1,  6, IIf$(VariantVT( P1) = %VT_EMPTY, "",  P1)
+'      listview_Setitem  hDlg, %ID_LV_LOG, 1,  7, iif$(variantvt( P2) = %VT_EMPTY, "",  P2)
+'      listview_Setitem  hDlg, %ID_LV_LOG, 1,  8, iif$(variantvt( P3) = %VT_EMPTY, "",  P3)
+'      listview_Setitem  hDlg, %ID_LV_LOG, 1,  9, iif$(variantvt( P4) = %VT_EMPTY, "",  P4)
+'      listview_Setitem  hDlg, %ID_LV_LOG, 1, 10, iif$(variantvt( P5) = %VT_EMPTY, "",  P5)
+'      listview_Setitem  hDlg, %ID_LV_LOG, 1, 11, iif$(variantvt( P6) = %VT_EMPTY, "",  P6)
+'      listview_Setitem  hDlg, %ID_LV_LOG, 1, 12, iif$(variantvt( P7) = %VT_EMPTY, "",  P7)
+'      listview_Setitem  hDlg, %ID_LV_LOG, 1, 13, iif$(variantvt( P8) = %VT_EMPTY, "",  P8)
+'      listview_Setitem  hDlg, %ID_LV_LOG, 1, 14, iif$(variantvt( P9) = %VT_EMPTY, "",  P9)
+'      listview_Setitem  hDlg, %ID_LV_LOG, 1, 15, iif$(variantvt(P10) = %VT_EMPTY, "", P10)
+'      listview_Setitem  hDlg, %ID_LV_LOG, 1, 16, iif$(variantvt(P10) = %VT_EMPTY, "", P11)
+'      listview_Setitem  hDlg, %ID_LV_LOG, 1, 17, iif$(variantvt(P10) = %VT_EMPTY, "", P12)
+'      listview_Setitem  hDlg, %ID_LV_LOG, 1, 18, iif$(variantvt(P10) = %VT_EMPTY, "", P13)
+'      listview_Setitem  hDlg, %ID_LV_LOG, 1, 19, iif$(variantvt(P10) = %VT_EMPTY, "", P14)
+    ListView_EndUpdate hDlg, %ID_LV_LOG   '---Restart control updates
+
+  end function
+  
+  '-----------------------------------------------------------------------------
+  function ON_CMD_SelectAll(hDlg as long, hCtrl as long) as long
+  '-----------------------------------------------------------------------------
+    Log_AddMessage hDlg, ("Command", ListView_GetItemText(hDlg, hCtrl), "%CMD_SelectAll")
+    ListView_SelectAllItems hDlg, hCtrl
+
+  end function
+
+  '-----------------------------------------------------------------------------
+  Function ON_CMD_SelectItem(hDlg As Long, hCtrl As Long) As Long
+  '-----------------------------------------------------------------------------
+    Log_AddMessage hDlg, ("Command", ListView_GetItemText(hDlg, hCtrl), "%CMD_SelectItem")
+    Local nItem As Long = InputBox$("Which item number fo you want to unselect", "Unselect item", 1)
+    If nItem Then
+      ListView_UnselectItem hDlg, hCtrl, nItem
+    End If
+  End Function
+
+  '-----------------------------------------------------------------------------
+  Function ON_CMD_UnSelectAll(hDlg As Long, hCtrl As Long) As Long
+  '-----------------------------------------------------------------------------
+    Log_AddMessage hDlg, ("Command", ListView_GetItemText(hDlg, hCtrl), "%CMD_FILE_MODIFY")
+    ListView_UnselectAllItems  hDlg, hCtrl
+  end function
+  
+ 

@@ -1,0 +1,121 @@
+  USES "UI"
+  uses "Console"
+
+  Begin ControlID
+    %ID_ScrollBar1
+    %ID_ScrollBar2
+    %ID_ScrollBar3
+  End ControlID
+
+  '------------------------------------------------------------------
+  function Main() as long
+  '------------------------------------------------------------------
+    local hDlg    AS LONG
+    local Count   as long
+ 
+    DIALOG NEW pixels, 0, "ScrollBar test", _
+                                        -1, -1, 450, 300, _
+                                        %WS_MAXIMIZEBOX   | _
+                                        %WS_MINIMIZEBOX   | _
+                                        %WS_SYSMENU       | _
+                                        %WS_THICKFRAME    | _
+                                        %WS_CLIPCHILDREN  | _
+                                        %WS_CLIPSIBLINGS    _
+                                        TO hDlg
+ 
+ 
+ 
+    DIALOG SHOW MODAL hDlg, call cbDialog_Proc
+ 
+  end function
+  
+  '------------------------------------------------------------------
+  callback function cbDialog_Proc() as long
+  '------------------------------------------------------------------
+  
+    SELECT CASE cbMsg
+ 
+      CASE %WM_INITDIALOG
+        CONTROL ADD scrollbar,  cbhndl, %ID_ScrollBar1, "", 100, 10, 20, 200, %SBS_VERT CALL cb_SB_proc
+        control set color       cbhndl, %ID_ScrollBar1, , rgb(255, 0, 0)
+        scrollbar_setrange      cbhndl, %ID_ScrollBar1, 1, 255
+        scrollbar_setpos        cbhndl, %ID_ScrollBar1, 1
+        scrollbar_setpagesize   cbhndl, %ID_ScrollBar1, 1
+
+        CONTROL ADD scrollbar,  cbhndl, %ID_ScrollBar2, "", 200, 10, 20, 200, %SBS_VERT CALL cb_SB_proc
+        control set color       cbhndl, %ID_ScrollBar2, , rgb(0, 255, 0)
+        scrollbar_setrange      cbhndl, %ID_ScrollBar2, 1, 255
+        scrollbar_setpos        cbhndl, %ID_ScrollBar2, 1
+        scrollbar_setpagesize   cbhndl, %ID_ScrollBar2, 1
+
+        CONTROL ADD scrollbar,  cbhndl, %ID_ScrollBar3, "", 300, 10, 20, 200, %SBS_VERT CALL cb_SB_proc
+        control set color       cbhndl, %ID_ScrollBar3, , rgb(0, 0, 255)
+        scrollbar_setrange      cbhndl, %ID_ScrollBar3, 1, 255
+        scrollbar_setpos        cbhndl, %ID_ScrollBar3, 1
+        scrollbar_setpagesize   cbhndl, %ID_ScrollBar3, 1
+
+     END SELECT
+ 
+  end function
+ 
+
+  '------------------------------------------------------------------
+  callback function cb_SB_proc() as long
+  '------------------------------------------------------------------
+    local sBarName  as string
+    local lID       as long
+    
+    select case cbctl
+      case %ID_ScrollBar1
+        sBarName = "ScrollBar RED:"
+        lID = %ID_ScrollBar1
+      case %ID_ScrollBar2
+        sBarName = "ScrollBar GREEN:"
+        lID = %ID_ScrollBar2
+      case %ID_ScrollBar3
+        sBarName = "ScrollBar BLUE:"
+        lID = %ID_ScrollBar3
+    end select
+    
+    select case cbmsg
+         
+      Case %WM_VSCROLL
+        Select Case LoWrd(cbwParam)
+          Case %SB_TOP
+            printl sBarName, "%SB_TOP"
+            ScrollBar_setPos(cbhndl, lID, ScrollBar_GetRangeLow(cbhndl, lID))
+          Case %SB_BOTTOM
+            printl sBarName, "%SB_BOTTOM"
+            ScrollBar_setPos(cbhndl, lID, ScrollBar_GetRangehi(cbhndl, lID))
+          Case %SB_LINEUP
+            printl sBarName, "%SB_LINEUP"
+            ScrollBar_setPos(cbhndl, lID, ScrollBar_Getpos(cbhndl, lID) - 1)
+          Case %SB_LINEDOWN
+            printl sBarName, "%SB_LINEDOWN"
+            ScrollBar_setPos(cbhndl, lID, ScrollBar_Getpos(cbhndl, lID) + 1)
+          Case %SB_PAGEUP
+            printl sBarName, "%SB_PAGEUP"
+            ScrollBar_setPos(cbhndl, lID, ScrollBar_Getpos(cbhndl, lID) - ScrollBar_Getpagesize(cbhndl, lID))
+          Case %SB_PAGEDOWN
+            printl sBarName, "%SB_PAGEDOWN"
+            ScrollBar_setPos(cbhndl, lID, ScrollBar_Getpos(cbhndl, lID) + ScrollBar_Getpagesize(cbhndl, lID))
+          Case %SB_THUMBTRACK
+            printl sBarName, "%SB_THUMBTRACK", ScrollBar_GetTrackPos(cbhndl, lID)
+            ScrollBar_setPos(cbhndl, lID, ScrollBar_GetTrackPos(cbhndl, lID))
+        end select
+        
+        printl "Color to set: ", _
+                          ScrollBar_Getpos(cbhndl, %ID_ScrollBar1), _
+                          ScrollBar_Getpos(cbhndl, %ID_ScrollBar2), _
+                          ScrollBar_Getpos(cbhndl, %ID_ScrollBar3)
+
+        dialog set color cbhndl, -1, rgb( _
+                                          ScrollBar_Getpos(cbhndl, %ID_ScrollBar1), _
+                                          ScrollBar_Getpos(cbhndl, %ID_ScrollBar2), _
+                                          ScrollBar_Getpos(cbhndl, %ID_ScrollBar3) )
+        dialog redraw cbhndl
+
+    end select
+  end function
+ 
+ 

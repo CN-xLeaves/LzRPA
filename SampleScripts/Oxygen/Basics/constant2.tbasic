@@ -1,0 +1,26 @@
+' CONSTANT 2
+' 'addition to immediate value
+
+uses "oxygen","file"
+dim src as string
+dim vv as long
+src="
+  ;-----------
+  #def a 1+2*3
+  mov eax,a+3
+  ;-----------
+  
+  ret
+"
+
+msgbox 0,"Test: "+o2_error+o2_view (src)
+
+o2_asmo src
+if len(o2_error) then
+  msgbox 0,"Test: "+o2_error+o2_view (src)
+  'file_save("t.txt",o2_view (src))
+  stop
+end if
+vv=o2_exec
+msgbox 0,"0x"+hex$(vv)
+

@@ -1,0 +1,24 @@
+'------------------------------------------------------------------
+' Create a big extended array and fill it with number
+'------------------------------------------------------------------
+
+'---Variables declaration
+Dim MaxCount  As Long = 1000000
+DIM MyArray() AS EXT
+DIM Count     AS LONG
+
+'---Start time
+DIM T0        AS DOUBLE = TIMER
+
+'---Dimension the array
+REDIM MyArray(MaxCount)
+
+'---Fill the array
+FOR Count = 1 TO MaxCount
+  MyArray(Count) = Count^2
+NEXT 
+
+'---End time
+DIM T1        AS DOUBLE = TIMER
+
+MsgBox(0, "Total time to fill an EXT array of " & MaxCount & " elements: " & Format$(T1 - T0, "#0.0000") & " secs")

@@ -1,0 +1,41 @@
+
+'--------------------
+'TYPEDEF ENUMERATIONS
+'====================
+'
+
+uses "oxygen","file"
+dim src as string
+
+src = "
+
+  basic
+       
+  typedef enum
+  {
+    shoes, ships, sealing_wax, cabbages, kings 
+  } things
+
+  things t
+###
+  t=cabbages
+  't=ships
+
+  if t=cabbages then print "cabbages!  " t
+  if t=ships    then print "ships!  " t
+###
+
+
+  "
+
+
+  
+o2_asmo src
+
+'msgbox 0, o2_view src
+
+if len(o2_error) then
+  msgbox 0, o2_error : stop
+end if
+
+o2_exec

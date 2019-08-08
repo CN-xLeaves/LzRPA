@@ -1,0 +1,296 @@
+'
+'====================
+'MONSTROUS ARITHMETIC
+'====================
+
+'THIS WORKS WITH THINBASIC V1.8.8.0
+ 
+Uses "oxygen"        'compiler module
+Dim src As String    'source code
+Dim p0,p1,p2,p3 As long 'function pointers
+
+src="
+
+
+'---------------------------------------------------------
+function multiply(string ia, string ib) as string external
+'=========================================================
+dim as string a,b,c,d
+dim as long pa,pb,pc,pd,la,lb,lc,ld
+dim as long nd,sh,qa
+
+a=ia
+b=ib
+la=len a
+lb=len b
+lc=la+lb'+10
+ld=lc'+20
+c=nuls lc 'LINE ACCUMULATOR
+d=nuls ld 'BLOCK ACCUMULATOR
+pa=*a
+pb=*b
+pc=*c
+pd=*d
+
+
+pushad
+
+
+
+'SETUP POINTERS
+'==============
+
+mov esi,pa : add esi,la
+mov edi,pb : add edi,lb
+mov edx,pc : add edx,lc
+mov ebx,pa
+
+
+mov qa,esi 'RIGHT START POSITION FOR NUMBER A
+mov nd,edi 'SETUP NEXT DIGIT POINTER (B NUMBER)
+mov sh,edx 'SETUP POSITION SHIFT POINTER
+
+
+
+'CONVERT FROM ASCII TO BINARY CODED DECIMAL
+'==========================================
+
+
+mov edi,pa
+mov ecx,la
+(
+ dec ecx 
+ jl exit
+ sub byte [edi],48
+ inc edi
+ repeat
+)
+mov edi,pb
+mov ecx,lb
+(
+ dec ecx : jl exit
+ sub byte [edi],48
+ inc edi
+ repeat
+)
+
+
+
+nextline:
+'========
+
+'MULTIPLY BY ONE DIGIT
+'WORKING FROM RIGHT TO LEFT
+
+dec edi
+mov cl,[edi]
+mov ch,0
+(
+  dec esi
+  cmp esi,ebx : jl exit
+  mov al,[esi]
+  mov ah,0
+  mul cl
+  add al,ch 'ADD CARRY VALUE
+  mov ch,0  'CLEAR CARRY VALUE
+  (
+    cmp al,10
+    jl exit   'NO CARRY
+    mov ch,10 'DIVISOR
+    div ch    '
+    mov ch,al 'CARRY VAL IN CH
+    mov al,ah 'REMAINDER NOW IN AL
+  )
+  dec edx
+  mov [edx],al
+  repeat
+)
+'FINAL CARRY
+(
+  cmp ch,0
+  jz exit
+  dec edx
+  mov [edx],ch
+)
+
+'ADD TO BLOCK ACCUMULATOR
+'========================
+
+mov esi,pc : add esi,lc
+mov edi,pd : add edi,ld
+mov ah,0
+mov ebx,pc
+
+
+'BCD ADDITION
+'
+'WORKING FROM RIGHT TO LEFT
+
+(
+  dec esi
+  cmp esi,ebx : jl exit
+  dec edi
+  mov al,0
+  xchg al,[esi] 'LOAD AND THEN CLEAR LINE DIGIT
+  mov cl,[edi]
+  add al,ah 'PREVIOUS CARRY
+  add al,cl 'OPERAND
+  (
+   mov ah,0
+   cmp al,10 : jl exit
+   sub al,10
+   inc ah
+  )
+  mov [edi],al
+  repeat
+)
+
+
+mov ebx,pa
+
+mov esi,qa  'START POSITION FOR NUMBER A
+
+mov edi,nd 'NEXT DIGIT IN NUMBER B
+dec edi
+mov nd,edi
+
+cmp edi,pb : jle fwd done
+
+'SHIFT OUTPUT TO LINE ACCUM
+
+mov edx,sh
+dec edx
+mov sh,edx
+
+
+jmp long nextline
+
+
+
+done:
+
+
+
+'CONVERT FROM BCD TO ASCII
+'=========================
+
+
+mov edi,pd
+mov ecx,ld
+add ecx,edi
+(
+ cmp edi,ecx : jge exit
+ add byte [edi],48 : inc edi
+ repeat
+)
+
+
+
+'TRIM LEADING ZEROS
+'==================
+
+
+mov edi,pd
+mov ecx,ld
+add ecx,edi
+(
+ cmp edi,ecx : jge exit
+ mov al,[edi]
+ inc edi
+ cmp al,48 : jg exit
+ repeat
+)
+sub edi,pd
+mov nd,edi
+
+
+popad
+
+function=mid(d,nd,ld)
+
+end function
+
+'----------------------------------------------
+function factorial(string a) as string external
+'==============================================
+sys factorial=val a
+string b="1"
+for i=1 to factorial
+b=multiply(b,str(i))
+next
+function=b
+end function
+
+
+'----------------------------------------------------
+function power(string x, string p) as string external
+'====================================================
+string product = "1"
+sys power=val p
+for i = 1 to power
+product = multiply(product,x)
+next
+function = product
+end function
+
+
+'--------------------
+sub finish() external
+'====================
+  terminate
+end sub
+
+
+
+'map functions INTO thinBasic pointers
+'=====================================
+
+sys p0 at #p0=@finish 
+sys p1 at #p1=@multiply
+sys p2 at #p2=@factorial
+sys p3 at #p3=@power
+
+
+"
+
+'compile the program
+'===================
+
+'MsgBox 0,O2_PREP src ': Stop
+O2_ASMO src
+If Len(O2_ERROR) Then
+  MsgBox 0, O2_ERROR
+  stop
+Else
+  O2_EXEC
+End If
+
+
+'setup header for thinBasic
+'==========================
+
+declare sub finish() at p0
+declare function multiply(byval a as string, byval b as string) as string at p1
+declare function factorial(byval a as string) as string at p2
+declare function power(byval a as string, byval b as string) as string at p3
+
+
+'test
+'====
+
+dim as string n="1000"
+
+'msgbox 0,"Factorial: " & n & $crlf & $crlf & factorial(n)
+'msgbox 0,"Multiply: " & "2*3" & $crlf & $crlf & multiply("2","3")
+msgbox 0,"Power: " & "2^3" & $crlf & $crlf & power("2","3")
+ 
+
+
+'release the compiled program
+'============================
+
+finish()
+
+
+ 
+ 

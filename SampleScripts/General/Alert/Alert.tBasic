@@ -1,0 +1,14 @@
+
+DIM RetCode AS LONG
+DIM tOut1   AS LONG = 10
+DIM tOut2   AS LONG =  5
+DIM Msg     AS STRING
+
+Msg = "Hi everybody." & $crlf & _
+      "This message will be on screen for " & tOut1 & " seconds." & $CRLF & _
+      "Your can click on this message or wait for timeout." & $CRLF & _
+      "Different return codes will be generated for different actions"
+      
+RetCode = Alert("thinBasic Alert", Msg, tOut1)
+
+Alert("thinBasic RetCode", "Alert returned " & RetCode, tOut2)

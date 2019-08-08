@@ -1,0 +1,151 @@
+  '===============================================================================
+  '=                              TBGL 0.2.0.0 demo                              =
+  '=                Testing of visibility and 3D to 2D projection                =
+  '=                                                                             =
+  '=                            Petr Schreiber, 2007                             =
+  '===============================================================================
+    
+  Uses "TBGL" 
+
+  Dim hWnd As Dword 
+
+  hWnd = TBGL_CreateWindowEx("Test of visibility and interaction between 3D and 2D mode - press ESC to quit", 640, 480, 32, 0) 
+  TBGL_ShowWindow 
+  
+  tbgl_LoadTexture "Textures\flare.bmp", 1, %TBGL_TEX_MIPMAP
+  
+  TBGL_ResetKeyState() ' Resets status of all keys 
+
+  tbgl_UseLighting %TRUE
+  tbgl_UseLightSource %GL_LIGHT0, 1
+
+  ' Flare object
+  type tFlare
+    x   as single   ' Real x,y
+    y   as single    
+    px  as long     ' In pixels
+    py  as long
+    intensity as single
+  end type  
+
+  dim i as long  
+  dim NumFlares as long = 30
+  dim Flare(NumFlares) as tFlare
+  for i = 1 to NumFlares
+    Flare(i).x = sin(rndf(1,6))*3
+    Flare(i).y = cos(rndf(1,6))*3
+  next  
+
+  %LIST_FLARE = 1
+  CreateFlareList( %LIST_FLARE )
+  
+  dim FrameRate as single
+  dim x,y as long
+  dim resx, resy as long
+  
+  While TBGL_IsWindow(hWnd) 
+
+    TBGL_PolygonLook iif(tbgl_GetWindowKeyState(hWnd, %VK_tab), %GL_LINE, %GL_FILL)
+         
+    FrameRate = tbgl_GetFrameRate
+    tbgl_ClearFrame 
+      tbgl_GetWindowClient hWnd, resx, resy 
+      resy /= 4                   ' -- Change divisor to 1 to see interesting effect
+      
+      tbgl_RenderMatrix3d         ' -- We want to render 3D object 
+      tbgl_Camera 0,0,10,0,0,0
+        
+      ' ... which is kind of wheel  
+      tbgl_PushMatrix        
+        tbgl_Color 64,64,64
+        tbgl_rotate gettickcount/10,0,0,1
+
+        for i = 1 to 6
+          tbgl_Rotate 60,0,0,1
+          tbgl_PushMatrix                
+            tbgl_Translate 2.5,0,0
+            tbgl_Rotate i*45+gettickcount/(10*i),1,0,0
+            tbgl_Box 3, 1, 0.1
+          tbgl_PopMatrix  
+        next  
+        
+      tbgl_PopMatrix  
+
+      ' Are flares visible ? 
+      for i = 1 to NumFlares
+        
+        if tbgl_IsPointVisible(Flare(i).x, Flare(i).y, 0) = 1 then 
+          ' ... if yes, then make them brighter
+          Flare(i).intensity += 800/FrameRate 
+          if Flare(i).intensity > resy then Flare(i).intensity = resy
+        else
+          ' ... if not, then fade please
+          Flare(i).intensity -= 1600/FrameRate 
+          if Flare(i).intensity < 0 then Flare(i).intensity = 0
+        end if            
+        
+        ' We will get their pixel positions
+        tbgl_Pos3DtoPos2D (Flare(i).x, Flare(i).y, 0, x, y )
+        Flare(i).px = x
+        Flare(i).py = y       
+        
+      next  
+
+      tbgl_RenderMatrix2d         ' -- Flares will be rendered as 2D
+      
+      tbgl_UseLighting 0 
+      tbgl_UseTexture 1
+      tbgl_UseBlend 1    
+      tbgl_UsedepthMask 0    
+      tbgl_bindTexture 1
+
+      tbgl_color 255,255,255
+        
+      for i = 1 to NumFlares      
+        tbgl_color 64+sin(i)*64,64-cos(i)*64,255
+        RenderFlare2D( Flare(i).px, Flare(i).py, Flare(i).intensity )
+      next
+      
+      tbgl_UsedepthMask 1
+      tbgl_UseBlend 0        
+      tbgl_UseTexture 0    
+      
+      tbgl_UseLighting 1
+    tbgl_DrawFrame 
+
+    If TBGL_GetWindowKeyState( hWnd, %VK_ESCAPE) Then Exit While 
+
+  Wend 
+
+  TBGL_DestroyWindow 
+  
+  sub CreateFlareList( listindex as long )   
+     
+    tbgl_newList listindex
+      tbgl_BeginPoly %GL_QUADS
+        tbgl_TexCoord2D 0,0
+        tbgl_vertex -1,-1
+        
+        tbgl_TexCoord2D 1,0
+        tbgl_vertex 1,-1
+
+        tbgl_TexCoord2D 1,1
+        tbgl_vertex 1, 1
+
+        tbgl_TexCoord2D 0,1
+        tbgl_vertex -1, 1        
+      tbgl_EndPoly    
+    tbgl_EndList
+    
+  end sub
+  
+  sub RenderFlare2D( centerX as long, centerY as long, fsize as long )
+    if fsize = 0 then exit sub
+    
+    tbgl_PushMatrix
+      tbgl_Translate centerX, centerY, 0
+      tbgl_Scale fsize, fsize, 1
+      tbgl_CallList %LIST_FLARE
+    tbgl_PopMatrix
+
+  end sub

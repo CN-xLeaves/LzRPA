@@ -1,0 +1,350 @@
+  '-----------------------------------------------------------------------------
+  ' List needed modules
+  '-----------------------------------------------------------------------------
+  uses "UI"
+  uses "FILE"
+
+  '-----------------------------------------------------------------------------
+  ' Define needed UDT (User Defined Types)
+  '-----------------------------------------------------------------------------
+
+ 
+  '-----------------------------------------------------------------------------
+  ' Define external functions (usually Windows API)
+  '-----------------------------------------------------------------------------
+    DECLARE FUNCTION BFF_RegisterBFFClass LIB "zbff.dll" ALIAS "RegisterBFFClass" () AS long
+
+    DECLARE function BFF_zBrowser LIB "zbff.dll" ALIAS "zBrowser" ( _
+                                                                  byval ExStyle           as dword    , _
+                                                                        zDefaultPathName  As String   , _
+                                                                  byval Style             as dword    , _
+                                                                  byval x                 as integer  , _
+                                                                  byval y                 as integer  , _
+                                                                  byval w                 as integer  , _
+                                                                  byval h                 as integer  , _
+                                                                  byval parent            as dword    , _
+                                                                  byval ID                as long       _
+                                                                ) as dword
+
+    DECLARE function BFF_SetProperty LIB "zbff.dll" ALIAS "Bff_SetProperty" ( _
+                                                                  byval hCtrl             as dword    , _
+                                                                  byval lItem             as long     , _
+                                                                  byval lValue            as long       _
+                                                                ) as long
+
+    DECLARE function BFF_GetPath LIB "zbff.dll" ALIAS "Bff_GetPath" ( _
+                                                                  byval hCtrl             as dword      _
+                                                                ) as string
+
+      %Bff_ColorBackTreeView = 1 ' TreeView background  color
+      %Bff_ColorTextTreeView = 2 ' TreeView text and line color
+      %Bff_ColorBackSelected = 3 ' Selected item background color
+      %Bff_ColorTextSelected = 4 ' Selected item text color
+
+
+      %Bff_Ready             = %WM_USER + 1009
+      %Bff_SelChange         = %WM_USER + 1010
+      %Bff_RightClick        = %WM_USER + 1011
+      %Bff_BeginLabelEdit    = %WM_USER + 1012
+      %Bff_EndLabelEdit      = %WM_USER + 1013
+      %Bff_MoveFolder        = %WM_USER + 1014
+      %Bff_PrivateMessage    = %WM_USER + 1015
+
+
+  '-----------------------------------------------------------------------------
+  ' Global variables and equates
+  '-----------------------------------------------------------------------------
+    %ID_LV_LEFT    = 100   '---Control ID for left list-view
+    %ID_LV_RIGHT   = 101   '---Control ID for right list-view
+    %ID_LV_LOG     = 102   '---Control ID for bottom list-view
+    %ID_LB_DIR     = 103
+    
+    dim hMenuRightClickFile AS LONG
+
+  '-----------------------------------------------------------------------------
+  ' Global menues
+  '-----------------------------------------------------------------------------
+    %CMD_FILE_OPEN      = 400
+    %CMD_FILE_MODIFY    = 401
+    %CMD_FILE_PROPERTY  = 440
+
+    MENU New Popup To hMenuRightClickFile
+    MENU ADD STRING, hMenuRightClickFile, "Open"        , %CMD_FILE_OPEN      , %MF_ENABLED
+    MENU ADD STRING, hMenuRightClickFile, "Modify"      , %CMD_FILE_MODIFY    , %MF_ENABLED
+    MENU ADD STRING, hMenuRightClickFile, "-"           , 0                   , %MF_SEPARATOR
+    MENU ADD STRING, hMenuRightClickFile, "Properties"  , %CMD_FILE_PROPERTY  , %MF_ENABLED
+
+  '-----------------------------------------------------------------------------
+  ' Main script
+  '-----------------------------------------------------------------------------
+  FUNCTION Main() AS LONG
+  
+
+    LOCAL hDlg          AS DWORD
+    local Counter       as long
+    
+    LOCAL lvStyle       AS DWORD
+
+    DIALOG NEW pixels, 0, "thinBasic test script using zBFF control.", -1, -1, 750, 480, _
+                                              %WS_CLIPCHILDREN      | _
+                                              %WS_OVERLAPPEDWINDOW  TO hDlg
+    DIALOG SET MINSIZE hDlg, 350, 200
+   
+    '---Save dialog size/client
+    DIM lx, ly, wx, hy AS LONG
+    DIALOG GET SIZE   hdlg TO lx, ly
+    DIALOG GET CLIENT hdlg TO wx, hy
+
+        
+    Global hBFF As Long
+    Global szPath As ASCIIZ * 255 = APP_SourcePath '"C:\thinBasic\SampleScripts\UI\zBff"
+    
+    BFF_RegisterBFFClass
+    hBFF = BFF_zBrowser %WS_EX_STATICEDGE, szpath, %WS_CHILD | %WS_VISIBLE, 5, 35, 225, hy - 140, hDlg, %ID_LV_LEFT
+
+    BFF_SetProperty hBFF, %Bff_ColorBackTreeView, RGB(255, 255, 255)
+    BFF_SetProperty hBFF, %Bff_ColorTextTreeView, RGB(0, 0, 0)
+    BFF_SetProperty hBFF, %Bff_ColorBackSelected, RGB(178, 180, 191)
+    BFF_SetProperty hBFF, %Bff_ColorTextSelected, RGB(0, 0, 0)
+
+    '---Automatic resizing control
+    control set resize hDlg, %ID_LV_LEFT  , 1, 0, 1, 1
+
+    control add label, hDlg, %ID_LB_DIR, "", 235, 35, 509 , 15, %SS_WORDELLIPSIS | %SS_SUNKEN
+    control set resize hDlg, %ID_LB_DIR  , 1, 1, 0, 0
+ 
+
+ 
+    lvStyle =   %LV_VIEW_DETAILS | %LVS_SINGLESEL | %WS_VISIBLE | %WS_CHILD | %LVS_SHOWSELALWAYS | %WS_BORDER 
+    CONTROL ADD listview, hDlg, %ID_LV_RIGHT , "", 235, 55, 509 , hy - 160, lvStyle
+    CONTROL ADD listview, hDlg, %ID_LV_LOG   , "",   5, hy - 102, wx - 11 , 95, lvStyle
+
+
+    lvStyle = ListView_GetExtendedStyle(hDlg, %ID_LV_RIGHT)
+    ListView_SetExtendedStyle(hDlg, %ID_LV_RIGHT, lvStyle | %LVS_EX_FULLROWSELECT)
+
+    lvStyle = ListView_GetExtendedStyle(hDlg, %ID_LV_LOG)
+    ListView_SetExtendedStyle(hDlg, %ID_LV_LOG, lvStyle | %LVS_EX_FULLROWSELECT | %LVS_EX_GRIDLINES)
+
+          control set resize    hDlg, %ID_LV_RIGHT , 1, 1, 1, 1
+          listview_Setview      hDlg, %ID_LV_RIGHT, %LV_VIEW_DETAILS
+          listview_insertcolumn hDlg, %ID_LV_RIGHT, 1, 200, "Name", %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_LEFT
+          listview_insertcolumn hDlg, %ID_LV_RIGHT, 2,  80, "Size", %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_right
+          listview_insertcolumn hDlg, %ID_LV_RIGHT, 3,  80, "Ext" , %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_LEFT
+          listview_insertcolumn hDlg, %ID_LV_RIGHT, 4, 250, "Last modified", %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_LEFT
+          ListView_SetBkImage   hDlg, %ID_LV_RIGHT, app_sourcepath & "TB_01_50.jpg", %LVBKIF_STYLE_NORMAL | %LVBKIF_SOURCE_URL, 100, 100
+          
+
+          control set resize hDlg, %ID_LV_LOG  , 1, 1, 0, 1
+          listview_Setview      hDlg, %ID_LV_LOG, %LV_VIEW_DETAILS
+          listview_insertcolumn hDlg, %ID_LV_LOG,  1, 120, "Time"   , %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_LEFT
+          listview_insertcolumn hDlg, %ID_LV_LOG,  2,  30, "#"      , %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_right
+          listview_insertcolumn hDlg, %ID_LV_LOG,  3, 100, "Message", %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_LEFT
+          listview_insertcolumn hDlg, %ID_LV_LOG,  4, 150, "Object" , %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_LEFT
+          listview_insertcolumn hDlg, %ID_LV_LOG,  5, 150, "Details", %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_LEFT
+          listview_insertcolumn hDlg, %ID_LV_LOG,  6,  40, "P1"     , %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_LEFT
+          listview_insertcolumn hDlg, %ID_LV_LOG,  7,  40, "P2"     , %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_LEFT
+          listview_insertcolumn hDlg, %ID_LV_LOG,  8,  40, "P3"     , %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_LEFT
+          listview_insertcolumn hDlg, %ID_LV_LOG,  9,  40, "P4"     , %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_LEFT
+          listview_insertcolumn hDlg, %ID_LV_LOG, 10,  40, "P5"     , %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_LEFT
+          listview_insertcolumn hDlg, %ID_LV_LOG, 11,  40, "P6"     , %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_LEFT
+          listview_insertcolumn hDlg, %ID_LV_LOG, 12,  40, "P7"     , %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_LEFT
+          listview_insertcolumn hDlg, %ID_LV_LOG, 13,  40, "P8"     , %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_LEFT
+          listview_insertcolumn hDlg, %ID_LV_LOG, 14,  40, "P9"     , %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_LEFT
+          listview_insertcolumn hDlg, %ID_LV_LOG, 15,  40, "P10"    , %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_LEFT
+          listview_insertcolumn hDlg, %ID_LV_LOG, 16,  40, "P11"    , %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_LEFT
+          listview_insertcolumn hDlg, %ID_LV_LOG, 17,  40, "P12"    , %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_LEFT
+          listview_insertcolumn hDlg, %ID_LV_LOG, 18,  40, "P13"    , %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_LEFT
+          listview_insertcolumn hDlg, %ID_LV_LOG, 19,  40, "P14"    , %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_LEFT
+          Log_AddMessage(hDlg, "StartUp", "", "%wm_initdialog")
+
+    '---Show dialog in MODELESS state, the only managed state at the moment
+    DIALOG SHOW MODELESS hDlg call MainWindowProc
+    Do
+      DIALOG DOEVENTS 0 To Counter
+    Loop While Counter
+    
+
+  end function
+  
+  '-----------------------------------------------------------------------------
+  '
+  '-----------------------------------------------------------------------------
+  callback function MainWindowProc() as long
+
+    local nm            as NMHDR
+    LOCAL lvnm          AS NM_LISTVIEW ptr
+    local idx           as long
+    local LastSortDir   as long
+    local nFiles        as long
+    local Files()       as string
+    local sDir          as string
+    local Counter       as long
+    
+    
+    local SelectedItem  as string
+      
+      '---Now test the message
+      SELECT CASE cbMsg
+
+        case %wm_initdialog
+
+        case %WM_Command
+
+          select case CBCTL
+            case %ID_LV_LEFT
+
+              select case CBCTLMSG
+
+                case %BFF_SelChange
+                  sDir = BFF_GetPath(control_gethandle(hBFF,  %ID_LV_LEFT))
+                  control set text cbhndl, %ID_LB_DIR, sDir
+                  Log_AddMessage cbhndl, "BFF", "%BFF_SelChange", sDir
+                  if sDir <> "" then
+                    
+                    nFiles = dir_listarray (Files, sDir, "*.*", %FILE_NORMAL | %FILE_READONLY | %FILE_ADDPATH)
+
+                    ListView_BeginUpdate cbhndl, %ID_LV_RIGHT   '---To minimize video redraw, better to stop control updates
+                      ListView_DeleteAllItems cbhndl, %ID_LV_RIGHT
+ 
+                      for Counter = 1 to nFiles
+                        listview_Insertitem cbhndl, %ID_LV_RIGHT, Counter, FILE_PATHSPLIT(Files(Counter), %Path_FileExt)
+                        listview_Setitem cbhndl, %ID_LV_RIGHT, Counter, 2, file_size(Files(Counter))
+                        listview_Setitem cbhndl, %ID_LV_RIGHT, Counter, 3, FILE_PATHSPLIT(Files(Counter), %Path_Ext)
+                        listview_Setitem cbhndl, %ID_LV_RIGHT, Counter, 4, FILE_GetDateTime(Files(Counter))
+                      next
+                    ListView_EndUpdate cbhndl, %ID_LV_RIGHT   '---Restart control updates
+                  end if
+                  
+                case %BFF_RightClick
+                  Log_AddMessage cbhndl, "BFF", "%BFF_RightClick", BFF_GetPath(control_gethandle(hBFF,  %ID_LV_LEFT))
+                  PopUpMenu(cbhndl, hMenuRightClickFile, %TPM_TOPALIGN | %TPM_LEFTALIGN)
+
+              end select
+              
+            case %CMD_FILE_OPEN
+              ON_CMD_FILE_Open(cbhndl, %ID_LV_RIGHT)
+            case %CMD_FILE_MODIFY
+              ON_CMD_FILE_Modify(cbhndl, %ID_LV_RIGHT)
+            case %CMD_FILE_PROPERTY
+              ON_CMD_FILE_Properties(cbhndl, %ID_LV_RIGHT)
+          end select
+          
+        case %WM_NOTIFY
+          
+          select case CBCTL
+              
+            case %ID_LV_RIGHT
+              
+              '---cblParam contains a pointer to a listview notification structure
+              '---so assign it to our lvnm pointer
+                lvnm = cblParam
+              
+              '---Now check the notification event occurred
+              Select Case lvnm.hdr.code
+                case %LVN_COLUMNCLICK
+                  Log_AddMessage CBHNDL, "%WM_NOTIFY", "%ID_LV_RIGHT", "%LVN_COLUMNCLICK", Hex$(CBMSG), CBWPARAM, CBLPARAM, HIWRD(CBWPARAM), LOWRD(CBWPARAM), HIWRD(CBLPARAM), LOWRD(CBLPARAM), "--", nm.hwndFrom, nm.idfrom, nm.code, lvnm.iItem, lvnm.iSubItem
+
+                  '---Api starts from zero
+                  if lvnm.iSubItem = 1 then 
+                    listview_sortItems(cbhndl, %ID_LV_RIGHT, lvnm.iSubItem + 1, LastSortDir, %TRUE)
+                  else
+                    listview_sortItems(cbhndl, %ID_LV_RIGHT, lvnm.iSubItem + 1, LastSortDir, %FALSE)
+                  end if
+                  LastSortDir = iif(LastSortDir = %TRUE, %FALSE, %TRUE)
+                  
+                  ListView_EnsureVisible(cbhndl, %ID_LV_RIGHT, -1, 0)
+
+                case %LVN_ITEMACTIVATE
+                  Log_AddMessage cbhndl, "%WM_NOTIFY", "%ID_LV_RIGHT", "%LVN_ITEMACTIVATE", idx
+                  dialog set text  cbhndl, listview_getitemtext(hDlg, %ID_LV_RIGHT)
+
+                case %LVN_ITEMCHANGED
+                  '---When a selection change takes place, more %LVN_ITEMCHANGED are fired.
+                  '---To catch only the needed notification, check .uNewState notification member to have %LVIS_SELECTED on.
+                  if lvnm.uNewState and %LVIS_SELECTED then
+                    idx = ListView_GetNextItem(cbhndl, %ID_LV_RIGHT, -1, %LVNI_SELECTED)
+                    Log_AddMessage cbhndl, "%WM_NOTIFY", "%ID_LV_RIGHT", "%LVN_ITEMCHANGED", idx, nm.hwndFrom, nm.idfrom, nm.code, lvnm.iItem, lvnm.iSubItem, lvnm.uNewState, lvnm.uOldState
+                  end if
+
+                case %NM_RCLICK
+                  Log_AddMessage hDlg, "%WM_NOTIFY", "%ID_LV_RIGHT", "%NM_RCLICK", Hex$(cbmsg), CBWPARAM, CBLPARAM, HIWRD(CBWPARAM), LOWRD(CBWPARAM), HIWRD(CBLPARAM), LOWRD(CBLPARAM), "--", nm.hwndFrom, nm.idfrom, nm.code, lvnm.iItem, lvnm.iSubItem
+                  SelectedItem = ListView_GetItemText(cbhndl, %ID_LV_RIGHT)
+                  if SelectedItem <> "" then
+                    PopUpMenu(hDlg, hMenuRightClickFile, %TPM_TOPALIGN | %TPM_LEFTALIGN)
+                  end if
+                  
+              end select
+              
+
+          end select
+            
+        case %WM_DESTROY
+          '---Cleanup process
+                  
+      END SELECT
+    
+  END FUNCTION
+
+
+  '-----------------------------------------------------------------------------
+  function Log_AddMessage(  _
+                                      hDlg      as long, _
+                                      Message   as string, _
+                                      lObject   as string, _
+                            optional  Details   as string, _
+                                      P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14 )
+  '-----------------------------------------------------------------------------
+    '---Will count events
+    global CountLog as long
+    incr CountLog
+
+    ListView_BeginUpdate hDlg, %ID_LV_LOG   '---To minimize video redraw, better to stop control updates
+      '---Always add new item at position 1. In this way it is added on top of all others.
+      listview_Insertitem hDlg, %ID_LV_LOG, 1 , format$(right$(date$, 4), "0000") & "/" & format$(mid$(Date$, 4, 2), "00") & "/" & format$(left$(date$, 2), "00") & " " & time$
+        listview_Setitem  hDlg, %ID_LV_LOG, 1,  2, CountLog
+        listview_Setitem  hDlg, %ID_LV_LOG, 1,  3, Message
+        listview_Setitem  hDlg, %ID_LV_LOG, 1,  4, lObject
+        listview_Setitem  hDlg, %ID_LV_LOG, 1,  5, Details
+
+        '---Here we print out undefined parameters.
+        '---If undefined, parameters are considered passed as BYVAL VARIANT
+        '---In order to avoid to print zeroes when parameter as not been passed,
+        '---script tests if variants are empty or not. If not, they are printed
+        listview_Setitem  hDlg, %ID_LV_LOG, 1,  6, iif$(variantvt( P1) = %VT_EMPTY, "",  P1)
+        listview_Setitem  hDlg, %ID_LV_LOG, 1,  7, iif$(variantvt( P2) = %VT_EMPTY, "",  P2)
+        listview_Setitem  hDlg, %ID_LV_LOG, 1,  8, iif$(variantvt( P3) = %VT_EMPTY, "",  P3)
+        listview_Setitem  hDlg, %ID_LV_LOG, 1,  9, iif$(variantvt( P4) = %VT_EMPTY, "",  P4)
+        listview_Setitem  hDlg, %ID_LV_LOG, 1, 10, iif$(variantvt( P5) = %VT_EMPTY, "",  P5)
+        listview_Setitem  hDlg, %ID_LV_LOG, 1, 11, iif$(variantvt( P6) = %VT_EMPTY, "",  P6)
+        listview_Setitem  hDlg, %ID_LV_LOG, 1, 12, iif$(variantvt( P7) = %VT_EMPTY, "",  P7)
+        listview_Setitem  hDlg, %ID_LV_LOG, 1, 13, iif$(variantvt( P8) = %VT_EMPTY, "",  P8)
+        listview_Setitem  hDlg, %ID_LV_LOG, 1, 14, iif$(variantvt( P9) = %VT_EMPTY, "",  P9)
+        listview_Setitem  hDlg, %ID_LV_LOG, 1, 15, iif$(variantvt(P10) = %VT_EMPTY, "", P10)
+        listview_Setitem  hDlg, %ID_LV_LOG, 1, 16, iif$(variantvt(P10) = %VT_EMPTY, "", P11)
+        listview_Setitem  hDlg, %ID_LV_LOG, 1, 17, iif$(variantvt(P10) = %VT_EMPTY, "", P12)
+        listview_Setitem  hDlg, %ID_LV_LOG, 1, 18, iif$(variantvt(P10) = %VT_EMPTY, "", P13)
+        listview_Setitem  hDlg, %ID_LV_LOG, 1, 19, iif$(variantvt(P10) = %VT_EMPTY, "", P14)
+    ListView_EndUpdate hDlg, %ID_LV_LOG   '---Restart control updates
+
+  end function
+  
+  '-----------------------------------------------------------------------------
+  function ON_CMD_FILE_Open(hDlg as long, hCtrl as long) as long
+  '-----------------------------------------------------------------------------
+    Log_AddMessage hDlg, "Command", ListView_GetItemText(hDlg, hCtrl), "%CMD_FILE_OPEN"
+  end function
+
+  '-----------------------------------------------------------------------------
+  function ON_CMD_FILE_Properties(hDlg as long, hCtrl as long) as long
+  '-----------------------------------------------------------------------------
+    Log_AddMessage hDlg, "Command", ListView_GetItemText(hDlg, hCtrl), "%CMD_FILE_PROPERTY"
+  end function
+
+  '-----------------------------------------------------------------------------
+  function ON_CMD_FILE_Modify(hDlg as long, hCtrl as long) as long
+  '-----------------------------------------------------------------------------
+    Log_AddMessage hDlg, "Command", ListView_GetItemText(hDlg, hCtrl), "%CMD_FILE_MODIFY"
+  end function
+  
+ 

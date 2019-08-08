@@ -1,0 +1,34 @@
+  Uses "console"
+  Randomize
+  
+  Dim MyTimer(2)  As cTimer
+
+  '---Either init all elements
+  '  MyTimer() = New cTimer
+  '---or init each of them
+  MyTimer(1) = New cTimer("Timer 1")
+  MyTimer(2) = New cTimer("Timer 2")
+
+  '---Handle timer 1
+  MyTimer(1).Start("Hi there, I'm timer one and I will wait for 500 ms")
+  Sleep 500
+  MyTimer(1).Stop
+  OutTimerInfoClass(MyTimer(1))
+  
+  '---Handle timer 2
+  MyTimer(2).Start("I'm timer 2 two and I will wait for 1000 ms")
+  Sleep 1000
+  MyTimer(2).Stop
+  OutTimerInfoClass(MyTimer(2))
+
+  PrintL "---Finished. Press any key to close---"
+  WaitKey
+
+  Function OutTimerInfoClass(ByRef lTimer As cTimer) As Long
+    PrintL "Timer name............", lTimer.GetName
+    PrintL "Timer description.....", lTimer.GetDescription
+    PrintL "Seconds...............", lTimer.ElapsedToString(%CTIMER_SECONDS     , "#0.0000")
+    PrintL "Milli seconds.........", lTimer.ElapsedToString(%CTIMER_MILLISECONDS, "#0.0000")
+    PrintL "Micro seconds.........", lTimer.ElapsedToString(%CTIMER_MICROSECONDS, "#0.0000")
+    PrintL "----------------------------------------------"
+  End Function

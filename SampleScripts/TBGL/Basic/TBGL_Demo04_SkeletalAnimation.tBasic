@@ -1,0 +1,87 @@
+  '=============================================================================
+  '=                       Very basic skeletal animation                       =
+  '=                                                                           =
+  '=                           Petr Schreiber, 2007                            =
+  '=============================================================================
+
+  Uses "TBGL"               ' -- Module for 3D graphics
+
+  Dim hWnd As Dword 
+
+  ' -- Creates window and returns handle by which we can identify it
+  hWnd = TBGL_CreateWindowEx("Rotating textured square with blending, press ESC to quite", 640, 480, 32, %TBGL_WS_WINDOWED) 
+  TBGL_ShowWindow 
+  
+  ' -- We want solid objects to be rendered as wireframe
+  tbgl_PolygonLook %GL_LINE
+  
+  dim i, j as long
+  
+  TBGL_ResetKeyState() ' -- Resets status of all keys 
+
+  ' -- Main loop
+  While TBGL_IsWindow(hWnd) 
+    
+    ' -- Erases previous frame
+    tbgl_ClearFrame 
+      
+      ' -- Sets camera to look from 3,3,3 to 0,-1,0
+      tbgl_Camera 3, 3, 3, _
+                  0,-1, 0
+    
+      ' -- All following geometry will be rotated around vector 0,1,0
+      ' -- That is - Y axis
+      tbgl_Rotate gettickcount/100, 0, 1, 0
+      
+      ' -- Now we will try to render kind of spider
+      ' -- It has ...
+
+      ' .. One big head
+      tbgl_Color 255,196,0      
+      tbgl_Sphere 0.25
+      
+      ' .. And eight legs
+      ' .. We will draw them each 60° 
+      for i = 0 to 359 step 45
+        tbgl_PushMatrix
+          tbgl_Rotate i, 0, 1, 0      ' 60, 120, 180, ...
+          
+          ' -- Legs will raise from bottom of head
+          tbgl_Translate 0, -0.25, 0
+        
+          ' -- With 3 part tentacle
+          tbgl_PushMatrix
+            for j = 1 to 3
+            tbgl_Color 255/j, 128/j, 0              
+              
+              ' -- Some harmonic rotations will be provided by Sinus
+              tbgl_Rotate 70+sin(GetTickCount/1000+i+j)*20, 1, 0, 0
+              
+              ' -- Each tentacle part will be shorter and thinner than that before
+              tbgl_Cylinder ( 0.1/j, 0.1/(j+1), 1/j )
+              ' -- When drawn, we need to move "cursor" at its end to bind new part
+              tbgl_Translate 0, 1/j, 0              
+            next 
+          tbgl_PopMatrix
+           
+        tbgl_PopMatrix
+      next       
+
+      
+    ' -- Finishes drawing
+    tbgl_DrawFrame 
+
+    ' -- If ESC key is pressed, it will jump out of loop
+    If TBGL_GetWindowKeyState( hWnd, %VK_ESCAPE) Then Exit While 
+
+  Wend 
+
+  ' -- Destroys window
+  TBGL_DestroyWindow
+  
+   
+
+
+
+
+

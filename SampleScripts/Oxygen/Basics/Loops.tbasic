@@ -1,0 +1,41 @@
+'LOOPS
+'
+ 
+uses "oxygen","file"
+dim src as string
+ 
+src = "
+
+  basic
+  
+  dim a,b,c,d as long, s as string
+  
+  a=4
+  '
+  do
+    b+=1
+    if b>a then exit do
+  end do
+ 
+'CONDITIONAL FORM
+  
+  while b<=a
+    b+=1
+  wend
+ 
+  print `Result ` b
+       
+  "
+o2_asmo src
+ 
+'msgbox 0, o2_view "o2h "+src
+ 
+if len(o2_error) then
+  msgbox 0, o2_error : stop
+end if
+ 
+o2_exec
+ 
+
+
+ 

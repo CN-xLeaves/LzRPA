@@ -1,0 +1,62 @@
+
+Uses "oxygen","console"
+Dim c,src As String
+dim v as long
+src="
+
+
+
+'-----------------------------------------
+'Do Nothing
+'=========================================
+
+  #file "DoNothing.exe" independent 64 bit
+
+  def FrameSize 64
+
+  '-----------
+  'MAIN PROLOG
+  '===========
+
+  push rbx
+  sub rsp,FrameSize
+  '
+  '--------------------------------
+  'LOCATE BOOTSTRAP PROCEDURE TABLE
+  '================================
+  '
+  lea rip rbx,import_address_table
+  '
+  '
+  '----------------------
+  'TERMINATION OF PROCESS
+  '======================
+  '
+  xor rcx,rcx       '0
+  call [rbx+24]     'GetModuleHandleA
+  mov [rsp+48],rax  'save handle
+  '-----------------'
+  mov rcx,rax       'handle
+  lea rdx,[rsp+56]  'for exit code byref
+  call [rbx+40]     'GetExitCodeProcess
+  '-----------------'
+  mov rcx,[rsp+48]  'load Module Handle
+  mov rdx,[rsp+56]  'load Exit Code
+  call [rbx+48]     'ExitProcess
+  '-----------------'
+
+
+"
+
+printl O2_view src
+c=O2_ASM src
+'msgbox 0,len(c)
+If Len(O2_ERROR) Then
+  printl O2_ERROR
+else
+  printl "Compiled"
+end if
+printl ""
+printl "Press key to finish"
+waitkey
+

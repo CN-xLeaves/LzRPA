@@ -1,0 +1,50 @@
+' ========================================================================================
+' Demonstrates the use of the baseName property.
+' The following example assigns the value of a node's baseName property to a string, and
+' then displays it.
+' ========================================================================================
+
+uses "Console"
+
+#default declare Checkduplicates    %TRUE
+#default declare CheckMissing       %TRUE
+
+#INCLUDE "%APP_INCLUDEPATH%\TB_XML60.INC"
+
+' ========================================================================================
+' Main
+' ========================================================================================
+FUNCTION MAIN() as long
+
+   LOCAL pXmlDoc AS DWORD
+   LOCAL pRootNode AS DWORD
+   LOCAL pNodeList AS DWORD
+   LOCAL pNode AS DWORD
+   LOCAL strBaseName AS STRING
+
+   pXmlDoc = XmlCreateObject("Msxml2.DOMDocument.6.0")
+   IXMLDOMDocument_put_async pXmlDoc, %FALSE
+
+   IXMLDOMDocument_load(pXmlDoc, "books.xml")
+   IF XmlParseError_get_errorCode(pXmlDoc) <> 0 THEN
+      console_writeline XmlParseError_get_reason(pXmlDoc)
+   ELSE
+      pRootNode = IXMLDOMDocument_get_documentElement(pXmlDoc)
+      pNodeList = IXMLDOMElement_get_childNodes(pRootNode)
+      pNode = IXMLDOMNodeList_get_item(pNodeList, 1)
+      strBaseName = IXMLDOMDocument_get_baseName(pNode)
+      console_writeline strBaseName
+   END IF
+
+   ' cleanup
+   XmlRelease pRootNode
+   XmlRelease pNodeList
+   XmlRelease pNode
+   XmlRelease pXmlDoc
+   
+   console_writeline "--- Press any key to finish ---"
+   console_WAITKEY
+
+END FUNCTION
+
+Main

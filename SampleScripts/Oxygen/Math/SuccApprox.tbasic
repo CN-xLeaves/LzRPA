@@ -1,0 +1,49 @@
+
+'SUCCESSIVE APPROXIMATION USING NEGATIVE FEEDBACK
+
+uses "oxygen"
+'
+'
+dim src as string
+
+src = "
+  dim as double a1,a2,i1,i2,fbr
+  dim as long i
+  '
+  '
+  'NULL EXPRESSIONS
+  '
+  function f1( a as double ) as double = a*a-2               ' square root of 2
+  function f2( a as double ) as double = abs (sin(a/6)-0.5)  'pi
+  function f3( a as double ) as double = abs((1/a)-a+1)      'phi
+  function f4( a as double ) as double = a^3+5*a^2-20        '??
+
+  def ff f3 'SELECTED FUNCTION
+  
+  i=0
+  a1=1      'FIRST INPUT
+  a2=a1+1   'SECOND INPUT
+  i1=ff(a1) 'FIRST RESULT
+  i2=ff(a2) 'SECOND RESULT
+  '
+  do
+    fbr=(a2-a1)/(i2-i1) 'FEEDBACK RATIO
+    a1=a2 : i1=i2
+    a2=a2-fbr*i2 : i2=ff(a2) 
+    if (abs(a2-a1)<1e-16) then exit do 'PRECISION LIMIT
+    inc i : if i>1000 then exit do 'LIMIT ITERATIONS
+  end do
+  '
+  print str(a1) `
+` str(i) ` iterations`
+ 
+  "
+
+o2_basic src
+
+'msgbox 0, o2_len+$cr+o2_prep "o2h "+src
+
+if len(o2_error) then msgbox 0, o2_error : stop
+
+o2_exec
+

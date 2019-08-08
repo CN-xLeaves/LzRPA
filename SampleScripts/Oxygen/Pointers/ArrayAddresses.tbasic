@@ -1,0 +1,29 @@
+uses "oxygen"
+dim src as string
+
+'------------------
+'ARRAY ADDRESSES
+'==================
+ 
+src ="
+
+
+  dim as long q(100)
+  ###
+  q(17)=42
+  dim a=&q(1)
+  dim b=&q(17)
+  ### 
+  print hex(a) "    " hex(b) "    " str(*b)
+
+
+"
+  
+msgbox 0,o2_prep src 
+o2_basic src
+if len(o2_error) then
+  msgbox 0, o2_error : stop
+end if
+o2_exec
+ 
+ 

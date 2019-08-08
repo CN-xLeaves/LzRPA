@@ -1,0 +1,109 @@
+
+Uses "oxygen","console"
+Dim c,src As String
+dim v as long
+src="
+
+
+
+'-----------------------------------------
+'Hello World
+'=========================================
+
+  #basic 64 bit
+  #file "HelloWorld.exe" independent
+
+  /*
+
+  '================
+  BOOTSTRAP LIBRARY
+  '================
+
+  IMPORTED PROCEDURES:       Offsets from proc_address_list (IAT):  32  64BIT
+  '-------------------------------------------------------------------------
+  data "/+4 .LoadLibrary        hw0 `LoadLibraryA` 00"             '00  00
+  data "/+4 .GetProcAddress     hw0 `GetProcAddress` 00"           '04  08
+  data "/+4 .FreeLibrary        hw0 `FreeLibrary` 00"              '08  16
+  data "/+4 .GetModuleHandle    hw0 `GetModuleHandleA` 00"         '12  24
+  data "/+4 .GetCommandLine     hw0 `GetCommandLineA` 00"          '16  32
+  data "/+4 .GetExitCodeProcess hw0 `GetExitCodeProcess` 00"       '20  40
+  data "/+4 .ExitProcess        hw0 `ExitProcess` 00"              '24  48
+                                                                   '28  56
+  data "/+4 .SysAllocStringByteLen hw0 `SysAllocStringByteLen` 00" '32  64
+  data "/+4 .SysFreeString hw0 `SysFreeString` 00"                 '36  72
+                                                                   '40  80
+  data "/+4 .MessageBox hw0 `MessageBoxA` 00"                      '44  88
+
+  */
+
+  def FrameSize 64
+
+  '-----------
+  'MAIN PROLOG
+  '===========
+
+  push rbx
+  sub rsp,FrameSize
+  '
+  '--------------------------------
+  'LOCATE BOOTSTRAP PROCEDURE TABLE
+  '================================
+  '
+  'ASM
+  'lea rip rbx,import_address_table
+  'BASIC
+  rbx=&import_address_table
+  '
+
+  '----------------------
+  'MESSAGEBOX
+  '======================
+
+  def MessageBox [ebx+88]
+
+
+###
+  'BASIC
+  call MessageBox ( 0, "Hello!", "Greeting", 0 )
+###
+
+  'ASM
+  '`Greeting` : mov r8,rax
+  '`Hello World!` : mov rdx,rax
+  'mov rcx,0 'null handle
+  'mov r9,0 'style
+  'call MessageBox
+
+
+  '----------------------
+  'TERMINATION OF PROCESS
+  '======================
+  '
+  xor rcx,rcx       '0
+  call [rbx+24]     'GetModuleHandleA
+  mov [rsp+48],rax  'save handle
+  '-----------------'
+  mov rcx,rax       'handle
+  lea rdx,[rsp+56]  'for exit code byref
+  call [rbx+40]     'GetExitCodeProcess
+  '-----------------'
+  mov rcx,[rsp+48]  'load Module Handle
+  mov rdx,[rsp+56]  'load Exit Code
+  call [rbx+48]     'ExitProcess
+  '-----------------'
+
+
+"
+
+printl O2_view src
+c=O2_ASM src
+'msgbox 0,len(c)
+If Len(O2_ERROR) Then
+  printl O2_ERROR
+else
+  printl "Compiled"
+end if
+printl ""
+printl "Press key to finish"
+waitkey
+

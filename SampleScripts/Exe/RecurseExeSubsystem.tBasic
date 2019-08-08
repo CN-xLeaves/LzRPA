@@ -1,0 +1,207 @@
+'---------------------------------------------------------------------------------
+'---ThinBASIC needed modules
+'---------------------------------------------------------------------------------
+USES "EXE"
+USES "LL"
+USES "FILE" 
+uses "Console"
+uses "UI"
+uses "OS"
+
+'---------------------------------------------------------------------------------
+'---Include needed files
+'---------------------------------------------------------------------------------
+#include "%APP_INCLUDEPATH%\RMChart.inc"    ' -- Comes with thinBASIC instalation
+
+'---------------------------------------------------------------------------------
+'---Constant declaration
+'---------------------------------------------------------------------------------
+%ID_RMC1        = %WM_USER+1024
+%MAX_ITEM       = 17
+
+'---------------------------------------------------------------------------------
+'---Global variables
+'---------------------------------------------------------------------------------
+global Msg          AS LONG   '---Used in main window message pump to get message events
+global wParam       AS LONG   '---Used in main window message pump to get detailed message events info
+global lParam       AS LONG   '---Used in main window message pump to get detailed message events info
+
+GLOBAL aData(%MAX_ITEM) AS double
+GLOBAL nFiles as long
+GLOBAL sTime as string
+
+%OFN_PATHMUSTEXIST = &H00000800
+%OFN_FILEMUSTEXIST = &H00001000
+
+'-------------------------------------------------------------------------
+'Main Program
+'-------------------------------------------------------------------------
+function Main()
+    DIM T1 as long
+
+    T1 = TIMER
+    
+    ListDir(os_getWindowsDir, "*.*", "*.EXE")  
+    sTime = FORMAT$(Timer - T1, "#0.00000")
+    console_writeLine("TOTAL TIME (Secs): " & sTime)
+    console_writeLine("FILE SCANNED: " & str$(nFiles))
+    CreateWindow()
+    Console_WriteLine($CRLF + "Press any key to end")
+    Console_WaitKey
+end function
+
+  
+'---------------------------------------------------------------------------------
+'
+'---------------------------------------------------------------------------------
+  
+FUNCTION LoadLabels() AS string
+local sTmp as string
+
+ sTmp  = EXE_PE_GetSubsystemName(%EXE_PE_SUBSYSTEM_UNKNOWN) & "*" & EXE_PE_GetSubsystemName(%EXE_PE_SUBSYSTEM_NATIVE) & "*" & EXE_PE_GetSubsystemName(%EXE_PE_SUBSYSTEM_WINDOWS_GUI) & "*"
+ sTmp += EXE_PE_GetSubsystemName(%EXE_PE_SUBSYSTEM_WINDOWS_CUI) & "*" & EXE_PE_GetSubsystemName(%EXE_PE_SUBSYSTEM_OS2_CUI) & "*" & EXE_PE_GetSubsystemName(%EXE_PE_SUBSYSTEM_POSIX_CUI) & "*"
+ sTmp += EXE_PE_GetSubsystemName(%EXE_PE_SUBSYSTEM_NATIVE_WINDOWS) & "*" & EXE_PE_GetSubsystemName(%EXE_PE_SUBSYSTEM_WINDOWS_CE_GUI) & "*" & EXE_PE_GetSubsystemName(%EXE_PE_SUBSYSTEM_EFI_APPLICATION) & "*"
+ sTmp += EXE_PE_GetSubsystemName(%EXE_PE_SUBSYSTEM_EFI_BOOT_SERVICE_DRIVER) & "*" & EXE_PE_GetSubsystemName(%EXE_PE_SUBSYSTEM_EFI_RUNTIME_DRIVER) & "*" & EXE_PE_GetSubsystemName(%EXE_ERROR_NT_SIGNATURE) & "*"
+ sTmp += EXE_PE_GetSubsystemName(%EXE_ERROR_DOS_SIGNATURE) & "*" & EXE_PE_GetSubsystemName(%EXE_ERROR_ACCESS_DENIED) & "*" & EXE_PE_GetSubsystemName(%EXE_ERROR_FILE_NOT_FOUND) & "*"
+ sTmp += EXE_PE_GetSubsystemName(%EXE_ERROR_READ) & "*" & EXE_PE_GetSubsystemName(%EXE_ERROR_OTHERS)
+ 
+ function = sTmp
+end function
+
+'---------------------------------------------------------------------------------
+' Grid base bars graph
+'---------------------------------------------------------------------------------
+FUNCTION Show_Bars(BYVAL hParentDlg AS DWORD) AS LONG
+  LOCAL nRetval AS LONG
+  LOCAL sLabel AS STRING
+  LOCAL i as long
+  'DIM aData() AS DOUBLE
+
+
+  ' This example uses the short notation style (no UDTs) and omits
+  ' all default properties, so the code is quite small
+  nRetVal = RMC_CreateChart(hParentDlg, %ID_RMC1, 0, 0, 660, 480)        ' create the chart control
+  nRetVal = RMC_AddRegion(%ID_RMC1)                                   ' add a Region to the chart
+  nRetval = RMC_AddCaption(%ID_RMC1, 1, "Executables Subsystem Analysys of Windows folder and sub folders (" & nFiles & " files)", %ColorBlue, %ColorYellow, 11, %TRUE)  ' add a Caption to region 1
+  nRetval = RMC_AddGrid(%ID_RMC1, 1, %ColorBeige, 0, 0, 0, 0, 0, %RMC_BICOLOR_LABELAXIS) ' add a Grid to region 1
+  nRetval = RMC_AddDataAxis(%ID_RMC1, 1, %RMC_DATAAXISLEFT, 0, 1000, 11) ' add a Data axis to region 1
+  'Create labels for x axis
+  sLabel = LoadLabels()
+  nRetval = RMC_AddLabelAxis(%ID_RMC1, 1, sLabel, 1)' add a Label axis to region 1
+            RMC_SetLAXLineStyle %ID_RMC1, 1, %RMC_LINESTYLENONE ' No lines for the label axis
+  nRetval = RMC_AddBarSeries(%ID_RMC1, 1, aData, %MAX_ITEM, %RMC_BARSINGLE, %RMC_BAR_FLAT_GRADIENT1) ' add a Bar series to region 1
+  '                                                                    ' all bars have as default the same color, but:
+  nRetval = RMC_SetSeriesColor(%ID_RMC1, 1, 1, %ColorRed, 3)              ' bar #3 gets Red
+  
+  FUNCTION = nRetVal
+  IF nRetVal < 0 THEN EXIT FUNCTION                                   ' Error?
+
+  RMC_Draw %ID_RMC1                                                   ' Draw the chart 
+END FUNCTION
+
+function Remap(n as long) as Long
+
+  select case n
+      case < 0
+          function = n + 18
+      case 0 to 3
+          function = n + 1
+      case 7 to 12
+          function = n - 1
+      case else
+          function = n
+  end select        
+
+END FUNCTION
+
+
+FUNCTION CreateWindow()
+
+  LOCAL hDlg            AS DWORD
+  LOCAL nDlgH, nDlgW    AS LONG
+
+  nDlgW = 640
+  nDlgH = 400
+
+  DIALOG NEW 0, "Test running on " & OS_WinVersionText & " -=- Time requiried: " & sTime & " secs.", -1, -1, nDlgW, nDlgH, _
+             %DS_CENTER OR %WS_SYSMENU OR %WS_MINIMIZEBOX OR %WS_MAXIMIZEBOX OR %WS_CAPTION OR %WS_THICKFRAME, _
+             %WS_EX_CONTROLPARENT TO hDlg
+
+  DIALOG SHOW modal hDlg, call dlgCallback
+end function
+
+callback function dlgCallback() as long    
+  LOCAL nError          AS LONG  
+  LOCAL nDlgH, nDlgW    AS LONG  
+  '---Now test the message
+  SELECT CASE cbMsg
+
+    case %WM_INITDIALOG
+      '---To work, RMChart.dll needs GDIPlus library
+      '---During window initialize we check if such a library exists
+      '---A special function (Libray_Exists) permits to check if a library exists
+      if library_exists("gdiplus.dll") then
+        msgbox 0, "RM Chart needs GDIPLUS" & $crlf & _
+                  "Please go to http://www.microsoft.com/downloads/details.aspx?FamilyId=6A63AB9C-DF12-4D41-933C-BE590FEAA05A&displaylang=en"
+      end if          
+      
+          nError = Show_Bars(cbHndl) 
+          IF nError THEN MSGBOX cbHndl, "Error " + STR$(nError), %MB_OK OR %MB_ICONERROR,"RMChart Demo"                     
+      
+
+    CASE %WM_SIZE
+      dialog get client cbHndl to nDlgW, nDlgH
+      dialog units cbHndl, nDlgW, nDlgH to pixels nDlgW, nDlgH
+      RMC_SetCtrlSize( %ID_RMC1, nDlgW, nDlgH)        
+          
+  END SELECT
+
+END FUNCTION
+
+SUB ProcessFile(lDir AS STRING, sFileMask as string)
+  LOCAL Count     AS LONG
+  LOCAL FileName  AS STRING                 
+  LOCAL pList     AS LONG
+  LOCAL nItems    AS LONG
+  local nSubSystem as long
+
+  pList = DIR_LIST(lDir, sFileMask, %FILE_NORMAL OR %FILE_HIDDEN OR %FILE_SYSTEM OR %FILE_ADDPATH)
+  nItems = LL_Count(pList)
+  
+  IF nItems > 0 THEN
+    FOR Count = 1 TO nItems     
+      INCR nFiles
+      FileName = LL_GetItem(pList, Count)
+      nSubSystem = EXE_PE_GetSubsystem(FileName)
+      INCR aData(Remap(nSubsystem))
+      console_writeLine(Filename & " -> " & EXE_PE_GetSubsystemName(nSubSystem))       
+    NEXT
+  END IF                  
+  
+END SUB
+ 
+FUNCTION ListDir(sDir AS STRING, sDirMask as string, sFileMask as string) AS LONG
+
+  LOCAL Count   AS LONG
+  LOCAL Item    AS STRING                 
+  LOCAL pList   AS LONG
+  LOCAL nItems  AS LONG 
+  LOCAL CurrentRow  AS LONG 
+  
+  LOCAL TFS AS QUAD
+  
+  pList = DIR_LIST(sDir, sDirMask, %FILE_Subdir OR %FILE_HIDDEN OR %FILE_ADDPATH)
+  nItems = LL_Count(pList)
+  
+  IF nItems > 0 THEN
+    FOR Count = 1 TO nItems
+      Item = LL_GetItem(pList, Count)
+      CurrentRow = nFiles
+      TFS = ProcessFile(Item, sFileMask)
+      INCR nFiles
+      ListDir(Item, sDirMask, sFileMask)
+    NEXT
+  END IF
+  
+END FUNCTION
+

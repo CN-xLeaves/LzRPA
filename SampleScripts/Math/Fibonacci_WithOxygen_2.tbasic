@@ -1,0 +1,71 @@
+'---Fibonacci by Oxygen
+uses "Console", "Oxygen"
+ 
+dim T1 as quad
+dim T2 as quad
+ 
+dim p0,p1 as dword
+dim src as string
+ 
+'--- Prepare Oxygen script
+src = "
+ 
+FUNCTION fibonacci(byval sequence as Dword) as Dword at #p1
+  '
+  function=call fibon sequence : exit function 'TURBOCHARGE!!
+  '
+  IF sequence < 2 THEN
+    FUNCTION = sequence
+  ELSE
+    FUNCTION = fibonacci(sequence - 1) + fibonacci(sequence - 2)
+  END IF
+  
+  EXIT FUNCTION
+ 
+  fibon:
+  (
+    mov eax,[esp+4] : cmp eax,2 : jl exit
+    dec eax : call fibon eax
+    push eax 'HOLD FIRST RESULT ON STACK
+      mov eax,[esp+8]
+      dec eax : dec eax : call fibon eax
+    pop ecx : add eax,ecx 'ADD FIRST TO SECOND
+  )
+  ret 4
+  
+END FUNCTION
+ 
+ 
+sub finish() at #p0 
+  terminate
+end sub
+ 
+"
+ 
+'--- Compile Oxygen source 
+o2_basic src
+  if len(o2_error) then
+  msgbox 0, o2_error : stop
+end if
+ 
+o2_exec
+ 
+declare function Fibonacci(byval s as DWORD) as DWORD at p1
+declare sub finish () at p0
+ 
+ 
+dim Result as dword
+dim n as dword = 30
+ 
+hirestimer_init
+ 
+T1 = hirestimer_get
+Result = Fibonacci(n)
+T2 = hirestimer_get
+ 
+printl "Fibonacci of " & n & " is " & Result
+printl "Script time: " & FORMAT$(T2 - T1, "#,") & " microseconds or " & format$((T2 - T1)/10^6, "#0.000000") & " seconds"
+'msgbox 0, result
+ 
+finish
+waitkey

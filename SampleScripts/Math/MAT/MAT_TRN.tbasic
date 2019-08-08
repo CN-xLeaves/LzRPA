@@ -1,0 +1,39 @@
+uses "console"
+uses "math"
+
+#include "MAT_UtilityFunctions.inc"
+
+%MaxLoops = 10000
+
+randomize
+
+dim i           as long
+dim T1, T2      as double
+
+dim tmpVal      as ext  
+
+dim MyMat_22_1() as ext         '---Note that receiving matrix can be undefined.
+                                '---TRN will check it and automatically define as needed
+Dim MyMat_22_2(3,2) As Ext 
+
+' -- Use of square brackets forces row assignment
+MyMat_22_2() = [ 2, 3, 
+                -2, 1, 
+                 2, 2 ]
+
+MyMat_Print(MyMat_22_1, "M1 Before")
+MyMat_Print(MyMat_22_2, "M2 Before")
+
+'--------------------------------------------
+T1 = timer
+  for i = 1 to %MaxLoops
+    mat MyMat_22_1() = trn(MyMat_22_2())
+  next
+T2 = timer
+MyMat_Print(MyMat_22_1, "After M1() = TRN(M2())", %MaxLoops, T2 - T1)
+
+'--------------------------------------------
+'---Program finished
+printl "--- Press a key to finish ---"
+waitkey
+'--------------------------------------------

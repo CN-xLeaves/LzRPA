@@ -1,0 +1,29 @@
+Uses "Console"
+
+Dim l As Long
+
+'---Bits representation---------------
+'---   3         2         1
+'---  10987654321098765432109876543210
+l = &b10000000000010000000000000000001
+'---MSB = bit 31           LSB = bit 0
+
+PrintL "Bit  0 is ", Bit(l,  0) '---Will return 1 because bit  0 (LSB) is 1
+PrintL "Bit 31 is ", Bit(l, 31) '---Will return 1 because bit 31 (MSB) is 1
+PrintL "Bit 20 is ", Bit(l, 20) '---Will return 0 because bit 20 is 0
+PrintL "Bit 19 is ", Bit(l, 19) '---Will return 1 because bit 19 is 1
+
+PrintL
+PrintL "Now changing some bits"
+
+l = bit_reset(l, 19)
+PrintL "After reset  Bit 19 is now ", Bit(l, 19) '---Will return 0
+l = bit_toggle(l, 19)
+PrintL "After toggle Bit 19 is now ", Bit(l, 19) '---Will return 1
+l = bit_Reset(l, 19)
+PrintL "After reset  Bit 19 is now ", Bit(l, 19) '---Will return 0
+l = bit_set(l, 19)
+PrintL "After set    Bit 19 is now ", Bit(l, 19) '---Will return 1
+
+WaitKey
+

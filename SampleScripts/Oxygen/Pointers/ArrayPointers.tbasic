@@ -1,0 +1,26 @@
+
+'-----------------------------------------
+'ARRAY POINTER
+'=========================================
+
+ 
+Uses "oxygen"
+Dim c,src As String
+dim v as long
+src=rawtext
+
+###
+dim string s(100)
+s(10)="hello"
+p=*s(10)
+mbox p
+###
+end rawtext
+msgbox 0,O2_prep src+o2_error
+O2_asmo src
+if Len(O2_ERROR) Then
+  msgbox 0,O2_ERROR
+else
+  o2_exec
+end if
+

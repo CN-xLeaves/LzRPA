@@ -1,0 +1,1017 @@
+'-----------------------------------------------
+' COMPILING LIST OF SORTED WORDS FROM MANUSCRIPT
+'===============================================
+
+'Charles Pegge
+'8 July 2009
+'revised 19 Aug 2010
+
+'Oxygen Script
+
+
+'===============================================
+
+
+
+
+
+
+'combining Assembler and OOP
+
+uses "oxygen"   ,"file"
+
+
+dim T1,T2,T3,T4  as quad
+
+dim vv as long
+
+dim src as string
+
+
+
+src="
+
+
+
+'#######################
+
+'#######################
+
+'     #####    ##### 
+'    #     #  #     #
+'    #     #        #
+'    #     #   ##### 
+'    #     #  #
+'    #     #  # 
+'     #####   #####O2
+
+'######################
+          oxygen:
+'#######################
+
+#basic
+'#file `b.exe`
+
+
+
+
+
+
+ 
+
+'
+'                                      ####
+'         ###                        ###   ####
+'       ##   ##                    ##          #
+'     ##       ##                 ##
+'   ##          ##               ##
+'  ##            ##            ##
+'  ##             ##         ##
+'                   ##     ##
+'                     #####
+'
+'#define verify
+'#define apostrophe
+'#define numbers
+'#define otherchars
+
+dim ert 'error flag
+
+dim h1,h2 'HASH HOLDING VARS
+
+'-----
+'WORDS
+'=====
+
+
+class lexword
+  stt   as long ' start of word
+  end   as long ' end boundary of word
+  len   as long ' length of word
+  asc   as long ' lowercase ascii
+  typ   as long ' type of char:  0 null 2 alphanumeric 3 symbol/punctuation
+  nxt   as long ' lowercase ascii of next word / boundary
+  ptxt  as long ' base pointer to text
+  ltxt  as long ' length of text being read
+  etxt  as long ' boundary of text being read
+
+  '------------
+  def lowercase
+  '============
+    block
+      cmp al,64 : jle exit
+      cmp al,90 : jg exit
+      add al,32
+    end block
+  end def
+
+
+  '------------
+  method read()
+  '============
+    static p
+    p=this.ptxt-4
+    this.ltxt= *p
+    this.etxt= this.ptxt + this.ltxt
+    this.stt=this.ptxt
+    this.end=this.ptxt
+    this.len=0
+    this.asc=0
+    this.nxt=0
+  end method
+  
+  '---------------------------
+  method readtext(t as string)
+  '===========================
+    this.ptxt=*t
+    this.read
+  end method
+
+  
+    
+  '----------------------------
+  method next(byval pw as long)
+  '============================
+    #noinit
+    dim e=this.etxt
+    dim as lexword i at [edx] ' direct THIS for asm
+    mov edx,[ebp+8] ' this pointer
+    'mov i.typ,0
+    'mov i.len,0
+    push esi
+    mov edi,i.end
+redo:
+    (
+      cmp edi,0 : jz long exit
+      (
+        mov al,[edi] : inc edi
+        cmp edi,e : jg  fwd xit
+        '
+        #ifdef apostrophe
+          cmp al,39 : jz exit
+        #endif
+        '
+        #ifdef otherchars
+          cmp al,32 : jle repeat
+        #else
+          #ifdef numbers
+            cmp al,47 : jle repeat
+          #else
+            cmp al,64 : jle repeat
+          #endif
+        #endif
+      )
+      '
+      'SCAN WORD
+      '
+      dec edi
+      mov i.stt,edi
+      mov esi,pw
+      '
+      'lowercase
+      'mov i.asc,al
+      '
+      push edx
+      xor ecx,ecx
+      xor edx,edx
+      (
+        mov al,[edi] : inc edi
+        ;
+        lowercase 'macro
+        ;
+        mov [esi],al : inc esi
+        ;
+        mov ah,0
+        
+        #ifdef numbers
+          ;
+          ;NUMBERS
+          (
+          cmp al,48 : jl exit
+          cmp al,58 : jge exit
+          mov ah,1
+          )
+        #endif
+        
+        ;ALPHA LOWER
+        (
+          cmp al,97  : jl exit
+          cmp al,123 : jge exit
+          mov ah,2
+        )
+        '
+        'INCLUDE APOSTROPHE
+        '
+        #ifdef apostrophe
+          cmp al,39 : jz repeat
+        #endif
+        '
+        'cmp edi,e : jg  exit
+        '
+        'EMBEDDED HASH ENCODER
+        '---------------------
+        '
+        cmp ah,0 : jz exit
+        rol ecx,5
+        ror edx,7
+        xor cl, al
+        xor dl, al
+
+        repeat
+        
+      )
+      '
+      nwordscan: 'END OF WORDSCAN LOOP
+      '
+      h1=ecx
+      h2=edx
+      '     
+      pop edx 'RESTORE I
+      '
+      dec esi : mov [esi],0
+      
+       mov eax,pw
+       cmp byte [eax],0 : jz long redo 'IGNORE NULLED WORDS
+      
+      dec edi
+      'mov ecx,2 'ALPANUMERIC
+      
+      ;
+      ;SELF TERMINATING SYMBOLS
+      (
+        cmp edi,i.stt : jg exit
+        inc edi
+        #ifdef otherchars
+        'cmp al,32 : jle exit
+        'mov ecx,3 'SYMBOL
+        mov [esi],al : inc esi : mov [esi],0
+        #endif
+      )     
+      
+      mov i.end,edi
+      #ifdef verify
+        mov i.nxt,al
+        mov eax,edi
+        sub eax,i.stt
+        mov i.len,eax
+      #endif
+    )
+
+    'cmp i.len,0 : jz fwd xit
+    'mov i.typ,ecx
+    mov eax,edx 'WORD INDEX
+    pop esi  
+    exit method
+    xit:
+    pop esi
+    xor eax,eax 'END OF TEXT
+  end method
+
+  
+end class 'lexword
+
+
+
+'
+'                                      ####
+'         ###                        ###   ####
+'       ##   ##                    ##          #
+'     ##       ##                 ##
+'   ##          ##               ##
+'  ##            ##            ##
+'  ##             ##         ##
+'                   ##     ##
+'                     #####
+'
+
+
+'=====
+'LISTS
+'=====
+
+'dim as string cr=chr(13)+chr(10)
+
+'---------
+class list
+'=========
+  sto as string      ' list storage
+  hsh as long        ' hash storage for BSTR
+  ptx as string      ' word offset index
+  idx as string      ' word alphabetic index
+  len as long        ' length of list in bytes
+  tal as long        ' words in list
+  tot as long        ' words in source
+  ofs as long        ' next position to add words
+  mle as long        ' last link in hash chain
+  lnw as long        ' length of word in buffer
+  wrd as byte(64)    'word buffer
+  hxx as long        'hash exten
+
+
+  '-----------------------------
+  method addword()
+  '=============================
+    static a,b,le,p
+    '
+    'LIST STORAGE
+    '
+    if this.len-this.ofs < le+16 then
+      this.sto=this.sto + nuls 0x80000
+      this.len+=0x80000
+    end if
+    '
+    a= *this.sto + this.ofs
+    '
+    'MAKE SPACE FOR WORD COUNTS
+    '--------------------------
+    '
+    *a=0x00000000 : a+=4 'PLACE FOR WORD TALLY
+    *a=0x20202020 : a+=4
+    this.ofs+=8
+    '
+    'COPY WORD
+    '---------
+    '
+    b=&this.wrd
+    mov edx,a
+    mov ecx,b
+    (
+      mov al,[ecx]
+      cmp al,0 : jz exit
+      mov [edx],al
+      inc ecx : inc edx
+      repeat
+    )
+    '
+    'ADD CRLF
+    '--------
+    '
+    mov [edx],13   'CR
+    mov [edx+1],10 'LF
+    '
+    'GET WORD LENGTH
+    '---------------
+    '
+    add edx,2
+    sub edx,a
+    mov le,edx
+    '
+    'ADD WORD POSITION TO INDEX
+    '--------------------------
+    '
+    a=?this.ptx
+    if not a then this.ptx=nuls 256000 'SPACE TO SORT 32000 ELEMENTS
+    this.tal+=1
+    p=*this.ptx : dim d at p
+    d(this.tal)=this.ofs
+    this.ofs+=le
+    '
+  end method
+
+
+  
+  '-------------------------
+  method searchword(byval a as long) as long
+  '=========================
+
+  #ifdef verify
+  '
+  'initial
+  '-------
+  
+
+  
+  'print str a
+  static p,k,c,d,e
+  if not ?this.sto then this.sto=` `
+  p=*this.sto + a
+  k=&this.wrd
+  mov ecx,k
+  d=this.lnw
+  e=this.ofs
+  if not e then exit method
+  mov edx,p
+  mov edi,e
+  add edi,edx
+  mov ecx,k
+  xor eax,eax
+  '
+  begins:
+  '------
+  c=d
+  mov ecx,k
+  mov al,[ecx]
+  '
+  continues:
+  '--------
+  (
+    cmp edx,edi : jge fwd fail
+    (
+      cmp al,[edx] : jnz exit
+      (
+        cmp byte [edx-1],32 : jle exit
+        inc edx
+        jmp continues
+      )
+      (
+        dec c
+        (
+          jg exit
+          ;
+          ;CHECK SPACE BOUNDARY
+          ;--------------------
+          ;
+          cmp byte [edx+1],32 : jle fwd success
+          jmp fwd reset
+        )
+        inc edx : inc ecx
+        mov al,[ecx]
+        cmp al,[edx] : jnz fwd reset
+        repeat
+      )
+      goto fin
+    )
+    inc edx
+    repeat 
+  )
+
+  fail:
+  '----
+
+  mov eax,0 : jmp fin
+  
+  reset:
+  '-----
+  '
+  'LOCATE NEXT SPACE
+  '
+  (
+    inc edx : cmp edx,edi : jge fail
+    cmp byte [edx],32 : jg repeat
+  )
+  jmp begins
+  
+  success:
+  '-------
+  mov eax,edx
+  sub eax,p
+  add eax,2 'indicate word boundary
+  'sub eax,d
+  jmp fin
+
+  fin:
+  '---
+
+  mov method,eax
+
+  #endif
+
+  end method
+
+
+  '---------------------------------------
+  method wordlist(s as string)
+  '=======================================
+  static a,c,e
+  static as lexword lw
+  e= len s
+  if not e then exit method
+  '
+  'PREPARE TO READ STRING
+  '----------------------
+  '
+  lw.readtext s
+  '
+  if not this.hsh then
+    '
+    '
+    'INITIALISE HASH
+    '---------------
+    '
+    this.hsh=?news 0x140000 ' 1M  + extra hash locations (64k+16k    16 byte locations )
+    this.hxx=0x100000 ' extra hash base
+    '
+  end if
+  '
+  
+  do
+    '
+    'READ THE NEXT WORD
+    '------------------
+    '
+    if not lw.next &this.wrd then exit do
+    '
+    'WORDCOUNT
+    '---------
+    '
+    inc c
+    '
+    '
+    #ifndef verify
+    '
+    'if this.tal<6000 then
+     if not this.hash then this.addword
+    'end if
+    '
+    #else
+    '
+    a=this.hash
+    '
+    'VERIFY WITH INSTRING TYPE SEARCH
+    '--------------------------------
+    '
+    if a then
+      dec a
+      this.lnw=lw.len
+      a=this.searchword a
+    end if
+    if not a then this.addword
+    '
+    #endif
+    '
+  end do
+  '
+  frees this.hsh 'HASH TABLE NO LONGER NEEDED
+  this.tot=c
+  '
+  end method
+
+
+
+ 
+  
+  
+
+'     ###                 ###
+'     ###                 ###
+'     ###                 ###
+'     ###                 ###
+'     ###                 ###
+'     ###                 ###
+'     ###                 ###
+'     ###                 ###
+'     ###                 ###
+'     ###                 ###
+'     ###                 ###
+'     ###                 ###
+' ################################
+' ################################
+'     ###                 ###
+'     ###                 ###
+'     ###                 ###
+' ################################
+' ################################
+'     ###                 ###
+'     ###                 ###
+'     ###                 ###
+'     ###                 ###
+'     ###                 ###
+'     ###                 ###
+'     ###                 ###
+'     ###                 ###
+'     ###                 ###
+
+  '----------------------------------------------
+  method hash()
+  '===============================---------------
+  static a,b,i,s
+  a=this.hsh
+  b=this.hxx
+  i=this.ofs+1
+  s=?this.sto
+
+  mov edi,a
+  mov eax,h1
+  and eax,0xffff
+  shl eax,4 '16 BYTE SLOTS
+  add edi,eax
+  'mov a,edi
+  '
+  (
+   mov eax,[edi]
+
+   'NEW HASH RECORD
+   '---------------
+   (
+     cmp eax,0 : jnz exit
+     mov eax,h1 : mov [edi]  ,eax
+     mov eax,h2 : mov [edi+4],eax
+     mov eax,i  : mov [edi+8],eax 'THIS.OFS
+     mov [edi+12],0
+     mov eax,0 : jmp fwd xit
+   )
+   '
+   'CHECK FOR MATCHING HASHES
+   '-------------------------
+   '
+   (
+     (
+       cmp h1,eax : jnz exit
+       '
+       'SUCCESSFUL MATCH
+       '----------------
+       '
+       mov eax,[edi+4]
+       cmp h2,eax : jnz exit
+       '
+       'INCREMENT WORD COUNT
+       '
+       mov edx,[edi+8] 'THIS.OFS
+       mov eax,s ' THIS.STO
+       mov eax,[eax]
+       add eax,edx
+       inc [eax-1]
+       mov eax,edx
+       '
+       jmp xit 'RETURN INDEX
+     )
+     cmp [edi+12],0 : jz fwd newhash
+     mov edi,[edi+12]
+     add edi,a
+     mov eax,[edi]
+     repeat 'TRY NEXT LINK
+   )
+   '
+   newhash:
+   '-------
+   '
+   'LINK UP ANOTHER HASH RECORD
+   '---------------------------
+   '
+   (
+    mov eax,b : mov [edi+12],eax 'FORWARD LINK
+    mov edi,a : add edi,b
+    mov eax,h1 : mov [edi],eax
+    mov eax,h2 : mov [edi+4],eax
+    mov eax,i  : mov [edi+8],eax 'THIS.OFS
+    mov [edi+12],0
+    this.hxx+=16 ' ready for another hash slot
+    mov eax,0 'DONE
+   )
+  )
+  xit:
+  '
+  end method
+
+
+  '--------------------------------------------------------
+  method compares(byval a as long, byval b as long) as long
+  '========================================================
+  '
+  ' A > B  returns  1
+  ' A < B  returns -1
+  ' A = B  returns  0
+  '
+  static p
+  p=*this.sto
+  mov edi,p
+  mov ecx,a : mov edx,b
+  add ecx,edi : add edx,edi 'sist base
+  cmp edx,0 : jz nstring
+  cmp ecx,0 : jz nstring
+  (
+    mov al,[ecx]
+    mov ah,[edx]
+    cmp al,ah : jnz exit ' NOT MATCH
+    (
+      cmp al,32 : jg exit 'NOT BOUNDARY CHARACTER
+      'EQUALITY
+      exit method
+    )
+    cmp ah,32 : jle exit 'BOUNDARY CHAR
+    '
+    inc ecx : inc edx : repeat
+  )
+  (
+    sub al,ah
+    mov eax,1
+    jg exit
+    mov eax,-1
+  )
+
+  mov method,eax
+
+  exit method
+
+  nstring: 'AT LEAST ONE OF THESE IS A NULL STRING
+  '-------
+
+  (
+  cmp ecx,edx
+  mov eax,0
+  jz exit
+  mov eax,1
+  jg exit
+  mov eax,-1
+  )
+  mov method,eax
+
+  end method
+                   '
+
+
+  '-------
+  'SORTING
+  '=======
+  '                            ####
+  '                      #   ###  ###    ###       ######
+  '    ##         ##    ### ##     #### ## #   ##### 
+  '      #####  ##  ### #  #          ###   ####   
+  '          ####     ##### #        #  #  ##  #
+  '          ####    ###     #     ##    ###    #      ##
+  '       ####  ##  ###       ##  ###            ##  ###
+  '    #####      ####         ####               ####
+  '
+  '--------------
+  method sort()
+  '==============
+  
+  '
+  '
+  'USING MERGE TECHNIQUE
+  '
+  'groups of indices are combined together in sorted order.
+  'starting with groups of 2 then 4 then 8 ...
+  '
+  '
+
+  static a,c,e,g,i,j,k,n,p,q,st,bi,bj,en,lv,rv
+  
+  if not ?this.ptx then exit method
+  
+  p=*this.ptx : dim dd at p
+  '
+  'INITIAL
+  '-------
+  '
+  n=this.tal : e=n+n
+  st=1 : g=n
+  '  
+  do
+    if g>=n then
+      if st>=n then exit do
+      q=1-q 'TOGGLE
+      if q then k=n+1 : i=1 : en=n else k=1 : i=n+1 : en=e 'SHUTTLE BUFFER
+      bi=i+st : bj=bi+st
+      if bj>en then bj=en+1 ' LIMIT
+      j=bi
+      shl st,1 'DOUBLE
+      g=0 
+    end if
+    '
+    if i>=bi then
+      if j>=bj then
+        i=bj : bi+=st : bj+=st : j=bi 'NEXT SET
+        if bj>en then bj=en+1 ' LIMIT
+        if bi>en then bi=en+1 ' LIMIT
+        continue do
+      end if
+      c=j : inc j
+    elseif j>=bj then
+      c=i : inc i
+    else
+      lv=dd(i) : rv=dd(j)
+      a=this.compares lv,rv 'dd(i), dd(j)
+      if a>0 then c=j : inc j else c=i : inc i
+    end if    
+    '
+    dd(k)=dd(c)
+    inc k : inc g
+  end do
+
+  'TRANSFER SHUTTLE BUFFER TO START IF NECESSARY
+
+  if q then for i=1 to n : dd(i)=dd(i+n) : next
+
+  end method ' sortmb
+
+
+  '----------------------
+  method get(byval n as long) as string
+  '======================
+  static b,p,q,s,e
+  s=*this.sto
+  p=*this.ptx : dim d at p : q=d(n)+s
+  mov edx,q
+  dec edx
+  '
+  'FIND LENGTH
+  '
+  (
+   inc edx : cmp byte [edx],32
+   jg repeat
+  )
+  sub edx,q : mov e,edx
+  method=nuls e : b=*method
+  mov ecx,b : mov edx,q
+  '
+  'COPY
+  '
+  (
+    mov al,[edx] : cmp al,32 : jle exit
+    mov [ecx],al : inc ecx : inc edx
+    repeat
+  )
+  end method
+
+
+  '------------------------
+  method result() as string
+  '========================
+    static a,b,i,d,e,p,q,r,s
+    static as zstring  t(64)
+    dim le
+    '
+    'NEW BLANK STRING FOR SORTED WORDS
+    '
+    if not ?this.ptx then method=`` : exit method   
+    le=this.ofs
+    if not le then method=`` : exit method
+     
+    method=nuls le
+    '
+    r=*method
+    p=*this.ptx : dim dd at p
+    '
+    'GET EACH WORD IN INDEXED ORDER AND FILL STRING
+    '
+    e=this.tal
+    '
+    'SET BASE POINTER TO CAPTURE WORDCOUNT+WORD
+    '
+    s=*this.sto-8
+    '
+    '
+    'COPY EACH RECORD IN INDEXED ORDER
+    '
+    for i=1 to e
+      d=dd(i)
+      q=d+s 'INDEXED WORD POINTER
+      '
+      'CONVERT WORDCOUNT TO STRING
+      '---------------------------
+      '
+      t=str *q + 1
+      '
+      'BLANK OUT ORIGINAL DATA
+      '
+      *q=0x20202020
+      '
+      mov edx,q : lea ecx,t
+      '
+      'MARGIN OF 1
+      '
+      inc edx
+      '
+      'COPY OVER EXCLUDING NULL TERMINATOR
+      '
+      (
+        mov al,[ecx]
+        cmp al,0 : jz exit
+        mov [edx],al
+        inc ecx : inc edx : repeat
+      )
+      
+      '
+      'COPY WHOLE RECORD
+      '-----------------
+      '
+      mov ecx,r
+      mov edx,q
+      (
+        mov al,[edx] : cmp al,32 : jl exit
+        mov [ecx],al : inc ecx : inc edx
+        repeat
+      )
+      mov word [ecx],0x0a0d 'CRLF
+      add ecx,2
+      mov r,ecx
+      '     
+    next    
+  end method
+
+  method save(s as string)
+    if not len s then exit method
+    putfile s, this.result
+  end method
+
+
+end class
+
+
+'   #####                      #####
+'  ######                      ######
+'  ##                              ##
+'  ##   ##########    ##########   ##
+'  ##  ############  ############  ##
+'  ##  ##    \|/ ##  ##    \|/ ##  ##
+'  ##  ##    -O- ##  ##    -O- ##  ##
+'  ##  ##    /|\ ##  ##    /|\ ##  ##
+'  ##  ############  ############  ##
+'  ##   ##########    ##########   ##
+'  ##                              ##
+'  ######                      ######
+'   #####                      #####
+
+  '-----------------
+  'PERFORMANCE CHECK
+  '=================
+  '
+  DECLARE FUNCTION QueryPerformanceCounter LIB `KERNEL32.DLL` (lpPerformanceCount AS QUAD) AS LONG
+  DECLARE FUNCTION QueryPerformanceFrequency LIB `KERNEL32.DLL` (lpFrequency AS QUAD) AS LONG
+  dim as quad t1,t2,fr
+
+  QueryPerformanceFrequency fr  
+  QueryPerformanceCounter t1
+
+  '--------------
+  'MAIN PROCEDURE
+  '==============
+  dim as string   s,n
+  's=`one two three 12 three / : `
+  dim as list     lis
+  'n= `KingLear.txt`
+  'n=`Bible.txt`
+  n="o2keyw.bas"
+  s=getfile n
+  if len(*s)=0 then
+    print `Unable to locate ` n
+  else
+    lis.wordlist s
+    lis.sort
+    lis.save "WordCounts.txt"
+   end if
+
+  QueryPerformanceCounter t2
+  
+  
+  '
+  '--------------
+  'REPORT RESULTS
+  '==============
+  '
+  dim as string tab=chr 9
+  
+  print `
+  WORDCOUNTS
+
+  Results filed as "WordCounts.txt"  
+
+  Performance:
+  
+  process time ` tab str((t2-t1)/fr) `
+  word count:  ` tab str(lis.tot)  `
+  list count:  ` tab str(lis.tal)  `
+  
+  CPU Cy/Sec` tab str(fr)`
+  `
+  '
+
+
+"
+'     #####          ######          ######          ######          ######          ######         
+'    ########       #########       #########       #########       #########       #########      
+'   ##      ##      ##      ##      ##      ##      ##      ##      ##      ##      ##      ##      
+'   ##      ##      ##      ##      ##      ##      ##      ##      ##      ##      ##      ##      
+'  ##      ##      ##      ##      ##      ##      ##      ##      ##      ##      ##      ##      
+'  ##      ##      ##      ##      ##      ##      ##      ##      ##      ##      ##      ##      
+'  ##      ##      ##      ##      ##      ##      ##      ##      ##      ##      ##      ##      
+'  ##      ##      ##      ##      ##      ##      ##      ##      ##      ##      ##      ##      
+'   ##      ##      ##      ##      ##      ##      ##      ##      ##      ##      ##      ##      
+'   ##      ##      ##      ##      ##      ##      ##      ##      ##      ##      ##      ##      
+'   ##      ##########      ##########      ##########      ##########      ##########      ##
+'   #         ######          ######          ######          ######          ######    #### 
+'
+
+
+
+'
+'DIAGNOSTICS
+'-----------
+'msgbox 0,o2_prep src 'listing between ### and ###
+'file_save("t.txt", "Test: "+o2_error+o2_prep src)
+'file_save("t.txt", "Test: "+o2_error+o2_view src)
+
+'printl o2_prep (src)
+'printl o2_view (src)
+
+
+'file_save("t.txt",o2_error+$cr+$cr+o2_prep (src))
+o2_asmo src
+
+'O2 COMPILE ERRROR TRAP
+'----------------------
+
+
+if len(o2_error) then
+  msgbox 0,o2_error
+  'file_save("t.txt",o2_error+$cr+$cr+o2_view (src))
+  stop
+end if
+
+'EXECUTE PROGRAM
+'---------------
+
+vv=o2_exec
+
+

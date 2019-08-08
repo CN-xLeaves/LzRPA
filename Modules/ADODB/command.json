@@ -1,0 +1,1474 @@
+{
+    "Caption": "ADODB",
+    "Remark": "数据库",
+    "ModuleName": "ADODB",
+    "Icon": "公文包",
+    "Visible": true,
+    "Templet": "index.html",
+    "Help": {
+        "Caption": ""
+    },
+    "Child": [
+        {
+            "Caption": "单文件使用扩展库",
+            "Icon": "信息",
+            "Visible": true,
+            "Templet": "document.html",
+            "Help": {
+                "Caption": "扩展库使用帮助",
+                "Document": "在项目中使用扩展库功能会自动将扩展库引入项目，项目编译或运行时，自动加入扩展库依赖代码和文件。<br><br>如果您在单文件中希望使用本扩展库，则必须编写扩展库依赖代码才能调用扩展库中的函数，否则会报错，LzRPA 建议使用工程方式编写程序，但仍保留单文件使用扩展库的方法。<br><br>单文件在代码中添加扩展库依赖代码：<br>&nbsp;&nbsp;Uses &quot;ADODB&quot;<br><br>建议将引用扩展库代码统一添加到全局代码块，也就是代码的最上面。"
+            }
+        },
+        {
+            "Caption": "ADODB_Connection",
+            "Remark": "连接对象",
+            "Icon": "类",
+            "Visible": true,
+            "Templet": "index.html",
+            "Help": {
+                "Caption": ""
+            },
+            "Child": [
+                {
+                    "Caption": "CommandTimeOut",
+                    "Remark": "SQL超时时间",
+                    "Icon": "属性",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "CommandTimeOut",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "CommandTimeOut",
+                        "Define": "iRet = ADODB_Connection.CommandTimeOut<br>ADODB_Connection.CommandTimeOut = iSeconds",
+                        "Describe": "执行SQL语句过程中或取消之前的超时时间",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "ConnectionString",
+                    "Remark": "连接字符串",
+                    "Icon": "属性",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "ConnectionString",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "ConnectionString",
+                        "Define": "sRet = ADODB_Connection.ConnectionString<br>ADODB_Connection.ConnectionString = sConnectionString",
+                        "Describe": "ADODB连接到数据库使用的连接字符串",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "ConnectionTimeOut",
+                    "Remark": "连接超时时间",
+                    "Icon": "属性",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "ConnectionTimeOut",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "ConnectionTimeOut",
+                        "Define": "iRet = ADODB_Connection.ConnectionTimeOut<br>ADODB_Connection.ConnectionTimeOut = iSeconds",
+                        "Describe": "ADODB连接到数据库的超时时间",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "CursorLocation",
+                    "Remark": "游标位置",
+                    "Icon": "属性",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "CursorLocation",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "CursorLocation",
+                        "Define": "iRet = ADODB_Connection.CursorLocation<br>ADODB_Connection.CursorLocation = CursorLocation",
+                        "Describe": "设置或返回游标服务的位置",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "DefaultDatabase",
+                    "Remark": "默认数据库",
+                    "Icon": "属性",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "DefaultDatabase",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "DefaultDatabase",
+                        "Define": "sRet = ADODB_Connection.DefaultDatabase<br>ADODB_Connection.DefaultDatabase = DefaultDatabase",
+                        "Describe": "指示 Connection 对象的默认数据库",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Provider",
+                    "Remark": "提供者名称",
+                    "Icon": "属性",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Provider",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "Provider",
+                        "Define": "sRet = ADODB_Connection.Provider<br>ADODB_Connection.Provider = sProvider",
+                        "Describe": "设置或返回 Connection 对象提供者的名称",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "State",
+                    "Remark": "连接状态",
+                    "Icon": "属性",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "State",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "State",
+                        "Define": "iRet = ADODB_Connection.State",
+                        "Describe": "返回一个描述连接是打开还是关闭的值",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Version",
+                    "Remark": "ADO版本",
+                    "Icon": "属性",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Version",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "Version",
+                        "Define": "object = ADODB_Connection.Version",
+                        "Describe": "返回 ADO 的版本号",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Open",
+                    "Remark": "打开连接",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Open()",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "Open",
+                        "Define": "ADODB_Connection.Open([sConnectionString[, sUserId[, sPassword[, Options]]]])",
+                        "Describe": "开始一个新事务",
+                        "RetType": "Integer",
+                        "Return": "返回命令执行后的 ADODB_Connection 对象状态",
+                        "Param": [
+                            {
+                                "Caption": "sConnectionString",
+                                "DataType": "String",
+                                "Describe": "连接字符串，缺省使用 ConnectionString 属性",
+                                "Optional": true
+                            },
+                            {
+                                "Caption": "sUserId",
+                                "DataType": "String",
+                                "Describe": "连接到数据库使用的用户名",
+                                "Optional": true
+                            },
+                            {
+                                "Caption": "sPassword",
+                                "DataType": "String",
+                                "Describe": "连接到数据库使用的密码",
+                                "Optional": true
+                            },
+                            {
+                                "Caption": "Options",
+                                "DataType": "String",
+                                "Describe": "指定函数建立连接前返回还是建立连接后返回，可使用：<br>%adConnectUnspecified (同步模式，建立连接后函数返回)<br>%adAsyncConnect (异步模式，建立连接前函数返回)",
+                                "Optional": true
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Close",
+                    "Remark": "关闭连接",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Close",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "Close",
+                        "Define": "ADODB_Connection.Close",
+                        "Describe": "关闭一个连接",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Execute",
+                    "Remark": "执行SQL语句",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Execute()",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "Execute",
+                        "Define": "ADODB_Connection.Execute(sCommandText[, lRecordsEffected[, lOptions]])",
+                        "Describe": "执行SQL语句，并返回结果中特定字段的值，这个函数不是标准的ADODB函数。",
+                        "RetType": "ADODB_Recordset",
+                        "Return": "返回查询到的记录集",
+                        "Param": [
+                            {
+                                "Caption": "sCommandText",
+                                "DataType": "String",
+                                "Describe": "将要执行的 SQL 语句",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "lRecordsEffected",
+                                "DataType": "Integer",
+                                "Describe": "返回受查询影响的记录数（形参）",
+                                "Optional": true
+                            },
+                            {
+                                "Caption": "lOptions",
+                                "DataType": "Integer",
+                                "Describe": "应当如何设置计算 sCommandText 参数。可以是一个或多个 CommandTypeEnum 或 ExecuteOptionEnum 值。",
+                                "Optional": true
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "LookUp",
+                    "Remark": "返回某个字段的值",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "LookUp()",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "LookUp",
+                        "Define": "ADODB_Connection.LookUp(sSQL, sFieldName)",
+                        "Describe": "执行SQL语句，并返回结果中特定字段的值，这个函数不是标准的ADODB函数。",
+                        "RetType": "String",
+                        "Return": "返回查询到的字段值",
+                        "Param": [
+                            {
+                                "Caption": "sSQL",
+                                "DataType": "String",
+                                "Describe": "将要执行的 SQL 语句",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "sFieldName",
+                                "DataType": "String",
+                                "Describe": "返回的字段名",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "BeginTrans",
+                    "Remark": "开始新事务",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "BeginTrans",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "BeginTrans",
+                        "Define": "ADODB_Connection.BeginTrans",
+                        "Describe": "开始一个新事务",
+                        "RetType": "Integer",
+                        "Return": "嵌套事务的级别",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "CommitTrans",
+                    "Remark": "保存并结束当前事务",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "CommitTrans",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "CommitTrans",
+                        "Define": "ADODB_Connection.CommitTrans",
+                        "Describe": "开始一个新事务",
+                        "RetType": "Integer",
+                        "Return": "嵌套事务的级别",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "RollbackTrans",
+                    "Remark": "取消并结束当前事务",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "RollbackTrans",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "RollbackTrans",
+                        "Define": "ADODB_Connection.RollbackTrans",
+                        "Describe": "开始一个新事务",
+                        "RetType": "Integer",
+                        "Return": "嵌套事务的级别",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Errors",
+                    "Remark": "错误集合对象",
+                    "Icon": "类",
+                    "Visible": true,
+                    "Templet": "index.html",
+                    "Help": {
+                        "Caption": ""
+                    },
+                    "Child": [
+                        {
+                            "Caption": "Count",
+                            "Remark": "错误总数",
+                            "Icon": "属性",
+                            "Visible": true,
+                            "Function": true,
+                            "InsCode": "Count",
+                            "Templet": "command.html",
+                            "Help": {
+                                "Caption": "Count",
+                                "Define": "iRet = ADODB_Connection.Errors.Count",
+                                "Describe": "返回错误集合中包含的错误对象总数",
+                                "RetType": "Null",
+                                "Return": "无",
+                                "Param": [
+                                ]
+                            }
+                        },
+                        {
+                            "Caption": "Msg",
+                            "Remark": "错误信息",
+                            "Icon": "属性",
+                            "Visible": true,
+                            "Function": true,
+                            "InsCode": "Msg",
+                            "Templet": "command.html",
+                            "Help": {
+                                "Caption": "Msg",
+                                "Define": "sRet = ADODB_Connection.Errors.Msg",
+                                "Describe": "返回一个字符串，该字符串表示错误集合中存在的所有错误信息",
+                                "RetType": "Null",
+                                "Return": "无",
+                                "Param": [
+                                ]
+                            }
+                        },
+                        {
+                            "Caption": "Clear",
+                            "Remark": "清除错误",
+                            "Visible": true,
+                            "Function": true,
+                            "InsCode": "Clear",
+                            "Templet": "command.html",
+                            "Help": {
+                                "Caption": "Clear",
+                                "Define": "ADODB_Connection.Errors.Clear",
+                                "Describe": "清除错误集合",
+                                "RetType": "Null",
+                                "Return": "无",
+                                "Param": [
+                                ]
+                            }
+                        },
+                        {
+                            "Caption": "(Index).Number",
+                            "Remark": "错误号",
+                            "Visible": true,
+                            "Function": true,
+                            "InsCode": "(Index).Number",
+                            "Templet": "command.html",
+                            "Help": {
+                                "Caption": "Number",
+                                "Define": "iRet = ADODB_Connection.Errors(Index).Number",
+                                "Describe": "获取错误号",
+                                "RetType": "Null",
+                                "Return": "无",
+                                "Param": [
+                                    {
+                                        "Caption": "Index",
+                                        "DataType": "Integer",
+                                        "Describe": "错误集合的索引",
+                                        "Optional": true
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "Caption": "(Index).Description",
+                            "Remark": "错误描述",
+                            "Visible": true,
+                            "Function": true,
+                            "InsCode": "(Index).Description",
+                            "Templet": "command.html",
+                            "Help": {
+                                "Caption": "Description",
+                                "Define": "iRet = ADODB_Connection.Errors(Index).Description",
+                                "Describe": "获取错误描述",
+                                "RetType": "Null",
+                                "Return": "无",
+                                "Param": [
+                                    {
+                                        "Caption": "Index",
+                                        "DataType": "Integer",
+                                        "Describe": "错误集合的索引",
+                                        "Optional": true
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "Caption": "(Index).Source",
+                            "Remark": "生成错误的对象名",
+                            "Visible": true,
+                            "Function": true,
+                            "InsCode": "(Index).Source",
+                            "Templet": "command.html",
+                            "Help": {
+                                "Caption": "Source",
+                                "Define": "iRet = ADODB_Connection.Errors(Index).Source",
+                                "Describe": "获取生成错误的对象名或应用程序名",
+                                "RetType": "Null",
+                                "Return": "无",
+                                "Param": [
+                                    {
+                                        "Caption": "Index",
+                                        "DataType": "Integer",
+                                        "Describe": "错误集合的索引",
+                                        "Optional": true
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "Caption": "(Index).SQLState",
+                            "Remark": "SQL错误代码",
+                            "Visible": true,
+                            "Function": true,
+                            "InsCode": "(Index).SQLState",
+                            "Templet": "command.html",
+                            "Help": {
+                                "Caption": "SQLState",
+                                "Define": "iRet = ADODB_Connection.Errors(Index).SQLState",
+                                "Describe": "获取SQL错误代码",
+                                "RetType": "Null",
+                                "Return": "无",
+                                "Param": [
+                                    {
+                                        "Caption": "Index",
+                                        "DataType": "Integer",
+                                        "Describe": "错误集合的索引",
+                                        "Optional": true
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "Caption": "(Index).NativeError",
+                            "Remark": "数据源错误代码",
+                            "Visible": true,
+                            "Function": true,
+                            "InsCode": "(Index).NativeError",
+                            "Templet": "command.html",
+                            "Help": {
+                                "Caption": "NativeError",
+                                "Define": "iRet = ADODB_Connection.Errors(Index).NativeError",
+                                "Describe": "获取数据源错误代码",
+                                "RetType": "Null",
+                                "Return": "无",
+                                "Param": [
+                                    {
+                                        "Caption": "Index",
+                                        "DataType": "Integer",
+                                        "Describe": "错误集合的索引",
+                                        "Optional": true
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "Caption": "ADODB_Recordset",
+            "Remark": "记录集对象",
+            "Icon": "类",
+            "Visible": true,
+            "Templet": "index.html",
+            "Help": {
+                "Caption": ""
+            },
+            "Child": [
+                {
+                    "Caption": "BOF",
+                    "Remark": "是否到记录头",
+                    "Icon": "属性",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "BOF",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "BOF",
+                        "Define": "bRet = ADODB_Recordset.BOF",
+                        "Describe": "如果当前记录位置在ADODB记录集中的第一条记录之前，则返回 true，否则返回 false",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "EOF",
+                    "Remark": "是否到记录尾",
+                    "Icon": "属性",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "EOF",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "EOF",
+                        "Define": "bRet = ADODB_Recordset.EOF",
+                        "Describe": "如果当前记录位置在ADODB记录集中的最后一条记录之后，则返回 true，否则返回 false",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "RecordCount",
+                    "Remark": "记录数量",
+                    "Icon": "属性",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "RecordCount",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "RecordCount",
+                        "Define": "iRet = ADODB_Recordset.RecordCount",
+                        "Describe": "返回一个 ADODB_Recordset 对象中的记录数目",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Collect",
+                    "Remark": "返回字段值(文本)",
+                    "Icon": "属性",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Collect",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "Collect",
+                        "Define": "sRet = ADODB_Recordset.Collect(sFieldName)",
+                        "Describe": "返回指定字段的值，数据会被转换为字符串类型",
+                        "RetType": "String",
+                        "Return": "字段的值",
+                        "Param": [
+                            {
+                                "Caption": "sFieldName",
+                                "DataType": "String",
+                                "Describe": "字段名",
+                                "Optional": true
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "CollectD",
+                    "Remark": "返回或设置字段值(日期)",
+                    "Icon": "属性",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "CollectD",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "CollectD",
+                        "Define": "sRet = ADODB_Recordset.CollectD(sFieldName)<br>ADODB_Recordset.CollectD(sFieldName) = NewValue",
+                        "Describe": "返回指定字段的值（日期、时间），返回的数据会被格式化为字符串值：YYYY-MM-DD HH:MM:SS",
+                        "RetType": "String",
+                        "Return": "字段的值",
+                        "Param": [
+                            {
+                                "Caption": "sFieldName",
+                                "DataType": "String",
+                                "Describe": "字段名",
+                                "Optional": true
+                            },
+                            {
+                                "Caption": "NewValue",
+                                "DataType": "String",
+                                "Describe": "字段的新值，使用格式 YYYY-MM-DD HH:MM:SS",
+                                "Optional": true
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "CollectN",
+                    "Remark": "返回或设置字段值(数值)",
+                    "Icon": "属性",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "CollectN",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "CollectN",
+                        "Define": "nRet = ADODB_Recordset.CollectN(sFieldName)<br>ADODB_Recordset.CollectN(sFieldName) = NewValue",
+                        "Describe": "返回指定字段的值，返回的数据会被转换为数值类型",
+                        "RetType": "Double",
+                        "Return": "字段的值",
+                        "Param": [
+                            {
+                                "Caption": "sFieldName",
+                                "DataType": "String",
+                                "Describe": "字段名",
+                                "Optional": true
+                            },
+                            {
+                                "Caption": "NewValue",
+                                "DataType": "Double",
+                                "Describe": "字段的新值",
+                                "Optional": true
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "CollectS",
+                    "Remark": "返回或设置字段值(文本)",
+                    "Icon": "属性",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "CollectS",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "CollectS",
+                        "Define": "sRet = ADODB_Recordset.CollectS(sFieldName)<br>ADODB_Recordset.CollectS(sFieldName) = NewValue",
+                        "Describe": "返回指定字段的值，返回的数据会被转换为字符串类型",
+                        "RetType": "String",
+                        "Return": "字段的值",
+                        "Param": [
+                            {
+                                "Caption": "sFieldName",
+                                "DataType": "String",
+                                "Describe": "字段名",
+                                "Optional": true
+                            },
+                            {
+                                "Caption": "NewValue",
+                                "DataType": "String",
+                                "Describe": "字段的新值",
+                                "Optional": true
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "UpdateD",
+                    "Remark": "设置字段值(日期)",
+                    "Icon": "属性",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "UpdateD",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "UpdateD",
+                        "Define": "ADODB_Recordset.UpdateD(sFieldName) = NewValue",
+                        "Describe": "设置指定字段的值(时间或日期类型)",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                            {
+                                "Caption": "sFieldName",
+                                "DataType": "String",
+                                "Describe": "字段名",
+                                "Optional": true
+                            },
+                            {
+                                "Caption": "NewValue",
+                                "DataType": "String",
+                                "Describe": "字段的新值，使用格式 YYYY-MM-DD HH:MM:SS",
+                                "Optional": true
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "UpdateN",
+                    "Remark": "设置字段值(数值)",
+                    "Icon": "属性",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "UpdateN",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "UpdateN",
+                        "Define": "ADODB_Recordset.UpdateN(sFieldName) = NewValue",
+                        "Describe": "设置指定字段的值(数值类型)",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                            {
+                                "Caption": "sFieldName",
+                                "DataType": "String",
+                                "Describe": "字段名",
+                                "Optional": true
+                            },
+                            {
+                                "Caption": "NewValue",
+                                "DataType": "Double",
+                                "Describe": "字段的新值",
+                                "Optional": true
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "UpdateS",
+                    "Remark": "设置字段值(文本)",
+                    "Icon": "属性",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "UpdateS",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "UpdateS",
+                        "Define": "ADODB_Recordset.UpdateS(sFieldName) = NewValue",
+                        "Describe": "设置指定字段的值(字符串类型)",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                            {
+                                "Caption": "sFieldName",
+                                "DataType": "String",
+                                "Describe": "字段名",
+                                "Optional": true
+                            },
+                            {
+                                "Caption": "NewValue",
+                                "DataType": "String",
+                                "Describe": "字段的新值",
+                                "Optional": true
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "CursorLocation",
+                    "Remark": "游标位置",
+                    "Icon": "属性",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "CursorLocation",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "CursorLocation",
+                        "Define": "iRet = ADODB_Recordset.CursorLocation<br>ADODB_Recordset.CursorLocation = iCursor",
+                        "Describe": "设置或返回游标服务的位置",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "CursorType",
+                    "Remark": "游标类型",
+                    "Icon": "属性",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "CursorType",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "CursorType",
+                        "Define": "iRet = ADODB_Recordset.CursorType<br>ADODB_Recordset.CursorType = iCursor",
+                        "Describe": "设置或返回一个 ADODB_Recordset 对象的游标类型",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Sort",
+                    "Remark": "排序语句",
+                    "Icon": "属性",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Sort",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "Sort",
+                        "Define": "sRet = ADODB_Recordset.Sort<br>ADODB_Recordset.Sort = sSort",
+                        "Describe": "设置或返回一个或多个作为 ADODB_Recordset 排序基准的字段名",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "State",
+                    "Remark": "状态",
+                    "Icon": "属性",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "State",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "State",
+                        "Define": "iRet = ADODB_Recordset.State",
+                        "Describe": "返回一个值，此值可描述是否 Recordset 对象是打开、关闭、正在连接、正在执行或正在取回数据",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "AddNew",
+                    "Remark": "添加记录",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "AddNew",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "AddNew",
+                        "Define": "ADODB_Recordset.AddNew",
+                        "Describe": "为可更新的 ADODB_Recordset 对象添加一条新纪录，添加记录后，游标会被移动到新添加的记录上",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Close",
+                    "Remark": "关闭记录集",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Close",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "Close",
+                        "Define": "ADODB_Recordset.Close",
+                        "Describe": "为可更新的 ADODB_Recordset 对象添加一条新纪录，添加记录后，游标会被移动到新添加的记录上",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Move",
+                    "Remark": "移动游标到指定位置",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Move",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "Move",
+                        "Define": "ADODB_Recordset.Move(lNumRec[, lStart])",
+                        "Describe": "在 ADODB_Recordset 对象中移动记录指针",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                            {
+                                "Caption": "lNumRec",
+                                "DataType": "String",
+                                "Describe": "移动的记录数，正数则向前移动，负数则向后移动",
+                                "Optional": true
+                            },
+                            {
+                                "Caption": "lStart",
+                                "DataType": "String",
+                                "Describe": "从哪里开始移动，可以设置为：<br>%adBookmarkCurrent (当前记录)<br>%adBookmarkFirst (第一条记录)<br>%adBookmarkLast (最后一条记录)",
+                                "Optional": true
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "MoveFirst",
+                    "Remark": "移动游标到第一条记录",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "MoveFirst",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "MoveFirst",
+                        "Define": "ADODB_Recordset.MoveFirst",
+                        "Describe": "把记录指针移动到第一条记录",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "MoveLast",
+                    "Remark": "移动游标到最后一条记录",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "MoveLast",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "MoveLast",
+                        "Define": "ADODB_Recordset.MoveLast",
+                        "Describe": "把记录指针移动到最后一条记录",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "MoveNext",
+                    "Remark": "移动游标到下一条记录",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "MoveNext",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "MoveNext",
+                        "Define": "ADODB_Recordset.MoveNext",
+                        "Describe": "把记录指针移动到下一条记录",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "MovePrevious",
+                    "Remark": "移动游标到上一条记录",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "MovePrevious",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "MovePrevious",
+                        "Define": "ADODB_Recordset.MovePrevious",
+                        "Describe": "把记录指针移动到上一条记录",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Update",
+                    "Remark": "保存更改",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Update",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "Update",
+                        "Define": "ADODB_Recordset.Update",
+                        "Describe": "保存所有对 Recordset 对象中的一条单一记录所做的更改",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Expand",
+                    "Remark": "根据模板生成文本",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Expand",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "Expand",
+                        "Define": "ADODB_Recordset.Expand(sDataFormat)",
+                        "Describe": "使用当前记录集中的字段名和格式创建字符串缓冲区",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                            {
+                                "Caption": "sDataFormat",
+                                "DataType": "String",
+                                "Describe": "数据格式",
+                                "Optional": true
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "GetString",
+                    "Remark": "以文本形式返回",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "GetString",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "GetString",
+                        "Define": "ADODB_Recordset.GetString([lFormat[, nRec[, sColDelim[, sRowDelim[, nullexpr]]]]])",
+                        "Describe": "将 ADODB_Recordset 作为字符串返回",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                            {
+                                "Caption": "lFormat",
+                                "DataType": "Integer",
+                                "Describe": "将记录集检索为字符串时指定格式的值",
+                                "Optional": true
+                            },
+                            {
+                                "Caption": "nRec",
+                                "DataType": "String",
+                                "Describe": "记录集中要转换的行数",
+                                "Optional": true
+                            },
+                            {
+                                "Caption": "sColDelim",
+                                "DataType": "String",
+                                "Describe": "如果 lFormat 参数设置为 %adClipString，则为列分隔符，否则使用制表符",
+                                "Optional": true
+                            },
+                            {
+                                "Caption": "sRowDelim",
+                                "DataType": "String",
+                                "Describe": "如果 lFormat 参数设置为 %adClipString，则为行分隔符，否则使用回车符",
+                                "Optional": true
+                            },
+                            {
+                                "Caption": "nullexpr",
+                                "DataType": "String",
+                                "Describe": "如果 lFormat 参数设置为 %adClipString，则它是一个表达式，而不是一个空值。否则它是空字符串",
+                                "Optional": true
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Open",
+                    "Remark": "打开记录集",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Open",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "Open",
+                        "Define": "ADODB_Recordset.Open(sSource, pConnection[, CursorType[, lLockType[, lCommandType]]])",
+                        "Describe": "打开一个数据库元素，此元素可提供对表的记录、查询的结果或保存的 Recordset 的访问。",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                            {
+                                "Caption": "sSource",
+                                "DataType": "String",
+                                "Describe": "指定数据源，可以是以下类型的参数：SQL语句、存储过程、表名...",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "pConnection",
+                                "DataType": "Object",
+                                "Describe": "一个 ADODB_ Connection 对象",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "CursorType",
+                                "DataType": "Integer",
+                                "Describe": "游标类型",
+                                "Optional": true
+                            },
+                            {
+                                "Caption": "lLockType",
+                                "DataType": "Integer",
+                                "Describe": "锁定类型",
+                                "Optional": true
+                            },
+                            {
+                                "Caption": "lCommandType",
+                                "DataType": "Integer",
+                                "Describe": "命令类型",
+                                "Optional": true
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Save",
+                    "Remark": "保存记录集",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Save",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "Save",
+                        "Define": "ADODB_Recordset.Save(sDestination[, PersistFormat])",
+                        "Describe": "保存 ADODB_Recordset 对象到一个文件。",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                            {
+                                "Caption": "sDestination",
+                                "DataType": "String",
+                                "Describe": "文件路径",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "PersistFormat",
+                                "DataType": "Integer",
+                                "Describe": "保存的文件格式，可以为：<br>%adPersistADTG (ADTG文件)<br>%adPersistXML (XML文件)",
+                                "Optional": true
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Find",
+                    "Remark": "查找记录",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Find",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "Find",
+                        "Define": "ADODB_Recordset.Find(sCriteria[, skiprows[, direction[, start]]])",
+                        "Describe": "搜索一个 Recordset 中满足指定某个条件的一条记录。",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                            {
+                                "Caption": "sDataFormat",
+                                "DataType": "String",
+                                "Describe": "要在搜索中使用的列名称、比较运算符和值，例如：<br>&quot;Country=&apos;Norway&apos;&quot;<br>&quot;Date>#7/22/97#&quot;<br>&quot;Country LIKE N*&quot;",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "sDataFormat",
+                                "DataType": "String",
+                                "Describe": "数据格式",
+                                "Optional": true
+                            },
+                            {
+                                "Caption": "sDataFormat",
+                                "DataType": "String",
+                                "Describe": "数据格式",
+                                "Optional": true
+                            },
+                            {
+                                "Caption": "sDataFormat",
+                                "DataType": "String",
+                                "Describe": "数据格式",
+                                "Optional": true
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Fields",
+                    "Remark": "字段集合对象",
+                    "Icon": "类",
+                    "Visible": true,
+                    "Templet": "index.html",
+                    "Help": {
+                        "Caption": ""
+                    },
+                    "Child": [
+                        {
+                            "Caption": "Count",
+                            "Remark": "字段总数",
+                            "Icon": "属性",
+                            "Visible": true,
+                            "Function": true,
+                            "InsCode": "Count",
+                            "Templet": "command.html",
+                            "Help": {
+                                "Caption": "Count",
+                                "Define": "iRet = ADODB_Recordset.Fields.Count",
+                                "Describe": "返回字段集合中包含的错误对象总数",
+                                "RetType": "Null",
+                                "Return": "无",
+                                "Param": [
+                                ]
+                            }
+                        },
+                        {
+                            "Caption": "(Index).ActualSize",
+                            "Remark": "字段实际长度",
+                            "Icon": "属性",
+                            "Visible": true,
+                            "Function": true,
+                            "InsCode": "(Index).ActualSize",
+                            "Templet": "command.html",
+                            "Help": {
+                                "Caption": "ActualSize",
+                                "Define": "iRet = ADODB_Recordset.Fields(Index).ActualSize",
+                                "Describe": "返回一个字段值的实际长度",
+                                "RetType": "Null",
+                                "Return": "无",
+                                "Param": [
+                                    {
+                                        "Caption": "Index",
+                                        "DataType": "Any",
+                                        "Describe": "字段集合的索引或字段名",
+                                        "Optional": true
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "Caption": "(Index).DefinedSize",
+                            "Remark": "字段定义长度",
+                            "Icon": "属性",
+                            "Visible": true,
+                            "Function": true,
+                            "InsCode": "(Index).DefinedSize",
+                            "Templet": "command.html",
+                            "Help": {
+                                "Caption": "DefinedSize",
+                                "Define": "iRet = ADODB_Recordset.Fields(Index).DefinedSize",
+                                "Describe": "返回 Field 对象被定义的大小",
+                                "RetType": "Null",
+                                "Return": "无",
+                                "Param": [
+                                    {
+                                        "Caption": "Index",
+                                        "DataType": "Any",
+                                        "Describe": "字段集合的索引或字段名",
+                                        "Optional": true
+                                    }
+
+                                ]
+                            }
+                        },
+                        {
+                            "Caption": "(Index).Name",
+                            "Remark": "字段名称",
+                            "Icon": "属性",
+                            "Visible": true,
+                            "Function": true,
+                            "InsCode": "(Index).Name",
+                            "Templet": "command.html",
+                            "Help": {
+                                "Caption": "Name",
+                                "Define": "iRet = ADODB_Recordset.Fields(Index).Name",
+                                "Describe": "返回 Field 对象的名称",
+                                "RetType": "Null",
+                                "Return": "无",
+                                "Param": [
+                                    {
+                                        "Caption": "Index",
+                                        "DataType": "Any",
+                                        "Describe": "字段集合的索引或字段名",
+                                        "Optional": true
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "Caption": "(Index).Type",
+                            "Remark": "字段类型",
+                            "Icon": "属性",
+                            "Visible": true,
+                            "Function": true,
+                            "InsCode": "(Index).Type",
+                            "Templet": "command.html",
+                            "Help": {
+                                "Caption": "Type",
+                                "Define": "iRet = ADODB_Recordset.Fields(Index).Type",
+                                "Describe": "返回 Field 对象的类型",
+                                "RetType": "Null",
+                                "Return": "无",
+                                "Param": [
+                                    {
+                                        "Caption": "Index",
+                                        "DataType": "Any",
+                                        "Describe": "字段集合的索引或字段名",
+                                        "Optional": true
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "Caption": "(Index).Type$",
+                            "Remark": "字段类型(字符串)",
+                            "Icon": "属性",
+                            "Visible": true,
+                            "Function": true,
+                            "InsCode": "(Index).Type$",
+                            "Templet": "command.html",
+                            "Help": {
+                                "Caption": "Type$",
+                                "Define": "iRet = ADODB_Recordset.Fields(Index).Type$",
+                                "Describe": "返回 Field 对象的类型",
+                                "RetType": "Null",
+                                "Return": "无",
+                                "Param": [
+                                    {
+                                        "Caption": "Index",
+                                        "DataType": "Any",
+                                        "Describe": "字段集合的索引或字段名",
+                                        "Optional": true
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "Caption": "(Index).Value",
+                            "Remark": "字段的值",
+                            "Icon": "属性",
+                            "Visible": true,
+                            "Function": true,
+                            "InsCode": "(Index).Value",
+                            "Templet": "command.html",
+                            "Help": {
+                                "Caption": "Value",
+                                "Define": "iRet = ADODB_Recordset.Fields(Index).Value",
+                                "Describe": "返回 Field 对象的值",
+                                "RetType": "Null",
+                                "Return": "无",
+                                "Param": [
+                                    {
+                                        "Caption": "Index",
+                                        "DataType": "Any",
+                                        "Describe": "字段集合的索引或字段名",
+                                        "Optional": true
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+
+            ]
+        },
+        {
+            "Caption": "ADODB_Command",
+            "Remark": "SQL执行对象",
+            "Icon": "类",
+            "Visible": true,
+            "Templet": "index.html",
+            "Help": {
+                "Caption": ""
+            },
+            "Child": [
+                {
+                    "Caption": "ActiveConnection",
+                    "Remark": "连接对象",
+                    "Icon": "属性",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "ActiveConnection",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "ActiveConnection",
+                        "Define": "object = ADODB_Command.ActiveConnection<br>ADODB_Command.ActiveConnection = ADODB_Connection",
+                        "Describe": "执行SQL语句使用的连接对象",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "CommandText",
+                    "Remark": "SQL语句",
+                    "Icon": "属性",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "CommandText",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "CommandText",
+                        "Define": "sRet = ADODB_Command.CommandText<br>ADODB_Command.CommandText = sCommandText",
+                        "Describe": "要执行的命令文本（SQL语句）",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "CommandType",
+                    "Remark": "命令类型",
+                    "Icon": "属性",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "CommandType",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "CommandType",
+                        "Define": "iRet = ADODB_Command.CommandType<br>ADODB_Command.CommandType = CommandType",
+                        "Describe": "要执行的命令类型，可以为以下值：<br>%adCmdUnspecified (不指定命令类型的参数。)<br>%adCmdUnknown (默认值。指示 CommandText 属性中命令的类型未知。)<br>%adCmdText (按命令或存储过程调用的文本定义计算 CommandText。)<br>%adCmdTable (按表名计算 CommandText，该表的列全部是由内部生成的 SQL 查询返回的。)<br>%adCmdStoredProc (按存储过程名计算 CommandText。)<br>%adCmdFile (按持久存储的 Recordset 的文件名计算 CommandText。仅与 Recordset.Open 或 Requery 使用。)<br>%adCmdTableDirect (按表名计算 CommandText，该表的列被全部返回。仅与 Recordset.Open 或 Requery 使用。如需使用 Seek 方法，Recordset 必须通过 adCmdTableDirect 打开。该值不能与 ExecuteOptionEnum 值 adAsyncExecute 结合。)",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Execute",
+                    "Remark": "执行SQL语句",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Execute()",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "Execute",
+                        "Define": "ADODB_Command.Execute([lRecordsEffected])",
+                        "Describe": "执行SQL语句",
+                        "RetType": "ADODB_RecordSet",
+                        "Return": "根据SQL语句的执行结果，返回包含查询内容的 ADODB_RecordSet 对象",
+                        "Param": [
+                            {
+                                "Caption": "lRecordsEffected",
+                                "DataType": "Integer",
+                                "Describe": "返回受查询影响的记录数（形参）",
+                                "Optional": true
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AppConfig>
+
+	<en-GB>
+		<Good_Morning>Good Morning</Good_Morning>
+		<What_Is_Your_Name>What is your name?</What_Is_Your_Name>
+	</en-GB>
+
+	<fr-FR>
+		<Good_Morning>Bonjour</Good_Morning>
+		<What_Is_Your_Name>Quel est votre nom?</What_Is_Your_Name>
+	</fr-FR>
+	
+</AppConfig>

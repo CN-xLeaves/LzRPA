@@ -1,0 +1,38 @@
+  Dim n_str   As Ext Value 10000
+  DIM n_lvl   AS EXT VALUE 10000
+  DIM n_wp    AS EXT VALUE 10000
+  DIM n_vit   AS EXT VALUE 10000
+  DIM n_adef  AS EXT VALUE 10000
+  DIM Result  AS EXT
+  DIM counter AS LONG
+  Dim MaxCount As Long = 100000
+
+  DIM T1      AS DOUBLE
+  DIM T2      AS DOUBLE
+
+  DIM Message AS STRING
+  Message = "This program will solve a simple math expression " & MaxCount & " times.\n"
+  Message += "Please press Yes to go on, NO to Stop\n"
+
+  DIM lResult AS LONG = MSGBOX(0, Message, %MB_YESNO, "Continue?")   
+  IF lResult <> %IDYES THEN
+    STOP
+  END IF
+
+  T1 = TIMER
+  Result = 0
+  FOR counter = 1 TO MaxCount
+      result = CalcFormula
+  NEXT
+  T2 = TIMER
+
+  MsgBox(0, "Seconds:"    & $TAB  & $TAB & Format$(T2 - T1, "#0.000000")      & $CRLF & 
+            "Result:"     & $TAB  & $TAB & result                             & $CRLF )
+
+  '---
+  ' Formula calculation
+  '---
+  function CalcFormula() as ext
+    Function = (((n_str*85+n_lvl)*n_wp)-((n_vit*90+n_adef)*n_lvl))/20
+  end function
+

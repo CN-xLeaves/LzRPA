@@ -1,0 +1,43 @@
+
+'INTERFACING SUBS AND FUNCTIONS
+'
+
+uses "oxygen","file"
+dim p0,p1 as long, src as string
+dim dd(100) as double
+
+src = "
+
+  basic
+
+  function average(dd as double, byval n as long) as double at #p1
+    dim d as double, i as long
+    for i=1 to n
+      d+=dd(i)
+    next
+    function=d/n
+  end function
+  
+  sub finish() at #p0 : terminate : end sub
+  "
+
+o2_basic src
+
+'msgbox 0, o2_view "o2h "+src
+
+if len(o2_error) then
+  msgbox 0, o2_error : stop
+end if
+
+o2_exec
+
+declare function average( dd as double, byval n as long ) as double at p1
+declare sub finish () at p0
+
+
+array assign dd=1,2,3,4,5,6,7,8,9
+
+msgbox 0, "Average: " + average dd,9
+
+finish ' RELEASE PERSISTENT ELEMENTS OF OXYGEN
+

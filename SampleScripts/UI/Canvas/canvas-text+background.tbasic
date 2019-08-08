@@ -1,0 +1,61 @@
+' Empty GUI script created on 06-21-2010 19:02:11 by  (ThinAIR)
+Uses "ui" '"console", 
+
+Begin ControlID
+  %bClose
+  %cCanvas
+End ControlID
+
+
+Function Main () As Long
+   Local z, v, r, g, b, x As Long
+   Local hDlg, mygraf As Long
+   
+   Dialog New Pixels, 0,"simple Canvas text with background",-1,-1, 390, 360, %WS_SYSMENU Or %WS_MINIMIZEBOX Or %WS_CAPTION To hDlg 
+   'Dialog Pixels hDlg, 200, 200 To Units z,v 
+   Dialog Set Gradient hdlg, %GRADIENT_FILL_V, Rgb(100,10,60), Rgb(140,100,255)
+
+   Control Add Canvas, hDlg, %cCanvas, "", 0, 0, 390, 290, %SS_NOTIFY 
+   Control Add Button, hDlg, %bClose, "closeMe", 300, 310, 80, 24
+   Control Handle hDlg,%cCanvas To mygraf   
+   Canvas_Attach mygraf, 0                                                  
+                    
+   r = 228
+   g = 255
+   b = 0
+   v = Rgb(r, g, b)   ' v = RGB(128, 128, 128), very boring ;)
+   z = (r + g + b)\3
+   If z < 128 Then z = 255 Else z = 0
+   z = Rgb(100, 220, 40)
+   Canvas_Clear v            'Canvas_Clear(Rgb(0,0,0))
+   Canvas_Color z, v
+   Canvas_Font "Comic Sans MS", 18, 0
+   'Canvas_Font "ARIAL", 12, 0
+   Canvas_SetPos(10,20)
+   Canvas_Print "This is a simple Canvas test"
+   Canvas_Color(Rgb(255,10,100))
+   Canvas_SetPos(10,120)
+   Canvas_Print "Batman and Robin are great"  
+   Canvas_Color(Rgb(0,100,240))
+   Canvas_SetPos(10,180)
+   Canvas_Print "We need more Ironman 2 dresses!"
+   Dialog Show Modal hDlg Call cbDialog
+End Function  
+
+'-------- simple callback for closing dialog
+CallBack Function cbDialog() As Long
+ 
+  Select Case CBMSG
+    Case %WM_COMMAND
+      If CBCTL = %bClose and cbctlmsg = %BN_CLICKED Then 
+        Dialog End CBHNDL
+      End If
+ 
+    Case %WM_DESTROY
+      'MsgBox 0, "close and end dialog"
+      
+  End Select 
+ 
+End Function 
+ '-------- simple callback for closing dialog
+ 

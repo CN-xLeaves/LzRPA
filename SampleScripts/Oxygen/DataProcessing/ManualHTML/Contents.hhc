@@ -1,0 +1,46 @@
+
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<!-- Sitemap 1.0 -->
+</HEAD><BODY>
+<UL>
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="About">
+<param name="Local" value="About.hha">
+</OBJECT>
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="Introduction">
+<param name="Local" value="Introduction.hha">
+</OBJECT>
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="common x86 assembly instrunctions">
+<param name="Local" value="common_asm.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="X86 CPU registers">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="primitive types">
+<param name="Local" value="types.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="operators">
+<param name="Local" value="operators.htm">
+</OBJECT>
+
+
+</UL>
+</BODY>
+</HTML>

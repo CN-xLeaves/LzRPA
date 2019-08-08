@@ -1,0 +1,180 @@
+  '=============================================================================
+  '=                               Display lists                               =
+  '=                                                                           =
+  '=                           Petr Schreiber, 2007                            =
+  '=============================================================================
+
+  Uses "TBGL"
+
+  Dim hWnd As Dword
+  Dim i, j As Long
+  
+  type tCamera
+    DeltaMove   as double
+    DeltaAngle  as double
+    AngleLR     as double
+    AngleUD     as double
+    PointToX    as double
+    PointToY    as double
+    PointToZ    as double
+    PosX        as double
+    PosY        as double
+    PosZ        as double
+  end type
+  dim Cam as tCamera
+
+  ' Creates OpenGL window, it returns handle
+  hWnd = TBGL_CreateWindowex("Display list use, use arrows to move - press ESC to quit", 640, 480, 32, %TBGL_WS_WINDOWED)    
+  TBGL_ShowWindow                     ' Shows the window
+
+  tbgl_LoadTexture App_SourcePath+"Textures\Test.bmp", 1, %TBGL_TEX_MIPMAP
+
+  Cam.PosY = 10.75
+  Cam.PosX = -5
+
+  ' Now we will create complex 3D model, we will need just one pass,
+  ' then it will be displayed directly from 3D card memory ! 
+  %DRAWCITY = 1    ' Designing equate is handy in case of more objects
+
+  tbgl_NewList %DRAWCITY
+    BuildCity()
+  tbgl_EndList
+  
+  dim FrameRate as double
+  
+    ' Resets key status before checking
+  TBGL_ResetKeyState()        
+
+  WHILE tbgl_IsWindow(hWnd)           
+
+    '---Script will run on different PCs so we must assure
+    '---constant speed of movement by scaling movement relative to framerate
+    FrameRate = tbgl_GetFrameRate
+    
+    TBGL_ClearFrame                   ' Prepares clear frame
+    TBGL_Camera Cam.PosX,Cam.PosY,Cam.PosZ,Cam.PosX+Cam.PointToX,Cam.PosY,Cam.PosZ+Cam.PointToZ     ' Setups Camera
+
+    TBGL_CallList %DRAWCITY           ' Instead of neverending calling to BuildCity and struggling
+                                      ' with loops we can use this to speed it up!
+
+    TBGL_DrawFrame                    ' Swaps the buffers - displays rendered image
+
+    if TBGL_GetWindowKeyState( hWnd, %VK_UP)     then Cam.DeltaMove += 15/FrameRate
+    if TBGL_GetWindowKeyState( hWnd, %VK_DOWN)   then Cam.DeltaMove -= 15/FrameRate
+
+    if TBGL_GetWindowKeyState( hWnd, %VK_PGUP)   then Cam.PosY += 5/FrameRate
+    if TBGL_GetWindowKeyState( hWnd, %VK_PGDN)   then Cam.PosY -= 5/FrameRate
+
+    if TBGL_GetWindowKeyState( hWnd, %VK_RIGHT)  then Cam.DeltaAngle += 3/FrameRate
+    if TBGL_GetWindowKeyState( hWnd, %VK_LEFT)   then Cam.DeltaAngle -= 3/FrameRate
+
+    if TBGL_GetWindowKeyState( hWnd, %VK_ESCAPE) then EXIT WHILE
+
+
+    ' Some math to calculate the next position
+    Cam.AngleLR    = Cam.AngleLR + Cam.DeltaAngle
+    Cam.PointToX   = SIN(Cam.AngleLR)
+    Cam.PointToZ   = -COS(Cam.AngleLR)
+          
+
+    Cam.PosX = Cam.PosX + Cam.DeltaMove * Cam.PointToX
+    Cam.PosZ = Cam.PosZ + Cam.DeltaMove * Cam.PointToZ
+    
+    Cam.DeltaMove  = 0
+    Cam.DeltaAngle = 0
+
+  WEND
+
+  TBGL_DestroyWindow               ' Closes OpenGL window
+
+
+  ' Here we create the city of thinBASIC :)
+  ' All this stuff should be processed every frame
+  ' ... but thanks to "DisplayLists" it's not needed
+  Function BuildCity() As Long
+
+    Local i, j, height As Long
+
+    tbgl_UseTexturing %TRUE
+    tbgl_BindTexture 1
+    
+    For i = -50 To 50 Step 10
+      For j = -50 To 50 Step 10
+        height = Rnd(5, 20)
+        
+        tbgl_BeginPoly %GL_QUADS
+          tbgl_Color RND(128,255),RND(128,255),RND(128,255)
+
+          tbgl_TexCoord2D 0,0
+          tbgl_Vertex -2.5+i,0,-2.5+j 
+
+          tbgl_TexCoord2D 0,1
+          tbgl_Vertex  2.5+i,0,-2.5+j
+
+          tbgl_TexCoord2D 1,1
+          tbgl_Vertex  2.5+i,height,-2.5+j 
+
+          tbgl_TexCoord2D 1,0
+          tbgl_Vertex -2.5+i,height,-2.5+j
+
+          tbgl_TexCoord2D 0,0
+          tbgl_Vertex -2.5+i,0,2.5+j
+
+          tbgl_TexCoord2D 0,1 
+          tbgl_Vertex  2.5+i,0,2.5+j
+
+          tbgl_TexCoord2D 1,1
+          tbgl_Vertex  2.5+i,height,2.5+j 
+
+          tbgl_TexCoord2D 1,0
+          tbgl_Vertex -2.5+i,height,2.5+j
+
+          tbgl_TexCoord2D 0,0
+          tbgl_Vertex  2.5+i,0,-2.5+j 
+
+          tbgl_TexCoord2D 0,1
+          tbgl_Vertex  2.5+i,0,2.5+j
+
+          tbgl_TexCoord2D 1,1
+          tbgl_Vertex  2.5+i,height,2.5+j 
+
+          tbgl_TexCoord2D 1,0
+          tbgl_Vertex  2.5+i,height,-2.5+j
+
+          tbgl_TexCoord2D 0,0
+          tbgl_Vertex  -2.5+i,0,-2.5+j 
+
+          tbgl_TexCoord2D 0,1
+          tbgl_Vertex  -2.5+i,0,2.5+j
+
+          tbgl_TexCoord2D 1,1
+          tbgl_Vertex  -2.5+i,height,2.5+j 
+
+          tbgl_TexCoord2D 1,0
+          tbgl_Vertex  -2.5+i,height,-2.5+j
+
+          tbgl_TexCoord2D 0,0
+          tbgl_Vertex  -2.5+i,height,-2.5+j 
+
+          tbgl_TexCoord2D 0,1
+          tbgl_Vertex  -2.5+i,height,2.5+j
+
+          tbgl_TexCoord2D 1,1
+          tbgl_Vertex   2.5+i,height,2.5+j 
+    
+          tbgl_TexCoord2D 1,0
+          tbgl_Vertex   2.5+i,height,-2.5+j
+
+        tbgl_EndPoly
+      Next
+    Next
+    
+    tbgl_UseTexturing %FALSE
+
+  End Function
+
+
+
+
+
+

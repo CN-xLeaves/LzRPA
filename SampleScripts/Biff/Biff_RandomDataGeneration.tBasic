@@ -1,0 +1,36 @@
+'=============================================================================
+' Author      : Eros Olmi
+' Date        : 01/09/2003
+' Version     : 01.00.00
+' Description : 
+' Purpose     : Create a BIF file (Excel compatible file) and writes randomly
+'               some text, numbers, dates.
+'=============================================================================
+' Notes:        01.00.00 01/09/2003 
+'=============================================================================
+' Edit History: 01.00.00 01/09/2003 Initial coding
+'=============================================================================
+
+Uses "Biff"
+
+DIM Count AS Number
+DIM OutFile AS STRING
+  
+BIFF_SetBuffer(1024 * 1024)
+OutFile = App_SourceName & ".xls"
+
+BIFF_CreateFile(OutFile)
+
+FOR Count = 1 TO 1000
+  BIFF_WriteNumber(RND(1, 100000), RND(1, 1000), RND(2, 5))
+  BIFF_WriteText  ("Num Is " + TIMER, RND(1, 1000), RND(6, 10))
+  BIFF_WriteDate  (rnd(2000, 2010) & format$(rnd(1, 12), "00") & format$(rnd(1, 28), "00"), RND(1, 1000), RND(1, 1), 12)
+NEXT                 
+
+BIFF_SetColWidth(1, 10, 10)
+BIFF_SetRowHeight(1, 80) 
+BIFF_CloseFile   
+
+MsgBox(0, "File "+OutFile+" was created")
+
+ 

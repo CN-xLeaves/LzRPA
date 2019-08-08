@@ -1,0 +1,52 @@
+
+'--------------
+'STATIC MEMBERS
+'==============
+
+'as an alternative to global variables
+
+'also using C style curly braces
+
+
+
+uses "oxygen","file"
+dim src as string
+
+src = "
+
+   
+  class myStateVariables
+    static string msgs
+    static double val1
+  end class
+
+
+  void init_myStateVariables()
+  {
+    myStateVariables b
+    b.msgs=`hello` : b.val1=42
+  }
+ 
+  void test_myStateVariables()
+  {
+    myStateVariables g
+    print g.msgs ` ` g.val1
+  }
+
+  init_myStateVariables
+  test_myStateVariables
+       
+
+  "
+
+
+
+o2_asmo src
+
+'msgbox 0, o2_prep src
+
+if len(o2_error) then
+  msgbox 0, o2_error : stop
+end if
+
+o2_exec

@@ -1,0 +1,39 @@
+Uses "Console", "COMM"
+
+dim nModems   as long = 4
+dim Count     as long
+dim CountATI  as long
+dim hComm     as long
+dim nBytes    as long
+dim sBuffer   as string
+
+for count = 1 to nModems
+  hComm = comm_freefile
+  console_writeline("Opening COM" & Count & " as hComm=" & hComm)
+  comm_open("COM" & Count, hComm)
+  if err = 0 then
+    console_writeline("...open ok.")
+
+    for CountATI = 1 to 5
+      console_writeline("Now sending ATI" & CountATI)
+      comm_print(hComm, "ATI" & CountATI)
+      
+      SLEEP 1000 ' delay for modem to respond
+      nBytes = COMM_Get(hComm, %comm_RXQUE)
+      COMM_trecv(hComm, nBytes, sBuffer, 1000)
+      
+      console_writeline(sBuffer)
+    next
+
+    console_writeline("...closing port COM" & Count)
+    comm_close(hComm)
+  else
+    console_writeline("Error: " & err)
+  end if
+next
+
+console_writeline("----------------------------------------")
+console_writeline("End testing. Press any key to finish.")
+console_writeline("----------------------------------------")
+console_waitkey
+

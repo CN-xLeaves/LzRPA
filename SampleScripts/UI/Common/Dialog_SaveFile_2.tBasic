@@ -1,0 +1,125 @@
+  USES "UI"
+  USES "FILE"
+  
+  Begin ControlID
+    %tbFirst  
+    %tbSecond
+    %tbThird
+    %tbFourth
+    %tbFileText
+    %bOpen
+    %bSave
+  End ControlID
+  function Main()
+    dim hDlg as dword
+    DIM sFile as string
+       
+    DIALOG NEW 0, "TextBox example", -1, -1, 195, 240, _
+                                                  %WS_DLGFRAME OR %DS_CENTER OR %WS_CAPTION OR %WS_SYSMENU, _
+                                                  0 TO hDlg
+
+    Control Add Textbox , hDlg, %tbFirst, "Text box: left allign"   , 5,  15, 185, 15, %WS_TABSTOP                  , %WS_EX_CLIENTEDGE
+    CONTROL ADD TEXTBOX , hDlg, %tbSecond, "Text box: center allign", 5,  30, 185, 15, %WS_TABSTOP OR %ES_CENTER    , %WS_EX_CLIENTEDGE
+    Control Add Textbox , hDlg, %tbThird, "Text box: right allign"  , 5,  45, 185, 15, %WS_TABSTOP Or %ES_RIGHT     , %WS_EX_CLIENTEDGE
+    Control Add Textbox , hDlg, %tbFourth, "Text box: read only"    , 5,  60, 185, 15, %WS_TABSTOP Or %ES_READONLY  , %WS_EX_CLIENTEDGE
+
+    CONTROL ADD TEXTBOX , hDlg, %tbFileText, "" , 5,  75, 185, 100, _
+                                                           %WS_TABSTOP     OR _
+                                                           %ES_WANTRETURN  OR _
+                                                           %ES_MULTILINE   OR _
+                                                           %ES_AUTOHSCROLL OR _
+                                                           %ES_AUTOVSCROLL OR _
+                                                           %WS_VSCROLL     OR _
+                                                           %WS_HSCROLL, _
+                                                           %WS_EX_CLIENTEDGE
+
+    CONTROL ADD BUTTON , hDlg, %bOpen, "Open a file"     , 5,  200, 185, 15
+    CONTROL ADD BUTTON , hDlg, %bSave, "Save text as ...", 5,  220, 185, 15
+
+
+    '---This will load current script into control %tbFileText
+    sFile = FILE_LOAD(App_SourceName)
+    CONTROL SET TEXT hDlg, %tbFileText, sFile
+    
+    '---Show dialog in MODAL state
+    DIALOG SHOW MODAL hDlg, call dlgCallback
+    
+  end function
+    
+  '---Message pump loop
+  callback function dlgCallback() as long
+    local sFile as string
+  
+    '---Now test the message
+    SELECT CASE cbMsg
+
+      CASE %WM_COMMAND
+        SELECT CASE cbCtl
+          CASE %bOPEN
+
+            sFile = OpenFile
+            if sFile <> "" then
+              CONTROL SET TEXT cbHndl, %tbFileText, FILE_LOAD(sFile)
+              msgbox cbHndl, "File " & sFile & " loaded into textbox"
+            else
+              msgbox cbHndl, "No file selected"
+            end if
+
+          CASE %bSave
+
+            sFile = SaveFile
+            if sFile <> "" then
+              msgbox cbHndl, "Save file name " & sFile & "." & $crlf & "Nothing done. Just an example."
+            else
+              msgbox cbHndl, "No file selected, no save performed."
+            end if
+
+        END SELECT
+      
+    END SELECT
+    
+  end function
+
+  function OpenFile( wHandle as dword ) as string
+    dim sFile   as string
+    dim sFilter as string
+
+    sFilter  = "thinBasic Files (*.tBasic, *.tBasicc)|*.tBasic;*.tBasicc|"
+    sFilter += "Basic Files (*.BAS, *.INC)|*.BAS;*.INC|"
+    sFilter += "Resource Files (*.RC)|*.RC|"
+    sFilter += "Help files (*.HLP)|*.HLP|"
+    sFilter += "Text Files (*.TXT)|*.TXT|"
+    sFilter += "Word processing (*.RTF)|*.RTF|"
+    sFilter += "All Files (*.*)|*.*"
+
+    sFile = Dialog_OpenFile(wHandle, _
+                            "Open an file", _
+                            DIR_GetCurrent, _
+                            sFilter, _
+                            "tBasic", _
+                            %OFN_FILEMUSTEXIST OR %OFN_HIDEREADONLY or %OFN_ENABLESIZING)
+    function = sFile
+  end function
+  
+
+  function SaveFile( wHandle as dword ) as string
+    dim sFile   as string
+    dim sFilter as string
+
+    sFilter  = "thinBasic Files (*.tBasic, *.tBasicc)|*.tBasic;*.tBasicc|"
+    sFilter += "Basic Files (*.BAS, *.INC)|*.BAS;*.INC|"
+    sFilter += "Resource Files (*.RC)|*.RC|"
+    sFilter += "Help files (*.HLP)|*.HLP|"
+    sFilter += "Text Files (*.TXT)|*.TXT|"
+    sFilter += "Word processing (*.RTF)|*.RTF|"
+    sFilter += "All Files (*.*)|*.*"
+
+    sFile = Dialog_SaveFile(wHandle, _
+                            "Open an file", _
+                            DIR_GetCurrent, _
+                            sFilter, _
+                            "tBasic", _
+                            %OFN_FILEMUSTEXIST OR %OFN_HIDEREADONLY or %OFN_ENABLESIZING)
+    function = sFile
+  end function
+  

@@ -1,0 +1,154 @@
+'---Declare need modules
+uses "console"
+uses "INET"
+uses "file"
+
+'---Some needed variables
+LOCAL bResult         AS LONG
+LOCAL hInternet       AS DWORD
+LOCAL hFile           AS DWORD
+
+LOCAL sUrl            AS string
+
+LOCAL strBuffer       AS STRING
+LOCAL pstrBuffer      AS long
+LOCAL strBufferLen    AS long
+LOCAL strData         AS STRING
+
+LOCAL cbBytesRead     AS DWORD
+local TotalBytesRead  as dword
+local FileSize        as dword
+
+local nSecs           as long
+local T0, T1          as double
+
+local lBufferLen      as long   = 1024
+
+local MyContext       as dword
+
+'---Initializes an application's use of the WinINet Internet functions.
+  hInternet = INET_Internet_Open("Test download from thinBasic script", %INTERNET_OPEN_TYPE_DIRECT)
+  IF hInternet = %NULL THEN
+    printl "INET_Internet_Open error"
+    waitkey
+    stop
+  END IF
+
+'---Opens a resource specified by a complete HTTP URL.
+'---More or less like a standard local OPEN file operation
+  sUrl = "http://www.thinbasic.biz/projects/thinbasic/thinBasic_1.7.8.0.zip"  '!!!!!! Change as needed
+  
+  printl "Downloading " & sUrl
+  MyContext = 1
+  hFile = INET_Internet_OpenUrl(hInternet, sUrl, "", %INTERNET_FLAG_NO_CACHE_WRITE, MyContext)
+  IF hFile = %NULL THEN
+    printl "INET_Internet_OpenUrl error. Check url: " & sUrl
+    INET_Internet_CloseHandle hInternet
+    waitkey
+    stop
+  END IF
+
+'---Set a callback for hInternet events. Driver will automatically call MyStatusFunction on status change
+  bResult = INET_Internet_SetStatusCallBack(hFile, MyStatusFunction)
+
+'---Query remote server about the size of the file we are going to download
+  FileSize = INET_Http_QueryInfo(hFile, %HTTP_QUERY_CONTENT_LENGTH)
+  printl "Real file size in bytes: " & FileSize
+  IF FileSize = %NULL THEN
+    printl "INET_Http_QueryInfo(hInternet, %HTTP_QUERY_CONTENT_LENGTH) error. Check url: " & sUrl
+    INET_Internet_CloseHandle hInternet
+    INET_Internet_CloseHandle hFile
+    waitkey
+    stop
+  END IF
+
+    
+'---Ok we can start a loop for file download. This can be automated in a loop or in a timer function
+'---Reads the data in %BufferLen bytes chunks
+  T0 = timer
+
+  '---Setup a %BufferLen bytes buffer
+    strBuffer     = STRING$(lBufferLen, $SPC)
+    pstrBuffer    = STRPTR(strBuffer)
+
+  DO
+    bResult = INET_Internet_ReadFile(hFile, pstrBuffer, len(strBuffer), cbBytesRead)
+    IF bResult = 0 OR cbBytesRead = 0 THEN EXIT DO
+    IF cbBytesRead = LEN(strBuffer) THEN
+      strData &= strBuffer
+    ELSE
+      strData &= LEFT$(strBuffer, cbBytesRead)
+    END IF
+    TotalBytesRead += cbBytesRead
+    T1 = Timer
+    
+    PrintAt "Elapsed seconds   : " & LSet$(Format$(T1-T0, "0"), 19)                                         , 40, 3
+    PrintAt "Bytes read so far : " & LSet$(TotalBytesRead, 19)                                              , 40, 4
+    PrintAt "KBytes per second : " & LSet$(Format$((TotalBytesRead / Max(T1-T0, 1))/1024, "0.00"), 19)      , 40, 5
+    PrintAt "Estimated seconds : " & LSet$(Format$((FileSize * (T1-T0))/TotalBytesRead, "0"), 19)           , 40, 6
+    PrintAt "Seconds to go     : " & LSet$(Format$(((FileSize * (T1-T0))/TotalBytesRead)-(T1-T0), "0"), 19) , 40, 7,,79
+  LOOP
+
+'---Closes all used handles
+  INET_Internet_CloseHandle hInternet
+  INET_Internet_CloseHandle hFile
+
+'---Output buffer to a file
+  printl
+  printl
+  printl
+  printl
+  printl
+  printl "---Saving file: " & app_sourcepath & "thinBasic_1.7.8.0.zip"
+  file_save(app_sourcepath & "thinBasic_1.7.8.0.zip", strData)
+  printl
+  printl "---All done! Press any key to finish---"
+  WAITKEY
+
+
+'------------------------------------------------------------------
+' CallBack function automatically called by Internet driver when
+' status change for a specific Internet handle to which a callback
+' function has been installed.
+' Parameters are mandatory and are defined my Microsoft
+' callback template. More info at: http://msdn.microsoft.com/en-us/library/aa385121(VS.85).aspx
+'------------------------------------------------------------------
+callback function MyStatusFunction( _
+                byval hInternet                 as long , _   '---Mandatory in thinBasic and in API
+                byval dwContext                 as long , _   '---Mandatory in thinBasic and in API
+                byval dwInternetStatus          as long , _   '---Mandatory in thinBasic and in API
+                byval lpvStatusInformation      as long , _   '---Optional in thinBasic, mandatory in API
+                byval dwStatusInformationLength as long   _   '---Optional in thinBasic, mandatory in API
+             ) as long
+'------------------------------------------------------------------
+  dim BytesReceived     as dword at 0
+  static TotBytes       as dword
+
+  static MoreStatusLine as long = 20
+      
+  printat "Data from " & function_name & " callback"          , 1, 17
+  printat "  Internet handle: " & hInternet & "  Internet dwContext: " & dwContext, 1, 18
+
+  select case dwInternetStatus 
+    case %INTERNET_STATUS_RECEIVING_RESPONSE
+
+    case %INTERNET_STATUS_RESPONSE_RECEIVED
+      '---  Successfully received a response from the server.
+      '---  The lpvStatusInformation parameter points to a DWORD value that contains the number, in bytes, received.
+      setat(BytesReceived, lpvStatusInformation)
+      TotBytes += BytesReceived
+
+      '---ATTENTION: TotalBytes received can differ from total bytes of the file to be downloaded
+
+      printat "  Receiving data (" & dwInternetStatus & " " & INET_Internet_StatusGetDescription(dwInternetStatus) & ") TotBytes: " & TotBytes, 1, 19
+
+    case else
+      '---In case of other status, just decode it at the bottom.
+      printat "  (" & dwInternetStatus & " " & INET_Internet_StatusGetDescription(dwInternetStatus) & ")", 1, MoreStatusLine
+      incr MoreStatusLine
+
+  end select            
+
+
+end function
+

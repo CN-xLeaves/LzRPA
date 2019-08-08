@@ -1,0 +1,83 @@
+' template by franko lionheart (ThinAIR)
+
+Uses "ui"
+
+Begin Const
+  %btnRed
+  %btnGreen
+  %cCanvas
+  
+End Const
+Dim colr, colrFill As Long
+
+Function Main() As Long
+ Local xsize,ysize As Long          
+ Local hdlg As Long
+ Local mygraf As Long
+  
+ Dialog New Pixels,0,"Traffic Sign",-1,-1,600,400,%WS_SYSMENU Or %WS_MINIMIZEBOX Or %WS_CAPTION To hDlg
+  Control Add Button, hDlg, %btnRed, "Red", 550, 350, 50, 24 Call red() 
+  Control Add Button, hDlg, %btnGreen, "Green", 450, 350, 50, 24 Call green()
+   Control Add Canvas, hDlg, %cCanvas, "", 0, 0, 400, 400, %SS_NOTIFY 
+   Control Handle hDlg,%cCanvas To mygraf   
+   Canvas_Attach mygraf, 0      
+ 
+ Canvas_Clear(Rgb(255,255,255))                                    
+ 
+ Dialog Show Modal hDlg Call showme()
+End Function
+
+'------------------------------------------------------------------------------
+CallBack Function showme() As Long
+ Select Case CBMSG
+  Case %WM_INITDIALOG
+      Canvas_Attach(CBHNDL, %cCanvas, %FALSE)
+              
+      Canvas_Redraw
+    
+  Case %WM_COMMAND
+   Select Case CBCTL
+    Case %IDCANCEL 
+      Dialog End CBHNDL '
+   End Select
+ End Select
+End Function
+'------------------------------------------------------------------------------
+
+CallBack Function green() As Long
+ 
+  Select Case CBMSG
+    Case %WM_COMMAND
+      If CBWPARAM = %btnGreen Then 
+        Canvas_Width(10)
+        colr = Rgb(255, 81, 168) : colrFill = Rgb(0, 255, 0)
+       'circle(x,y,radius,colr,colrFill)
+       Circle(180,180,70,colr,colrFill)
+       Canvas_Width(15)
+       Canvas_Line((180,265),(180, 400) , Rgb(0, 0, 255) )
+
+      End If
+  Canvas_Redraw
+  End Select 
+End Function 
+
+CallBack Function red() As Long
+ 
+  Select Case CBMSG
+    Case %WM_COMMAND
+      If CBWPARAM = %btnRed Then 
+        Canvas_Width(10)
+       colr = Rgb(255, 81, 168) : colrFill = Rgb(255, 0, 0)
+      'circle(x,y,radius,colr,colrFill)
+      Circle(180,180,70,colr,colrFill)
+      Canvas_Width(15)
+      Canvas_Line((180,265),(180, 400) , Rgb(0, 0, 255) )
+      End If
+  Canvas_Redraw
+  End Select 
+End Function 
+
+
+Function Circle(x As Long, y As Long, r As Long, colr, colrFill) 
+   Canvas_Ellipse(x-r, y-r, x+r, y+r, colr, colrFill)
+End Function

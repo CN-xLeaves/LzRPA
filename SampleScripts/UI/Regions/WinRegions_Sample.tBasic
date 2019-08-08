@@ -1,0 +1,121 @@
+  '---
+  ' Version 1.0.0
+  '---
+  
+  uses "UI"
+  uses "MATH"
+
+  '---Control IDs
+  %IDC_LABEL      = 200
+  %IDC_TOGGLE     = 300
+
+  %ALTERNATE      = 1
+   
+  %IDC_TIMER      = 1
+  %TIMER_DELAY    = 750     ' Timer delay (in milliseconds, not very accurate below about 100)
+
+  '---Declaration of API functions needed by this script
+  DECLARE FUNCTION CreatePolygonRgn LIB "GDI32.DLL"   ALIAS "CreatePolygonRgn"  (byval lpPoint AS dword, BYVAL nCount   AS LONG,  BYVAL nPolyFillMode AS LONG) AS DWORD
+  DECLARE FUNCTION SetWindowRgn     LIB "USER32.DLL"  ALIAS "SetWindowRgn"      (BYVAL hWnd    AS DWORD, BYVAL hRgn     AS DWORD, BYVAL bRedraw       AS LONG) AS LONG
+  
+
+  '------------------------------------------------------------------------------
+  ' Main function entry point
+  '------------------------------------------------------------------------------
+  FUNCTION Main() as long
+    LOCAL hDlg AS DWORD
+
+    randomize
+            
+    DIALOG NEW 0, "Stars in my eyes!?", -1, -1, 360, 250, %DS_CENTER OR %WS_POPUP OR %WS_CAPTION OR %WS_SYSMENU, 0 TO hDlg
+             
+    CONTROL ADD BUTTON, hDlg, %IDC_TOGGLE, "Start", 130, 105, 50, 20
+    CONTROL ADD LABEL , hDlg, %IDC_LABEL , ""     , 190, 105, 40, 20, %WS_CHILD OR %WS_VISIBLE OR %WS_BORDER OR %SS_CENTERIMAGE OR %SS_CENTER
+
+    DIALOG SHOW modal hDlg, call cbDialog
+    
+  END FUNCTION
+ 
+  '------------------------------------------------------------------------------
+  ' Callback procedure for main window
+  '------------------------------------------------------------------------------
+  callback FUNCTION cbDialog() as long
+    static siTimer AS LONG
+    static siValue AS LONG
+
+
+    '---Now test the message 
+    SELECT CASE cbMsg 
+      
+      CASE %WM_COMMAND
+        SELECT CASE cbctl
+          CASE %IDC_TOGGLE
+            ' Start/stop the timer...
+            IF siTimer THEN
+              DIALOG kill TIMER cbhndl, %IDC_TIMER
+              siTimer = 0
+              CONTROL SET TEXT cbhndl, %IDC_TOGGLE, "Start"
+            ELSE
+              DIALOG SET TIMER CBHNDL, %IDC_TIMER, %TIMER_DELAY
+              siTimer = 1
+              CONTROL SET TEXT cbhndl, %IDC_TOGGLE, "Stop"
+            END IF
+        END SELECT
+
+      CASE %WM_TIMER
+        '---Increment and set the test value...
+        if cbwParam = %IDC_TIMER then
+          INCR siValue
+          CONTROL SET TEXT cbhndl, %IDC_LABEL, FORMAT$(siValue)
+          dialog set color cbhndl, -1, rgb(rnd(1, 255), rnd(1, 255), rnd(1, 255))
+          dialog redraw cbhndl
+          SetRegion(cbhndl)
+        end if          
+
+      CASE %WM_LBUTTONDOWN
+           WIN_ReleaseCapture
+           dialog send cbhndl, %WM_NCLBUTTONDOWN, %HTCAPTION, %NULL
+
+      CASE %WM_DESTROY
+        '---Stop the timer if it exists...
+        IF siTimer THEN DIALOG kill TIMER cbhndl, %IDC_TIMER
+        
+    END SELECT
+         
+  END FUNCTION
+        
+
+  function SetRegion(BYVAL hDlg AS LONG)
+    LOCAL x, y, z, Rgn as long
+    local cx, cy, dt, th as single
+    local NUM_POINTS as long
+   
+    DIALOG GET SIZE hDlg TO x, y
+    DIALOG UNITS hDlg, x, y TO PIXELS x, y
+    
+    NUM_POINTS = RND(5, 20) * 2
+    DIM w(2) as single
+    dim h(2) as single
+    DIM Pointss(2, NUM_POINTS) AS LONG
+      
+    cx = x / 2
+    cy = y / 2
+
+    w(1) = x * 0.15
+    w(2) = x * 0.5
+
+    h(1) = y * 0.15
+    h(2) = y * 0.5
+    
+    dt = 2 * pi / NUM_POINTS
+    th = pi / 2
+    FOR z = 1 TO NUM_POINTS
+      Pointss(1, NUM_POINTS - z + 1) = cx + w(MOD(z, 2) + 1) * COS(th)
+      Pointss(2, NUM_POINTS - z + 1) = cy + h(mod(z, 2) + 1) * SIN(th)
+      th = th + dt
+    NEXT
+    Rgn = CreatePolygonRgn( VARPTR(Pointss(1, 1) ), NUM_POINTS, %ALTERNATE)
+    SetWindowRgn(hDlg, Rgn, %True)
+
+  END function
+  

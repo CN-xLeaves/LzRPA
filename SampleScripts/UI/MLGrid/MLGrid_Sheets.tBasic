@@ -1,0 +1,195 @@
+  #MINVERSION 1.8.9.0
+
+  '------------------------------------------------------------------------------
+  ' MLGrid Example: using sheets
+  '------------------------------------------------------------------------------
+
+  
+  Uses "UI"
+
+  Randomize
+    
+  Begin ControlID
+    %IDC_MLGRID
+    %IDC_InputBox
+
+    %MNU_FILE_EXIT
+    
+    %MNU_Data_Clear
+    %MNU_Data_Load
+    %MNU_Data_Sort_Asc
+    %MNU_Data_Sort_Desc
+    
+    %MNU_HELP_HELP
+    %MNU_HELP_ABOUT
+  End ControlID
+
+
+  '----------------------------------------------------------------------------
+  FUNCTION Main() as long
+  '----------------------------------------------------------------------------
+    Local hDlg        As Long    '---Used to store window handle
+    Local Count       As Long
+    Local hMenu       As Long
+    Local hPopup_File As Long
+    Local hPopup_Data As Long
+    Local hPopup_Help As Long
+    
+    '--- First create a top-level menu:
+    MENU NEW BAR TO hMenu
+
+    '--- Add top-level menu File and its items
+    MENU New Popup To hPopup_File
+    MENU Add Popup,  hMenu, "&File", hPopup_File, %MF_ENABLED
+    MENU Add String, hPopup_File, "&Exit"         , %MNU_FILE_EXIT  , %MF_ENABLED
+
+    '--- Add top-level menu File and its items
+    MENU New Popup To hPopup_Data
+    MENU Add Popup,  hMenu, "&Data", hPopup_Data, %MF_ENABLED
+    MENU Add String, hPopup_Data, "&Clear"        , %MNU_Data_Clear     , %MF_ENABLED
+    MENU Add String, hPopup_Data, "&Load ..."     , %MNU_Data_Load      , %MF_ENABLED
+    MENU Add String, hPopup_Data, "&Sort Asc"     , %MNU_Data_Sort_Asc  , %MF_ENABLED
+    MENU Add String, hPopup_Data, "&Sort Desc"    , %MNU_Data_Sort_Desc , %MF_ENABLED
+
+    '--- Add top-level menu Help and its items
+    MENU New Popup To hPopup_Help
+    MENU New Popup To hPopup_Help
+    MENU Add Popup,  hMenu, "&Help", hPopup_Help, %MF_ENABLED
+    MENU Add String, hPopup_Help, "&Help"         , %MNU_HELP_HELP  , %MF_ENABLED
+    MENU Add String, hPopup_Help, "-"             , 0               , 0
+    MENU Add String, hPopup_Help, "&About"        , %MNU_HELP_ABOUT , %MF_ENABLED
+
+
+        
+    '---Create a new dialog
+    Dialog New Pixels, 0, "thinBasic - MLGrid Control test", -1, -1, 640, 480, _
+                                                  %WS_DLGFRAME | _
+                                                  %DS_CENTER | _
+                                                  %WS_CAPTION | _
+                                                  %WS_SYSMENU | _
+                                                  %WS_OVERLAPPEDWINDOW  | _
+                                                  %WS_CLIPCHILDREN, _
+                                                  0 TO hDlg
+
+    '---Attach menu to dialog          
+      MENU Attach hMenu, hDlg
+    
+    '---Set window minimum size
+      Dialog Set Minsize hDlg, 408, 206
+
+
+
+    '---Show dialog
+    'Dialog Show Modal hDlg, Call cbDialog_Proc
+    Dialog Show Modeless hDlg, Call cbDialog_Proc
+    Do
+      Dialog DoEvents 0 To Count
+    Loop While Count
+
+  End Function
+
+  '------------------------------------------------------------------------------
+  ' Callback procedure for main window
+  '------------------------------------------------------------------------------
+  CallBack Function cbDialog_Proc() As Long
+  '------------------------------------------------------------------------------
+    Static hGrid          As Long '---Defined as statis so at every callback run it will be available
+    
+    local Counter         as long
+    local w1, w2, h1, h2  as long
+    local lRow, lCol      as long
+
+    select case cbmsg
+
+      case %WM_INITDIALOG
+        '---Add controls
+
+
+        'control add textbox, cbhndl, %IDC_InputBox, "", 50, 0, w1, 20, %WS_TABSTOP | %ES_READONLY
+        
+                                        '"e3/r50000/c800/b3/m1First,Second,Third", _
+                                        '"r20000/c50/b3/e1/t2/m1Sort This Column,-,Hide This Column,Unhide All,-,Copy Rows,-,Col Resize/x50,90,70,80,90,200,110", _
+        hGrid = Control Add MLGrid, CBHNDL, %IDC_MLGRID, "", _'"r35/c6/e1/t2/b2/m1Get Cell Contents/x60,80,80,80,80,5,80/m2Move Left,Move Right,-,Color Default,Color Cyan,-,Info", _
+                                        0, 0, 0, 0, %WS_VISIBLE Or %WS_CHILD Or %WS_BORDER', Call cbGrid 
+
+        MLGrid_Redim hGrid, 50000, 100, 50000, 100
+
+        MLGRID_SetColumnWidth hGrid, 1, 80, 40, 40, 40, 50, 40, 80
+
+        MLGrid_SetHeaderColor hGrid, %RGB_LAVENDER
+
+        MLGrid_SetGridColors hGrid, %WHITE, Rgb(240,240,250), %RGB_LAVENDER
+
+        MLGrid_Sheet_SetName hGrid, 1, "Base"
+        
+        MLGrid_Sheet_Add hGrid, "First sheet", 200, 10
+        MLGrid_Sheet_Select hGrid, 2
+        'MLGrid_Redim hGrid, 200, 10, 200, 10
+        MLGrid_Sheet_Add hGrid, "Second sheet"
+        MLGrid_Sheet_Add hGrid, "Third sheet"
+
+        
+        '---Fill 1:1
+        MLGRID_Put(hgrid, 1, 1, "Cell data in 1:1", %TRUE)
+
+        '---Filling 10000 cells ramdomly ...
+        For Counter = 1 To 1000'0
+          lRow = Rnd(1, 1000)
+          lCol = Rnd(1,  20)
+          MLGRID_Put(hgrid, lRow, lCol, "Sample (" & lRow & "-" & lCol & ")", %TRUE)
+        Next
+        'printl "Done!"
+
+        MLGRID_Put(hgrid, 0, 1, "Col A", %TRUE)
+        MLGRID_Put(hgrid, 1, 0, "Row 1", %TRUE)
+
+        MLGRID_Sheet_Tabs_Visible hgrid, %TRUE, 350
+        MLGRID_Sheet_Select hGrid, 4
+
+        MLGrid_Refresh hGrid
+
+        
+      case %WM_COMMAND
+        select case cbctl
+          
+          Case %MNU_FILE_EXIT
+            Dialog End CBHNDL
+
+          Case %MNU_Data_Clear
+            MLGRID_SetSelected hGrid, 1, 1
+            MLGRID_ClearGrid hGrid, %FALSE, %TRUE
+            
+          Case %MNU_Data_Load
+            msgbox cbhndl, "Command File Load"
+
+          case %MNU_Data_Sort_Asc
+            MLGrid_Sort hGrid, MLGrid_GetCurCol(hGrid), 0 
+            MLGrid_Refresh hGrid 
+
+          Case %MNU_Data_Sort_Desc
+            MLGrid_Sort hGrid, MLGrid_GetCurCol(hGrid), 1 
+            MLGrid_Refresh hGrid 
+
+          case %MNU_HELP_HELP
+            MsgBox CBHNDL, "Command Help"
+
+          Case %MNU_HELP_ABOUT
+            MsgBox CBHNDL, "Command About"
+
+        End Select
+
+      case %WM_SIZE
+        dialog get client cbhndl to w1, h1
+        Control Set Size CBHNDL, %IDC_MLGRID, w1, h1
+
+      CASE %WM_NOTIFY
+
+
+      case %WM_DESTROY
+        '---Do whatever needed just before dialog is destroyed.
+
+    end select
+  
+
+  END FUNCTION
+

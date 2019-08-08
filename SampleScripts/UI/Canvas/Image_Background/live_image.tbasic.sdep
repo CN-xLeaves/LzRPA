@@ -1,0 +1,18 @@
+[Info]
+Description=Dependancy file for thinBundle automatic dependancy discover
+ScriptFile=C:\thinBasic\SampleScripts\UI\Canvas\Image_Background\live_image.tbasic
+DateTime=06-03-2012 11:40:21
+Name=
+ObfuscateMainScript=
+CompressAllFiles=
+AskBeforeExtract=
+DeleteAfterRun=
+ActivateVerboseMode=
+ActivateIsolation=
+[Modules]
+1=C:\thinBasic\Lib\thinBasic_UI\thinBasic_UI.DLL
+Items=1
+[Includes]
+Items=0
+[Files]
+Items=0

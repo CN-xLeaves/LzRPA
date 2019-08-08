@@ -1,0 +1,87 @@
+'
+' The triangle rotation preserving axes
+' Petr Schreiber for Zak, started on 01-18-2009
+'
+
+Uses "TBGL"
+
+' -- Scene-Entity constants
+BEGIN CONST
+  ' -- Scene IDs
+  %sScene  = 1
+ 
+  ' -- Entity IDs 
+  %eCamera = 1
+  %eTriangle       
+END CONST 
+
+' -- Display list constants
+BEGIN CONST
+  %lTriangle  = 1
+END CONST 
+
+
+FUNCTION Main()
+  LOCAL hWnd As DWORD
+  LOCAL FrameRate AS DOUBLE
+  
+  ' -- Create and show window
+  hWnd = TBGL_CreateWindowEx("TBGL script - press ESC to quit", 640, 480, 32, %TBGL_WS_WINDOWED or %TBGL_WS_CLOSEBOX) 
+  TBGL_ShowWindow 
+
+  ' -- Create scene
+  TBGL_SceneCreate(%sScene)
+
+  ' -- Create basic entities
+  ' -- Create camera to look from 0, 0, 5 to 0, 0, 0 
+  TBGL_EntityCreateCamera(%sScene, %eCamera)
+    TBGL_EntitySetPos(%sScene, %eCamera, 0, 0, 5)
+    TBGL_EntitySetTargetPos(%sScene, %eCamera, 0, 0, 0)  
+    
+  ' -- Cache triangle to display list
+  TBGL_NewList %lTriangle
+    tbgl_BeginPoly %GL_TRIANGLES
+      tbgl_Color 255,   0,   0    ' -- Red color
+      tbgl_Vertex -1, -1,  0
+      
+      tbgl_Color   0, 255,   0    ' -- Green color
+      tbgl_Vertex  1, -1,  0
+              
+      tbgl_Color   0,   0, 255    ' -- Blue color
+      tbgl_Vertex  0,  1,  0        
+    tbgl_EndPoly  
+  TBGL_EndList    
+
+  ' -- Create something to look at
+  TBGL_EntityCreateDLSlot(%sScene, %eTriangle, 0, %lTriangle)
+    TBGL_EntitySetPos(%sScene, %eTriangle, 0, 0, 0)
+
+  ' -- Resets status of all keys 
+  TBGL_ResetKeyState() 
+
+  ' -- Main loop
+  While TBGL_IsWindow(hWnd) 
+    FrameRate = TBGL_GetFrameRate
+
+    TBGL_ClearFrame 
+
+      TBGL_SceneRender(%sScene)
+      
+    TBGL_DrawFrame 
+
+    ' -- ESCAPE key to exit application
+    If TBGL_GetWindowKeyState(hWnd, %VK_ESCAPE) Then Exit While 
+
+    ' -- Entity turn has parameters for rotation in x, y and z axis
+    If TBGL_GetWindowKeyState(hWnd, %vk_UP)    then TBGL_EntityTurn(%sScene, %eTriangle, -1, 0, 0)
+    If TBGL_GetWindowKeyState(hWnd, %vk_Down)  then TBGL_EntityTurn(%sScene, %eTriangle,  1, 0, 0)
+    If TBGL_GetWindowKeyState(hWnd, %vk_right) then TBGL_EntityTurn(%sScene, %eTriangle,  0, 1, 0)
+    If TBGL_GetWindowKeyState(hWnd, %vk_left)  then TBGL_EntityTurn(%sScene, %eTriangle,  0,-1, 0)
+    If TBGL_GetWindowKeyState(hWnd, %vk_pgdn)  then TBGL_EntityTurn(%sScene, %eTriangle,  0, 0, 1)
+    If TBGL_GetWindowKeyState(hWnd, %vk_pgup)  then TBGL_EntityTurn(%sScene, %eTriangle,  0, 0,-1)
+
+  Wend 
+
+  TBGL_DestroyWindow
+END FUNCTION
+  

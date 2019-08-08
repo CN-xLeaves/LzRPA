@@ -1,0 +1,4 @@
+uses "UI"
+
+msgbox 0, Dialog_BrowseForFolder(0, "Please, select a path|This is the window title", app_path, %FALSE)
+

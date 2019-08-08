@@ -1,0 +1,544 @@
+
+'-----------------------------------------
+'DATA PROCESSING FOR OXYGEN MANUAL
+'=========================================
+
+Uses "oxygen"
+Dim src As String
+src="
+
+
+  #basic
+
+  '-------
+  'INITIAL
+  '=======
+
+  source=getfile("o2keyw.bas")
+
+  include "ManualCreate.inc"
+
+
+  dim as recordlist list[1000]
+  dim as sys index[2000]
+  '
+  dim as recordlist grlist[300]
+  '
+  '
+  '-----------------------
+  'INCLUDE SORTING UTILITY
+  '=======================
+  '
+  def StrideShift 3 ' stride of 8 (sizeof recordlist)
+  #include "MergeSort.inc"
+  '
+  i=1 : j=1 : amount=0
+  '
+  '
+  '---------------------------
+  'CREATE LIST OF ALL KEYWORDS
+  '===========================
+  '
+  makelist source, list, amount
+  totamount=amount
+  
+  '
+  '
+  '----------------------------------------
+  'CREATE REDUCED LIST FOR GROUPED KEYWORDS
+  '========================================
+  '
+  gramount=0
+  makegrlist source, grlist, gramount
+ 
+  '
+  '-------------------
+  'CREATE SORTED INDEX
+  '===================
+  '
+  for i=1 to amount : index[i]=i : next
+  sort & index, & amount, & list
+  '
+  '
+  '
+/*
+  '------------------------
+  'SAVE SORTED LIST TO FILE
+  '========================
+  '
+  prbuf="Sorted Keyword List:" cr cr
+  prof=len prbuf
+  '
+  for i=1 to amount
+    j=index[i]
+    pr list[j].s cr ' tab list[j].i cr ' tab index[j] cr
+  next
+  '
+  putfile "ManDataOut.txt", left(prbuf,prof)
+  '
+  '
+*/
+
+
+/*
+  '------------------------------
+  'STEP THROUGH UNINDEXED RECORDS
+  '==============================
+  '
+  a=1 : b=1 : c=1
+  '
+  for i=1 to 3
+  'getsdata(source, a, b)
+  n=getnames source, a
+  getrec source, a, c
+  record=mid source, a, c-a
+  'print "NAMES: " cr n cr "RECORD:" cr record
+  'f=getfield(record,"action")
+  f=getfield(record,"example")
+  print n cr cr f
+  a=c 'next record
+  next
+*/
+
+
+
+
+  '=======
+  'OUTPUTS
+  '=======
+  '=======
+
+
+
+
+  outdir="ManualHTML\" 'inputs directory
+
+
+
+  '========================
+  'GENERATE REFERENCE PAGES
+  '========================
+
+
+
+
+  head1=quote
+  !!!
+  <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+  <html>
+
+  <head>
+  !!!
+
+
+
+  head2=quote
+  !!!
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="" />
+   <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+   <meta http-equiv="Content-Style-Type" content="text/css" />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+  </head>
+
+
+  <body style="margin: 0px 0px 0px 0px; background: #eeeefe;">
+
+  !!!
+
+
+  tail=quote
+  !!!
+  <!-- FOOTER_START -->
+  <P>&nbsp;</P>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="2" bgcolor="#F0F0F0">
+  <tr>
+    <td align="left"><Font face="Verdana,Arial" size="1" color="#003366">Copyright &#169; Charles Pegge, 2010</FONT>
+    </td>
+    <td align="right"><Font face="Verdana,Arial" size="1" color="#003366">Support Web Site: <a href="http://www.thinbasic.com" target=_blank>http://www.thinbasic.com</a></FONT>
+    </td>
+  </tr>
+  </table>
+  <!-- FOOTER_END -->
+
+  </body>
+  </html>
+  !!!
+
+
+
+  a=0 : b=0 : s="" : m="" : n=""
+  dim as string action,use,example,result,remarks,related,group,see,name,incfile
+
+  def varget %1=getfield record, "%1"
+
+
+  '=====================
+  'GROUP REFERENCE PAGES
+  '=====================
+
+
+  for i=1 to gramount
+    a=grlist[i].i
+    getrec source, a, b
+    record=mid source, a, b-a
+    '
+    varget groupref
+    if groupref then
+      '
+      prbuf="" : prof=0 'clear ready for next page
+      '
+      n=rtrim(groupref)
+      '
+      varget action
+      varget use
+      varget example
+      varget result
+      varget remarks
+      varget related
+      reftag related
+      varget group
+      varget see
+      reftag see
+      varget name
+      varget incfile
+      '
+      if name then m=name else m=n 'override getname (Data expression)
+      '
+      pr     "<table cellspacing=10% cellpadding=10% >" cr //border=4% rules=rows
+      prih   `<font size="4" color=#0000ff ><b>` m `</b></font>`, ` `
+      '
+      pr "<tr><td></td><td><font color=#2222ff ><b>" cr
+      grprintnames source,a
+      pr "</b></font></td></tr>" cr
+      '
+      if incfile then
+        s=rtrim incfile
+        pr getfile s
+      end if
+      '
+      prif   "ACTION:",  action
+      prif   "USE:",     use
+      prifc  "EXAMPLE:", example
+      prifc  "RESULT:",  result
+      prif   "REMARKS:", remarks
+      prif   "RELATED:", related
+      prif   "SEE:", see
+      prif   "GROUP:",   group
+      pr     cr cr cr
+      pr     "</table>" cr "<br><br><br>" cr cr
+      '
+      n=filenameHTM n
+      '
+      putfile outdir + n,
+      head1 +  "<title>" + name + "</title>" +
+      head2 +
+      left(prbuf,prof) +
+      tail
+      '
+      'ADD FOR INDEX FILE
+      '
+      totamount+=1
+      list[totamount].s=rtrim(group)
+      list[totamount].i=grlist[i].i
+    end if
+  next
+
+  '==========================
+  'INDIVIDUAL REFERENCE PAGES
+  '==========================
+
+  for i=1 to amount
+    '
+    j=index[i]
+    a=list[j].i
+    getrec source, a, b
+    record=mid source, a, b-a
+    '
+    varget groupref
+    if not groupref then
+      '
+      prbuf="" : prof=0 'clear ready for next page
+      '
+      n=getname record, 1
+      '
+      varget action
+      varget use
+      varget example
+      varget result
+      varget remarks
+      varget related
+      reftag related
+      varget group
+      varget see
+      reftag see
+      varget name
+      '
+      if name then m=name else m=n 'override getname (Data expression)
+      '
+      pr     "<table cellspacing=10% cellpadding=10% >" cr //border=4% rules=rows
+      prih   `<font size="4" color=#0000ff ><b>` m `</b></font>`, ` `
+      prif   "ACTION:",  action
+      prif   "USE:",     use
+      prifc  "EXAMPLE:", example
+      prifc  "RESULT:",  result
+      prif   "REMARKS:", remarks
+      prif   "RELATED:", related
+      prif   "SEE:", see
+      prif   "GROUP:",   group
+      pr     cr cr cr
+      pr     "</table>" cr "<br><br><br>" cr cr
+      '
+      n=filenameHTM n
+      '
+      putfile outdir + n,
+      head1 +  "<title>" + name + "</title>" +
+      head2 + left(prbuf,prof) + tail
+    end if
+    '
+  next
+  '
+
+
+
+  '
+  'putfile outdir + "thinBasic_Oxygen.htm", head + left(prbuf,prof) + tail
+
+
+
+  a=0 : b=0
+  dim as string groupref,ent
+  '
+
+
+  '===================================
+  'GENERATE Table of Contents.hhc FILE
+  '===================================
+
+
+
+  ContentsHead=quote
+  !!!
+  <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+  <HTML>
+  <HEAD>
+  <meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+  <!-- Sitemap 1.0 -->
+  </HEAD><BODY>
+  <UL>
+  !!!
+
+
+  ContentsEntry=quote
+  !!!
+  <LI><OBJECT type="text/sitemap">
+  <param name="Name" value="%1">
+  <param name="Local" value="%2">
+  </OBJECT>
+  !!!
+
+
+  ContentsFoot=quote
+  !!!
+  </UL>
+  </BODY>
+  </HTML>
+  !!!
+
+
+  prbuf=ContentsHead : prof=len(prbuf)
+  '
+  pr InclFile "About", ContentsEntry
+  pr InclFile "Introduction", ContentsEntry
+  '
+  for i=1 to gramount
+    a=grlist[i].i
+    getrec source, a, b
+    record=mid source, a, b-a
+    '
+    groupref=getFieldWord record,"groupref"
+    '
+    if groupref then
+      '
+      n=filenameHTM groupref
+      group=getFieldWord record,"group"
+      ent=ContentsEntry
+      ent=replace(ent,"%1",group)
+      ent=replace(ent,"%2",n)
+      pr ent cr
+      '
+      n+=cr
+      a=instr(filelist,n)
+      if a=0 then
+        filelist+=n
+      end if
+      '
+    end if
+    '
+  next
+  ' pr "<UL>" cr sindex "</UL>" cr 'add index list to contentents
+  pr ContentsFoot
+  putfile outdir "Contents.hhc",left(prbuf,prof)
+
+
+
+
+
+  '=======================
+  'GENERATE Index.hhk FILE
+  '=======================
+
+
+  IndexHead=quote
+  !!!
+  <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+  <HTML>
+  <HEAD>
+  <meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+  <!-- Sitemap 1.0 -->
+  </HEAD>
+  <BODY>
+  <UL>
+  !!!
+
+  IndexEntry=quote
+  !!!
+  <LI><OBJECT type="text/sitemap">
+  <param name="Name" value="%1">
+  <param name="Local" value="%2">
+  </OBJECT>
+  !!!
+
+
+  IndexFoot=quote
+  !!!
+  </UL>
+  </BODY>
+  </HTML>
+  !!!
+
+
+  '
+  record=""
+  name=""
+  group=""
+  groupref=""
+  s=""
+  prbuf="" : prof=0
+  '
+  '
+  '------------------------------------------
+  'CREATE SORTED INDEX, INCLUDING GROUP FILES
+  '------------------------------------------
+  '
+  for i=1 to totamount : index[i]=i : next
+  sort & index, & totamount, & list
+  '
+  for i=1 to totamount
+    '
+    j=index[i]
+    a=list[j].i
+    getrec source, a, b
+    record=mid source, a, b-a
+    name=getname record,1
+    '
+    group=getFieldWord record,"group"
+    groupref=getFieldWord record,"groupref"
+    '
+    '
+    if list[j].s=group then
+      s=group 'added in grouprefs
+    elseif len(groupref) then
+      s=name + " ("+group+")"
+    else
+      s=name
+    end if
+    '
+    if groupref then
+      name=groupref
+    end if
+    '
+    n=filenameHTM name
+    '
+    ent=IndexEntry
+    ent=replace(ent,"%1",s)
+    ent=replace(ent,"%2",n)
+    pr ent cr
+    '
+    n+=cr
+    if not groupref then
+      a=instr(filelist,n)
+      if a=0 then
+        filelist+=n
+      end if
+    end if
+
+  next
+  '
+  sindex=left prbuf,prof
+  putfile outdir "Index.hhk", IndexHead sindex IndexFoot
+  '
+
+
+
+  '=======================================
+  'GENERATE thinbasic_oxygen_help.HHP FILE 
+  '=======================================
+
+
+
+  listname="thinbasic_oxygen_help.hhp"
+
+  ListHead=quote
+  !!!
+  Auto Index=Yes
+  Compatibility=1.1 or later
+  Compiled file=thinbasic_oxygen_help.chm
+  Contents file=Contents.hhc
+  Default topic=About.hha
+  Display compile progress=No
+  Full-text search=Yes
+  Index file=Index.hhk
+  Language=0x809 English (United Kingdom)
+  Title=Oxygen Helpfile
+  
+  [FILES]
+  !!!
+  
+  
+  ListFoot=quote
+  !!!
+  [INFOTYPES]
+  !!!
+
+
+
+  putfile outdir listname, listhead+filelist+listfoot 
+
+
+
+
+
+
+  '====
+  'DONE
+  '====
+
+
+  '
+  print "Okay!" cr "Outputs in: " outdir
+
+
+
+
+"
+'msgbox 0,O2_prep src+o2_error
+O2_asmo src
+if Len(O2_ERROR) Then
+  msgbox 0,o2_error
+else
+  o2_exec
+end if
+

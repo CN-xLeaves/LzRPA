@@ -1,0 +1,117 @@
+  '=============================================================================
+  '=                                2D Sprites                                 =
+  '=                        sprite following example                           =
+  '=                                                                           =
+  '=                          Michael Hartlef, 2009                            =
+  '=============================================================================
+
+
+Uses "TBGL"
+
+FUNCTION Main()
+  local hWnd AS DWORD
+  local FrameRate AS DOUBLE
+  local dirTextures       as string = "Textures\"
+  local pSprite1, pSprite2 as long
+  local width, height as long
+  local targetAngle, targetDist, sourceangle,anglediff as single
+    
+  ' -- Create and show window
+  hWnd = TBGL_CreateWindowEx("TBGL 2D Sprite sample (following) - press ESC to quit, arrow keys to move the target sprite", 800, 600, 32, %TBGL_WS_WINDOWED or %TBGL_WS_CLOSEBOX OR %TBGL_WS_DONTSIZE)
+  TBGL_ShowWindow 
+
+  TBGL_GetWindowClient( hWnd, width, height )
+  
+  ' -- Load the sprites
+  pSprite1  = TBGL_SpriteLoad( APP_SOURCEPATH + dirTextures + "ship2.tga")
+  pSprite2  = TBGL_SpriteLoad( APP_SOURCEPATH + dirTextures + "ship3.tga")
+  
+  ' -- Set some render states
+  tbgl_uselighting %FALSE
+  tbgl_useblend %TRUE
+  TBGL_BlendFunc(%GL_SRC_ALPHA, %GL_ONE_MINUS_SRC_ALPHA)
+
+  TBGL_UseDepth %FALSE
+  tbgl_UseTexture %TRUE
+  TBGL_USEVSYNC %TRUE
+
+  tbgl_UseAlphaTest %TRUE
+  tbgl_AlphaFunc %tbGL_GREATER, 0.1
+
+  ' -- Resets status of all keys 
+  TBGL_ResetKeyState()
+  ' -- Set the TBGL color to pure white, so colors of sprites are the same like in the texture
+  tbgl_color 255,255,255
+  ' -- Set the background to a dark blue
+  tbgl_backColor 0, 0 ,80
+      
+  ' -- Now set the sprites position and the scale
+  TBGL_SpriteSetPos(pSprite1,width/4,height/4)
+  TBGL_SpriteSetPos(pSprite2,width/2,height/2)
+  tbgl_spriteSetScale(pSprite1,0.5)
+  tbgl_spriteSetScale(pSprite2,tbgl_spriteGetScale(pSprite1))
+  
+  ' -- Set an event to sprite2 to control the maximum speed of sprite2
+  TBGL_SpriteSetEvent(pSprite2,%TBGL_OnAfterUpdate,"Sprite2_OnAfterUpdate")
+
+  ' -- Set the render matrix to the window clients resolution
+  TBGL_Rendermatrix2D(0,height,width,0)
+  
+  ' -- Set the friction of the following sprite2
+  TBGL_SpriteSetFriction(pSprite2,0.2)
+
+  ' -- Get the framerate once so the first loop has a valid framerate
+  FrameRate = TBGL_GetFrameRate
+  ' -- Main loop
+
+  While TBGL_IsWindow(hWnd) 
+    ' -- read the framerate to be used in time related movements
+    FrameRate = TBGL_GetFrameRate
+    
+    ' -- Clear the background
+    TBGL_ClearFrame
+    
+    ' -- Draw all sprites
+    TBGL_SpriteSDrawALl 
+   
+    ' -- Flip the buffer so you see something on the screen
+    TBGL_DrawFrame 
+
+    ' -- Determine which key was pressed and then do some action
+    
+    If TBGL_GetWindowKeyState(hWnd, %VK_ESCAPE) Then Exit While 
+    If TBGL_GetWindowKeyState(hWnd, %VK_UP)    Then TBGL_SpriteSetPos(  pSprite1,0.0,-660.0/framerate,%TRUE)
+    If TBGL_GetWindowKeyState(hWnd, %VK_DOWN)  Then TBGL_SpriteSetPos(  pSprite1,0.0,660.0/framerate,%TRUE)
+    If TBGL_GetWindowKeyState(hWnd, %VK_LEFT)  Then TBGL_SpriteSetPos(  pSprite1,-660.0/framerate,0.0,%TRUE)
+    If TBGL_GetWindowKeyState(hWnd, %VK_RIGHT) Then TBGL_SpriteSetPos(  pSprite1,660.0/framerate,0.0,%TRUE)
+    
+    ' -- Now get the angle and the distance to the target sprite
+    targetAngle = tbgl_spriteGetTargetAngle(pSprite2,pSprite1)
+    targetDist  = tbgl_spritegettargetdist(pSprite2,pSprite1)
+    sourceangle = tbgl_spriteGetAngle(pSprite2)
+    anglediff = tbgl_spriteGetTargetAngle(pSprite2,pSprite1, %TRUE)
+    
+    ' -- Turn the source sprite towards the target
+    TBGL_SpriteSetAngle(pSprite2,anglediff/framerate*5, %TRUE)
+    
+    ' -- Add some speed to the source sprite so it moves towards the target
+    If targetdist > 100 Then TBGL_SpriteAddSpeed(pSprite2, targetdist/4/framerate)
+    
+    ' -- Finally update mostly the floowing sprites position and speed values so it moves towards the target
+    TBGL_SpritesUpdateAll(60/framerate)
+  Wend 
+
+  ' -- The final step, destroy the TBGL window
+  TBGL_DestroyWindow
+END FUNCTION 
+
+'**************************************************
+sub Sprite2_OnAfterUpdate()
+'**************************************************
+    local speed as single
+    ' -- Read the speed factor of a the sprite
+    speed = TBGL_SpriteGetSpeed(TBGL_MeSprite)
+    ' -- If the speed is greater than 10, set it to 10
+    if speed > 10 then TBGL_SpriteSetSpeed(TBGL_MeSprite,10)
+end sub
+

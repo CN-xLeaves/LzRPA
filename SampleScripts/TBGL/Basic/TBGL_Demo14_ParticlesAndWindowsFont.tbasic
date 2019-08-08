@@ -1,0 +1,207 @@
+  '=============================================================================
+  '=                        Particles and windows fonts                        =
+  '=                                                                           =
+  '=                           Petr Schreiber, 2007                            =
+  '=============================================================================
+
+  Uses "TBGL"
+
+  Dim hWnd As Dword
+  dim i as long
+  dim EmitterX,EmitterY,EmitterZ,EmitterPulse as single
+
+
+  %PARTICLE     = 1
+  %EMITTER      = 2
+  %EFFECT       = 3
+  %MAXPARTICLES = 32                        ' Reduce this number to increase speed, optimal number for nice effect is 64
+  
+  type tParticles
+    X     as double
+    Y     as double
+    Z     as double
+    pSize as double
+    Speed as double
+    Fade  as double
+    R     as double
+    G     as double
+    B     as double    
+  end type
+  Dim Particle(%MAXPARTICLES) as tParticles    ' Particle data...
+
+  local x,y,b as long
+ 
+  tbgl_GetDesktopInfo x, y, b
+
+  If MsgBox (0, "Would you like to see the demo full-screen ( "+FORMAT$(x)+"x"+FORMAT$(y)+" ) ?", %MB_ICONQUESTION or %MB_YESNO, "Question") = %IDYES then
+    ' It's wise ( when no problems with performance ) to switch to actual resolution
+    ' In case of crash it won't make users desktop "zoomed"
+    hWnd = TBGL_CreateWindowex( "Particle and Windows font demo - press ESC to quit", x, y, b, %TBGL_WS_FULLSCREEN)   ' Creates OpenGL window, it returns handle
+  else
+    hWnd = TBGL_CreateWindowex( "Particle and Windows font demo - press ESC to quit", 640, 480, 32, %TBGL_WS_WINDOWED)   ' Creates OpenGL window, it returns handle
+  end if  
+  TBGL_ShowWindow                       ' Shows the window
+
+  dim hFont as dword = tbgl_FontHandle("Arial Black",12)  ' This creates the font
+  TBGL_BuildFont hFont                  ' This binds it as OpenGL object
+
+  TBGL_LoadTexture APP_SourcePath+"Textures\Cloud.bmp",1,%TBGL_TEX_MIPMAP  ' This will load "cloud" texture
+  TBGL_UseTexturing %TRUE 
+  TBGL_BindTexture 1                    ' We will use texture 1 in all parts of program
+
+  TBGL_BlendFunc %GL_SRC_ALPHA , %GL_ONE' This kind of blending is affected by TBGL_ColorAlpha
+  TBGL_UseBlend %TRUE
+
+  TBGL_UseDepth %FALSE                  ' No depth test is needed, it will produce nicer effects without struggling
+                                        ' with the position of particle
+
+  InitParticles()                       ' First we will initialize all particles
+
+  TBGL_NewList %PARTICLE                ' This will save a lot of of performance
+    ParticleCode()
+  TBGL_EndList
+
+  TBGL_NewList %EMITTER                 ' ... and this very little :)
+    TBGL_Sphere 0.1
+  TBGL_EndList
+  global FrameRate as double
+  TBGL_ResetKeyState()          ' Resets key status before keypress checking
+
+  WHILE tbgl_IsWindow(hWnd)        
+    
+    '---Script will run on different PCs so we must assure
+    '---constant speed of movement by scaling movement relative to framerate
+    FrameRate = tbgl_GetFrameRate              
+
+    TBGL_ClearFrame                     ' Prepares clear frame
+    TBGL_Camera 1,3,3,0,1,0             ' Setups camera - fixed position
+
+    TBGL_Rotate GetTickCount/100,1,1,1
+    
+    EmitterX      = sin(GetTickCount/1000)/2
+    EmitterZ      = cos(GetTickCount/2500)/2
+    EmitterY      = cos(GetTickCount/3000)/2    
+    EmitterPulse  = 0.75+cos(GetTickCount/500)
+
+    TBGL_DeleteList %EFFECT    
+    TBGL_NewList %EFFECT    
+      TBGL_PushMatrix    
+        TBGL_Translate EmitterX,EmitterY,EmitterZ
+        TBGL_Color EmitterX*255,EmitterY*255,EmitterZ*255
+        TBGL_Scale EmitterPulse,EmitterPulse,EmitterPulse
+        TBGL_CallList %EMITTER
+      TBGL_PopMatrix    
+
+      RenderParticles
+    TBGL_EndList    
+
+    ' The next two smoke-threads are just clone of the first
+    for i = 1 to 2
+      TBGL_Rotate GetTickCount/100,1,1,1    
+      TBGL_CallList %EFFECT      
+    next  
+
+    ' We will print some message on the position of the first emitter
+    TBGL_PushMatrix    
+      TBGL_Translate EmitterX,EmitterY,EmitterZ
+
+      TBGL_UseTexturing %FALSE
+      TBGL_ColorAlpha 255,255,255,255
+
+      TBGL_PrintFont "http://www.thinbasic.com", 0, 0, 0
+      TBGL_UseTexturing %TRUE    
+    TBGL_PopMatrix  
+    
+    TBGL_DrawFrame                      ' Swaps the buffers - displays rendered image
+
+    if tbgl_GetwindowKeyState( hwnd, %VK_ESCAPE) then EXIT WHILE
+    
+  WEND
+    
+    
+  TBGL_KillFont                         ' We need to kill font created using TBGL_BuildFont
+  TBGL_DestroyWindow                    ' Closes OpenGL window
+
+  ' This function serves to initialize all particles
+  sub InitParticles( ) 
+
+    For i = 1 to %MAXPARTICLES
+      BornParticle(i)
+    next  
+    
+  end sub
+
+  ' This will prepare one particle
+  sub BornParticle( index as long ) 
+
+    
+    Particle(index).x    = EmitterX
+    Particle(index).y    = EmitterY
+    Particle(index).z    = EmitterZ
+    Particle(index).r    = EmitterX*255
+    Particle(index).g    = EmitterY*255
+    Particle(index).b    = EmitterZ*255
+    
+    Particle(index).psize = rndf(0.125, 0.25)
+    Particle(index).Speed= rndf(1, 2)
+    
+  end sub
+
+  ' This is the core of simple particle module
+  ' ... particles will change position and size
+
+  sub RenderParticles ()
+
+    for i = 1 to %MAXPARTICLES
+
+      Particle(i).psize *= 1.02    
+      Particle(i).x    += 0.01 * Particle(i).y
+      Particle(i).y     = Particle(i).y + ( Particle(i).speed / FrameRate )    
+      if Particle(i).y > 2 then BornParticle(i)    
+      
+      DrawParticle(i) 
+
+    next  
+    
+  end sub
+
+  ' Renders single particle
+  sub DrawParticle ( index as long) 
+  
+    TBGL_PushMatrix
+    
+      TBGL_Translate Particle(index).x, Particle(index).y, Particle(index).z
+      TBGL_Rotate Particle(index).Speed * GetTickCount/100,0,0,1        ' Slow rotation of the "smokie" looks good
+      TBGL_Scale Particle(index).pSize,Particle(index).pSize,1
+      TBGL_ColorAlpha Particle(index).r,Particle(index).g,Particle(index).b,255-(Particle(index).y/2)*255' The particle will fade out
+    
+      TBGL_CallList %PARTICLE
+    
+    TBGL_PopMatrix
+    
+  end sub
+
+  sub ParticleCode() 
+
+    TBGL_BeginPoly %GL_Quads
+    
+      TBGL_TexCoord2D 0,1 
+      TBGL_Vertex -1,1,0
+      
+      TBGL_TexCoord2D 1,1 
+      TBGL_Vertex  1,1,0
+
+      TBGL_TexCoord2D 1,0 
+      TBGL_Vertex  1,-1,0
+
+      TBGL_TexCoord2D 0,0 
+      TBGL_Vertex -1,-1,0
+      
+    TBGL_EndPoly
+
+  end sub
+
+
+
+
+

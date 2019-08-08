@@ -1,0 +1,86 @@
+  Uses "UI"
+  
+  Global hWnd As Long
+  hWnd = Canvas_Window "    " & _ 
+    "Monte Carlo Calculation of Volumes of ""N-Balls"" in size 2 ""N-Cubes"" in Dimensions 1-10;" & _ 
+    "    ESC To Exit", 0, 0, 1018, 736
+  ' x goes from 0-1017; y from 0-735
+  ' dCromley, Dec, 2011
+  Const ymax As Number = 6 ' for y scaling
+  Const maxdim As Number = 10 ' max dimensions
+  Canvas_Attach hWnd, 0, %TRUE
+  Canvas_Scale(0,ymax, 1017,0)
+  Canvas_Clear Rgb(255,255,255)
+  Global aIns(maxdim), aIters(maxdim) As Long, aVol(maxdim) As Single
+  Global canvasx, niterations As Long ' ix is screenx
+ 
+Sub Main()
+' http://www.americanscientist.org/issues/pub/an-adventure-in-the-nth-dimension/
+  Local i1, i2, idim As Long, rsqr, vol As Single
+  Randomize
+  ygrid()
+  For canvasx = 1 To 1017
+    niterations = canvasx^2 ' 1 to 1000000 or so
+    
+    For idim = 1 To maxdim ' for each of 10 dimensions
+      vol = GetVol(idim) ' volume is ratio of ins / ins+outs
+      vol *= 2^idim ' adjust for size 2 sides
+      aVol(idim) = vol ' save for printing
+      Canvas_SetPixel(canvasx, vol)      
+    Next    
+                   
+    If canvasx > 100 And Mod(canvasx, 10) = 0 Then zPrint() ' every once in awhile
+    If GetAsyncKeyState(%VK_ESCAPE) Then Exit Sub
+  Next
+           
+  Beep
+  Canvas_WaitKey
+  
+End Sub                        
+ 
+Function GetVol(nDim As Long) As Single
+' -- get random points in a n-dimension box 
+'    return vol, the fraction of points within ball
+  Local Ins, iIter, iDim As Long
+  Local rsqr As Single
+  
+  For iIter = aIters(ndim)+1 To nIterations
+    Incr aIters(ndim) 
+    rsqr = 0
+    For iDim = 1 To nDim ' add up the iDim sides^2
+      rsqr += (Rnd-.5)^2 ' -.5 to +.5 squared
+    Next           
+    ' don't take sqrroot, just comare with .25
+    If rSqr < .25 Then Incr aIns(ndim) ' if within ball, incr Ins
+  Next                             
+  Function = aIns(ndim)/aIters(ndim) ' volume is fraction of Ins / Ins+Outs
+  
+End Function
+ 
+Sub zPrint() ' labels and values
+  Local idim, ix As Long
+  
+  For idim = 1 To maxdim     
+    ix = canvasx - idim*10
+    If Mod(ix, 100) = 0 Then
+      Canvas_SetPos(canvasx, aVol(idim))
+      Canvas_Print idim ' label
+    End If
+     
+    Canvas_SetPos(80+idim*80, .8)
+    Canvas_Print idim & ": " & Format$(aVol(idim), "0.000")
+  Next         
+              
+  Canvas_SetPos(50, .8)
+  Canvas_Print "Iters=" & niterations ' # iterations
+  Canvas_Redraw
+End Sub
+ 
+Sub ygrid()
+  Local iy As Long
+  For iy = 0 To ymax-1
+    Canvas_SetPos(0, iy+.1)
+    Canvas_Print Format$(iy, "0.00")
+    Canvas_Line((0, iy), (1017, iy), Rgb(192,192,192))
+  Next
+End Sub

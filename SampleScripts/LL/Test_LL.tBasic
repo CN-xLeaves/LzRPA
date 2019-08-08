@@ -1,0 +1,42 @@
+uses "LL", "Console"
+
+function Main()
+
+  local llRoot, llItem  as dword
+  local Counter         as long
+  local message         as string
+
+  ' -- We create linked list root here, basically a first node
+  llRoot = ll_add(0, "Root", "This is root item")
+
+  ' -- We add item "A" after root node
+  llItem = ll_add(llRoot, "A", "This is A item") 
+
+  ' -- We add item "B" 
+  ll_add(llRoot, "B", "This is B item")
+  
+  ' -- We add item "C"
+  ll_add(llRoot, "C", "This is C item") 
+  
+  ' -- Now we want to change data of A
+  ' -- So we first find the A node, because we know its name
+  llItem = ll_FindByName(llRoot, "A")
+
+  ' -- Now we append some text to "A" data we have still pointer to
+  ll_Update(llItem, ll_Data(llItem)+", just before B")
+  
+  ' -- Now we will update whole data of "C", via another technique
+  ll_UpdateByName(llRoot, "C", "This is C after B")
+  
+  ' -- Now we can list data of all nodes
+  dim i as long
+  for i = 1 to ll_Count(llRoot)
+    printl ll_Data( ll_GetByNumber(llRoot, i) )
+  next  
+
+  ' -- Now we free all data
+  ll_Free(llRoot)  
+  
+  waitkey
+    
+end function

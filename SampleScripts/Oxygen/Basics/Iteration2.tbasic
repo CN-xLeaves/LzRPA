@@ -1,0 +1,32 @@
+'ITERATION 2
+
+'WITH STRING BUFFER
+
+
+uses "oxygen"
+dim src as string
+
+src="
+  basic
+  cr=chr(13)+chr(10)
+  s="String Buffer"+cr
+  j=len(s)
+  s+=space(500)
+  t=""
+  for i=1 to 10
+    t=str(i)+cr
+    mid (s,j)=t
+    j+=len(t)
+  next
+  dec j
+  print left(s,j)
+"
+
+o2_asmo src
+if len(o2_error) then
+  msgbox 0,o2_error
+end if
+o2_exec
+
+
+

@@ -1,0 +1,60 @@
+' Service sample
+uses "OS", "Console"
+
+function Main()
+  dim lRet as long
+  dim lStatus as long
+  dim lStartType as long
+  dim sComputerName as string
+  dim sServiceName as string
+
+  printl "Testing services, please wait"
+  printl
+  
+  ' Choose a computer in the neighbourhood
+  sComputerName = ""
+
+  ' Choose a Microsoft spyware service
+  sServiceName = "Messenger"
+
+  ' Get the service start type and show it
+  lStartType = OS_ServiceGetStartType(sComputerName, sServiceName)
+  printl "Computer: " & ucase$(sComputerName) & $CRLF & "Current Service " & sServiceName & " Start Type: " & OS_ServiceStartTypeDescription(lStartType)
+
+  ' If the service is disabled change it to start on demand
+  lRet = OS_ServiceSetStartType(sComputerName, sServiceName, %SERVICE_DEMAND_START)
+  printl "Computer: " & ucase$(sComputerName) & $CRLF & "Start Type of Service " & sServiceName & " " & WasOrWasNot(lRet) & " changed!"
+
+  ' Get the service status and show it
+  lStatus = OS_ServiceQuery(sComputerName, sServiceName)           
+  printl "Computer: " & ucase$(sComputerName) & $CRLF & "Status of " & ucase$(sServiceName) & " Service: " & OS_ServiceStatusDescription(lStatus)
+
+  ' Start the service
+  lStatus = OS_ServiceStart(sComputerName, sServiceName)           
+  printl "Computer: " & ucase$(sComputerName) & $CRLF & "Service " & sServiceName & " " & WasOrWasNot(lStatus) & " started!"
+
+  ' Get the service status and show it
+  lStatus = OS_ServiceQuery(sComputerName, sServiceName)           
+  printl "Computer: " & ucase$(sComputerName) & $CRLF & "Status of " & ucase$(sServiceName) & " Service: " & OS_ServiceStatusDescription(lStatus)
+
+  ' Stop the service
+  lStatus = OS_ServiceStop(sComputerName, sServiceName)           
+  printl "Computer: " & ucase$(sComputerName) & $CRLF & "Service " & sServiceName & " " & WasOrWasNot(lStatus) & " stopped!"
+
+  ' Get the service status and show it
+  lStatus = OS_ServiceQuery(sComputerName, sServiceName)           
+  printl "Computer: " & ucase$(sComputerName) & $CRLF & "Status of " & ucase$(sServiceName) & " Service: " & OS_ServiceStatusDescription(lStatus)
+
+  ' Rollback the service start type to his original value
+  lRet = OS_ServiceSetStartType(sComputerName, sServiceName, lStartType)
+  printl "Computer: " & ucase$(sComputerName) & $CRLF & "Service " & sServiceName & " Start Type: " & WasOrWasNot(lRet) & " rolled back!"
+  printl
+  printl "Press any key to quit..."
+  waitkey
+end function
+
+function WasOrWasNot(lFlag as long) as string
+
+  function = iif$(lFlag, "was", "was not")
+
+end function

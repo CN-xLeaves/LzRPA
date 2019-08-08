@@ -1,0 +1,221 @@
+#MINVERSION 1.9.11
+
+Uses "TBGL" , "oxygen"  
+
+Dim gen0(30,30,30) As Byte  
+Dim colorgen(30,30,30) As Byte
+Dim i , j , k , seed As Integer   
+Dim scr As String  
+Dim popul , maxpopul  As Long
+Dim attr As Single
+attr=1
+
+scr="
+
+Dim gen0(27000) At #gen0 As Byte
+Dim gen1(27000) As Byte 
+dim colorgen(27000) at #colorgen as byte
+dim popul at #popul as long 
+
+function calculate() link #pCalculate  '***
+=====================================
+ Dim i , j , k , freq As Integer
+ For i=2 To 29
+  For j=2 To 29
+   For k=3 To 26
+    freq=gen0(i-1+30*j+900*k) + gen0(i+1+30*j+900*k)+ 
+     gen0(i-1+30*(j+1)+900*k)+gen0(i+30*(j+1)+900*k)+gen0(i+1+30*(j+1)+900*k)+ 
+     gen0(i-1+30*(j-1)+900*k)+gen0(i+30*(j-1)+900*k)+gen0(i+1+30*(j-1)+900*k) +
+     gen0(i-1+30*j+900*(k-1)) + gen0(i+1+30*j+900*(k-1))+ gen0(i+30*j+900*(k-1))+
+     gen0(i-1+30*(j+1)+900*(k-1))+gen0(i+30*(j+1)+900*(k-1))+gen0(i+1+30*(j+1)+900*(k-1))+ 
+     gen0(i-1+30*(j-1)+900*(k-1))+gen0(i+30*(j-1)+900*(k-1))+gen0(i+1+30*(j-1)+900*(k-1))+
+     gen0(i-1+30*j+900*(k+1)) + gen0(i+1+30*j+900*(k+1))+ gen0(i+30*j+900*(k+1))+
+     gen0(i-1+30*(j+1)+900*(k+1))+gen0(i+30*(j+1)+900*(k+1))+gen0(i+1+30*(j+1)+900*(k+1))+ 
+     gen0(i-1+30*(j-1)+900*(k+1))+gen0(i+30*(j-1)+900*(k+1))+gen0(i+1+30*(j-1)+900*(k+1))
+     
+ 
+     
+      If gen0(i+30*j+900*k)=1 Then
+       If (freq=3) or freq=4 or freq = 5 or freq=6   Then
+         gen1(i+30*j+900*k)=1
+         colorgen(i+30*j+900*k)+= 1    
+        Else
+         gen1(i+30*j+900*k)=0  
+         colorgen(i+30*j+900*k)=0
+        EndIf
+      Else
+       If freq = 6 or freq=13  Then
+        gen1(i+30*j+900*k)=1
+        colorgen(i+30*j+900*k)=1
+       Else
+        gen1(i+30*j+900*k)=0
+       EndIf
+      EndIf
+                             
+      if     colorgen(i+30*j+900*k)  > 250 then  colorgen(i+30*j+900*k)=160
+        
+     Next
+    Next    
+   Next
+   
+   popul=0
+       
+   For i=2 To 29
+    For j=2 To 29 
+     For k=2 To 29
+     gen0(i+30*j+900*k) = gen1(i+30*j+900*k) 
+      
+     if gen0(i+30*j+900*k)=1 then popul += 1
+     Next                                          
+    Next
+  Next
+  end function
+  
+
+  function finish() link #pFinish '***
+  ==========================
+  terminate
+  end function
+  " 
+ 
+
+Dim as long pCalculate,pFinish '***
+O2_BASIC scr
+If Len(O2_ERROR) Then
+  MsgBox 0,O2_ERROR
+  Stop
+End If
+O2_EXEC
+Declare Function Calculate() At pCalculate  
+Declare Function Finish()    At pFinish     
+
+
+
+Randomize(Timer) 
+
+
+seed=Val(InputBox$(0,"Low number=high population" _
+                     +$CRLF+$CRLF+ "Space bar = Turbo it ","Input","8"))  
+If seed=0 Then Stop
+
+popul=0
+For i=3 To 29
+ For j=3 To 29
+  For k=2 To 28
+    If Rnd(0,seed) Then 
+      gen0(i,j,k) = 0 
+      colorgen(i,j,k)=0
+      Else
+      gen0(i,j,k) = 1  
+      colorgen(i,j,k)=1
+      Incr popul
+    EndIf  
+   Next
+  Next
+ Next
+maxpopul = popul 
+ 
+ 
+
+ 
+
+ 
+
+
+      
+
+Function Main()
+  Local hWnd      As DWord
+  Local FrameRate As Double  
+  Local hk As Single
+  Local cntr As Integer
+  hk=2  : cntr=0
+  Long mySphere = 1
+  
+  Dim hFont As DWord = TBGL_FontHandle("Arial", 13) 
+
+  
+  ' -- Create and show window
+  hWnd = TBGL_CreateWindowEx("TBGL - ESC to quit - hit or keep SPC = next generation(s)", 640, 480, 32, %TBGL_WS_WINDOWED  ) 
+  TBGL_ShowWindow 
+
+  ' -- Initialize lighting
+ TBGL_UseLighting(%TRUE)
+ TBGL_UseLightSource(%GL_LIGHT0, %TRUE)
+  
+  TBGL_SetLightParameter(%GL_LIGHT0, %TBGL_LIGHT_POSITION, 15, 15, 15, 10)
+  TBGL_ResetKeyState()
+  TBGL_UseVSync(0)   
+  TBGL_SetPrimitiveQuality 12 
+  TBGL_BuildFont(hFont)                  
+  
+   TBGL_NewList mySphere
+     TBGL_Sphere 1
+   TBGL_EndList
+  ' -- Main loop
+  While TBGL_IsWindow(hWnd) 
+    FrameRate = TBGL_GetFrameRate
+      
+  TBGL_ClearFrame 
+      TBGL_Camera(0, 0, 60*attr, 0, 0, 0)
+      
+       TBGL_Color (250,200,200)
+      'TBGL_PrintFont("Population = "+Str$(popul), 10,15,20)
+       TBGL_Rotate hk , 0 , 1 ,0
+     
+       TBGL_Translate -14*attr,-14*attr,-8*attr
+   ' TBGL_Rotate hk , 1 , 1 ,1 
+ 
+ 
+                              
+    ' TBGL_Translate -14,-14,0 
+     For k=4 To 20
+     TBGL_PushMatrix
+     For i=2 To 28    
+     For j=2 To 28  
+      If gen0(i,j,k) Then   
+        TBGL_Color 70,110,colorgen(i,j,k)
+        TBGL_CallList mySphere   
+      EndIf  
+      TBGL_Translate attr,0,0
+     Next 
+     TBGL_Translate -27*attr,attr,0
+     Next 
+     TBGL_PopMatrix
+     TBGL_Translate 0,0,attr
+     Next
+    
+     
+
+     
+    
+    TBGL_DrawFrame   
+    
+    hk += 10/FrameRate 
+    Incr cntr
+    
+  If Not(Mod (cntr,9)) Then calc()
+  
+     If TBGL_GetWindowKeyState(hWnd, %VK_SPACE) Then Calc() '***
+ 
+    If TBGL_GetWindowKeyState(hWnd, %VK_ESCAPE) Then Exit While 
+ 
+  Wend 
+
+  TBGL_DestroyWindow
+  TBGL_KillFont
+  Finish() 
+  Stop
+End Function 
+                                                           
+Sub calc()
+ Static count As Long
+ Incr count
+ If attr > 0.3 Then attr = 1-count/400
+ calculate()
+End Sub
+
+
+   
+
+                                         

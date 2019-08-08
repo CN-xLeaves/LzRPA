@@ -1,0 +1,117 @@
+
+uses "oxygen"
+
+'thinBasic calls Oxygen function
+'Oxygen calls thinBasic function
+'===============================
+
+
+dim v as long
+dim p1,p2,p3,p4 as long
+dim src as string
+
+src = "
+  '
+  '
+  'include "c:..\thincore.inc"
+  'FROM THINCORE
+  '----------------------------------------------------------------------------
+  'thinBasic_FunctionParseAndGetPtr
+  '----------------------------------------------------------------------------
+  ' Parse the next token (or string expression). Check if it is a function name
+  ' If yes, returns a PTR to internal data function
+  '----------------------------------------------------------------------------
+  Declare Function thinBasic_FunctionParseAndGetPtr                _
+                          Lib "thinCore.DLL"                        _
+                          Alias "thinBasic_FunctionParseAndGetPtr"  _
+                          (                                        _
+                             Optional ByVal CheckIfCallBack As Long  _
+                          ) As Long
+
+  '----------------------------------------------------------------------------
+  'thinBasic_FunctionCall_ByPtr
+  '----------------------------------------------------------------------------
+  ' Call a script function and optionally returns it value (numeric or string)
+  ' This function permits to call script functions passing parameters
+  ' Parameters are passed using a shared memory area made by a sequence of DOUBLEs
+  ' (8 bytes) one for each parameter to be passed.
+  ' The paramaters memory area will be interpreted by thinBasic core engine
+  ' depending by parameters declaration made in script.
+  '
+  ' So far the following type of parameters are supported:
+  '  - numeric parameters passed BYVAL up to DOUBLE range
+  '
+  ' Example: if programmer wants to pass 2 parameters, set lModParams = 2 and setup
+  ' a 16 bytes memory area (2 params * 8 bytes each) where to store the 2 parameter
+  ' values.
+  '----------------------------------------------------------------------------
+  Declare Function  thinBasic_FunctionCall_ByPtr                      _
+                          Lib "thinCore.DLL"                          _
+                          Alias "thinBasic_FunctionCall_ByPtr"        _
+                          (                                          _
+                            ByVal FunctionPtr  As Long            , _  '---PTR to script function
+                            ByVal lModParams    As Long            , _  '---MANDATORY: number of params module is passing
+                            ByVal lModParamsPtr As Long            , _  '---MANDATORY: pointer to a memory area where to find parameters (8 bytes for each parameter)
+                            Optional                                  _  '---If no need to get back script function result value, do not indicate the next 2 parameters
+                            ByVal ptrDOUBLE    As Double Ptr      , _  '---Pointer to DOUBLE that will get back script function return value in case of numeric
+                            ByVal ptrSTR        As String Ptr        _  '---Pointer to a OLE32 dynamic string handle that will get back script function return value in case of string
+                          ) As Long
+
+  '
+  function callback_token() as long  link #p2
+  '==========================================
+    function=thinBasic_FunctionParseAndGetPtr 0
+  end function
+
+  function callback_to(byval a as long) as long  link #p3
+  '======================================================
+    dim as double d
+    dim as string s
+    dim as double p(10)
+    p(1)=42
+    s="!!"
+    thinBasic_FunctionCall_ByPtr  a,  1, &p, d, s
+    print `thinBasic returns to Oxygen: `  s
+    'print `thinBasic returns to Oxygen: `  str d
+    function=1
+  end function
+
+  sub finish() link #p1
+  '====================
+    terminate
+  end sub
+  '
+  "
+  
+  
+  
+  'THINBASIC/OXYGEN COMPILE & LINKAGE 
+  '
+  '
+  'msgbox 0, o2_prep src
+  o2_basic src
+  if len(o2_error) then
+    msgbox 0, o2_error : stop
+  end if
+  o2_exec
+  
+  declare sub finish() at p1
+  declare function callback_token() as long at p2
+  declare   function callback_to(byval a as long) as long at p3
+
+
+  'THINBASIC CALLBACK FUNCTION
+  '
+  function targetfun(byval a as double) as string 'double
+  '======================================================
+    msgbox 0, "ThinBasic receives from Oxygen: "+str$(a)
+    function=str$(a*2)
+  end function
+
+  'THIBASIC INVOKE CALLBACK TEST
+  '
+  v=callback_token targetfun  
+
+  callback_to v
+    
+  finish

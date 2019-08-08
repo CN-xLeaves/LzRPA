@@ -1,0 +1,34 @@
+
+
+'SHARING THINBASIC VARIABLES
+
+uses "oxygen"
+dim src as string
+
+dim tll(10) as long, tdd(10) as double, tss(10) as string
+
+src = "
+
+basic
+  
+dim ,
+
+   vll(10) at #tll as long,
+   vdd(10) at #tdd as double,
+   vss(10) at #tss as bstr    ' NB: THINBASIC STRING
+
+   vss(7) =`The Answer is: `
+   vdd(7) = 42
+   
+  "
+o2_asmo src
+
+'msgbox 0, o2_view src
+
+if len(o2_error) then
+  msgbox 0, o2_error : stop
+end if
+
+o2_exec
+
+msgbox 0,tss(7) & tdd(7)

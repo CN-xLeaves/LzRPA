@@ -1,0 +1,44 @@
+'
+'-----------------------------------------------------------
+'PSEUDOVARIABLES - METHODS FOR GETTING AND SETTING PROPRTIES
+'===========================================================
+
+'THE GET AND SET METHODS HAVE THE SAME BUT ARE IDENTIFIED BY 
+'HAVING DIFFERENT SIGNATURES
+
+uses "oxygen","file"
+dim s as string
+s="
+
+  '=======
+  class io
+  '=======
+    
+    private iva as long
+    
+    'these are overloaded function (same name different params)
+  
+    method va() as long 'GET
+      method=iva
+    end method
+  
+    method va(v as long) 'SET
+      iva=v
+    end method 
+
+  end class
+
+
+  dim o as io
+  
+  'O.VA IS A PSEUDOVARIABLE
+  o.va=42
+  print `Answer: ` str o.va  
+
+"
+
+o2_basic s
+if len(o2_error) then msgbox 0,o2_error : stop
+'msgbox 0,o2_prep s
+'file_save ("t.txt",o2_prep s)
+o2_exec

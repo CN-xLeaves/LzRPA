@@ -1,0 +1,9 @@
+{
+    "Keyword1": null,
+    "Keyword2": null,
+    "Keyword3": null,
+    "RelyFile": ["templet.redis.conf"],
+    "PackFile": null,
+    "RelyCode": "boot.tbs",
+    "RelyModule": ["Redis", "RedisServer"]
+}

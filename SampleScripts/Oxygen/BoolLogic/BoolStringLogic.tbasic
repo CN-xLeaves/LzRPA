@@ -1,0 +1,60 @@
+
+'--------------------------
+'BOOLEAN STRING CONDITIONAL
+'==========================
+
+uses "oxygen"
+dim src as string
+ 
+src ="
+  
+  '--------------------
+  'True   length >0
+  'False  null or empty
+  '--------------------
+  
+  dim as string s
+  
+  if s then
+    print `Uinitialise String True`
+  else
+    print `Uninitialised String False`
+  end if
+  
+  s=``  
+
+  if s then
+    print `Empty String True`
+  else
+    print `Empty String False`
+  end if
+
+  s=` `  
+
+  if s then
+    print `Space String True`
+  else
+    print `Space String False`
+  end if
+
+  s=`x`  
+
+  if s then
+    print `Non Empty String True`
+  else
+    print `Non Empty String False`
+  end if
+
+  
+   
+  terminate
+  "
+  
+'msgbox 0,o2_prep src 
+o2_basic src
+if len(o2_error) then
+  msgbox 0, o2_error : stop
+end if
+o2_exec
+ 
+ 

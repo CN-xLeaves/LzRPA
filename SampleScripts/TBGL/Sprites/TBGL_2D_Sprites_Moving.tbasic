@@ -1,0 +1,86 @@
+  '=============================================================================
+  '=                                2D Sprites                                 =
+  '=                          Moving sprites example                           =
+  '=                                                                           =
+  '=                          Michael Hartlef, 2009                            =
+  '=============================================================================
+
+
+Uses "TBGL"
+dim hWnd AS DWORD
+dim FrameRate AS DOUBLE
+
+FUNCTION Main()
+  local sprBackGround, width, height as long
+  local dirTextures       as string = "Textures\"
+  local mySprite as long
+  local xdiff, x,y as single
+    
+  ' -- Create and show window
+  hWnd = TBGL_CreateWindowEx("TBGL 2D Sprite sample (moving sprites) - press ESC to quit", 640, 480, 32, %TBGL_WS_WINDOWED or %TBGL_WS_CLOSEBOX)
+  TBGL_ShowWindow
+  
+  TBGL_GetWindowClient( hWnd, width, height )   
+
+  ' -- Load the sprite
+  mySprite  = TBGL_SpriteLoad( APP_SOURCEPATH + dirTextures + "ship3.tga")
+  
+  ' -- set the xDiff factor which controls the horizontal movement
+  xdiff = 300
+  
+  ' -- Set some render states
+  tbgl_uselighting %FALSE
+  tbgl_useblend %FALSE
+
+  TBGL_UseDepth %FALSE
+  tbgl_UseTexture %TRUE
+  TBGL_USEVSYNC %TRUE
+
+  tbgl_UseAlphaTest %TRUE
+  tbgl_AlphaFunc %tbGL_GREATER, 0.1
+
+  ' -- Resets status of all keys 
+  TBGL_ResetKeyState()
+  ' -- Set the TBGL color to pure white, so colors of sprites are the same like in the texture
+  tbgl_color 255,255,255
+  ' -- Set the background to a dark blue
+  tbgl_backColor 0, 0 ,80
+      
+  ' -- Now set the sprites position in the middle of the screen
+  TBGL_SpriteSetPos(mySprite,width/2,height/2)
+  
+  ' -- Main loop
+  While TBGL_IsWindow(hWnd) 
+    FrameRate = TBGL_GetFrameRate
+    
+    ' -- Change the position of the sprite
+    TBGL_SpriteSetPos(mySprite, xDiff/framerate, 0 , %TRUE)
+    
+    ' -- Get the new position of the sprite and changing 
+    ' -- the xDiff factor if the sprite comes close to the wall
+    TBGL_SpriteGetPos(mySprite, x,y)
+    if x > (width -40) and xdiff > 1 then xdiff *= -1
+    if x < (40) and xdiff < 1 then xdiff *= -1
+
+    ' -- Set the render matrix to the window clients resolution
+    TBGL_Rendermatrix2D (0,height,width,0)
+    
+    ' -- Not really important to clear a frame here as we draw a background anyway
+    TBGL_ClearFrame
+    
+    ' -- With one command you draw all active sprites, even if it is just one :-)
+    TBGL_SpritesDrawAll
+    
+    ' -- Flip the buffer so you see something on the screen
+    TBGL_DrawFrame 
+
+    ' -- ESCAPE key to exit application
+    If TBGL_GetWindowKeyState(hWnd, %VK_ESCAPE) Then Exit While 
+  Wend 
+
+  ' -- Now let's clean up the memory
+  TBGL_SpritesDeleteAll
+  
+  TBGL_DestroyWindow
+END FUNCTION 
+

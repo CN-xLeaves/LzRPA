@@ -1,0 +1,60 @@
+  Uses "UI"
+
+  '-----------------------------------------------------------
+  '---Global variables
+  '-----------------------------------------------------------
+  Dim ScreenWidth     As Long = 800
+  Dim ScreenHeight    As Long = 600
+  Dim hWin            As DWord        '---Handle of the canvas window
+  Dim x,y             As Double
+  Dim yDown           As Double
+
+  '-----------------------------------------------------------
+  '---Main program
+  '-----------------------------------------------------------
+  hWin = Canvas_Window("Test Canvas sine curve: press ESC to exit", 1, 1, ScreenWidth, ScreenHeight )
+ 
+  Canvas_Attach(hWin, 0, %TRUE) ' <- double buffer
+ 
+  '---Init canvas
+  Canvas_Clear %BLACK
+  Canvas_Font "Arial" , 8, %CANVAS_FONTSTYLE_NORMAL
+
+  '---Set personalized canvas scale
+  Canvas_Scale(-20, -5, 20, 20)  
+   
+  '---Loop For All steps
+  For x = -15 To 15 Step 0.1
+   
+    y = Sin(x) 
+
+    '---Plotting the thin sine curve points:
+    Canvas_SetPixel(x, y, Rgb(0, 255, 0))
+
+    '---Plotting the thin sine curve lines
+    For yDown = 2 To 15 Step 1
+      Canvas_Width(yDown)
+      Canvas_Line( (x, y + yDown), (x, y + yDown) , Rgb(25 * yDown, 255, 0) )
+    Next
+    
+    Canvas_Redraw
+
+  Next
+
+  '---Print text to user in lower right corner
+  Dim sMsg  As String = "Press ESC to close the window"
+  Canvas_Color %WHITE, -2
+
+  '---Calculate width and height using current font setup
+  x = Canvas_GetTextWidth (sMsg)
+  y = Canvas_GetTextHeight(sMsg)
+  
+  Canvas_SetPos 20 - x, 20 - y
+  Canvas_Print sMsg
+
+  '---Current canvas is in double buffer mode so we have to fire a redraw in order to show text
+  Canvas_Redraw
+  
+  Canvas_WaitKey(27)
+  Canvas_Window End
+ 

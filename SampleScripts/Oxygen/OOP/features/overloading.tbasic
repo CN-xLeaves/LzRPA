@@ -1,0 +1,81 @@
+
+'------------------
+'METHOD OVERLOADOMG
+'==================
+
+
+Uses "Oxygen"
+
+dim src as string
+
+src="
+
+
+class color_rgba
+    method get() as dword
+    method set(byval rgba as dword )   
+    method set(byval r as byte, byval g as byte, byval b as byte, byval a as byte )   
+    method set(byval s as string)
+    /\
+    
+    private
+    
+    r as byte
+    g as byte
+    b as byte
+    a as byte
+    =
+    rgba as dword
+end class
+
+methods of color_rgba
+
+    method set(byval c as dword )
+     this.rgba=c
+    end method
+    
+    method set(byval r as byte, byval g as byte, byval b as byte, byval a as byte )
+    with this.
+        r = r
+        g = g
+        b = b
+        a = a
+    end with
+    'this=>r,g,b,a 'TECHNIQUE FOR CONTIGUOUS DATA
+    end method
+
+    method set(byval s as string)
+     dim c,i
+     for i=2 to 8 step 2
+       c+=val(`&h`+mid(s,i,2))
+       ror c,8
+     next
+     this.rgba=c
+    end method
+    
+    method get() as dword
+      method=this.rgba
+    end method
+
+  end methods
+
+  dim c as color_rgba
+  
+  c.set &h08060402  : print hex c.get
+  c.set 2,4,6,8     : print hex c.get
+  c.set `#02040608` : print hex c.get
+
+"
+
+
+
+
+'msgbox 0,o2_prep src
+o2_basic src
+
+if len(o2_error) then
+  msgbox 0,o2_error
+  stop
+end if
+
+o2_exec

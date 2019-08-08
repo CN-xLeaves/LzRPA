@@ -1,0 +1,90 @@
+  #minversion 1.7.7.0
+  
+  uses "UI"
+
+  %IDC_LABEL      = 200
+
+  '------------------------------------------------------------------------------
+  ' Main function
+  '------------------------------------------------------------------------------
+  FUNCTION Main() as long
+    LOCAL hDlg AS DWORD
+            
+    DIALOG NEW 0, "Power Management helper function", -1, -1, 300, 80, %WS_OVERLAPPEDWINDOW or %WS_CLIPCHILDREN TO hDlg
+
+    CONTROL ADD label   , hDlg, 0         , "Change the power status, for example unplugging the power (in case of laptop)",  0, 0, 300, 20, %WS_CHILD OR %WS_VISIBLE
+    CONTROL ADD textbox , hDlg, %IDC_LABEL, "",  0, 20, 300, 60, %WS_CHILD OR %WS_VISIBLE or %ES_AUTOVSCROLL or %ES_WANTRETURN or %ES_MULTILINE or %WS_VSCROLL
+    control set resize, hDlg, %IDC_LABEL, 1, 1, 1, 1
+
+    DIALOG SHOW MODAL hDlg call cbDialog
+    
+    
+  END FUNCTION
+
+ 
+  '------------------------------------------------------------------------------
+  ' Callback procedure for main window
+  '------------------------------------------------------------------------------
+  CallBack Function cbDialog() As Long
+    local sMessage as string
+
+      SELECT CASE cbMsg 
+   
+        case %WM_INITDIALOG
+ 
+        CASE %WM_COMMAND
+
+        CASE %WM_POWER
+          '---http://msdn.microsoft.com/en-us/library/aa373245(VS.85).aspx
+          select case cbwParam
+            case %PWR_CRITICALRESUME
+                sMessage = "%PWR_CRITICALRESUME"
+            case %PWR_SUSPENDREQUEST
+                sMessage = "%PWR_SUSPENDREQUEST"
+                '---The following should prevent suspend request
+                function = %PWR_FAIL
+ 
+            case %PWR_SUSPENDRESUME
+                sMessage = "%PWR_SUSPENDRESUME"
+          end select
+          CONTROL append TEXT cbhndl, %IDC_LABEL, "%WM_POWER: " & sMessage & "---" & $CRLF
+
+        case %WM_POWERBROADCAST
+          '---http://msdn.microsoft.com/en-us/library/aa373247(VS.85).aspx
+          select case cbwParam
+            case   %PBT_APMQUERYSUSPEND
+                sMessage = "%PBT_APMQUERYSUSPEND"
+                '---The following should prevent suspend request
+                function = %BROADCAST_QUERY_DENY
+
+            case   %PBT_APMQUERYSTANDBY
+                sMessage = "%PBT_APMQUERYSTANDBY"
+            case   %PBT_APMQUERYSUSPENDFAILED
+                sMessage = "%PBT_APMQUERYSUSPENDFAILED"
+            case   %PBT_APMQUERYSTANDBYFAILED
+                sMessage = "%PBT_APMQUERYSTANDBYFAILED"
+            case   %PBT_APMSUSPEND
+                sMessage = "%PBT_APMSUSPEND"
+            case   %PBT_APMSTANDBY
+                sMessage = "%PBT_APMSTANDBY"
+            case   %PBT_APMRESUMECRITICAL
+                sMessage = "%PBT_APMRESUMECRITICAL"
+            case   %PBT_APMRESUMESUSPEND
+                sMessage = "%PBT_APMRESUMESUSPEND"
+            case   %PBT_APMRESUMESTANDBY
+                sMessage = "%PBT_APMRESUMESTANDBY"
+            case   %PBT_APMBATTERYLOW
+                sMessage = "%PBT_APMBATTERYLOW"
+            case   %PBT_APMPOWERSTATUSCHANGE
+                sMessage = "%PBT_APMPOWERSTATUSCHANGE"
+            case   %PBT_APMOEMEVENT
+                sMessage = "%PBT_APMOEMEVENT"
+            case   %PBT_APMRESUMEAUTOMATIC
+                sMessage = "%PBT_APMRESUMEAUTOMATIC"
+          end select
+          CONTROL append TEXT cbhndl, %IDC_LABEL, "%WM_POWERBROADCAST: " & sMessage & "---" & $CRLF
+          
+      END SELECT
+               
+  END FUNCTION
+        

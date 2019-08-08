@@ -1,0 +1,136 @@
+  IF UCASE$(CGI_GetQueryValue("Showsource", %CGI_REQUEST_METHOD_GET)) = "TRUE" THEN
+    
+    ShowSourceCode(CGI_GetQueryValue("File", %CGI_REQUEST_METHOD_GET))
+    STOP
+  END IF
+
+  function Page_Header(BodyOptions as string) as string
+    dim sBuffer as string
+    
+    sBuffer =  "Content-Type: text/html" & $CRLF & $CRLF
+    sBuffer += "<html>"
+    sBuffer += "<head>"
+    sBuffer += "<link rel='stylesheet' href='css/style.css' />"
+    sBuffer += "<title>thinBasic: test web site</title>" & _
+                "</head>" & _
+                "<body " & BodyOptions & ">" & _
+                ""
+    function = sBuffer
+    
+  end function
+
+
+  '-------------------------------------------------------------------------
+  ' Echo script source code
+  '-------------------------------------------------------------------------
+  FUNCTION ShowSourceCode(sFileName as string) AS LONG
+    DIM sBuffer     as string
+
+    if sFileName = "" then
+      sFileName = App_SourceFullName
+    end if
+    
+    if file_exists(sFileName) = %false then
+      echo "Content-Type: text/html" & $CRLF & $CRLF
+      echo "<html>"
+      echo "<head>"
+      echo "<title>tBasic: CGI examples list</title>"
+      echo "</head>"
+      echo "<body><pre>"
+      echo "File " & sFileName & " does not exists."
+      echo "</pre></body></html>"
+
+      exit function
+    end if
+    
+
+
+    '---Hacking check
+    dim RootPathMain  as string = FILE_PATHSPLIT(App_SourceFullName, %Path_RootPath)
+    dim RootPathInc   as string = FILE_PATHSPLIT(sFileName, %Path_RootPath)
+    if sFileName <> App_SourceFullName then
+      sFileName = RootPathMain & sFileName    
+    end if
+
+    if file_exists(sFileName) = %false then
+      echo "Content-Type: text/html" & $CRLF & $CRLF
+      echo "<html>"
+      echo "<head>"
+      echo "<title>tBasic: CGI examples list</title>"
+      echo "</head>"
+      echo "<body><pre>"
+      echo "<FONT COLOR='#FF0000' SIZE='10pt'><b>Why are you trying to hack this script?</b><br></FONT>"
+      echo "</pre></body></html>"
+
+      exit function
+      
+    end if
+
+    '---Now start to load the script    
+    sBuffer = file_load(sFileName)
+
+    dim nLines      as dword = PARSECOUNT(sBuffer, $CRLF)
+    DIM sLines()    AS STRING
+    DIM sLine       AS STRING
+    DIM Count       AS dword
+    dim lPos        as dword
+    dim lPos2       as dword
+    dim lPos3       as dword
+
+    'blueStr     = "<FONT COLOR=""#0000FF"">"
+    'PBFStr      = "<FONT COLOR=""#C06400"">"
+    'redStr      = "<FONT COLOR=""#800080"">"
+    dim FontComment   as string = "<FONT COLOR='#008000'>"
+    dim FontDirective as string = "<FONT COLOR='#FF0000'>"
+    dim EndFont       as string = "</FONT>"
+
+    '---This function will parse the input string for $CRLF delimiters
+    '   filling and dimensioning sLines array
+    PARSE sBuffer, sLines, $CRLF 
+  
+    '---Now scan the array in order to find whatever string
+    '   If string is found, corresponding line will be appended
+    '   to output buffer
+
+    sBuffer = ""
+    FOR Count = 1 TO nLines
+      sLine = sLines(Count)
+      sLine = REPLACE$(sLine, "<", "&lt;")
+      sLine = REPLACE$(sLine, ">", "&gt;")
+      
+      select case LEFT$(trim$(sLine), 1)
+        case "'"
+          sLine = FontComment & sLine & EndFont & $CRLF
+        case "#"
+          lPos = instr(ucase$(sLine), "#INCLUDE")
+          if lPos > 0 then
+            lPos2 = instr(lPos, ucase$(sLine), $dq)
+            sLine = FontDirective & left$(sLine, lPos2 - 1) & "<a href='?showsource=true&file=" & trim$(remove$(mid$(sLine, lPos2), $DQ)) & "'>" & mid$(sLine, lPos2) & "</a>" & EndFont & $CRLF
+                      
+          else
+            sLine = FontDirective & sLine & EndFont & $CRLF
+          end if
+        case else
+          sLine = sLine + $crlf
+      END select
+      
+      sBuffer += "<b>" & format$(Count, "0000") & "</b>" & "  " & sLine
+    NEXT                
+  
+    echo      "Content-Type: text/html" & $CRLF & $CRLF
+    echo      "<html>"
+    echo      "<head>"
+    echo      "<title>tBasic: CGI examples list</title>"
+    echo      "</head>"
+    echo      "<body>"
+    echo      "<pre>"
+
+    echo      "<b>Script name  : </b>" & replace$(sFileName, "\\", "\") & "<br>"
+    echo      "<b>Script size  : </b>" & FILE_size(sFileName) & " bytes<br>"
+    echo      "<b>Lines        : </b>" & nLines & "<br>"
+    echo      "<b>Last updated : </b>" & FILE_GetDateTime(sFileName) & "<br><hr>"
+              
+    echo sBuffer
+
+    echo "</pre></body></html>"
+  END FUNCTION

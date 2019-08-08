@@ -1,0 +1,1458 @@
+                                ;  ;---------------------;
+                                ;  ; Asmosphere Tests
+                                ;  ; to SSE4 and 3DNOW
+                                ;  ; 19:01 14/11/2008
+                                ;  ; Charles E V Pegge
+                                ;  ;---------------------;
+                                ;  ; def #vt 1024
+.dot_label                      ;  .dot_label
+.colon_label                    ;  .colon_label
+                                ;  ;---------------------;
+                                ;  ; Literal numbers     ;
+                                ;  ;---------------------;
+ C7 C0 00 00 00 00              ;  mov eax,0            ;!? c7 c0 00 00 00 00
+ C7 C0 00 00 00 00              ;  mov eax,-0           ;!? c7 c0 00 00 00 00
+ C7 C0 FF FF FF FF              ;  mov eax,-1           ;!? c7 c0 ff ff ff ff
+ C7 C0 01 00 00 00              ;  mov eax,0x1          ;!? c7 c0 01 00 00 00
+ C7 C0 FF FF FF FF              ;  mov eax,-0x1         ;!? c7 c0 ff ff ff ff
+ C7 C0 3F 00 00 00              ;  mov eax,0o77         ;!? c7 c0 3f 00 00 00
+ C6 C0 3F                       ;  mov al,0o77          ;!? c6 c0 3f
+ C6 C0 01                       ;  mov al,.8            ;!? c6 c0 01
+ C6 C0 08                       ;  mov al,.8e1          ;!? c6 c0 08
+ C7 C0 F0 FF FF FF              ;  mov eax,-16          ;!? c7 c0 f0 ff ff ff
+ C7 C0 11 00 00 00              ;  mov eax, 16.8        ;!? c7 c0 11 00 00 00
+ C7 C0 EF FF FF FF              ;  mov eax,-16.8        ;!? c7 c0 ef ff ff ff
+ C6 C0 FF                       ;  mov al,-.8           ;!? c6 c0 ff
+ C6 C0 F8                       ;  mov al,-.8e1         ;!? c6 c0 f8
+ C6 C0 FD                       ;  mov al,-2.8          ;!? c6 c0 fd
+ C6 C0 EE                       ;  mov al,-1.8e1        ;!? c6 c0 ee
+ C6 C0 F8                       ;  mov al,-800e-2       ;!? c6 c0 f8
+ C6 C0 F8                       ;  mov al,-800.123e-2   ;!? c6 c0 f8
+ 66 C7 C0 00 02                 ;  mov ax,512           ;!? 66 c7 c0 00 02
+                                ;  ;---------------------;
+                                ;  ;---------------------;
+ 37                             ;  aaa                  ;!? 37
+ d5 0a                          ;  aad                  ;!? D5 0A
+ d4 0a                          ;  aam                  ;!? D4 0A
+ 3f                             ;  aas                  ;!? 3F
+                                ;  ;
+                                ;  ;---------------------;
+ 80 D4 10                       ;  adc ah,0x10          ;!? 80 D4 10
+ 80 D4 08                       ;  adc ah,0o10          ;!? 80 D4 08
+ 80 D4 0A                       ;  adc ah,10            ;!? 80 D4 0A
+ 80 D4 F6                       ;  adc ah,-10           ;!? 80 D4 F6
+ 81 D2 E8 03 00 00              ;  adc edx,1000         ;!? 81 D2 E8 03 00 00
+ 80 12 0A                       ;  adc byte [edx],10    ;!? 80 12 0A
+ 81 12 E8 03 00 00              ;  adc dword [edx],1000 ;!? 81 12 E8 03 00 00
+ 10 0A                          ;  adc [edx],cl         ;!? 10 0A
+ 11 0A                          ;  adc [edx],ecx        ;!? 11 0A 
+ 12 0A                          ;  adc cl,[edx]         ;!? 12 0A
+ 13 0A                          ;  adc ecx,[edx]        ;!? 13 0A
+                                ;  ;---------------------;
+ 80 C4 0A                       ;  add ah,10            ;!? 80 C4 0A
+ 80 C4 F6                       ;  add ah,-10           ;!? 80 C4 F6
+ 81 C2 E8 03 00 00              ;  add edx,1000         ;!? 81 C2 E8 03 00 00
+ 80 02 0A                       ;  add byte [edx],10    ;!? 80 02 0A
+ 81 02 E8 03 00 00              ;  add dword [edx],1000 ;!? 81 02 E8 03 00 00
+ 00 0A                          ;  add [edx],cl         ;!? 00 0A
+ 01 0A                          ;  add [edx],ecx        ;!? 01 0A
+ 02 0A                          ;  add cl,[edx]         ;!? 02 0A
+ 03 0A                          ;  add ecx,[edx]        ;!? 03 0A
+                                ;  ;---------------------;
+ 0f 58 CA                       ;  addps xmm1,xmm2      ;!? 0F 58 CA
+ 0f 58 08                       ;  addps xmm1,[eax]     ;!? 0F 58 08
+ f3 0f 58 CA                    ;  addss xmm1,xmm2      ;!? F3 0F 58 CA
+ f3 0f 58 01                    ;  addss xmm0,[ecx]     ;!? F3 0F 58 01
+                                ;  ;---------------------;
+ 80 E4 0A                       ;  and ah,10            ;!? 80 E4 0A
+ 80 E4 F6                       ;  and ah,-10           ;!? 80 E4 F6
+ 81 E2 E8 03 00 00              ;  and edx,1000         ;!? 81 E2 E8 03 00 00
+ 80 22 0A                       ;  and byte [edx],10    ;!? 80 22 0A
+ 81 22 E8 03 00 00              ;  and dword [edx],1000 ;!? 81 22 E8 03 00 00
+ 20 0A                          ;  and [edx],cl         ;!? 20 0A
+ 21 0A                          ;  and [edx],ecx        ;!? 21 0A
+ 22 0A                          ;  and cl,[edx]         ;!? 22 0A
+ 23 0A                          ;  and ecx,[edx]        ;!? 23 0A
+                                ;  ;---------------------;
+ 0f 55 CA                       ;  andnps xmm1,xmm2     ;!? 0F 55 CA
+ 0f 55 01                       ;  andnps xmm0,[ecx]    ;!? 0F 55 01
+                                ;  ;---------------------;
+ 0f 54 CA                       ;  andps xmm1,xmm2      ;!? 0F 54 CA
+ 0f 54 01                       ;  andps xmm0,[ecx]     ;!? 0F 54 01
+                                ;  ;---------------------;
+ 64 D1                          ;  arpl edx,ecx         ;!? 64 D1
+ 64 19                          ;  arpl [ecx],ebx       ;!? 64 19
+ 64 0B                          ;  arpl [ebx],ecx       ;!? 64 0B
+                                ;  ;---------------------;
+ 62 D1                          ;  bound edx,ecx        ;!? 62 D1
+ 62 11                          ;  bound edx,[ecx]      ;!? 62 11
+                                ;  ;---------------------;
+ 0F BC D1                       ;  bsf edx,ecx          ;!? 0F BC D1
+ 0F BC 11                       ;  bsf edx,[ecx]        ;!? 0F BC 11
+                                ;  ;---------------------;
+ 0F BD D1                       ;  bsr edx,ecx          ;!? 0F BD D1
+ 0F BD 11                       ;  bsr edx,[ecx]        ;!? 0F BD 11
+                                ;  ;---------------------;
+ 0F CA                          ;  bswap edx            ;!? 0F CA
+                                ;  ;---------------------;
+ 0f A4 11                       ;  bt [ecx],edx         ;!? 0F A4 11
+ 0f BA 21 0F                    ;  bt [ecx],15          ;!? 0F BA 21 0F
+ 0f BA E1 0F                    ;  bt ecx,15            ;!? 0F BA E1 0F
+                                ;  ;---------------------;
+ 0f BC 11                       ;  btc [ecx],edx        ;!? 0F BC 11
+ 0f BA 39 0F                    ;  btc [ecx],15         ;!? 0F BA 39 0F
+ 0f BA F9 0F                    ;  btc ecx,15           ;!? 0F BA F9 0F
+                                ;  ;---------------------;
+ 0f B4 11                       ;  btr [ecx],edx        ;!? 0F B4 11
+ 0f BA 31 0F                    ;  btr [ecx],15         ;!? 0F BA 31 0F 
+ 0f BA F1 0F                    ;  btr ecx,15           ;!? 0F BA F1 0F 
+                                ;  ;---------------------;
+ 0f AC 11                       ;  bts [ecx],edx        ;!? 0F AC 11
+ 0f BA 29 0F                    ;  bts [ecx],15         ;!? 0F BA 29 0F
+ 0f BA E9 0F                    ;  bts ecx,15           ;!? 0F BA E9 0F
+                                ;  ;---------------------;
+ E8 gl vv                       ;  call vv;!? E8 gl vv
+ FF D1                          ;  call ecx;!? FF D1
+ FF 11                          ;  call [ecx];!? FF 11
+ E8 00 00 00 00                 ;  call 0               ;!? E8 00 00 00 00
+ E8 gl v                        ;  call v;!? E8 gl v
+ FF 18                          ;  call far [eax]       ;!? FF 18
+ 26 FF 18                       ;  call far es:[eax]    ;!? 26 FF 18
+ 9A E8 03 00 00 64 00           ;  call far 1000:100    ;!? 9A E8 03 00 00 64 00
+                                ;  ;---------------------;
+ 98                             ;  cbw                  ;!? 98
+ 98                             ;  cwde                 ;!? 98
+                                ;  ;---------------------;
+ f8                             ;  clc                  ;!? f8
+ fc                             ;  cld                  ;!? fc
+ fa                             ;  cli                  ;!? fa
+                                ;  ;---------------------;
+ 0f 06                          ;  clts                 ;!? 0f 06
+                                ;  ;---------------------;
+ f5                             ;  cmc                  ;!? f5
+                                ;  ;---------------------;
+ 0F 42 11                       ;  cmovb [ecx],edx      ;!? 0F 42 11
+ 0F 43 11                       ;  cmovae [ecx],edx     ;!? 0F 43 11
+ 0F 46 11                       ;  cmovbe [ecx],edx     ;!? 0F 46 11
+ 0F 47 11                       ;  cmova [ecx],edx      ;!? 0F 47 11
+ 0F 44 11                       ;  cmovz [ecx],edx      ;!? 0F 44 11
+ 0F 45 11                       ;  cmovnz [ecx],edx     ;!? 0F 45 11
+                                ;  ;---------------------;
+ 80 FC 0A                       ;  cmp ah,10            ;!? 80 FC 0A
+ 80 FC F6                       ;  cmp ah,-10           ;!? 80 FC F6
+ 81 FA E8 03 00 00              ;  cmp edx,1000         ;!? 81 FA E8 03 00 00
+ 80 3A 0A                       ;  cmp byte [edx],10    ;!? 80 3A 0A
+ 81 3A E8 03 00 00              ;  cmp dword [edx],1000 ;!? 81 3A E8 03 00 00
+ 38 0A                          ;  cmp [edx],cl         ;!? 38 0A
+ 39 0A                          ;  cmp [edx],ecx        ;!? 39 0A
+ 3A 0A                          ;  cmp cl,[edx]         ;!? 3A 0A
+ 3B 0A                          ;  cmp ecx,[edx]        ;!? 3B 0A
+                                ;  ;---------------------;
+ 0f C2 CA 03                    ;  cmpps xmm1,xmm2,3    ;!? 0F C2 CA 03
+ 0f C2 23 03                    ;  cmpps xmm4,[ebx],3   ;!? 0F C2 23 03
+                                ;  ;---------------------;
+ A6                             ;  cmps                 ;!? A6
+ A6                             ;  cmpsb                ;!? A6
+ A7                             ;  cmpsw                ;!? A7
+ A7                             ;  cmpsd                ;!? A7
+                                ;  ;---------------------;
+ f3 0f C2 E2 03                 ;  cmpss xmm4,xmm2,3    ;!? F3 0F C2 E2 03
+ f3 0f C2 23 03                 ;  cmpss xmm4,[ebx],3   ;!? F3 0F C2 23 03
+                                ;  ;---------------------;
+ 0f B1 0A                       ;  cmpxchg [edx],ecx    ;!? 0F B1 0A
+ 0f B0 0A                       ;  cmpxchg [edx],cl     ;!? 0F B0 0A
+ 0f C7 0A                       ;  cmpxchg8b [edx]      ;!? 0F C7 0A
+                                ;  ;---------------------;
+ 0f 2F CA                       ;  comiss xmm1,xmm2     ;!? 0F 2F CA
+ 0f 2F 09                       ;  comiss xmm1,[ecx]    ;!? 0F 2F 09
+                                ;  ;---------------------;
+ 0f a2                          ;  cpuid                ;!? 0F A2
+                                ;  ;---------------------;
+ 0f 2A CA                       ;  cvtpi2ps xmm1,xmm2   ;!? 0F 2A CA
+ 0f 2A 09                       ;  cvtpi2ps xmm1,[ecx]  ;!? 0F 2A 09
+                                ;  ;---------------------;
+ 0f 2D CA                       ;  cvtps2pi xmm1,xmm2   ;!? 0F 2D CA
+ 0f 2D 09                       ;  cvtps2pi xmm1,[ecx]  ;!? 0F 2D 09
+                                ;  ;---------------------;
+ f3 0f 2A CA                    ;  cvtsi2ss xmm1,xmm2   ;!? F3 0F 2A CA
+ f3 0f 2A 09                    ;  cvtsi2ss xmm1,[ecx]  ;!? F3 0F 2A 09
+                                ;  ;---------------------;
+ f3 0f 2D CA                    ;  cvtss2si xmm1,xmm2   ;!? F3 0F 2D CA
+ f3 0f 2D 09                    ;  cvtss2si xmm1,[ecx]  ;!? F3 0F 2D 09
+                                ;  ;---------------------;
+ 0f 2C CA                       ;  cvttps2pi xmm1,xmm2  ;!? 0F 2C CA
+ 0f 2C 09                       ;  cvttps2pi xmm1,[ecx] ;!? 0F 2C 09
+                                ;  ;---------------------;
+ f3 0f 2C CA                    ;  cvttss2si xmm1,xmm2  ;!? F3 0F 2C CA
+ f3 0f 2C 09                    ;  cvttss2si xmm1,[ecx] ;!? F3 0F 2C 09
+                                ;  ;---------------------;
+ 99                             ;  cwd                  ;!? 99
+ 99                             ;  cdq                  ;!? 99
+                                ;  ;---------------------;
+ 27                             ;  daa                  ;!? 27
+ 2f                             ;  das                  ;!? 2f
+                                ;  ;---------------------;
+ FF C9                          ;  dec ecx              ;!? FF C9
+ FF 09                          ;  dec [ecx]            ;!? FF 09
+                                ;  ;---------------------;
+ F6 F1                          ;  div cl               ;!? F6 F1
+ F7 F1                          ;  div ecx              ;!? F7 F1
+ F6 31                          ;  div byte [ecx]       ;!? F6 31
+ F7 31                          ;  div dword [ecx]      ;!? F7 31
+                                ;  ;---------------------;
+ 0f 5E CA                       ;  divps xmm1,xmm2      ;!? 0F 5E CA
+ 0f 5E 0A                       ;  divps xmm1,[edx]     ;!? 0F 5E 0A
+                                ;  ;---------------------;
+ f3 0f 5E CA                    ;  divss xmm1,xmm2      ;!? F3 0F 5E CA
+ f3 0f 5E 0A                    ;  divss xmm1,[edx]     ;!? F3 0F 5E 0A
+                                ;  ;---------------------;
+ 0F 77                          ;  emms                 ;!? 0F 77
+                                ;  ;---------------------;
+ C8 10 00 01                    ;  enter 16,1           ;!? C8 10 00 01
+                                ;  ;---------------------;
+ d9 f0                          ;  f2xm1                ;!? D9 F0
+ d9 e1                          ;  fabs                 ;!? D9 E1
+                                ;  ;---------------------;
+ D8 01                          ;  fadd dword [ecx]     ;!? D8 01
+ DC 01                          ;  fadd qword [ecx]     ;!? DC 01
+ D8 C1                          ;  fadd st(1)           ;!? D8 C1
+ DE C1                          ;  faddp st(1),st(0)    ;!? DE C1
+ DE C1                          ;  faddp                ;!? DE C1
+ DA 01                          ;  fiadd dword [ecx]    ;!? DA 01
+ DE 01                          ;  fiadd word  [ecx]    ;!? DE 01
+                                ;  ;---------------------;
+ DF 21                          ;  fbld eword [ecx]     ;!? DF 21
+ DF 21                          ;  fbld [ecx]           ;!? DF 21
+                                ;  ;---------------------;
+ DF 31                          ;  fbstp eword [ecx]    ;!? DF 31
+ DF 31                          ;  fbstp [ecx]          ;!? DF 31
+                                ;  ;---------------------;
+ d9 e0                          ;  fchs                 ;!? d9 e0
+ 9b db e2                       ;  fclex                ;!? 9b db e2
+ db e2                          ;  fnclex               ;!? db e2
+                                ;  ;---------------------;
+ DA C2                          ;  fcmovb   st(0),st(2) ;!? DA C2
+ DA CA                          ;  fcmove   st(0),st(2) ;!? DA CA
+ DA D2                          ;  fcmovbe  st(0),st(2) ;!? DA D2
+ DA DA                          ;  fcmovu   st(0),st(2) ;!? DA DA
+ DB C2                          ;  fcmovnb  st(0),st(2) ;!? DB C2
+ DB CA                          ;  fcmovne  st(0),st(2) ;!? DB CA
+ DB D2                          ;  fcmovnbe st(0),st(2) ;!? DB D2
+ DB DA                          ;  fcmovnu  st(0),st(2) ;!? DB DA
+                                ;  ;---------------------;
+ D8 11                          ;  fcom dword [ecx]     ;!? D8 11
+ DC 11                          ;  fcom qword [ecx]     ;!? DC 11
+ D8 D1                          ;  fcom st(1)           ;!? D8 D1
+ D8 D1                          ;  fcom                 ;!? D8 D1
+ DC D9                          ;  fcomp st(1),st(0)    ;!? DC D9
+ D8 D9                          ;  fcomp                ;!? D8 D9
+ de d9                          ;  fcompp               ;!? DE D9
+                                ;  ;---------------------;
+ DB F1                          ;  fcomi                ;!? DB F1
+ DB F1                          ;  fcomi st,st(1)       ;!? DB F1
+ DB F2                          ;  fcomi st,st(2)       ;!? DB F2
+ DF F1                          ;  fcomip st,st(1)      ;!? DF F1
+ DF F2                          ;  fcomip st,st(2)      ;!? DF F2
+ DB E9                          ;  fucomi               ;!? DB E9
+ DB E9                          ;  fucomi st,st(1)      ;!? DB E9
+ DB EA                          ;  fucomi st,st(2)      ;!? DB EA
+ DF E9                          ;  fucomip st,st(1)     ;!? DF E9
+ DF EA                          ;  fucomip st,st(2)     ;!? DF EA
+ DF EA                          ;  fucomip st(2)        ;!? DF EA
+ DF E9                          ;  fucomip              ;!? DF E9
+                                ;  ;---------------------;
+ d9 ff                          ;  fcos                 ;!? D9 FF
+ d9 f6                          ;  fdecstp              ;!? D9 F6
+                                ;  ;---------------------;
+ D8 31                          ;  fdiv dword [ecx]     ;!? D8 31
+ DC 31                          ;  fdiv qword [ecx]     ;!? DC 31
+ D8 F1                          ;  fdiv st(1)           ;!? D8 F1
+ D8 F1                          ;  fdiv st(0),st(1)     ;!? D8 F1
+ DC F9                          ;  fdiv st(1),st(0)     ;!? DC F9
+ DE F9                          ;  fdivp st(1),st(0)    ;!? DE F9
+ DE F9                          ;  fdivp                ;!? DE F9
+ DA 31                          ;  fidiv dword [ecx]    ;!? DA 31
+ DE 31                          ;  fidiv word  [ecx]    ;!? DE 31
+                                ;  ;---------------------;
+ D8 39                          ;  fdivr dword [ecx]    ;!? D8 39
+ DC 39                          ;  fdivr qword [ecx]    ;!? DC 39
+ D8 F9                          ;  fdivr st(1)          ;!? D8 F9
+ D8 F9                          ;  fdivr st(0),st(1)    ;!? D8 F9
+ DC F9                          ;  fdivr st(1),st(0)    ;!? DC F9
+ DE F1                          ;  fdivrp               ;!? DE F1
+ DA 39                          ;  fidivr dword [ecx]   ;!? DA 39
+ DE 39                          ;  fidivr word  [ecx]   ;!? DE 39
+                                ;  ;---------------------;
+ DD C3                          ;  ffree st(3)          ;!? DD C3
+                                ;  ;---------------------;
+ DE 11                          ;  ficom word  [ecx]    ;!? DE 11
+ DA 11                          ;  ficom dword  [ecx]   ;!? DA 11
+ DE 19                          ;  ficomp word  [ecx]   ;!? DE 19
+ DA 19                          ;  ficomp dword [ecx]   ;!? DA 19
+                                ;  ;---------------------;
+ DF 01                          ;  fild  word [ecx]     ;!? DF 01
+ DB 01                          ;  fild dword [ecx]     ;!? DB 01
+ DF 29                          ;  fild qword [ecx]     ;!? DF 29
+                                ;  ;---------------------;
+ d9 f7                          ;  fincstp              ;!? D9 F7
+ 9b db e3                       ;  finit                ;!? 9B DB E3
+ db e3                          ;  fninit               ;!? DB E3
+                                ;  ;---------------------;
+ DF 11                          ;  fist  word  [ecx]    ;!? DF 11
+ DB 11                          ;  fist  dword [ecx]    ;!? DB 11
+ DF 19                          ;  fistp word  [ecx]    ;!? DF 19
+ DB 19                          ;  fistp dword [ecx]    ;!? DB 19
+ DF 39                          ;  fistp qword [ecx]    ;!? DF 39
+                                ;  ;---------------------;
+ D9 01                          ;  fld dword [ecx]      ;!? D9 01
+ DD 01                          ;  fld qword [ecx]      ;!? DD 01
+ DB 29                          ;  fld eword [ecx]      ;!? DB 29
+ D9 C3                          ;  fld st(3)            ;!? D9 C3
+                                ;  ;---------------------;
+ d9 e8                          ;  fld1                 ;!? d9 e8
+ d9 e9                          ;  fldl2t               ;!? d9 e9
+ d9 ea                          ;  fldl2e               ;!? d9 ea
+ d9 eb                          ;  fldpi                ;!? d9 eb
+ d9 ec                          ;  fldlg2               ;!? d9 ec
+ d9 ed                          ;  fldln2               ;!? d9 ed
+ d9 ee                          ;  fldz                 ;!? d9 ee
+                                ;  ;---------------------;
+ D9 29                          ;  fldcw [ecx]          ;!? D9 29
+ D9 21                          ;  fldenv [ecx]         ;!? D9 21
+                                ;  ;---------------------;
+ D8 09                          ;  fmul dword [ecx]     ;!? D8 09
+ DC 09                          ;  fmul qword [ecx]     ;!? DC 09
+ D8 C9                          ;  fmul st(1)           ;!? D8 C9
+ D8 C9                          ;  fmul st(0),st(1)     ;!? D8 C9
+ DC C9                          ;  fmul st(1),st(0)     ;!? DC C9
+ DE C9                          ;  fmulp st(1),st(0)    ;!? DE C9
+ DE C9                          ;  fmulp                ;!? DE C9
+ DA 09                          ;  fimul dword [ecx]    ;!? DA 09
+ DE 09                          ;  fimul word  [ecx]    ;!? DE 09
+                                ;  ;---------------------;
+ d9 d0                          ;  fnop                 ;!? d9 d0
+ d9 f3                          ;  fpatan               ;!? d9 f3
+ d9 f8                          ;  fprem                ;!? d9 f8
+ d9 f5                          ;  fprem1               ;!? d9 f5
+ d9 f2                          ;  fptan                ;!? d9 f2
+ d9 fc                          ;  frndint              ;!? d9 fc
+                                ;  ;---------------------;
+ DD 21                          ;  frstor [ecx]         ;!? dd 21
+ 9B DD 31                       ;  fsave  [ecx]         ;!? 9B DD 31
+ DD 31                          ;  fnsave [ecx]         ;!? DD 31 
+                                ;  ;---------------------;
+ d9 fd                          ;  fscale               ;!? d9 fd
+ d9 fe                          ;  fsin                 ;!? d9 fe
+ d9 fb                          ;  fsincos              ;!? d9 fb
+ d9 fa                          ;  fsqrt                ;!? d9 fa
+                                ;  ;---------------------;
+ D9 11                          ;  fst dword [ecx]      ;!? D9 11
+ DD 11                          ;  fst qword [ecx]      ;!? DD 11
+ DD D3                          ;  fst st(3)            ;!? DD D3
+ D9 19                          ;  fstp dword [ecx]     ;!? D9 19
+ DD 19                          ;  fstp qword [ecx]     ;!? DD 19
+ DB 39                          ;  fstp eword [ecx]     ;!? DB 39
+ DD DB                          ;  fstp st(3)           ;!? DD DB
+                                ;  ;---------------------;
+ 9B D9 39                       ;  fstcw  [ecx]         ;!? 9B D9 39
+ D9 39                          ;  fnstcw [ecx]         ;!? D9 39
+                                ;  ;---------------------;
+ 9B D9 31                       ;  fstenv  [ecx]        ;!? 9B D9 31
+ D9 31                          ;  fnstenv [ecx]        ;!? D9 31
+                                ;  ;---------------------;
+ 9B DD 39                       ;  fstsw  [ecx]         ;!? 9B DD 39
+ DD 39                          ;  fnstsw [ecx]         ;!? DD 39
+ 9B DF E0                       ;  fstsw eax            ;!? 9B DF E0
+ DF E0                          ;  fnstsw eax           ;!? DF E0
+                                ;  ;---------------------;
+ D8 21                          ;  fsub dword [ecx]     ;!? D8 21
+ DC 21                          ;  fsub qword [ecx]     ;!? DC 21
+ D8 E1                          ;  fsub st(1)           ;!? D8 E1
+ D8 E1                          ;  fsub st(0),st(1)     ;!? D8 E1
+ DC E9                          ;  fsub st(1),st(0)     ;!? DC E9
+ DE E9                          ;  fsubp st(1),st(0)    ;!? DE E9
+ DE E9                          ;  fsubp                ;!? DE E9
+ DA 21                          ;  fisub dword [ecx]    ;!? DA 21
+ DE 21                          ;  fisub word  [ecx]    ;!? DE 21
+                                ;  ;---------------------;
+ D8 29                          ;  fsubr dword [ecx]    ;!? D8 29
+ DC 29                          ;  fsubr qword [ecx]    ;!? DC 29
+ D8 E9                          ;  fsubr st(1)          ;!? D8 E9
+ D8 E9                          ;  fsubr st(0),st(1)    ;!? D8 E9
+ DC E9                          ;  fsubr st(1),st(0)    ;!? DC E9
+ DE E1                          ;  fsubrp               ;!? DE E1
+ DA 29                          ;  fisubr dword [ecx]   ;!? DA 29
+ DE 29                          ;  fisubr word  [ecx]   ;!? DE 29
+                                ;  ;---------------------;
+ d9 e4                          ;  ftst                 ;!? d9 e4
+                                ;  ;---------------------;
+ DD E1                          ;  fucom st(1)          ;!? DD E1
+ DD E1                          ;  fucom                ;!? DD E1
+ DD E9                          ;  fucomp st(1),st(0)   ;!? DD E9
+ DD E9                          ;  fucomp               ;!? DD E9
+ da e9                          ;  fucompp              ;!? DA E9
+                                ;  ;---------------------;
+ 9b                             ;  fwait                ;!? 9B
+ d9 e5                          ;  fxam                 ;!? D9 E5
+                                ;  ;---------------------;
+ D9 CB                          ;  fxch st(3)           ;!? D9 CB
+ D9 C9                          ;  fxch                 ;!? D9 C9
+                                ;  ;---------------------;
+ 0f AE 08                       ;  fxrstor [eax]        ;!? 0F AE 08
+ 0f AE 09                       ;  fxrstor [ecx]        ;!? 0F AE 09
+                                ;  ;---------------------;
+ 0f AE 00                       ;  fxsave [eax]         ;!? 0F AE 00
+ 0f AE 01                       ;  fxsave [ecx]         ;!? 0F AE 01
+                                ;  ;---------------------;
+ d9 f4                          ;  fxtract              ;!? d9 f4
+ d9 f1                          ;  fyl2x                ;!? d9 f1
+ d9 f9                          ;  fyl2xp1              ;!? d9 f9
+                                ;  ;---------------------;
+ f4                             ;  hlt                  ;!? f4
+                                ;  ;---------------------;
+ F6 F9                          ;  idiv cl              ;!? F6 F9
+ F6 39                          ;  idiv byte [ecx]      ;!? F6 39
+ F7 F9                          ;  idiv ecx             ;!? F7 F9
+ F7 39                          ;  idiv dword [ecx]     ;!? F7 39
+                                ;  ;---------------------;
+ F6 E9                          ;  imul cl              ;!? F6 E9
+ F7 E9                          ;  imul ecx             ;!? F7 E9
+ F6 29                          ;  imul byte  [ecx]     ;!? F6 29
+ F7 29                          ;  imul dword [ecx]     ;!? F7 29
+ 0F AF 0A                       ;  imul ecx,[edx]       ;!? 0F AF 0A
+ 69 CA E8 03 00 00              ;  imul ecx,edx,1000    ;!? 69 CA E8 03 00 00
+ 69 0A E8 03 00 00              ;  imul ecx,[edx],1000  ;!? 69 0A E8 03 00 00
+                                ;  ;---------------------;
+ E4 18                          ;  in al,24             ;!? E4 18
+ E5 18                          ;  in eax,24            ;!? E5 18
+ EC                             ;  in al,dx             ;!? EC
+ ED                             ;  in eax,dx            ;!? ED
+                                ;  ;---------------------;
+ FF C1                          ;  inc ecx              ;!? FF C1
+ FF 01                          ;  inc [ecx]            ;!? FF 01
+                                ;  ;---------------------;
+ 6C                             ;  insb                 ;!? 6C
+ 6D                             ;  insw                 ;!? 6D
+ 6D                             ;  insd                 ;!? 6D
+                                ;  ;---------------------;
+ CC                             ;  int 3                ;!? CC
+ CD 10                          ;  int 16               ;!? CD 10
+ ce                             ;  into                 ;!? CE
+ 0f 08                          ;  invd                 ;!? 0F 08
+ cf                             ;  iret                 ;!? CF
+                                ;  ;---------------------;
+ 72 g v                         ;  jb   v               ;!? 72 g v
+ 77 g v                         ;  ja   v               ;!? 77 g v
+ 74 g v                         ;  jz   v               ;!? 74 g v
+ 7C g v                         ;  jl   v               ;!? 7C g v
+ 7F g v                         ;  jg   v               ;!? 7F g v
+ 78 g v                         ;  js   v               ;!? 78 g v
+ 70 g v                         ;  jo   v               ;!? 70 g v
+ 7A g v                         ;  jpe  v               ;!? 7A g v
+                                ;  ;---------------------;
+ 76 g v                         ;  jbe  v               ;!? 76 g v
+ 73 g v                         ;  jae  v               ;!? 73 g v
+ 75 g v                         ;  jnz  v               ;!? 75 g v
+ 7E g v                         ;  jle  v               ;!? 7E g v
+ 7D g v                         ;  jge  v               ;!? 7D g v
+ 79 g v                         ;  jns  v               ;!? 79 g v
+ 71 g v                         ;  jno  v               ;!? 71 g v
+ 7B g v                         ;  jpo  v               ;!? 7B g v
+                                ;  ;---------------------;
+ 0F 82 gl v                     ;  jb  long v           ;!? 0F 82 gl v
+ 0F 87 gl v                     ;  ja  long v           ;!? 0F 87 gl v
+ 0F 84 gl v                     ;  jz  long v           ;!? 0F 84 gl v
+ 0F 8C gl v                     ;  jl  long v           ;!? 0F 8C gl v
+ 0F 8F gl v                     ;  jg  long v           ;!? 0F 8F gl v
+ 0F 88 gl v                     ;  js  long v           ;!? 0F 88 gl v
+ 0F 80 gl v                     ;  jo  long v           ;!? 0F 80 gl v
+ 0F 8A gl v                     ;  jpe long v           ;!? 0F 8A gl v
+                                ;  ;---------------------;
+ E3 g v                         ;  jcxz v               ;!? E3 g v
+                                ;  ;---------------------;
+ EB g v                         ;  jmp v                ;!? eb g v
+ E9 gl v                        ;  jmp long v           ;!? e9 gl v
+ FF E1                          ;  jmp ecx              ;!? ff e1
+ FF 21                          ;  jmp [ecx]            ;!? ff 21
+ E9 00 00 00 00                 ;  jmp 0                ;!? e9 00 00 00 00
+ E9  00 00 00 00                ;  jmp long 0           ;!? e9 00 00 00 00
+ EB  00                         ;  jmp short 0          ;!? eb 00
+ EB g v                         ;  jmp v                ;!? eb g v
+ E9 gl v                        ;  jmp long v           ;!? e9 gl v
+ FF 28                          ;  jmp far [eax]        ;!? ff 28
+ 26 FF 28                       ;  jmp far es:[eax]     ;!? 26 ff 28
+ EA E8 03 00 00 64 00           ;  jmp far 1000:100     ;!? ea e8 03 00 00 64 00
+                                ;  ;---------------------;
+ 9f                             ;  lahf                 ;!? 9f
+                                ;  ;---------------------;
+ 0f 02 D1                       ;  lar edx,ecx          ;!? 0f 02 d1
+ 0f 02 11                       ;  lar edx,[ecx]        ;!? 0f 02 11
+                                ;  ;---------------------;
+ 0f AE 91                       ;  ldmxcsr [ecx]        ;!? 0F AE 91
+                                ;  ;---------------------;
+ C5 11                          ;  lds edx,[ecx]        ;!? C5 11
+ 0f B2 11                       ;  lss edx,[ecx]        ;!? 0F B2 11
+ C4 11                          ;  les edx,[ecx]        ;!? C4 11
+ 0f B4 11                       ;  lfs edx,[ecx]        ;!? 0F B4 11
+ 0f B5 11                       ;  lgs edx,[ecx]        ;!? 0F B5 11
+                                ;  ;---------------------;
+ 8D 11                          ;  lea edx,[ecx]        ;!? 8D 11
+                                ;  ;---------------------;
+ C9                             ;  leave                ;!? C9
+                                ;  ;---------------------;
+ 0f 01 11                       ;  lgdt [ecx]           ;!? 0F 01 11
+ 0f 01 19                       ;  lidt [ecx]           ;!? 0F 01 19
+ 0f 00 11                       ;  lldt [ecx]           ;!? 0F 00 11
+ 0f 00 D1                       ;  lldt ecx             ;!? 0F 00 D1
+ 0f 01 31                       ;  lmsw [ecx]           ;!? 0F 01 31
+ 0f 01 F1                       ;  lmsw ecx             ;!? 0F 01 F1
+                                ;  ;---------------------;
+ f0                             ;  lock                 ;!? F0
+ AC                             ;  lods                 ;!? AC
+ AC                             ;  lodsb                ;!? AC
+ AD                             ;  lodsw                ;!? AD
+ AD                             ;  lodsd                ;!? AD
+ (                              ;  (
+                                ;  ;!? (
+ E2 r                           ;  loop                ;!? E2 r
+ E1 r                           ;  loope               ;!? E1 r
+ E1 r                           ;  loopz               ;!? E1 r
+ E0 r                           ;  loopne              ;!? E0 r
+ E0 r                           ;  loopnz              ;!? E0 R
+ )                              ;  )
+                                ;  ;!? )
+                                ;  ;---------------------;
+ 0f 03 D1                       ;  lsl edx,ecx          ;!? 0F 03 D1
+ 0f 03 11                       ;  lsl edx,[ecx]        ;!? 0F 03 11
+                                ;  ;---------------------;
+ 0f 00 D9                       ;  ltr ecx              ;!? 0F 00 D9
+ 0f 00 19                       ;  ltr [ecx]            ;!? 0F 00 19
+                                ;  ;---------------------;
+ 0f F7 D1                       ;  maskmovq mm2,mm1     ;!? 0F F7 D1
+                                ;  ;---------------------;
+ 0f 5F D1                       ;  maxps xmm2,xmm1      ;!? 0F 5F D1
+ 0f 5F 11                       ;  maxps xmm2,[ecx]     ;!? 0F 5F 11
+ f3 0f 5F D1                    ;  maxss xmm2,xmm1      ;!? F3 0F 5F D1
+ f3 0f 5F 11                    ;  maxss xmm2,[ecx]     ;!? F3 0F 5F 11
+ 0f 5D D1                       ;  minps xmm2,xmm1      ;!? 0F 5D D1
+ 0f 5D 11                       ;  minps xmm2,[ecx]     ;!? 0F 5D 11
+ f3 0f 5D D1                    ;  minss xmm2,xmm1      ;!? F3 0F 5D D1
+ f3 0f 5D 11                    ;  minss xmm2,[ecx]     ;!? F3 0F 5D 11
+                                ;  ;---------------------;
+ 8A D1                          ;  mov dl,cl            ;!? 8a d1
+ 8B D1                          ;  mov edx,ecx          ;!? 8b d1
+ 8A F5                          ;  mov dh,ch            ;!? 8a f5
+ 8B 11                          ;  mov edx,[ecx]        ;!? 8b 11
+ 89 11                          ;  mov [ecx],edx        ;!? 89 11
+                                ;  ;---------------------;
+ 8B 13                          ;  mov edx,[ebx]        ;!? 8b 13
+ 8B 53 04                       ;  mov edx,[ebx+4]      ;!? 8b 53 04
+ 8B 53 FC                       ;  mov edx,[ebx-4]      ;!? 8b 53 fc
+ 8B 93 00 02 00 00              ;  mov edx,[ebx+512]    ;!? 8b 93 00 02 00 00
+ 89 93 00 02 00 00              ;  mov [ebx+512],edx    ;!? 89 93 00 02 00 00
+                                ;  ;---------------------;
+ 8B 14 25 E8 03 00 00           ;  mov edx,[1000]       ;!? 8b 14 25 e8 03 00 00
+ 8B 55 00                       ;  mov edx,[ebp]        ;!? 8b 55 00
+ 89 55 00                       ;  mov [ebp],edx        ;!? 89 55 00
+ 8B 14 24                       ;  mov edx,[esp]        ;!? 8b 14 24
+ 8B 55 04                       ;  mov edx,[ebp+4]      ;!? 8b 55 04
+ 8B 54 24 04                    ;  mov edx,[esp+4]      ;!? 8b 54 24 04
+                                ;  ;---------------------;
+ 8B 54 8D 00                    ;  mov edx,[ebp+ecx*4]   ;!? 8b 54 8d 00 
+ 8B 54 0D 20                    ;  mov edx,[ebp+ecx*1+32];!? 8b 54 0d 20
+ 8B 54 4D 20                    ;  mov edx,[ebp+ecx*2+32];!? 8b 54 4d 20
+ 8B 54 8D 20                    ;  mov edx,[ebp+ecx*4+32];!? 8b 54 8d 20
+ 8B 54 CD 20                    ;  mov edx,[ebp+ecx*8+32];!? 8b 54 cd 20
+                                ;  ;---------------------;
+ 8B 14 8B                       ;  mov edx,[ebx+ecx*4]   ;!? 8b 14 8b
+ 8B 54 0B 20                    ;  mov edx,[ebx+ecx*1+32];!? 8b 54 0b 20
+ 8B 54 4B 20                    ;  mov edx,[ebx+ecx*2+32];!? 8b 54 4b 20
+ 8B 54 8B 20                    ;  mov edx,[ebx+ecx*4+32];!? 8b 54 8b 20
+ 8B 54 CB 20                    ;  mov edx,[ebx+ecx*8+32];!? 8b 54 cb 20
+                                ;  ;---------------------;
+ 8B 14 0D 00 00 00 00           ;  mov edx,[ecx*1]      ;!? 8b 14 0d 00 00 00 00
+ 8B 14 4D 00 00 00 00           ;  mov edx,[ecx*2]      ;!? 8b 14 4d 00 00 00 00
+ 8B 14 8D 00 00 00 00           ;  mov edx,[ecx*4]      ;!? 8b 14 8d 00 00 00 00
+ 8B 14 CD 00 00 00 00           ;  mov edx,[ecx*8]      ;!? 8b 14 cd 00 00 00 00
+                                ;  ;---------------------;
+ 8B 14 00                       ;  mov edx,[eax+eax]    ;!? 8b 14 00
+ 8B 14 08                       ;  mov edx,[eax+ecx]    ;!? 8b 14 08
+ 8B 14 10                       ;  mov edx,[eax+edx]    ;!? 8b 14 10
+ 8B 14 18                       ;  mov edx,[eax+ebx]    ;!? 8b 14 18
+                                ;  ;---------------------;
+ 8B 45 00                       ;  mov eax,[ebp]        ;!? 8b 45 00
+ 8B 04 2C                       ;  mov eax,[ebp+esp]    ;!? 8b 04 2C 
+ 8B 04 2C                       ;  mov eax,[esp+ebp]    ;!? 8b 04 2c
+                                ;  ;---------------------;
+ 8B 04 6D 00 00 00 00           ;  mov eax,[ebp*2]      ;!? 8B 04 6D 00 00 00 00
+ 8B 04 25 00 04 00 00           ;  mov eax,[1024 ]         ;!? 8B 04 25 00 04 00 00
+ 8B 01                          ;  mov eax,[ecx]         ;!? 8B 01
+ 8B 45 00                       ;  mov eax,[ebp]         ;!? 8B 45 00
+ 8B 45 04                       ;  mov eax,[ebp+4]       ;!? 8B 45 04
+ 8B 04 24                       ;  mov eax,[esp]         ;!? 8B 04 24
+ 8B 41 04                       ;  mov eax,[ecx+4]       ;!? 8B 41 04 
+ 8B 04 4D 00 00 00 00           ;  mov eax,[ecx*2]       ;!? 8B 04 4D 00 00 00 00
+ 8B 04 48                       ;  mov eax,[eax+ecx*2]   ;!? 8B 04 48
+ 8B 44 4D 00                    ;  mov eax,[ebp+ecx*2]   ;!? 8B 44 4d 00
+ 8B 44 4D 64                    ;  mov eax,[ebp+ecx*2+100] ;!? 8B 44 4d 64
+                                ;  ;---------------------;-
+ C6 00 0C                       ;  mov  byte [eax],12    ;!? C6 00 0C
+ C7 00 0C 00 00 00              ;  mov [eax],12          ;!? C7 00 0C 00 00 00
+ C7 04 81 FF FF FF FF           ;  mov [ecx+eax*4],-1    ;!? C7 04 81 FF FF FF FF
+ C7 44 81 64 FF FF FF FF        ;  mov [ecx+eax*4+100],-1  ;!? C7 44 81 64 FF FF FF FF
+ C7 84 81 E8 03 00 00 FF FF FF FF;  mov [ecx+eax*4+1000],-1 ;!? C7 84 81 E8 03 00 00 FF FF FF FF
+                                ;  ;---------------------;
+ C6 C2 05                       ;  mov dl,  5           ;!? c6 c2 05
+ C6 C2 FB                       ;  mov dl, -5           ;!? c6 c2 fb
+ C7 C2 05 00 00 00              ;  mov edx, 5           ;!? c7 c2 05 00 00 00
+ C7 C2 FB FF FF FF              ;  mov edx,-5           ;!? c7 c2 fb ff ff ff
+ C7 02 FB FF FF FF              ;  mov [edx],-5         ;!? c7 02 fb ff ff ff
+ C7 45 00 FB FF FF FF           ;  mov [ebp],-5         ;!? c7 45 00 fb ff ff ff
+                                ;  ;---------------------;
+ C6 84 0D E8 03 00 00 FF        ;  mov byte  [ebp+ecx*1+1000],-1 ;!? C6 84 0D E8 03 00 00 FF
+ C7 84 8D E8 03 00 00 FF FF FF FF;  mov dword [ebp+ecx*4+1000],-1 ;!? C7 84 8D E8 03 00 00 FF FF FF 
+                                ;  ;---------------------;
+ 0F 22 C1                       ;  mov cr0,ecx          ;!? 0F 22 C1
+ 0F 22 C9                       ;  mov cr2,ecx          ;!? 0F 22 C9
+ 0F 22 D1                       ;  mov cr3,ecx          ;!? 0F 22 D1
+ 0F 22 D9                       ;  mov cr4,ecx          ;!? 0F 22 D9
+ 0F 20 C1                       ;  mov ecx,cr0          ;!? 0F 20 C1
+ 0F 20 C9                       ;  mov ecx,cr2          ;!? 0F 20 C9
+ 0F 20 D1                       ;  mov ecx,cr3          ;!? 0F 20 D1
+ 0F 20 D9                       ;  mov ecx,cr4          ;!? 0F 20 D9
+                                ;  ;---------------------;
+ 0F 23 C1                       ;  mov dr0,ecx          ;!? 0F 23 C1
+ 0F 23 C9                       ;  mov dr1,ecx          ;!? 0F 23 C9
+ 0F 23 D1                       ;  mov dr2,ecx          ;!? 0F 23 D1
+ 0F 23 D9                       ;  mov dr3,ecx          ;!? 0F 23 D9
+ 0F 21 C1                       ;  mov ecx,dr0          ;!? 0F 21 C1
+ 0F 21 C9                       ;  mov ecx,dr1          ;!? 0F 21 C9
+ 0F 21 D1                       ;  mov ecx,dr2          ;!? 0F 21 D1
+ 0F 21 D9                       ;  mov ecx,dr3          ;!? 0F 21 D9
+                                ;  ;---------------------;
+ 8E D9                          ;  mov ds,ecx           ;!? 8E D9
+ 8E C1                          ;  mov es,ecx           ;!? 8E C1
+ 8C D9                          ;  mov ecx,ds           ;!? 8C D9
+ 8C C1                          ;  mov ecx,es           ;!? 8C C1
+ 8E 19                          ;  mov ds,[ecx]         ;!? 8E 19
+ 8E 01                          ;  mov es,[ecx]         ;!? 8E 01
+ 8C 19                          ;  mov [ecx],ds         ;!? 8C 19
+ 8C 01                          ;  mov [ecx],es         ;!? 8C 01
+                                ;  ;---------------------;
+ 0f 28 C1                       ;  movaps xmm0,xmm1     ;!? 0f 28 c1
+ 0f 28 01                       ;  movaps xmm0,[ecx]    ;!? 0f 28 01
+ 0f 29 01                       ;  movaps [ecx],xmm0    ;!? 0f 29 01
+                                ;  ;---------------------;
+ 0F 6E C1                       ;  movd   mm0,mm1       ;!? 0f 6e c1
+ 0F 6E 01                       ;  movd   mm0,[ecx]     ;!? 0f 6e 01
+ 0F 7E 01                       ;  movd   [ecx],mm0     ;!? 0f 7e 01
+                                ;  ;---------------------;
+ 0f 12 C1                       ;  movhlps xmm0,xmm1    ;!? 0f 12 c1
+ 0f 16 01                       ;  movhps  xmm0,[ecx]   ;!? 0f 16 01
+ 0f 17 01                       ;  movhps  [ecx],xmm0   ;!? 0f 17 01
+ 0f 16 C1                       ;  movlhps xmm0,xmm1    ;!? 0f 16 c1
+ 0f 12 01                       ;  movlps  xmm0,[ecx]   ;!? 0f 12 01
+ 0f 13 01                       ;  movlps  [ecx],xmm0   ;!? 0f 13 01
+                                ;  ;---------------------;
+ 0f 50 C1                       ;  movmskps eax,xmm1    ;!? 0f 50 c1
+ 0f 2B 01                       ;  movntps  [ecx],xmm0  ;!? 0f 2b 01
+ 0f E7 01                       ;  movntq   [ecx],xmm0  ;!? 0f e7 01
+                                ;  ;---------------------;
+ 0F 6F C1                       ;  movq mm0,mm1         ;!? 0F 6F C1
+ 0F 6F 01                       ;  movq mm0,[ecx]       ;!? 0F 6F 01
+ 0F 7F 01                       ;  movq [ecx],mm0       ;!? 0F 7F 01
+                                ;  ;---------------------;
+ A4                             ;  movs                 ;!? A4
+ A4                             ;  movs                 ;!? A4
+ A5                             ;  movsw                ;!? A5
+ A5                             ;  movsd                ;!? A5
+                                ;  ;---------------------;
+ f3 0f 10 C1                    ;  movss xmm0,xmm1      ;!? f3 0f 10 c1
+ f3 0f 10 01                    ;  movss xmm0,[ecx]     ;!? f3 0f 10 01
+ f3 0f 11 01                    ;  movss [ecx],xmm0     ;!? f3 0f 11 01
+                                ;  ;---------------------;
+ 0F BE C1                       ;  movsx eax,cl         ;!? 0f be c1
+ 0F BF C1                       ;  movsx word eax,ecx   ;!? 0f bf c1
+ 0F BE 01                       ;  movsx byte eax,[ecx] ;!? 0f be 01
+ 0F BF 01                       ;  movsx word eax,[ecx] ;!? 0f bf 01
+                                ;  ;---------------------;
+ 0f 10 C1                       ;  movups xmm0,xmm1     ;!? 0f 10 c1
+ 0f 10 01                       ;  movups xmm0,[ecx]    ;!? 0f 10 01
+ 0f 11 01                       ;  movups [ecx],xmm0    ;!? 0f 11 01
+                                ;  ;---------------------;
+ 0F B6 C1                       ;  movzx eax,cl         ;!? 0f b6 c1
+ 0F B7 C1                       ;  movzx word eax,ecx   ;!? 0f b7 c1
+ 0F B6 01                       ;  movzx byte eax,[ecx] ;!? 0f b6 01
+ 0F B7 01                       ;  movzx word eax,[ecx] ;!? 0f b7 01 
+                                ;  ;---------------------;
+ F6 E1                          ;  mul cl               ;!? f6 e1
+ F7 E1                          ;  mul ecx              ;!? f7 e1
+ F7 21                          ;  mul dword [ecx]      ;!? f7 21
+ F6 21                          ;  mul byte [ecx]       ;!? f6 21
+                                ;  ;---------------------;
+ 0f 59 C1                       ;  mulps xmm0,xmm1      ;!? 0f 59 c1
+ 0f 59 01                       ;  mulps xmm0,[ecx]     ;!? 0f 59 01
+ f3 0f 59 C1                    ;  mulss xmm0,xmm1      ;!? f3 0f 59 c1
+ f3 0f 59 01                    ;  mulss xmm0,[ecx]     ;!? f3 0f 59 01
+                                ;  ;---------------------;
+ F6 D9                          ;  neg cl               ;!? f6 d9
+ F7 D9                          ;  neg ecx              ;!? f7 d9
+ F6 19                          ;  neg byte [ecx]       ;!? f6 19
+ F7 19                          ;  neg dword [ecx]      ;!? f7 19
+                                ;  ;---------------------;
+ 90                             ;  nop                  ;!? 90
+                                ;  ;---------------------;
+ F6 D1                          ;  not cl               ;!? f6 d1
+ F7 D1                          ;  not ecx              ;!? f7 d1
+ F6 11                          ;  not byte [ecx]       ;!? f6 11
+ F7 11                          ;  not dword [ecx]      ;!? f7 11
+                                ;  ;---------------------;
+ 80 CC 0A                       ;  or ah,10             ;!? 80 cc 0a
+ 80 CC F6                       ;  or ah,-10            ;!? 80 cc f6
+ 81 CA E8 03 00 00              ;  or edx,1000          ;!? 81 ca e8 03 00 00
+ 80 0A 0A                       ;  or byte [edx],10     ;!? 80 0a 0a
+ 81 0A E8 03 00 00              ;  or dword [edx],1000  ;!? 81 0a e8 03 00 00
+ 08 0A                          ;  or [edx],cl          ;!? 08 0a
+ 09 0A                          ;  or [edx],ecx         ;!? 09 0a
+ 0A 0A                          ;  or cl,[edx]          ;!? 0a 0a
+ 0B 0A                          ;  or ecx,[edx]         ;!? 0b 0a
+                                ;  ;---------------------;
+ 0f 56 C1                       ;  orps xmm0,xmm1       ;!? 0f 56 c1
+ 0f 56 01                       ;  orps xmm0,[ecx]      ;!? 0f 56 01
+                                ;  ;---------------------;
+ E6 04                          ;  out 4,al             ;!? e6 04
+ E7 04                          ;  out 4,eax            ;!? e7 04
+ EE                             ;  out dx,al            ;!? ee
+ EF                             ;  out dx,eax           ;!? ef
+                                ;  ;---------------------;
+ 6E                             ;  outs                 ;!? 6e
+ 6E                             ;  outsb                ;!? 6e
+ 6F                             ;  outsw                ;!? 6f
+ 6F                             ;  outsd                ;!? 6f
+                                ;  ;---------------------;
+ 0F 63 C1                       ;  packsswb mm0,mm1     ;!? 0f 63 c1
+ 0F 63 01                       ;  packsswb mm0,[ecx]   ;!? 0f 63 01
+ 0F 6B C1                       ;  packssdw mm0,mm1     ;!? 0f 6b c1
+ 0F 6B 01                       ;  packssdw mm0,[ecx]   ;!? 0f 6b 01
+ 0F 67 C1                       ;  packuswb mm0,mm1     ;!? 0f 67 c1
+ 0F 67 01                       ;  packuswb mm0,[ecx]   ;!? 0f 67 01
+ 0F FC C1                       ;  paddb mm0,mm1        ;!? 0f fc c1
+ 0F FC 01                       ;  paddb mm0,[ecx]      ;!? 0f fc 01
+ 0F FD C1                       ;  paddw mm0,mm1        ;!? 0f fd c1
+ 0F FD 01                       ;  paddw mm0,[ecx]      ;!? 0f fd 01
+ 0F FE C1                       ;  paddd mm0,mm1        ;!? 0f fe c1
+ 0F FE 01                       ;  paddd mm0,[ecx]      ;!? 0f fe 01
+ 0F EC C1                       ;  paddsb mm0,mm1       ;!? 0f ec c1
+ 0F EC 01                       ;  paddsb mm0,[ecx]     ;!? 0f ec 01
+ 0F ED C1                       ;  paddsw mm0,mm1       ;!? 0f ed c1
+ 0F ED 01                       ;  paddsw mm0,[ecx]     ;!? 0f ed 01
+ 0F DC C1                       ;  paddusb mm0,mm1      ;!? 0f dc c1
+ 0F DC 01                       ;  paddusb mm0,[ecx]    ;!? 0f dc 01
+ 0F DD C1                       ;  paddusw mm0,mm1      ;!? 0f dd c1
+ 0F DD 01                       ;  paddusw mm0,[ecx]    ;!? 0f dd 01
+ 0F DB C1                       ;  pand mm0,mm1         ;!? 0f db c1
+ 0F DB 01                       ;  pand mm0,[ecx]       ;!? 0f db 01
+ 0F DF C1                       ;  pandn mm0,mm1        ;!? 0f df c1
+ 0F DF 01                       ;  pandn mm0,[ecx]      ;!? 0f df 01
+ 0f E0 C1                       ;  pavgb mm0,mm1        ;!? 0f e0 c1
+ 0f E0 01                       ;  pavgb mm0,[ecx]      ;!? 0f e0 01
+ 0f E3 C1                       ;  pavgw mm0,mm1        ;!? 0f e3 c1
+ 0f E3 01                       ;  pavgw mm0,[ecx]      ;!? 0f e3 01
+ 0F 74 C1                       ;  pcmpeqb mm0,mm1      ;!? 0f 74 c1
+ 0F 74 01                       ;  pcmpeqb mm0,[ecx]    ;!? 0f 74 01
+ 0F 75 C1                       ;  pcmpeqw mm0,mm1      ;!? 0f 75 c1
+ 0F 75 01                       ;  pcmpeqw mm0,[ecx]    ;!? 0f 75 01
+ 0F 76 C1                       ;  pcmpeqd mm0,mm1      ;!? 0f 76 c1
+ 0F 76 01                       ;  pcmpeqd mm0,[ecx]    ;!? 0f 76 01
+ 0F 64 C1                       ;  pcmpgtb mm0,mm1      ;!? 0f 64 c1
+ 0F 64 01                       ;  pcmpgtb mm0,[ecx]    ;!? 0f 64 01
+ 0F 65 C1                       ;  pcmpgtw mm0,mm1      ;!? 0f 65 c1
+ 0F 65 01                       ;  pcmpgtw mm0,[ecx]    ;!? 0f 65 01
+ 0F 66 C1                       ;  pcmpgtd mm0,mm1      ;!? 0f 66 c1
+ 0F 66 01                       ;  pcmpgtd mm0,[ecx]    ;!? 0f 66 01
+                                ;  ;---------------------;
+ 0f C5 C8 02                    ;  pextrw eax,mm1,2     ;!? 0f c5 c8 02
+ 0f C4 C8 02                    ;  pinsrw mm1,eax,2     ;!? 0f c4 c8 02
+                                ;  ;---------------------;
+ 0F F5 C1                       ;  pmaddwd mm0,mm1      ;!? 0f f5 c1
+ 0F F5 01                       ;  pmaddwd mm0,[ecx]    ;!? 0f f5 01
+ 0f EE C1                       ;  pmaxsw mm0,mm1       ;!? 0f ee c1
+ 0f EE 01                       ;  pmaxsw mm0,[ecx]     ;!? 0f ee 01
+ 0f DE C1                       ;  pmaxub mm0,mm1       ;!? 0f de c1
+ 0f DE 01                       ;  pmaxub mm0,[ecx]     ;!? 0f de 01
+ 0f EA C1                       ;  pminsw mm0,mm1       ;!? 0f ea c1
+ 0f EA 01                       ;  pminsw mm0,[ecx]     ;!? 0f ea 01
+ 0f DA C1                       ;  pminub mm0,mm1       ;!? 0f da c1
+ 0f DA 01                       ;  pminub mm0,[ecx]     ;!? 0f da 01
+                                ;  ;---------------------;
+ 0f D7 C8                       ;  pmovmskb eax,mm1     ;!? 0f d7 C8
+ 0f D7 D1                       ;  pmovmskb ecx,mm2     ;!? 0f d7 D1
+                                ;  ;---------------------;
+ 0F E4 C1                       ;  pmulhuw mm0,mm1      ;!? 0f e4 c1
+ 0F E4 01                       ;  pmulhuw mm0,[ecx]    ;!? 0f e4 01
+ 0F E5 C1                       ;  pmulhw mm0,mm1       ;!? 0f e5 c1
+ 0F E5 01                       ;  pmulhw mm0,[ecx]     ;!? 0f e5 01
+ 0F D5 C1                       ;  pmullw mm0,mm1       ;!? 0f d5 c1
+ 0F D5 01                       ;  pmullw mm0,[ecx]     ;!? 0f d5 01
+                                ;  ;---------------------;
+ 59                             ;  pop ecx              ;!? 59
+ 8F 01                          ;  pop [ecx]            ;!? 8f 01
+ 1f                             ;  pop ds               ;!? 1f
+ 07                             ;  pop es               ;!? 07
+ 17                             ;  pop ss               ;!? 17
+ 0F A1                          ;  pop fs               ;!? 0f a1
+ 0F A9                          ;  pop gs               ;!? 0f a9
+ 61                             ;  popa                 ;!? 61
+ 9d                             ;  popf                 ;!? 9d
+                                ;  ;---------------------;
+ 0F EB C1                       ;  por mm0,mm1          ;!? 0f eb c1
+ 0F EB 01                       ;  por mm0,[ecx]        ;!? 0f eb 01
+                                ;  ;---------------------;
+ 0f 18 41                       ;  prefetcht0  [ecx]    ;!? 0f 18 41
+ 0f 18 81                       ;  prefetcht1  [ecx]    ;!? 0f 18 81
+ 0f 18 C1                       ;  prefetcht2  [ecx]    ;!? 0f 18 c1
+ 0f 18 01                       ;  prefetchnta [ecx]    ;!? 0f 18 01
+                                ;  ;---------------------;
+ 0f F6 C1                       ;  psadbw mm0,mm1       ;!? 0f f6 c1
+ 0f F6 01                       ;  psadbw mm0,[ecx]     ;!? 0f f6 01
+ 0f 70 C1 02                    ;  pshufw mm0,mm1,  2   ;!? 0f 70 c1 02
+ 0f 70 01 02                    ;  pshufw mm0,[ecx],  2   ;!? 0f 70 01 02
+                                ;  ;---------------------;
+ 0F F1 C1                       ;  psllw mm0,mm1        ;!? 0F F1 C1
+ 0F F1 01                       ;  psllw mm0,[ecx]      ;!? 0F F1 01
+ 0F 71 F0 20                    ;  psllw mm0,32         ;!? 0F 71 F0 20
+ 0F F1 D1                       ;  psllw mm2,mm1        ;!? 0F F1 D1
+ 0F F1 11                       ;  psllw mm2,[ecx]      ;!? 0F F1 11
+ 0F 71 F2 20                    ;  psllw mm2,32         ;!? 0F 71 F2 20
+                                ;  ;---------------------;
+ 0F F2 C1                       ;  pslld mm0,mm1        ;!? 0F F2 C1
+ 0F F2 01                       ;  pslld mm0,[ecx]      ;!? 0F F2 01
+ 0F 72 F0 20                    ;  pslld mm0,32         ;!? 0F 72 F0 20
+ 0F F2 D1                       ;  pslld mm2,mm1        ;!? 0F F2 D1
+ 0F F2 11                       ;  pslld mm2,[ecx]      ;!? 0F F2 11
+ 0F 72 F2 20                    ;  pslld mm2,32         ;!? 0F 72 F2 20
+                                ;  ;---------------------;
+ 0F F3 C1                       ;  psllq mm0,mm1        ;!? 0f f3 c1
+ 0F F3 01                       ;  psllq mm0,[ecx]      ;!? 0f f3 01
+ 0F 73 F0 20                    ;  psllq mm0,32         ;!? 0f 73 f0 20
+ 0F F3 D1                       ;  psllq mm2,mm1        ;!? 0f f3 d1
+ 0F F3 11                       ;  psllq mm2,[ecx]      ;!? 0f f3 11
+ 0F 73 F2 20                    ;  psllq mm2,32         ;!? 0f 73 f2 20
+                                ;  ;---------------------;
+ 0F E1 C1                       ;  psraw mm0,mm1        ;!? 0f e1 c1
+ 0F E1 01                       ;  psraw mm0,[ecx]      ;!? 0f e1 01
+ 0F 71 E0 20                    ;  psraw mm0,32         ;!? 0f 71 e0 20
+                                ;  ;---------------------;
+ 0F E2 C1                       ;  psrad mm0,mm1        ;!? 0f e2 c1
+ 0F E2 01                       ;  psrad mm0,[ecx]      ;!? 0f e2 01
+ 0F 72 E0 20                    ;  psrad mm0,32         ;!? 0f 72 e0 20
+                                ;  ;---------------------;
+ 0F D1 C1                       ;  psrlw mm0,mm1        ;!? 0f d1 c1
+ 0F D1 01                       ;  psrlw mm0,[ecx]      ;!? 0f d1 01
+ 0F 71 D0 20                    ;  psrlw mm0,32         ;!? 0f 71 d0 20
+                                ;  ;---------------------;
+ 0F D2 C1                       ;  psrld mm0,mm1        ;!? 0f d2 c1
+ 0F D2 01                       ;  psrld mm0,[ecx]      ;!? 0f d2 01
+ 0F 72 D0 20                    ;  psrld mm0,32         ;!? 0f 72 d0 20
+                                ;  ;---------------------;
+ 0F D3 C1                       ;  psrlq mm0,mm1        ;!? 0f d3 c1
+ 0F D3 01                       ;  psrlq mm0,[ecx]      ;!? 0f d3 01
+ 0F 73 D0 20                    ;  psrlq mm0,32         ;!? 0f 73 d0 20
+                                ;  ;---------------------;
+ 0F F8 C1                       ;  psubb mm0,mm1        ;!? 0f f8 c1
+ 0F F8 01                       ;  psubb mm0,[ecx]      ;!? 0f f8 01
+ 0F F9 C1                       ;  psubw mm0,mm1        ;!? 0f f9 c1
+ 0F F9 01                       ;  psubw mm0,[ecx]      ;!? 0f f9 01
+ 0F FA C1                       ;  psubd mm0,mm1        ;!? 0f fa c1
+ 0F FA 01                       ;  psubd mm0,[ecx]      ;!? 0f fa 01
+                                ;  ;---------------------;
+ 0F E8 C1                       ;  psubsb mm0,mm1       ;!? 0f e8 c1
+ 0F E8 01                       ;  psubsb mm0,[ecx]     ;!? 0f e8 01
+ 0F E9 C1                       ;  psubsw mm0,mm1       ;!? 0f e9 c1
+ 0F E9 01                       ;  psubsw mm0,[ecx]     ;!? 0f e9 01
+                                ;  ;---------------------;
+ 0F D8 C1                       ;  psubusb mm0,mm1      ;!? 0f d8 c1
+ 0F D8 01                       ;  psubusb mm0,[ecx]    ;!? 0f d8 01
+ 0F D9 C1                       ;  psubusw mm0,mm1      ;!? 0f d9 c1
+ 0F D9 01                       ;  psubusw mm0,[ecx]    ;!? 0f d9 01
+                                ;  ;---------------------;
+ 0F 68 C1                       ;  punpckhbw mm0,mm1    ;!? 0f 68 c1
+ 0F 68 01                       ;  punpckhbw mm0,[ecx]  ;!? 0f 68 01
+ 0F 69 C1                       ;  punpckhwd mm0,mm1    ;!? 0f 69 c1
+ 0F 69 01                       ;  punpckhwd mm0,[ecx]  ;!? 0f 69 01
+ 0F 6A C1                       ;  punpckhdq mm0,mm1    ;!? 0f 6a c1
+ 0F 6A 01                       ;  punpckhdq mm0,[ecx]  ;!? 0f 6a 01
+                                ;  ;---------------------;
+ 0F 60 C1                       ;  punpcklbw mm0,mm1    ;!? 0f 60 c1
+ 0F 60 01                       ;  punpcklbw mm0,[ecx]  ;!? 0f 60 01
+ 0F 61 C1                       ;  punpcklwd mm0,mm1    ;!? 0f 61 c1
+ 0F 61 01                       ;  punpcklwd mm0,[ecx]  ;!? 0f 61 01
+ 0F 62 C1                       ;  punpckldq mm0,mm1    ;!? 0f 62 c1
+ 0F 62 01                       ;  punpckldq mm0,[ecx]  ;!? 0f 62 01
+                                ;  ;---------------------;
+ 68 E8 03 00 00                 ;  push 1000            ;!? 68 e8 03 00 00
+ 6A 0A                          ;  push 10              ;!? 6a 0a
+ 51                             ;  push ecx             ;!? 51
+ FF 31                          ;  push [ecx]           ;!? ff 31
+ 0e                             ;  push cs              ;!? 0e
+ 1e                             ;  push ds              ;!? 1e
+ 06                             ;  push es              ;!? 06
+ 16                             ;  push ss              ;!? 16
+ 0F A0                          ;  push fs              ;!? 0f a0
+ 0F A8                          ;  push gs              ;!? 0f a8
+ 60                             ;  pusha                ;!? 60
+ 9c                             ;  pushf                ;!? 9c
+                                ;  ;---------------------;
+ 0F EF C1                       ;  pxor mm0,mm1         ;!? 0f ef c1
+ 0F EF 01                       ;  pxor mm0,[ecx]       ;!? 0f ef 01
+                                ;  ;---------------------;
+ D0 D0                          ;  rcl al               ;!? d0 d0
+ C0 D0 02                       ;  rcl al,2             ;!? c0 d0 02
+ D2 D0                          ;  rcl al,cl            ;!? d2 d0
+ D1 D0                          ;  rcl eax              ;!? d1 d0
+ C1 D0 02                       ;  rcl eax,2            ;!? c1 d0 02
+ D3 D0                          ;  rcl eax,cl           ;!? d3 d0
+ D1 10                          ;  rcl [eax]            ;!? d1 10
+ C1 10 02                       ;  rcl [eax],2          ;!? c1 10 02
+ D3 10                          ;  rcl [eax],cl         ;!? d3 10
+ D2 10                          ;  rcl byte [eax],cl    ;!? d2 10
+                                ;  ;---------------------;
+ D0 D8                          ;  rcr al               ;!? d0 d8
+ C0 D8 02                       ;  rcr al,2             ;!? c0 d8 02
+ D2 D8                          ;  rcr al,cl            ;!? d2 d8
+ D1 D8                          ;  rcr eax              ;!? d1 d8
+ C1 D8 02                       ;  rcr eax,2            ;!? c1 d8 02
+ D3 D8                          ;  rcr eax,cl           ;!? d3 d8
+ D1 18                          ;  rcr [eax]            ;!? d1 18
+ C1 18 02                       ;  rcr [eax],2          ;!? c1 18 02
+ D3 18                          ;  rcr [eax],cl         ;!? d3 18
+ D2 18                          ;  rcr byte [eax],cl    ;!? d2 18
+                                ;  ;---------------------;
+ D0 C0                          ;  rol al               ;!? d0 c0
+ C0 C0 02                       ;  rol al,2             ;!? c0 c0 02
+ D2 C0                          ;  rol al,cl            ;!? d2 c0
+ D1 C0                          ;  rol eax              ;!? d1 c0
+ C1 C0 02                       ;  rol eax,2            ;!? c1 c0 02
+ D3 C0                          ;  rol eax,cl           ;!? d3 c0
+ D1 00                          ;  rol [eax]            ;!? d1 00
+ C1 00 02                       ;  rol [eax],2          ;!? c1 00 02
+ D3 00                          ;  rol [eax],cl         ;!? d3 00
+ D2 00                          ;  rol byte [eax],cl    ;!? d2 00
+                                ;  ;---------------------;
+ D0 C8                          ;  ror al               ;!? d0 c8
+ C0 C8 02                       ;  ror al,2             ;!? c0 c8 02
+ D2 C8                          ;  ror al,cl            ;!? d2 c8
+ D1 C8                          ;  ror eax              ;!? d1 c8
+ C1 C8 02                       ;  ror eax,2            ;!? c1 c8 02
+ D3 C8                          ;  ror eax,cl           ;!? d3 c8
+ D1 08                          ;  ror [eax]            ;!? d1 08
+ C1 08 02                       ;  ror [eax],2          ;!? c1 08 02
+ D3 08                          ;  ror [eax],cl         ;!? d3 08
+ D2 08                          ;  ror byte [eax],cl    ;!? d2 08
+                                ;  ;---------------------;
+ 0f 53 C1                       ;  rcpps xmm0,xmm1      ;!? 0f 53 c1
+ 0f 53 01                       ;  rcpps xmm0,[ecx]     ;!? 0f 53 01
+ f3 0f 53 C1                    ;  rcpss xmm0,xmm1      ;!? f3 0f 53 c1
+ f3 0f 53 01                    ;  rcpss xmm0,[ecx]     ;!? f3 0f 53 01
+                                ;  ;---------------------;
+ 0f 32                          ;  rdmsr                ;!? 0f 32
+ 0f 33                          ;  rdpmc                ;!? 0f 33
+ 0f 31                          ;  rdtsc                ;!? 0f 31
+                                ;  ;---------------------;
+ F3 6C                          ;  rep insb             ;!? f3 6c
+ F3 6D                          ;  rep insw             ;!? f3 6d
+ F3 6D                          ;  rep insd             ;!? f3 6d
+                                ;  ;---------------------;
+ F3 AC                          ;  rep lodsb            ;!? f3 ac
+ F3 AD                          ;  rep lodsw            ;!? f3 ad
+ F3 AD                          ;  rep lodsd            ;!? f3 ad
+                                ;  ;---------------------;
+ F3 A4                          ;  rep movsb            ;!? f3 a4
+ F3 A5                          ;  rep movsw            ;!? f3 a5
+ F3 A5                          ;  rep movsd            ;!? f3 a5
+                                ;  ;---------------------;!? ;!?  
+ F3 6E                          ;  rep outsb            ;!? f3 6e
+ F3 6F                          ;  rep outsw            ;!? f3 6f
+ F3 6F                          ;  rep outsd            ;!? f3 6f
+                                ;  ;---------------------;!? ;!? 
+ F3 AA                          ;  rep stosb            ;!? f3 aa
+ F3 AB                          ;  rep stosw            ;!? f3 ab
+ F3 AB                          ;  rep stosd            ;!? f3 ab
+                                ;  ;---------------------;!? ;!?  
+ F3 A6                          ;  rep cmpsb            ;!? f3 a6
+ F3 A7                          ;  rep cmpsw            ;!? f3 a7
+ F3 A7                          ;  rep cmpsd            ;!? f3 a7
+                                ;  ;---------------------;!? ;!?  
+ F3 AE                          ;  rep scasb            ;!? f3 ae
+ F3 AF                          ;  rep scasw            ;!? f3 af
+ F3 AF                          ;  rep scasd            ;!? f3 af
+                                ;  ;---------------------;
+ F2 A6                          ;  repne cmpsb          ;!? f2 a6
+ F2 A7                          ;  repne cmpsw          ;!? f2 a7
+ F2 A7                          ;  repne cmpsd          ;!? f2 a7
+                                ;  ;---------------------;
+ F2 AE                          ;  repne scasb          ;!? f2 ae
+ F2 AF                          ;  repne scasw          ;!? f2 af
+ F2 AF                          ;  repne scasd          ;!? f2 af
+                                ;  ;---------------------;
+ C3                             ;  ret                  ;!? c3
+ CB                             ;  ret far              ;!? cb
+ C2 00 02                       ;  ret 512              ;!? c2 00 02
+ CA 00 02                       ;  ret far 512          ;!? ca 00 02
+                                ;  ;---------------------;
+ 0f aa                          ;  rsm                  ;!? 0f aa
+                                ;  ;---------------------;
+ 0f 52 C1                       ;  rsqrtps xmm0,xmm1    ;!? 0f 52 c1
+ 0f 52 01                       ;  rsqrtps xmm0,[ecx]   ;!? 0f 52 01
+ f3 0f 52 C1                    ;  rsqrtss xmm0,xmm1    ;!? f3 0f 52 c1
+ f3 0f 52 01                    ;  rsqrtss xmm0,[ecx]   ;!? f3 0f 52 01
+                                ;  ;---------------------;
+ 9e                             ;  sahf                 ;!? 9e
+                                ;  ;---------------------;
+ D0 E0                          ;  sal al               ;!? d0 e0
+ C0 E0 02                       ;  sal al,2             ;!? c0 e0 02
+ D2 E0                          ;  sal al,cl            ;!? d2 e0
+ D1 E0                          ;  sal eax              ;!? d1 e0
+ C1 E0 02                       ;  sal eax,2            ;!? c1 e0 02
+ D3 E0                          ;  sal eax,cl           ;!? d3 e0
+ D1 20                          ;  sal [eax]            ;!? d1 20
+ C1 20 02                       ;  sal [eax],2          ;!? c1 20 02
+ D3 20                          ;  sal [eax],cl         ;!? d3 20
+ D2 20                          ;  sal byte [eax],cl    ;!? d2 20
+                                ;  ;---------------------;
+ D0 F8                          ;  sar al               ;!? d0 f8
+ C0 F8 02                       ;  sar al,2             ;!? c0 f8 02
+ D2 F8                          ;  sar al,cl            ;!? d2 f8
+ D1 F8                          ;  sar eax              ;!? d1 f8
+ C1 F8 02                       ;  sar eax,2            ;!? c1 f8 02
+ D3 F8                          ;  sar eax,cl           ;!? d3 f8
+ D1 38                          ;  sar [eax]            ;!? d1 38
+ C1 38 02                       ;  sar [eax],2          ;!? c1 38 02
+ D3 38                          ;  sar [eax],cl         ;!? d3 38
+ D2 38                          ;  sar byte [eax],cl    ;!? d2 38
+                                ;  ;---------------------;
+ D0 E0                          ;  shl al               ;!? d0 e0
+ C0 E0 02                       ;  shl al,2             ;!? c0 e0 02
+ D2 E0                          ;  shl al,cl            ;!? d2 e0
+ D1 E0                          ;  shl eax              ;!? d1 e0
+ C1 E0 02                       ;  shl eax,2            ;!? c1 e0 02
+ D3 E0                          ;  shl eax,cl           ;!? d3 e0
+ D1 20                          ;  shl [eax]            ;!? d1 20
+ C1 20 02                       ;  shl [eax],2          ;!? c1 20 02
+ D3 20                          ;  shl [eax],cl         ;!? d3 20
+ D2 20                          ;  shl byte [eax],cl    ;!? d2 20
+                                ;  ;---------------------;
+ D0 E8                          ;  shr al               ;!? d0 e8
+ C0 E8 02                       ;  shr al,2             ;!? c0 e8 02
+ D2 E8                          ;  shr al,cl            ;!? d2 e8
+ D1 E8                          ;  shr eax              ;!? d1 e8
+ C1 E8 02                       ;  shr eax,2            ;!? c1 e8 02
+ D3 E8                          ;  shr eax,cl           ;!? d3 e8
+ D1 28                          ;  shr [eax]            ;!? d1 28
+ C1 28 02                       ;  shr [eax],2          ;!? c1 28 02
+ D3 28                          ;  shr [eax],cl         ;!? d3 28
+ D2 28                          ;  shr byte [eax],cl    ;!? d2 28
+                                ;  ;---------------------;
+ 80 DC 0A                       ;  sbb ah,10            ;!? 80 DC 0A
+ 80 DC F6                       ;  sbb ah,-10           ;!? 80 DC F6
+ 81 DA E8 03 00 00              ;  sbb edx,1000         ;!? 81 DA  E8 03 00 00
+ 80 1A 0A                       ;  sbb byte [edx],10    ;!? 80 1A 0A
+ 81 1A E8 03 00 00              ;  sbb dword [edx],1000 ;!? 81 1A E8 03 00 00
+ 18 0A                          ;  sbb [edx],cl         ;!? 18 0A
+ 19 0A                          ;  sbb [edx],ecx        ;!? 19 0A
+ 1A 0A                          ;  sbb cl,[edx]         ;!? 1A 0A
+ 1B 0A                          ;  sbb ecx,[edx]        ;!? 1B 0A
+                                ;  ;---------------------;
+ AE                             ;  scasb                ;!? ae
+ AF                             ;  scasw                ;!? af
+ AF                             ;  scasd                ;!? af
+                                ;  ;---------------------;
+ 0F 94 C0                       ;  setz al              ;!? 0f 94 c0
+ 0F 94 00                       ;  setz byte [eax]      ;!? 0f 94 00
+ 0F 95 C0                       ;  setnz al             ;!? 0f 95 c0
+ 0F 95 00                       ;  setnz byte [eax]     ;!? 0f 95 00
+ 0F 94 C0                       ;  setz al              ;!? 0f 94 c0
+ 0F 94 01                       ;  setz byte [ecx]      ;!? 0f 94 01
+ 0F 95 C0                       ;  setnz al             ;!? 0f 95 c0
+ 0F 95 01                       ;  setnz byte [ecx]     ;!? 0f 95 01
+ 0F 92 C0                       ;  setb  al             ;!? 0F 92 C0
+ 0F 93 C0                       ;  setae al             ;!? 0F 93 C0
+ 0F 96 C0                       ;  setbe al             ;!? 0F 96 C0
+ 0F 97 C0                       ;  seta  al             ;!? 0F 97 C0
+ 0F 9C C0                       ;  setl  al             ;!? 0F 9C C0
+ 0F 9D C0                       ;  setge al             ;!? 0F 9D C0
+ 0F 9E C0                       ;  setle al             ;!? 0F 9E C0
+ 0F 9F C0                       ;  setg  al             ;!? 0F 9F C0
+ 0F 90 C0                       ;  seto  al             ;!? 0F 90 C0
+ 0F 91 C0                       ;  setno al             ;!? 0F 91 C0
+ 0F 98 C0                       ;  sets  al             ;!? 0F 98 C0
+ 0F 99 C0                       ;  setns al             ;!? 0F 99 C0
+ 0F 9A C0                       ;  setpe al             ;!? 0F 9A C0
+ 0F 9B C0                       ;  setpo al             ;!? 0F 9B C0
+                                ;  ;---------------------;
+ 0f ae f8                       ;  sfence               ;!? 0f ae f8
+                                ;  ;---------------------;
+ 0f 01 01                       ;  sgdt [ecx]           ;!? 0f 01 01
+ 0f 01 09                       ;  sidt [ecx]           ;!? 0f 01 09
+                                ;  ;---------------------;
+ 0F A4 C2 04                    ;  shld eax,edx,4       ;!? 0f a4 c2 04
+ 0F A5 C2                       ;  shld eax,edx,cl      ;!? 0f a5 c2
+ 0F A4 10 04                    ;  shld [eax],edx,4     ;!? 0f a4 10 04
+ 0F A5 10                       ;  shld [eax],edx,cl    ;!? 0f a5 10
+                                ;  ;---------------------;
+ 0F AC C2 04                    ;  shrd eax,edx,4       ;!? 0f ac c2 04
+ 0F AD C2                       ;  shrd eax,edx,cl      ;!? 0f ad c2
+ 0F AC 10 04                    ;  shrd [eax],edx,4     ;!? 0f ac 10 04
+ 0F AD 10                       ;  shrd [eax],edx,cl    ;!? 0f ad 10
+                                ;  ;---------------------;
+ 0f C6 C1 03                    ;  shufps xmm0,xmm1,03  ;!? 0f c6 c1 03
+ 0f C6 01 03                    ;  shufps xmm0,[ecx],03 ;!? 0f c6 01 03
+                                ;  ;---------------------;
+ 0f 00 C1                       ;  sldt ecx             ;!? 0f 00 c1
+ 0f 00 01                       ;  sldt [ecx]           ;!? 0f 00 01
+ 0f 01 E1                       ;  smsw ecx             ;!? 0f 01 e1
+ 0f 01 21                       ;  smsw [ecx]           ;!? 0f 01 21
+                                ;  ;---------------------;
+ 0f 51 C1                       ;  sqrtps xmm0,xmm1     ;!? 0f 51 c1
+ 0f 51 01                       ;  sqrtps xmm0,[ecx]    ;!? 0f 51 01
+ f3 0f 51 C1                    ;  sqrtss xmm0,xmm1     ;!? f3 0f 51 c1
+ f3 0f 51 01                    ;  sqrtss xmm0,[ecx]    ;!? f3 0f 51 01
+                                ;  ;---------------------;
+ f9                             ;  stc                  ;!? f9
+ fd                             ;  std                  ;!? fd
+ fb                             ;  sti                  ;!? fb
+                                ;  ;---------------------;
+ 0f AE 19                       ;  stmxcsr [ecx]        ;!? 0f ae 19
+                                ;  ;---------------------;
+ AA                             ;  stosb                ;!? aa
+ AB                             ;  stosw                ;!? ab
+ AB                             ;  stosd                ;!? ab
+                                ;  ;---------------------;
+ 0f 00 09                       ;  str [ecx]            ;!? 0f 00 09
+                                ;  ;---------------------;
+ 80 EC 0A                       ;  sub ah,10            ;!? 80 EC 0A
+ 80 EC F6                       ;  sub ah,-10           ;!? 80 EC F6
+ 81 EA E8 03 00 00              ;  sub edx,1000         ;!? 81 EA E8 03 00 00
+ 80 2A 0A                       ;  sub byte [edx],10    ;!? 80 2A 0A
+ 81 2A E8 03 00 00              ;  sub dword [edx],1000 ;!? 81 2A E8 03 00 00
+ 28 0A                          ;  sub [edx],cl         ;!? 28 0A
+ 29 0A                          ;  sub [edx],ecx        ;!? 29 0A
+ 2A 0A                          ;  sub cl,[edx]         ;!? 2A 0A
+ 2B 0A                          ;  sub ecx,[edx]        ;!? 2B 0A
+                                ;  ;---------------------;
+ 0f 5C C1                       ;  subps xmm0,xmm1      ;!? 0f 5c c1
+ 0f 5C 01                       ;  subps xmm0,[ecx]     ;!? 0f 5c 01
+ f3 0f 5C C1                    ;  subss xmm0,xmm1      ;!? f3 0f 5c c1
+ f3 0f 5C 01                    ;  subss xmm0,[ecx]     ;!? f3 0f 5c 01
+                                ;  ;---------------------;
+ 0f 34                          ;  sysenter             ;!? 0f 34
+ 0f 35                          ;  sysexit              ;!? 0f 35
+                                ;  ;---------------------;
+ F6 C4 0A                       ;  test ah,10           ;!? F6 C4 0A
+ F6 C4 F6                       ;  test ah,-10          ;!? F6 C4 F6
+ F7 C2 E8 03 00 00              ;  test edx,1000        ;!? F7 C2 E8 03 00 00
+ F6 02 0A                       ;  test byte [edx],10   ;!? F6 02 0A
+ F7 02 E8 03 00 00              ;  test dword [edx],1000;!? F7 02 E8 03 00 00
+ 84 0A                          ;  test [edx],cl        ;!? 84 0A
+ 85 0A                          ;  test [edx],ecx       ;!? 85 0A
+                                ;  ;---------------------;
+ 0f 2E C1                       ;  ucomiss xmm0,xmm1    ;!? 0f 2e c1
+ 0f 2E 01                       ;  ucomiss xmm0,[ecx]   ;!? 0f 2e 01
+                                ;  ;---------------------;
+ 0f 0b                          ;  ud2                  ;!? 0f 0b
+                                ;  ;---------------------;
+ 0f 15 C1                       ;  unpckhps xmm0,xmm1   ;!? 0f 15 c1
+ 0f 15 01                       ;  unpckhps xmm0,[ecx]  ;!? 0f 15 01
+ 0f 14 C1                       ;  unpcklps xmm0,xmm1   ;!? 0f 14 c1
+ 0f 14 01                       ;  unpcklps xmm0,[ecx]  ;!? 0f 14 01
+                                ;  ;---------------------;
+ 0f 00 E1                       ;  verr ecx             ;!? 0f 00 e1
+ 0f 00 21                       ;  verr [ecx]           ;!? 0f 00 21
+ 0f 00 E9                       ;  verw ecx             ;!? 0f 00 e9
+ 0f 00 29                       ;  verw [ecx]           ;!? 0f 00 29
+                                ;  ;---------------------;
+ 9b                             ;  wait                 ;!? 9b
+                                ;  ;---------------------;
+ 0f 09                          ;  wbinvd               ;!? 0f 09
+                                ;  ;---------------------;
+ 0f 30                          ;  wrmsr                ;!? 0f 30
+                                ;  ;---------------------;
+ 0f C0 CA                       ;  xadd cl,dl           ;!? 0f c0 ca 
+ 0f C1 CA                       ;  xadd ecx,edx         ;!? 0f c1 ca
+ 0f C0 11                       ;  xadd [ecx],dl        ;!? 0f c0 11 
+ 0f C1 11                       ;  xadd [ecx],edx       ;!? 0f c1 11
+                                ;  ;---------------------;
+ 86 CA                          ;  xchg cl,dl           ;!? 86 ca
+ 87 CA                          ;  xchg ecx,edx         ;!? 87 ca
+ 86 0A                          ;  xchg cl,[edx]        ;!? 86 0a
+ 87 0A                          ;  xchg ecx,[edx]       ;!? 87 0a
+                                ;  ;---------------------;
+ d7                             ;  xlat ;!? d7          ;
+                                ;  ;---------------------;
+ 80 F4 0A                       ;  xor ah,10            ;!? 80 f4 0a
+ 80 F4 F6                       ;  xor ah,-10           ;!? 80 f4 f6
+ 81 F2 E8 03 00 00              ;  xor edx,1000         ;!? 81 f2 e8 03 00 00
+ 80 32 0A                       ;  xor byte [edx],10    ;!? 80 32 0a
+ 81 32 E8 03 00 00              ;  xor dword [edx],1000 ;!? 81 32 e8 03 00 00
+ 30 0A                          ;  xor [edx],cl         ;!? 30 0a
+ 31 0A                          ;  xor [edx],ecx        ;!? 31 0a
+ 32 0A                          ;  xor cl,[edx]         ;!? 32 0a
+ 33 0A                          ;  xor ecx,[edx]        ;!? 33 0a
+                                ;  ;---------------------;
+ 0f 57 C1                       ;  xorps xmm0,xmm1      ;!? 0f 57 c1
+ 0f 57 01                       ;  xorps xmm0,[ecx]     ;!? 0f 57 01
+                                ;  ;---------------------;
+                                ;  ;---------------------;
+                                ;  ; Extended SSE2
+                                ;  ;---------------------;
+ 66 0f 10 01                    ;  movupd xmm0,[ecx]    ;!? 66 0f 10 01
+ 66 0f 11 01                    ;  movupd [ecx],xmm0    ;!? 66 0f 11 01
+ 66 0f 12 01                    ;  movlpd xmm0,[ecx]    ;!? 66 0f 12 01
+ 66 0f 13 01                    ;  movlpd [ecx],xmm0    ;!? 66 0f 13 01
+ 66 0f 16 01                    ;  movhpd xmm0,[ecx]    ;!? 66 0f 16 01
+ 66 0f 17 01                    ;  movhpd [ecx],xmm0    ;!? 66 0f 17 01
+ 66 0f 14 C1                    ;  unpcklpd xmm0,xmm1   ;!? 66 0f 14 c1
+ 66 0f 15 C1                    ;  unpckhpd xmm0,xmm1   ;!? 66 0f 15 c1
+ 66 0f 14 01                    ;  unpcklpd xmm0,[ecx]  ;!? 66 0f 14 01
+ 66 0f 15 01                    ;  unpckhpd xmm0,[ecx]  ;!? 66 0f 15 01
+                                ;  ;---------------------;
+                                ;  ;---------------------;
+                                ;  ; SSE3
+                                ;  ;---------------------;
+ DF 09                          ;  fisttp   word  [ecx] ;!? DF 09
+ DB 09                          ;  fisttp   dword [ecx] ;!? DB 09
+ DD 09                          ;  fisttp   qword [ecx] ;!? DD 09
+                                ;  ;---------------------;
+ 66 0f D0 CA                    ;  addsubpd  xmm1,xmm2  ;!? 66 0F D0 CA
+ f2 0f D0 CA                    ;  addsubps  xmm1,xmm2  ;!? F2 0F D0 CA
+ 66 0f 7C CA                    ;  haddpd    xmm1,xmm2  ;!? 66 0F 7C CA
+ f2 0f 7C CA                    ;  haddps    xmm1,xmm2  ;!? F2 0F 7C CA
+ 66 0f 70 CA                    ;  hsubpd    xmm1,xmm2  ;!? 66 0F 70 CA
+ f2 0f 7D CA                    ;  hsubps    xmm1,xmm2  ;!? F2 0F 7D CA
+ f2 0f F0 CA                    ;  lddqu     xmm1,xmm2  ;!? F2 0F F0 CA
+ f2 0f 12 CA                    ;  movddup   xmm1,xmm2  ;!? F2 0F 12 CA
+ f3 0f 16 CA                    ;  movshdup  xmm1,xmm2  ;!? F3 0F 16 CA
+ f3 0f 12 CA                    ;  movsldup  xmm1,xmm2  ;!? F3 0F 12 CA
+ 0f 01 c9                       ;  mwait                ;!?  0F 01 C9 
+                                ;  ;---------------------;
+                                ;  ; SSE4
+                                ;  ;---------------------;
+ 66 0f 3a 0D CA 03              ;  blendpd   xmm1,xmm2,3;!? 66 0F 3A 0D CA 03
+ 66 0f 3a 0C CA 03              ;  blendps   xmm1,xmm2,3;!? 66 0F 3A 0C CA 03
+ 66 0f 38 15 CA                 ;  blendvpd  xmm1,xmm2  ;!? 66 0F 38 15 CA
+ 66 0f 38 14 CA                 ;  blendvps  xmm1,xmm2  ;!? 66 0F 38 14 CA
+ 66 0f 3a 41 CA 03              ;  dppd      xmm1,xmm2,3;!? 66 0F 3A 41 CA 03
+ 66 0f 3a 40 CA 03              ;  dpps      xmm1,xmm2,3;!? 66 0F 3A 40 CA 03
+ 66 0f 3a 17 CA 03              ;  extractps xmm1,xmm2,3;!? 66 0F 3A 17 CA 03
+ 66 0f 3a 21 CA 03              ;  insertps  xmm1,xmm2,3;!? 66 0F 3A 21 CA 03
+ 66 0f 38 2A CA                 ;  movntdqa  xmm1,xmm2  ;!? 66 0F 38 2A CA
+ 66 0f 3a 42 CA 03              ;  mpsadbw   xmm1,xmm2,3;!? 66 0F 3A 42 CA 03
+ 66 0f 38 2B CA                 ;  packusdw  xmm1,xmm2  ;!? 66 0F 38 2B CA
+ 66 0f 38 10 CA                 ;  pblendvb  xmm1,xmm2  ;!? 66 0F 38 10 CA
+ 66 0f 3a 0E CA 03              ;  pblendw   xmm1,xmm2,3;!? 66 0F 3A 0E CA 03
+                                ;  ' pcmpeqq   xmm1,xmm2  ; alternative 66 0F 38 29 CA
+                                ;  ;---------------------;
+ 66 0f 3a 14 D0 03              ;  pextrb   eax,xmm2,3 ;!? 66 0F 3A 14 D0 03
+ 66 0f 3a 16 10 03              ;  pextrd  [eax],xmm2,3 ;!? 66 0F 3A 16 10 03
+                                ;  ' pextrw [eax],xmm2,3  ; alternative 66 0F 3A 15 10 03
+ 66 0f 38 41 CA                 ;  phminposuw xmm1,xmm2 ;!? 66 0F 38 41 CA
+ 66 0f 3a 20 08 03              ;  pinsrb  xmm1,[eax],3 ;!? 66 0F 3A 20 08 03
+ 66 0f 3a 22 C8 03              ;  pinsrd  xmm1,eax,3   ;!? 66 0F 3A 22 C8 03
+ 66 0f 3a 22 08 03              ;  pinsrq  xmm1,[eax],3 ;!? 66 0F 3A 22 08 03
+                                ;  ;---------------------;
+ 66 0f 38 3C CA                 ;  pmaxsb    xmm1,xmm2  ;!? 66 0F 38 3C CA
+ 66 0f 38 3D CA                 ;  pmaxsd    xmm1,xmm2  ;!? 66 0F 38 3D CA
+ 66 0f 38 3F CA                 ;  pmaxud    xmm1,xmm2  ;!? 66 0F 38 3F CA
+ 66 0f 38 3E CA                 ;  pmaxuw    xmm1,xmm2  ;!? 66 0F 38 3E CA
+ 66 0f 38 38 CA                 ;  pminsb    xmm1,xmm2  ;!? 66 0F 38 38 CA
+ 66 0f 38 39 CA                 ;  pminsd    xmm1,xmm2  ;!? 66 0F 38 39 CA
+ 66 0f 38 3B CA                 ;  pminud    xmm1,xmm2  ;!? 66 0F 38 3B CA
+ 66 0f 38 3A CA                 ;  pminuw    xmm1,xmm2  ;!? 66 0F 38 3A CA
+ 66 0f 38 21 CA                 ;  pmovsxbd  xmm1,xmm2  ;!? 66 0F 38 21 CA
+ 66 0f 38 22 CA                 ;  pmovsxbq  xmm1,xmm2  ;!? 66 0F 38 22 CA
+ 66 0f 38 20 CA                 ;  pmovsxbw  xmm1,xmm2  ;!? 66 0F 38 20 CA
+ 66 0f 38 23 CA                 ;  pmovsxwd  xmm1,xmm2  ;!? 66 0F 38 23 CA
+ 66 0f 38 24 CA                 ;  pmovsxwq  xmm1,xmm2  ;!? 66 0F 38 24 CA
+ 66 0f 38 25 CA                 ;  pmovsxdq  xmm1,xmm2  ;!? 66 0F 38 25 CA
+                                ;  ;---------------------;
+ 66 0f 38 31 CA                 ;  pmovzxbd  xmm1,xmm2  ;!? 66 0F 38 31 CA
+ 66 0f 38 32 CA                 ;  pmovzxbq  xmm1,xmm2  ;!? 66 0F 38 32 CA
+ 66 0f 38 30 CA                 ;  pmovzxbw  xmm1,xmm2  ;!? 66 0F 38 30 CA
+ 66 0f 38 33 CA                 ;  pmovzxwd  xmm1,xmm2  ;!? 66 0F 38 33 CA
+ 66 0f 38 34 CA                 ;  pmovzxwq  xmm1,xmm2  ;!? 66 0F 38 34 CA
+ 66 0f 38 35 CA                 ;  pmovzxdq  xmm1,xmm2  ;!? 66 0F 38 35 CA
+ 66 0f 38 38 CA                 ;  pmuldq    xmm1,xmm2  ;!? 66 0F 38 38 CA
+ 66 0f 38 40 CA                 ;  pmulld    xmm1,xmm2  ;!? 66 0F 38 40 CA
+ 66 0f 38 17 CA                 ;  ptest     xmm1,xmm2  ;!? 66 0F 38 17 CA
+                                ;  ;---------------------;
+ 66 0f 3a 09 CA 03              ;  roundpd   xmm1,xmm2,3;!? 66 0F 3A 09 CA 03
+ 66 0f 3a 08 CA 03              ;  roundps   xmm1,xmm2,3;!? 66 0F 3A 08 CA 03
+ 66 0f 3a 0B CA 03              ;  roundsd   xmm1,xmm2,3;!? 66 0F 3A 0B CA 03
+ 66 0f 3a 0A CA 03              ;  roundss   xmm1,xmm2,3;!? 66 0F 3A 0A CA 03
+                                ;  ;---------------------;
+0f  0F CA 0C                    ;  pi2fw     xmm1,xmm2  ;!? 0F 0F CA 0C
+0f  0F CA 0D                    ;  pi2fd     xmm1,xmm2  ;!? 0F 0F CA 0D
+0f  0F CA 1C                    ;  pf2iw     xmm1,xmm2  ;!? 0F 0F CA 1C
+0f  0F CA 1D                    ;  pf2id     xmm1,xmm2  ;!? 0F 0F CA 1D
+0f  0F CA 8A                    ;  pfnacc    xmm1,xmm2  ;!? 0F 0F CA 8A
+0f  0F CA 8E                    ;  pfpnacc   xmm1,xmm2  ;!? 0F 0F CA 8E
+0f  0F CA 90                    ;  pfcmpge   xmm1,xmm2  ;!? 0F 0F CA 90
+0f  0F CA 94                    ;  pfmin     xmm1,xmm2  ;!? 0F 0F CA 94
+0f  0F CA 96                    ;  pfrcp     xmm1,xmm2  ;!? 0F 0F CA 96
+0f  0F CA 97                    ;  pfrsqrt   xmm1,xmm2  ;!? 0F 0F CA 97
+0f  0F CA 9A                    ;  pfsub     xmm1,xmm2  ;!? 0F 0F CA 9A
+0f  0F CA 9E                    ;  pfadd     xmm1,xmm2  ;!? 0F 0F CA 9E
+0f  0F CA A0                    ;  pfcmpgt   xmm1,xmm2  ;!? 0F 0F CA A0
+                                ;  ;---------------------;
+                                ;  ; 3DNOW
+                                ;  ;---------------------;
+0f  0F CA A4                    ;  pfmax     xmm1,xmm2  ;!? 0F 0F CA A4
+0f  0F CA A6                    ;  pfrcpit1  xmm1,xmm2  ;!? 0F 0F CA A6
+0f  0F CA A7                    ;  pfrsqit1  xmm1,xmm2  ;!? 0F 0F CA A7
+0f  0F CA AA                    ;  pfsubr    xmm1,xmm2  ;!? 0F 0F CA AA
+0f  0F CA AE                    ;  pfacc     xmm1,xmm2  ;!? 0F 0F CA AE
+0f  0F CA B0                    ;  pfcmpeq   xmm1,xmm2  ;!? 0F 0F CA B0
+0f  0F CA B4                    ;  pfmul     xmm1,xmm2  ;!? 0F 0F CA B4
+0f  0F CA B6                    ;  pfrcpit2  xmm1,xmm2  ;!? 0F 0F CA B6
+0f  0F CA B7                    ;  pmulhrw   xmm1,xmm2  ;!? 0F 0F CA B7
+0f  0F CA BB                    ;  pswapd    xmm1,xmm2  ;!? 0F 0F CA BB
+0f  0F CA BF                    ;  pavgusb   xmm1,xmm2  ;!? 0F 0F CA BF
+                                ;  ;---------------------;
+                                ;  ;---------------------;
+                                ;  ; 16 bit
+                                ;  ;---------------------;
+ 66 8B D1                       ;  mov dx,cx            ;!? 66 8b d1
+ 8E C0                          ;  mov es,ax            ;!? 8E C0
+ 26 8A 01                       ;  mov al,es: [cx]       ;!? 26 8A 01
+                                ;  ;---------------------;
+                                ;  ;---------------------;
+                                ;  ; mov 1000,eax        ; moffs not supported
+                                ;  ;---------------------;
+                                ;  ;=====================;
+                                ;  ;NONSENSE TESTS
+                                ;  ;=====================;
+                                ;  ;
+ ; ERROR:  	mov 1000,eax         ;!!  Expe                                                               ; ERROR:  	mov 1000,eax         ;!!  Expecting  a register or [mem operand]
+ ; AFTER:  	.colon_label
+ ; ERROR:  	mov 2000,al          ;!!  Expecting  a register or [mem operand]
+ ; AFTER:  	.colon_label
+ ; ERROR:  	mov 2000,al          ;!!  Expecting  a register or [mem operand]
+ ; AFTER:  	.colon_label
+                                ;  ;
+ ; ERROR:  	mov al,ecx           ;!!  Register size mismatch
+ ; AFTER:  	.colon_label
+ ; ERROR:  	mov al,ecx           ;!!  Register size mismatch
+ ; AFTER:  	.colon_label
+ ; ERROR:  	mov [al],ecx         ;!!  Need 32 bit register
+ ; AFTER:  	.colon_label
+ ; ERROR:  	mov [al],ecx         ;!!  Need 32 bit register
+ ; AFTER:  	.colon_label
+ ; ERROR:  	mov [al],cl          ;!!  Need 32 bit register
+ ; AFTER:  	.colon_label
+ ; ERROR:  	mov [al],cl          ;!!  Need 32 bit register
+ ; AFTER:  	.colon_label
+ 89 FC 08                       ;  mov [eax,ecx]        ;
+ ; ERROR:  	mov [eax+ecx*13]     ;!!  Invalid scale (1 2 4 8): 13
+ ; AFTER:  	.colon_label
+ ; ERROR:  	mov [eax+ecx*13]     ;!!  Invalid scale (1 2 4 8): 13
+ ; AFTER:  	.colon_label
+ ; ERROR:  	mov [eax*2+ecx*1]    ;!!  Only one register may be scaled
+ ; AFTER:  	.colon_label
+ ; ERROR:  	mov [eax*2+ecx*1]    ;!!  Only one register may be scaled
+ ; AFTER:  	.colon_label
+ ; ERROR:  	mov eax,ecx,1        ;!!  Junk after instruction: mov eax,ecx
+>> 8B C1
+ ; AFTER:  	.colon_label
+ ; ERROR:  	mov eax,ecx,1        ;!!  Junk after instruction: mov eax,ecx
+>> 8B C1
+ ; AFTER:  	.colon_label
+ ; ERROR:  	mov [eax],ecx,1      ;!!  Too many operands for this instruction
+ ; AFTER:  	.colon_label
+ ; ERROR:  	mov [eax],ecx,1      ;!!  Too many operands for this instruction
+ ; AFTER:  	.colon_label
+ ; ERROR:  	mov cl,1000          ;!!  Value out of range 1000
+ ; AFTER:  	.colon_label
+ ; ERROR:  	mov cl,1000          ;!!  Value out of range 1000
+ ; AFTER:  	.colon_label
+ ; ERROR:  	mov cl,-1000         ;!!  Value out of range -1000
+ ; AFTER:  	.colon_label
+ ; ERROR:  	mov cl,-1000         ;!!  Value out of range -1000
+ ; AFTER:  	.colon_label
+ ; ERROR:  	pop 1000             ;!!  Unidentified Operand or none
+ ; AFTER:  	.colon_label
+ ; ERROR:  	pop 1000             ;!!  Unidentified Operand or none
+ ; AFTER:  	.colon_label
+ ; ERROR:  	add 1000             ;!!  Expecting  a register or [mem operand]
+ ; AFTER:  	.colon_label
+ ; ERROR:  	add 1000             ;!!  Expecting  a register or [mem operand]
+ ; AFTER:  	.colon_label
+ ; ERROR:  	mov #v,#v            ;!!  Expecting  a register or [mem operand]
+ ; AFTER:  	.colon_label
+ ; ERROR:  	mov #v,#v            ;!!  Expecting  a register or [mem operand]
+ ; AFTER:  	.colon_label
+ ; ERROR:  	mov #v,eax           ;!!  Expecting  a register or [mem operand]
+ ; AFTER:  	.colon_label
+ ; ERROR:  	mov #v,eax           ;!!  Expecting  a register or [mem operand]
+ ; AFTER:  	.colon_label
+                                ;  ;---------------------;
+                                ;  ;
+ ; ERROR:  	mov mmx0,mmx1        ;!!  Expecting  a register or [mem operand]
+ ; AFTER:  	.colon_label
+ ; ERROR:  	mov mmx0,mmx1        ;!!  Expecting  a register or [mem operand]
+ ; AFTER:  	.colon_label
+ ; ERROR:  	mov eax,[xmm0]       ;!!  mem operands require eax..edi registers
+ ; AFTER:  	.colon_label
+ ; ERROR:  	mov eax,[xmm0]       ;!!  mem operands require eax..edi registers
+ ; AFTER:  	.colon_label
+ ; ERROR:  	movq eax,ecx         ;!!  Can't use gp register with this mmx instruction
+ ; AFTER:  	.colon_label
+ ; ERROR:  	movq eax,ecx         ;!!  Can't use gp register with this mmx instruction
+ ; AFTER:  	.colon_label
+ ; ERROR:  	mov cl,eax           ;!!  Register size mismatch
+ ; AFTER:  	.colon_label
+ ; ERROR:  	mov cl,eax           ;!!  Register size mismatch
+ ; AFTER:  	.colon_label
+ ; ERROR:  	mov eax,cl           ;!!  Register size mismatch
+ ; AFTER:  	.colon_label
+ ; ERROR:  	mov eax,cl           ;!!  Register size mismatch
+ ; AFTER:  	.colon_label
+ 8B 04 4D 04 00 00 00           ;  mov eax,[ecx*2+4]    ;
+                                ;  ;---------------------;
+                                ;  ; Bad numbers ..      ;
+                                ;  ;---------------------;
+ C6 C0 F8                       ;  mov al,-800.123e-2.1 ;!? c6 c0 f8
+ ; ERROR:  	mov al,-800..123e-2  ;!? c6 c0 f8!!  Value out of range -800
+ ; AFTER:  	.colon_label
+ ; ERROR:  	mov al,-800..123e-2  ;!? c6 c0 f8!!  Value out of range -800
+ ; AFTER:  	.colon_label
+ C6 C0 FF ; !! DISAGREE         ;  mov al,-.800.123e2   ;!? c6 c0 f8
+ ; ERROR:  	mov al,256           ;!!  Value out of range 256
+ ; AFTER:  	.colon_label
+ ; ERROR:  	mov al,256           ;!!  Value out of range 256
+ ; AFTER:  	.colon_label
+ ; ERROR:  	mov al,-129          ;!!  Value out of range -129
+ ; AFTER:  	.colon_label
+ ; ERROR:  	mov al,-129          ;!!  Value out of range -129
+ ; AFTER:  	.colon_label
+ ; ERROR:  	mov ax, -32769       ;!!  Value out of range for 16 bit number
+ ; AFTER:  	.colon_label
+ ; ERROR:  	mov ax, -32769       ;!!  Value out of range for 16 bit number
+ ; AFTER:  	.colon_label
+ ; ERROR:  	mov ax,  65536       ;!!  Value out of range for 16 bit number
+ ; AFTER:  	.colon_label
+ ; ERROR:  	mov ax,  65536       ;!!  Value out of range for 16 bit number
+ ; AFTER:  	.colon_label
+ ; ERROR:  	mov eax,-1e10        ;!!  Value out of range for 32 bit number
+ ; AFTER:  	.colon_label
+ ; ERROR:  	mov eax,-1e10        ;!!  Value out of range for 32 bit number
+ ; AFTER:  	.colon_label
+ ; ERROR:  	mov eax,1e10         ;!!  Value out of range for 32 bit number
+ ; AFTER:  	.colon_label
+ ; ERROR:  	mov eax,1e10         ;!!  Value out of range for 32 bit number
+ ; AFTER:  	.colon_label
+                                ;  ;---------------------;
+                                ;  ;
+                                ;  ;=====================;
+
+/+1000 .bssdata $5000
+       ;  

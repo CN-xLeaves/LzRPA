@@ -1,0 +1,27 @@
+DIM MaxCount  AS LONG value 1000000
+
+DIM T1        AS DOUBLE
+DIM T2        AS DOUBLE
+
+DIM Message   AS STRING
+Message = "This program will count " & MaxCount & " times.\n"
+Message += "Please press Yes to go on, NO to Stop\n"
+DIM lResult AS LONG = MSGBOX(0, Message, %MB_YESNO, "Continue?")
+IF lResult <> %IDYES THEN
+  STOP
+END IF
+
+'---Speed up operations a bit
+doevents(off)
+
+T1 = TIMER
+Counter
+T2 = TIMER
+MSGBOX(0, "Seconds:" & $tab  & $tab & FORMAT$(T2 - T1, "#0.000000"))
+
+function Counter() as long
+  Dim i, j as long
+  For i = 1 To MaxCount
+    j += 1
+  Next
+end function

@@ -1,0 +1,38 @@
+' ========================================================================================
+' Demonstrates the use of the async property.
+' The following example sets the async property of a DOMDocument object to false before
+' loading books.xml.
+' ========================================================================================
+
+uses "Console"
+
+#default declare Checkduplicates    %TRUE
+#default declare CheckMissing       %TRUE
+
+#INCLUDE "%APP_INCLUDEPATH%\TB_XML60.INC"
+
+' ========================================================================================
+' Main
+' ========================================================================================
+FUNCTION MAIN() as long
+
+   LOCAL pXmlDoc AS DWORD
+
+   pXmlDoc = XmlCreateObject("Msxml2.DOMDocument")
+   
+     IXMLDOMDocument_put_async pXmlDoc, %FALSE
+     IXMLDOMDocument_load(pXmlDoc, "books.xml")
+     If XmlParseError_get_errorCode(pXmlDoc) <> 0 Then
+        Console_WriteLine XmlParseError_get_reason(pXmlDoc)
+     Else
+        Console_WriteLine IXMLDOMDocument_get_xml(pXmlDoc)
+     End If
+   
+   XmlRelease pXmlDoc
+   
+   console_writeline "--- Press any key to finish ---"
+   console_WAITKEY
+
+END FUNCTION
+
+Main

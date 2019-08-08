@@ -1,0 +1,114 @@
+'
+' Example on stereo sound
+'                  
+
+'----------------------------------------------------------------------------(')
+Uses "TBASS", "FILE", "console"
+'----------------------------------------------------------------------------(')
+
+DIM channel AS DWORD
+DIM sFile AS STRING
+DIM Ret AS LONG
+
+%TIMERPERIOD = 50 ' timer period (ms)
+%MAXDIST     = 30 ' maximum distance of the channels (m)
+%SPEED       = 12 ' speed of the channels' movement (m/s)
+
+'----------------------------------------------------------------------------(')
+Type TBASS_3DVECTOR
+  X As Single
+  Y As Single
+  Z As Single
+End Type
+
+dim Chan_Pos as TBASS_3DVECTOR 
+dim Chan_Vel as TBASS_3DVECTOR 
+
+IF Sound_Init THEN
+  IF TBASS_CHANNELISACTIVE( Channel ) THEN TBASS_CHANNELSTOP( Channel )
+  '---In any case better to free the stream
+  TBASS_StreamFree( Channel )
+  
+  '---Now set which file to load
+  sFile = APP_SourcePath+"Prodigy.wav"   
+  
+  '---Check if file exists
+  IF FILE_EXISTS( sFile ) = %FALSE THEN
+    ShowMessage "File " & sFile & $CRLF & "does not exists."
+  ELSE
+    Channel = TBASS_STREAMCREATEFILE( %TBASS_FALSE, sFile, 0, 0, %TBASS_SAMPLE_LOOP OR %TBASS_STREAM_PRESCAN or %tBASS_SAMPLE_3D)
+    IF Channel = 0 THEN    '---whatever it is, it isn't playable
+      ShowMessage( "Can't play the file " & sFile )
+    ELSE
+      Ret = TBASS_APPLY3D
+      Ret = TBASS_CHANNELPLAY( Channel, %TBASS_TRUE )
+    END IF
+  END IF
+  randomize
+
+  Chan_Vel.x = 10'rndf(-1, 1, 4)
+  Chan_Vel.y = 0'rndf(-1, 1, 4)
+  Chan_Vel.z = 10'rndf(-1, 1, 4)         
+  
+  PrintL "Press any key to quit..."
+  While Len(Console_InKeyB()) = 0
+
+    If chan_pos.z >= %MAXDIST Or chan_pos.z <= -%MAXDIST Then chan_vel.z = -chan_vel.z
+    If chan_pos.X >= %MAXDIST Or chan_pos.X <= -%MAXDIST Then chan_vel.X = -chan_vel.X
+
+    chan_pos.z = chan_pos.z + chan_vel.z * %TIMERPERIOD / 1000
+    chan_pos.x = chan_pos.x + chan_vel.x * %TIMERPERIOD / 1000
+
+    Ret = TBASS_ChannelSet3DPosition(Channel, VarPtr(Chan_Pos), 0, VarPtr(Chan_Vel))    
+    Ret = TBASS_APPLY3D
+    console_writeline("PosZ: " & chan_pos.z & "   PosX: " & chan_pos.x)
+    sleep 50
+  wend
+  
+END IF
+
+'----------------------------------------------------------------------------(')
+TBASS_FREE
+'----------------------------------------------------------------------------(')
+
+FUNCTION Sound_Init( ) AS LONG
+  DIM DetectedVersion AS LONG
+  FUNCTION = %FALSE
+  '---Check if lib loads and is correct version
+  DetectedVersion = TBASS_GETVERSION
+  If HIWRD( DetectedVersion ) <> %TBASS_VERSION Then
+    ShowMessage "An incorrect version of BASS.DLL was loaded. Program aborted."
+    EXIT FUNCTION
+  END IF
+  '---Setup output for the default device
+  IF TBASS_INIT( - 1, 44100, %TBASS_DEVICE_3D, 0, 0 ) = 0 THEN
+    ShowMessage "Can't initialize device. Program aborted"
+    EXIT FUNCTION
+  END IF
+  console_writeline("TBASS_Set3DFactors : " & iif$(tBASS_Set3DFactors(1, 1, 1)=%tbass_true, "OK", "Error") )
+
+  ' Turn EAX off (volume=0), if error then EAX is not supported
+  If tBASS_SetEAXParameters(-1, 0, -1, -1) = %tbass_false Then
+    console_writeline("EAX is not supported. Error code: " & tBASS_ErrorGetCode & " - this is no obstacle to further execution")
+  end if
+
+  TBASS_SETVOLUME( 50 )
+  '---OK, if we are here all should be ok to start
+  FUNCTION = %TRUE
+  console_writeline(repeat$(79,"-"))
+  Console_WriteLine("Press a key to continue. You will hear processed MONO audio file")
+  Console_WriteLine("If OK you should listen audio from right to left back to right ... and so on")
+  
+  console_waitkey
+END FUNCTION
+
+'----------------------------------------------------------------------------(')
+
+Function ShowMessage( ByVal es As String, Optional ByVal ReturnErrorCode As Long ) As Long
+  DIM ErrorCode AS LONG
+  IF ReturnErrorCode = %TRUE THEN
+    ErrorCode = TBASS_ERRORGETCODE
+  END IF
+  MSGBOX 0, es & $CRLF & $CRLF & IIF$( ReturnErrorCode = %TRUE, "BASS Error code: " & ErrorCode, "" )
+  FUNCTION = ErrorCode
+END function

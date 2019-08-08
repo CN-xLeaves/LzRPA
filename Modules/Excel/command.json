@@ -1,0 +1,1031 @@
+{
+    "Caption": "Excel",
+    "Remark": "电子表格",
+    "ModuleName": "Excel",
+    "Icon": "公文包",
+    "Visible": true,
+    "Templet": "index.html",
+    "Help": {
+        "Caption": ""
+    },
+    "Child": [
+        {
+            "Caption": "单文件使用扩展库",
+            "Icon": "信息",
+            "Visible": true,
+            "Templet": "document.html",
+            "Help": {
+                "Caption": "扩展库使用帮助",
+                "Document": "在项目中使用扩展库功能会自动将扩展库引入项目，项目编译或运行时，自动加入扩展库依赖代码和文件。<br><br>如果您在单文件中希望使用本扩展库，则必须编写扩展库依赖代码才能调用扩展库中的函数，否则会报错，LzRPA 建议使用工程方式编写程序，但仍保留单文件使用扩展库的方法。<br><br>扩展库依赖代码：<br>&nbsp;&nbsp;Uses &quot;Excel&quot;<br><br>建议将引用扩展库代码统一添加到全局代码块，也就是代码的最上面。"
+            }
+        },
+        {
+            "Caption": "Excel_Application",
+            "Remark": "Excel应用程序",
+            "Icon": "类",
+            "Visible": true,
+            "Templet": "index.html",
+            "Help": {
+                "Caption": ""
+            },
+            "Child": [
+                {
+                    "Caption": "ActiveWindow",
+                    "Remark": "活动的窗口",
+                    "Icon": "属性",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "ActiveWindow",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "ActiveWindow",
+                        "Define": "objWindow = Excel_Application.ActiveWindow",
+                        "Describe": "获取当前 Excel 程序中的活动窗口",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                        ]
+                    },
+                    "Child": [
+                        {
+                            "Caption": "Close",
+                            "Remark": "关闭活动窗口",
+                            "Visible": true,
+                            "Function": true,
+                            "InsCode": "Close",
+                            "Templet": "command.html",
+                            "Help": {
+                                "Caption": "Close",
+                                "Define": "Excel_Application.ActiveWindow.Close",
+                                "Describe": "关闭当前 Excel 程序中活动的窗口",
+                                "RetType": "Null",
+                                "Return": "无",
+                                "Param": [
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "Caption": "ActiveWorkbook",
+                    "Remark": "活动的工作簿",
+                    "Icon": "属性",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "ActiveWorkbook",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "ActiveWorkbook",
+                        "Define": "objWorkBook = Excel_Application.ActiveWorkbook",
+                        "Describe": "获取当前 Excel 程序中活动的工作簿",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "ActiveSheet",
+                    "Remark": "活动的工作表",
+                    "Icon": "属性",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "ActiveSheet",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "ActiveSheet",
+                        "Define": "objWorkSheet = Excel_Application.ActiveSheet",
+                        "Describe": "获取当前 Excel 程序中活动的工作表",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "ActiveCell",
+                    "Remark": "活动单元格",
+                    "Icon": "属性",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "ActiveCell",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "ActiveCell",
+                        "Define": "objCell = Excel_Application.ActiveCell",
+                        "Describe": "获取当前 Excel 程序中被选中的活动单元格",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Selection",
+                    "Remark": "选中的对象",
+                    "Icon": "属性",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Selection",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "Selection",
+                        "Define": "obj = Excel_Application.Selection",
+                        "Describe": "获取当前 Excel 程序中被选中的对象",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Visible",
+                    "Remark": "是否显示",
+                    "Icon": "属性",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Visible",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "Visible",
+                        "Define": "bRet = Excel_Application.Visible",
+                        "Describe": "Excel 应用程序是否显示",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "DisplayAlerts",
+                    "Remark": "显示对话框",
+                    "Icon": "属性",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "DisplayAlerts",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "DisplayAlerts",
+                        "Define": "bRet = Excel_Application.DisplayAlerts",
+                        "Describe": "是否显示对话框",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "AlertBeforeOverwriting",
+                    "Remark": "拖放覆盖警告",
+                    "Icon": "属性",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "AlertBeforeOverwriting",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "AlertBeforeOverwriting",
+                        "Define": "bRet = Excel_Application.AlertBeforeOverwriting",
+                        "Describe": "执行拖放编辑操作过程中，在覆盖非空单元格之前是否显示一条警告消息",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Version",
+                    "Remark": "版本",
+                    "Icon": "属性",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Version",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "Version",
+                        "Define": "sRet = Excel_Application.Version",
+                        "Describe": "返回 Excel 应用程序的版本",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Quit",
+                    "Remark": "退出",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Quit",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "Quit",
+                        "Define": "Excel_Application.Quit",
+                        "Describe": "退出 Excel 应用程序",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "IsNothing",
+                    "Remark": "对象是否创建成功",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "IsNothing",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "IsNothing",
+                        "Define": "Excel_Application.IsNothing",
+                        "Describe": "判断 Excel_Application 对象是否为 Nothing，为 Nithing 则表示对象创建失败（可能系统中没有安装 Excel 应用程序）",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "SendKeys",
+                    "Remark": "发送按键",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "SendKeys(\"Keys\")",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "SendKeys",
+                        "Define": "Excel_Application.SendKeys(sKeys)",
+                        "Describe": "向当前具备输入焦点的窗口模拟输入键盘按键",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                            {
+                                "Caption": "sKeys",
+                                "DataType": "String",
+                                "Describe": "按键内容序列",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Workbooks",
+                    "Remark": "工作簿集合对象",
+                    "Icon": "类",
+                    "Visible": true,
+                    "Templet": "index.html",
+                    "Help": {
+                        "Caption": ""
+                    },
+                    "Child": [
+                        {
+                            "Caption": "Count",
+                            "Remark": "工作簿数量",
+                            "Icon": "属性",
+                            "Visible": true,
+                            "Function": true,
+                            "InsCode": "Count",
+                            "Templet": "command.html",
+                            "Help": {
+                                "Caption": "Count",
+                                "Define": "iRet = Excel_Application.Workbooks.Count",
+                                "Describe": "返回集合中包含的工作簿对象总数（已打开的工作簿数量）",
+                                "RetType": "Null",
+                                "Return": "无",
+                                "Param": [
+                                ]
+                            }
+                        },
+                        {
+                            "Caption": "Add",
+                            "Remark": "创建工作簿",
+                            "Visible": true,
+                            "Function": true,
+                            "InsCode": "Add",
+                            "Templet": "command.html",
+                            "Help": {
+                                "Caption": "Add",
+                                "Define": "Excel_Application.Add",
+                                "Describe": "在 Excel_Application 中创建一个工作簿，并返回工作簿对象",
+                                "RetType": "Null",
+                                "Return": "无",
+                                "Param": [
+                                ]
+                            }
+                        },
+                        {
+                            "Caption": "Open",
+                            "Remark": "打开工作簿",
+                            "Visible": true,
+                            "Function": true,
+                            "InsCode": "Open(\"文件路径\", 2, false, 5, \"\")",
+                            "Templet": "command.html",
+                            "Help": {
+                                "Caption": "Open",
+                                "Define": "Excel_Application.Open(sFile[, iUpdateLinks[, bReadOnly[, iFormat[, sPassword[, WriteResPassword]]]]])",
+                                "Describe": "在 Excel_Application 中打开一个工作簿，并返回工作簿对象",
+                                "RetType": "Null",
+                                "Return": "无",
+                                "Param": [
+                                    {
+                                        "Caption": "sFile",
+                                        "DataType": "String",
+                                        "Describe": "工作簿文件路径",
+                                        "Optional": false
+                                    },
+                                    {
+                                        "Caption": "iUpdateLinks",
+                                        "DataType": "Integer",
+                                        "Describe": "链接方式",
+                                        "Optional": true
+                                    },
+                                    {
+                                        "Caption": "bReadOnly",
+                                        "DataType": "Boolean",
+                                        "Describe": "是否只读模式打开",
+                                        "Optional": true
+                                    },
+                                    {
+                                        "Caption": "iFormat",
+                                        "DataType": "Integer",
+                                        "Describe": "文本表格的分隔符，可以使用以下值：<br>1 (Tab)<br>2 (逗号)<br>3 (空格)<br> 4 (分号)<br> 5 (不使用)",
+                                        "Optional": true
+                                    },
+                                    {
+                                        "Caption": "sPassword",
+                                        "DataType": "String",
+                                        "Describe": "访问密码",
+                                        "Optional": true
+                                    },
+                                    {
+                                        "Caption": "WriteResPassword",
+                                        "DataType": "String",
+                                        "Describe": "修改密码",
+                                        "Optional": true
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "Caption": "Close",
+                            "Remark": "关闭工作簿",
+                            "Visible": true,
+                            "Function": true,
+                            "InsCode": "Close",
+                            "Templet": "command.html",
+                            "Help": {
+                                "Caption": "Close",
+                                "Define": "Excel_Application.Close",
+                                "Describe": "在 Excel_Application 中关闭一个工作簿",
+                                "RetType": "Null",
+                                "Return": "无",
+                                "Param": [
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "Caption": "Excel_Workbook",
+            "Remark": "Excel工作簿",
+            "Icon": "类",
+            "Visible": true,
+            "Templet": "index.html",
+            "Help": {
+                "Caption": ""
+            },
+            "Child": [
+                {
+                    "Caption": "ActiveSheet",
+                    "Remark": "活动的工作表",
+                    "Icon": "属性",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "ActiveSheet",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "ActiveSheet",
+                        "Define": "objWorkSheet = Excel_Workbook.ActiveSheet",
+                        "Describe": "获取当前工作簿中活动的工作表",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "FullName",
+                    "Remark": "文件路径",
+                    "Icon": "属性",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "FullName",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "FullName",
+                        "Define": "sRet = Excel_Workbook.FullName",
+                        "Describe": "获取当前工作簿的文件路径",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Name",
+                    "Remark": "工作簿名称",
+                    "Icon": "属性",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Name",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "Name",
+                        "Define": "sRet = Excel_Workbook.Name",
+                        "Describe": "获取当前工作簿的名称",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Saved",
+                    "Remark": "是否已保存",
+                    "Icon": "属性",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Saved",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "Saved",
+                        "Define": "bRet = Excel_Workbook.Saved",
+                        "Describe": "获取当前工作簿是否已经保存",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Activate",
+                    "Remark": "激活工作簿",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Activate",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "Activate",
+                        "Define": "Excel_Workbook.Activate",
+                        "Describe": "激活工作簿",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Save",
+                    "Remark": "保存工作簿",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Save",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "Save",
+                        "Define": "Excel_Workbook.Save",
+                        "Describe": "保存工作簿",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "SaveAs",
+                    "Remark": "另存为工作簿",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "SaveAs",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "SaveAs",
+                        "Define": "Excel_Workbook.SaveAs",
+                        "Describe": "另存为工作簿",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Worksheets",
+                    "Remark": "工作表集合对象",
+                    "Icon": "类",
+                    "Visible": true,
+                    "Templet": "index.html",
+                    "Help": {
+                        "Caption": ""
+                    },
+                    "Child": [
+                        {
+                            "Caption": "Count",
+                            "Remark": "工作表数量",
+                            "Icon": "属性",
+                            "Visible": true,
+                            "Function": true,
+                            "InsCode": "Count",
+                            "Templet": "command.html",
+                            "Help": {
+                                "Caption": "Count",
+                                "Define": "iRet = Excel_Workbook.Worksheets.Count",
+                                "Describe": "返回集合中包含的工作表对象总数",
+                                "RetType": "Null",
+                                "Return": "无",
+                                "Param": [
+                                ]
+                            }
+                        },
+                        {
+                            "Caption": "Add",
+                            "Remark": "创建工作表",
+                            "Visible": true,
+                            "Function": true,
+                            "InsCode": "Add(\"工作表标题\")",
+                            "Templet": "command.html",
+                            "Help": {
+                                "Caption": "Add",
+                                "Define": "Excel_Workbook.Add(sTitle)",
+                                "Describe": "在 Excel_Workbook 中创建一个工作表，并返回工作表对象",
+                                "RetType": "Null",
+                                "Return": "无",
+                                "Param": [
+                                    {
+                                        "Caption": "sTitle",
+                                        "DataType": "String",
+                                        "Describe": "工作表标题",
+                                        "Optional": true
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "Caption": "(Index).Select",
+                            "Remark": "选中工作表",
+                            "Visible": true,
+                            "Function": true,
+                            "InsCode": "(Index).Select",
+                            "Templet": "command.html",
+                            "Help": {
+                                "Caption": "Select",
+                                "Define": "iRet = Excel_Workbook.Worksheets(Index).Select",
+                                "Describe": "选中指定的工作表",
+                                "RetType": "Null",
+                                "Return": "无",
+                                "Param": [
+                                    {
+                                        "Caption": "Index",
+                                        "DataType": "Integer",
+                                        "Describe": "工作表集合的索引",
+                                        "Optional": true
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "Caption": "Excel_Worksheet",
+            "Remark": "Excel工作表",
+            "Icon": "类",
+            "Visible": true,
+            "Templet": "index.html",
+            "Help": {
+                "Caption": ""
+            },
+            "Child": [
+                {
+                    "Caption": "Name",
+                    "Remark": "工作表标题",
+                    "Icon": "属性",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Name",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "Name",
+                        "Define": "sRet = Excel_Worksheet.Name",
+                        "Describe": "当前工作表的标题",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Cells",
+                    "Remark": "访问单元格",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Cells(行编号, 列编号)",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "Cells",
+                        "Define": "Excel_Worksheet.Cells(iRow, icolumn)",
+                        "Describe": "根据数字坐标访问单元格",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                            {
+                                "Caption": "iRow",
+                                "DataType": "Integer",
+                                "Describe": "行号",
+                                "Optional": true
+                            },
+                            {
+                                "Caption": "icolumn",
+                                "DataType": "Integer",
+                                "Describe": "列号",
+                                "Optional": true
+                            }
+                        ]
+                    },
+                    "Child": [
+                        {
+                            "Caption": "Value",
+                            "Remark": "单元格的值",
+                            "Icon": "属性",
+                            "Visible": true,
+                            "Function": true,
+                            "InsCode": "Value",
+                            "Templet": "command.html",
+                            "Help": {
+                                "Caption": "Value",
+                                "Define": "sRet = Excel_Worksheet.Cells(iRow, icolumn).Value<br>Excel_Worksheet.Cells(iRow, icolumn).Value = NewValue",
+                                "Describe": "获取或设置单元格的值",
+                                "RetType": "Null",
+                                "Return": "无",
+                                "Param": [
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "Caption": "Range",
+                    "Remark": "访问选区",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Range(\"A3:C5\")",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "Range",
+                        "Define": "Excel_Worksheet.Range(sRange)",
+                        "Describe": "根据字符串描述访问选区",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                            {
+                                "Caption": "sRange",
+                                "DataType": "String",
+                                "Describe": "选区描述字符串",
+                                "Optional": true
+                            }
+                        ]
+                    },
+                    "Child": [
+                        {
+                            "Caption": "Value",
+                            "Remark": "选区的值",
+                            "Icon": "属性",
+                            "Visible": true,
+                            "Function": true,
+                            "InsCode": "Value",
+                            "Templet": "command.html",
+                            "Help": {
+                                "Caption": "Value",
+                                "Define": "Excel_Worksheet.Range(sRange).Value = NewValue",
+                                "Describe": "设置选区的值",
+                                "RetType": "Null",
+                                "Return": "无",
+                                "Param": [
+                                ]
+                            }
+                        },
+                        {
+                            "Caption": "Formula",
+                            "Remark": "选区的值(公式)",
+                            "Icon": "属性",
+                            "Visible": true,
+                            "Function": true,
+                            "InsCode": "Formula",
+                            "Templet": "command.html",
+                            "Help": {
+                                "Caption": "Formula",
+                                "Define": "Excel_Worksheet.Range(sRange).Formula = NewValue",
+                                "Describe": "设置选区的值(公式)",
+                                "RetType": "Null",
+                                "Return": "无",
+                                "Param": [
+                                ]
+                            }
+                        },
+                        {
+                            "Caption": "Select",
+                            "Remark": "选择选区",
+                            "Visible": true,
+                            "Function": true,
+                            "InsCode": "Select",
+                            "Templet": "command.html",
+                            "Help": {
+                                "Caption": "Select",
+                                "Define": "sRet = Excel_Worksheet.Range(sRange).Select<br>Excel_Worksheet.Range(sRange).Select = NewValue",
+                                "Describe": "选择描述字符串表示的选区范围",
+                                "RetType": "Null",
+                                "Return": "无",
+                                "Param": [
+                                ]
+                            }
+                        },
+                        {
+                            "Caption": "Clear",
+                            "Remark": "清空选区内容",
+                            "Visible": true,
+                            "Function": true,
+                            "InsCode": "Clear",
+                            "Templet": "command.html",
+                            "Help": {
+                                "Caption": "Clear",
+                                "Define": "Excel_Worksheet.Range(sRange).Clear",
+                                "Describe": "清空选区范围内单元格的内容",
+                                "RetType": "Null",
+                                "Return": "无",
+                                "Param": [
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "Caption": "Activate",
+                    "Remark": "激活工作表",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Activate",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "Activate",
+                        "Define": "Excel_Worksheet.Activate",
+                        "Describe": "激活工作表",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "PrintPreview",
+                    "Remark": "打印预览",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "PrintPreview",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "PrintPreview",
+                        "Define": "ADODB_Connection.PrintPreview",
+                        "Describe": "显示打印预览窗口",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "Caption": "Excel_Range",
+            "Remark": "Excel选区",
+            "Icon": "类",
+            "Visible": true,
+            "Templet": "index.html",
+            "Help": {
+                "Caption": ""
+            },
+            "Child": [
+                {
+                    "Caption": "Value",
+                    "Remark": "选区的值",
+                    "Icon": "属性",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Value",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "Value",
+                        "Define": "Excel_Range.Range(sRange).Value = NewValue",
+                        "Describe": "设置选区的值",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Formula",
+                    "Remark": "选区的值(公式)",
+                    "Icon": "属性",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Formula",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "Formula",
+                        "Define": "Excel_Range.Range(sRange).Formula = NewValue",
+                        "Describe": "设置选区的值(公式)",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "HorizontalAlignment",
+                    "Remark": "对齐方式",
+                    "Icon": "属性",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "HorizontalAlignment",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "HorizontalAlignment",
+                        "Define": "Excel_Range.Range(sRange).HorizontalAlignment = NewValue",
+                        "Describe": "设置选区的水平对齐方式",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "NumberFormat",
+                    "Remark": "数字格式",
+                    "Icon": "属性",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "NumberFormat",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "NumberFormat",
+                        "Define": "Excel_Range.Range(sRange).NumberFormat = NewValue",
+                        "Describe": "设置选区的数字显示格式",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Address",
+                    "Remark": "选区路径",
+                    "Icon": "属性",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Address",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "Address",
+                        "Define": "sRet = Excel_Range.Address",
+                        "Describe": "返回当前选区在工作表中的路径",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "ColumnWidth",
+                    "Remark": "列宽度",
+                    "Icon": "属性",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "ColumnWidth",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "ColumnWidth",
+                        "Define": "sRet = Excel_Range.ColumnWidth<br>Excel_Range.ColumnWidth = NewValue",
+                        "Describe": "返回或设置选区列的宽度",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Clear",
+                    "Remark": "清空选区内容",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Clear",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "Clear",
+                        "Define": "Excel_Range.Clear",
+                        "Describe": "清空选区范围内单元格的内容",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "ClearComments",
+                    "Remark": "清空选区注释",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "ClearComments",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "ClearComments",
+                        "Define": "Excel_Range.ClearComments",
+                        "Describe": "清空选区范围内的注释内容",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "ClearContents",
+                    "Remark": "清空选区内容",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "ClearContents",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "ClearContents",
+                        "Define": "Excel_Range.ClearContents",
+                        "Describe": "清空选区范围内的显示内容",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "ClearFormats",
+                    "Remark": "清空选区格式",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "ClearFormats",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "ClearFormats",
+                        "Define": "Excel_Range.ClearFormats",
+                        "Describe": "清空选区范围内的格式",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "ClearNotes",
+                    "Remark": "清空选区笔记",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "ClearNotes",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "ClearNotes",
+                        "Define": "Excel_Range.ClearNotes",
+                        "Describe": "清空选区范围内的笔记",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Select",
+                    "Remark": "选择选区",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Select",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "Select",
+                        "Define": "Excel_Range.Select",
+                        "Describe": "选择对象保存的选区位置",
+                        "RetType": "Null",
+                        "Return": "无",
+                        "Param": [
+                        ]
+                    }
+                }
+            ]
+        }
+    ]
+}

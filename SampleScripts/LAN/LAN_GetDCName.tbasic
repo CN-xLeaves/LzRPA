@@ -1,0 +1,13 @@
+uses "LAN"
+
+Dim sServer    as string = "" 'If empty use local server, otherwise specify the remote server name like "\\MYSERVER"
+Dim sDomain    as string = "" 'If empty use local domain, otherwise specify the domain like "MYDOMAIN"
+
+msgbox 0, LAN_GetDCName(sServer), %MB_OK, "Primary Domain Controller (PDC) "  + iif$(len(sServer), "for server " + sServer, "local server")
+
+msgbox 0, LAN_GetDCName(sServer, sDomain), %MB_OK, "Primary Domain Controller (PDC) " + iif$(len(sServer), "for server " + sServer, "local server") + iif$(len(sDomain), " domain " + sDomain, " local domain")
+
+msgbox 0, LAN_GetDCName("", sDomain), %MB_OK, "Primary Domain Controller (PDC) " + iif$(len(sServer), "for domain " + sServer, "local domain") + sDomain
+
+msgbox 0, LAN_GetDCName(), %MB_OK, "Primary Domain Controller (PDC)"
+

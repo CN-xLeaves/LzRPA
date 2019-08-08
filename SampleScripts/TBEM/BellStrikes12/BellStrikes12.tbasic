@@ -1,0 +1,82 @@
+' TBEM sample 1 by Michael Hartlef, 2008
+
+USES "TBASS"
+uses "TBEM"
+USES "Console"
+USES "FILE"
+
+DIM sFile   AS STRING   '---Filename to load
+DIM Channel    AS DWORD '---Audio  channel to use
+DIM SamChannel AS DWORD '---Sample channel to use
+dim count as long
+dim eventSnd as long
+dim retval as long
+
+count = 13
+%evt_sound = 1
+
+function playsfx() as long
+    count -= 1
+    if count > 0 then
+        TBASS_ChannelPlay(SamChannel, %TBASS_TRUE)
+        console_writeline("Number of SoundFX left: " + count)
+    endif
+end function
+
+' Setup output for the default device
+' n = TBASS_Init (Device, Frequency, Flags, Win, clsID)
+IF TBASS_Init(-1, 44100, 0, 0, 0) = 0 THEN 
+    console_Writeline("Can't initialize device. Program aborted")
+else
+
+  ' Set the volume level
+  TBASS_SetVolume(50)
+
+  ' Now ask which file to load
+  sFile = APP_SourcePath+"soundfx\bells007.wav"
+
+  ' Check if file exists
+  if file_exists(sFile) = %FALSE then
+    console_Writeline("File " & sFile & $crlf & "does not exixts.")
+  else
+    ' File does exist now load as a sample using that filename
+    Channel = TBASS_SampleLoad(%TBASS_FALSE, sFile, 0, 0, 1, %TBASS_SAMPLE_FLOAT )
+    IF Channel = 0 THEN
+      ' whatever it is, it isn't playable
+      console_Writeline( "Can't play the file " & sFile)
+    else
+      ' Create a Sample playback Channel
+      SamChannel = TBASS_SAMPLEGetChannel(Channel,%TBASS_FALSE)
+      ' File does exist now create a stream using that filename
+      ' SamChannel = TBASS_StreamCreateFile(%TBASS_FALSE, sFile, 0, 0, %TBASS_SAMPLE_LOOP or %TBASS_STREAM_PRESCAN )
+      IF SamChannel = -1 THEN
+        ' Error trying to get a channel
+        console_Writeline("No Channel. Can't play the file " & sFile)
+      else
+        ' Valid File now set it to play
+        
+        'Add an event to the event manager
+        eventSnd = TBEM_AddEvent("playsfx",%evt_sound)
+
+        'Repeat the sound every 5 seconds
+        TBEM_SetRepeat(eventSnd, %TRUE, 5000)
+        
+        'Fire a trigger to start runnign the event
+        TBEM_AddTrigger(%evt_sound)
+        
+        Console_Writeline("It's 12 o'clock midnight...")
+        while count <> 0
+            'Check and run active events
+            retval = TBEM_Run
+        wend
+
+      ENDIF
+    ENDIF
+  ENDIF
+endif
+' Clearup TBASS
+TBASS_Free
+
+
+console_writeline("Press any key...")
+console_waitkey

@@ -1,0 +1,129 @@
+
+Uses "oxygen","console"
+Dim c,src As String
+dim v as long
+src="
+
+
+
+'-----------------------------------------
+'The Hello DLL
+'=========================================
+
+ 
+  #file "HelloDLL.dll" independent 64 bit
+
+  /*
+
+  '================
+  BOOTSTRAP LIBRARY
+  '================
+
+  IMPORTED PROCEDURES:       Offsets from proc_address_list (IAT):  32  64BIT
+  '-------------------------------------------------------------------------
+  data "/+4 .LoadLibrary        hw0 `LoadLibraryA` 00"             '00  00
+  data "/+4 .GetProcAddress     hw0 `GetProcAddress` 00"           '04  08
+  data "/+4 .FreeLibrary        hw0 `FreeLibrary` 00"              '08  16
+  data "/+4 .GetModuleHandle    hw0 `GetModuleHandleA` 00"         '12  24
+  data "/+4 .GetCommandLine     hw0 `GetCommandLineA` 00"          '16  32
+  data "/+4 .GetExitCodeProcess hw0 `GetExitCodeProcess` 00"       '20  40
+  data "/+4 .ExitProcess        hw0 `ExitProcess` 00"              '24  48
+                                                                   '28  56
+  data "/+4 .SysAllocStringByteLen hw0 `SysAllocStringByteLen` 00" '32  64
+  data "/+4 .SysFreeString hw0 `SysFreeString` 00"                 '36  72
+                                                                   '40  80
+  data "/+4 .MessageBox hw0 `MessageBoxA` 00"                      '44  88
+
+  */
+
+  .cas : cmp rdx,0 : jnz fwd cas : call fwd dll_finish : mov rax,0 : ret
+  .cas : cmp rdx,1 : jnz fwd cas : call fwd dll_start  : mov rax,1 : ret
+  .cas : cmp rdx,2 : jnz fwd cas : mov rax,1 : ret
+  .cas : cmp edx,3 : jnz fwd cas : mov rax,0 : ret
+  .cas : mov rax,0 : ret
+
+
+  def FrameSize 64
+
+
+  '---------
+  .dll_start
+  '=========
+
+
+  push rbx : push rsi : push rdi
+  sub rsp,FrameSize
+  sub rsp,8
+  '
+  lea rip rbx,import_address_table
+  '
+  jmp fwd over
+  .title : o2 `DLL MESSAGE` 00
+  .text  : o2 `DLL LOADED` 00
+  .over
+  lea rip r8,title : lea rip rdx,text
+  mov rcx,0 : mov r9,0 : call [rbx+88] 'messagebox
+  '
+  add rsp,8 
+  add rsp,FrameSize
+  pop rdi : pop rsi : pop rbx
+  ret
+
+  '----------
+  .dll_finish
+  '==========
+  
+  push rbx : push rsi : push rdi
+  sub rsp,FrameSize
+  sub rsp,8
+  '
+  lea rip rbx,import_address_table
+  jmp fwd over
+  .title : o2 `DLL MESSAGE` 00
+  .text  : o2 `DLL RELEASED` 00
+  .over
+  lea rip r8,title : lea rip rdx,text
+  mov rcx,0 : mov r9,0 : call [rbx+88] 'messagebox
+  '
+  add rsp,8
+  add rsp,FrameSize
+  pop rdi : pop rsi : pop rbx
+  ret
+
+  '-------------------------------
+  greeting: alias "greeting" export
+  '================================
+  push rbx : push rsi : push rdi
+  sub rsp,FrameSize
+  '
+  lea rip rbx,import_address_table
+  jmp fwd over
+  .title : o2 `DLL MESSAGE` 00
+  .text  : o2 `Greetings!` 00
+  .over
+  lea rip r8,title : lea rip rdx,text
+  mov rcx,0 : mov r9,0 : call [rbx+88] 'messagebox
+  ' 
+  add rsp,FrameSize
+  pop rdi : pop rsi : pop rbx
+  ret
+
+  ._mem
+
+  lea rip rbx,import_address_table
+  ret
+
+"
+
+printl O2_view src
+c=O2_ASM src
+'msgbox 0,len(c)
+If Len(O2_ERROR) Then
+  printl O2_ERROR
+else
+  printl "Compiled"
+end if
+printl ""
+printl "Press key to finish"
+waitkey
+

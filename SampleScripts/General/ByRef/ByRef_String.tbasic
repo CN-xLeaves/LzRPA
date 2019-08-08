@@ -1,0 +1,9 @@
+dim MyStringVar as string = "ABC123"
+
+MsgBox 0, MyStringVar
+FillIt(MyStringVar)
+msgbox 0, MyStringVar
+
+Function FillIt(ByRef a As String)
+    a = "DEF456"
+End Function

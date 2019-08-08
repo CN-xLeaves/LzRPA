@@ -1,0 +1,203 @@
+  '------------------------------------------------------------------------------
+  ' Splitter control
+  '------------------------------------------------------------------------------
+  uses "UI"
+
+  '-----------------------------------------------------------------------------
+  ' Control IDs. This ensure IDs are correct
+  '-----------------------------------------------------------------------------
+  Begin ControlID
+    %ID_EXIT    
+    %ID_HELP    
+    %ID_ABOUT   
+
+    %ID_LV_LEFT 
+
+    %ID_V_SPLIT 
+    %ID_H_SPLIT 
+    
+    %ID_TEXTBOX1
+    %ID_TEXTBOX2
+  End ControlID
+  
+  '------------------------------------------------------------------------------
+  ' Program start point
+  '------------------------------------------------------------------------------
+  '----------------------------------------------------------------------------
+  FUNCTION Main() as long
+  '----------------------------------------------------------------------------
+    Local hDlg    As DWord    '---Main window handle
+       
+    '---Create a new dialog
+    Dialog New Pixels, 0, "thinBasic test on splitter control", , , 600, 400, _
+                                        %WS_MAXIMIZEBOX   | 
+                                        %WS_MINIMIZEBOX   | 
+                                        %WS_SYSMENU       | 
+                                        %WS_THICKFRAME    | 
+                                        %DS_CENTER        |
+                                        %WS_CLIPCHILDREN  | 
+                                        %WS_CLIPSIBLINGS,  
+                                        0 To hDlg
+
+
+    '---SetUp dialog
+    MainWindow_SetUp(hDlg)
+
+    '---Show dialog
+    Dialog Show Modal hDlg, Call dlgCallback
+   
+  END FUNCTION
+
+  '------------------------------------------------------------------------------
+  ' Main window setup
+  '------------------------------------------------------------------------------
+  FUNCTION MainWindow_SetUp(hDlg as long) as long
+  '------------------------------------------------------------------------------
+    local lvStyle   as long
+    local Counter   as long
+    local MaxLines  as long = 100
+    local cWidth      as long
+    local cHeight     as long
+
+
+    '---Set window minimum size
+    DIALOG SET MINSIZE hDlg, 150, 120
+
+    MENU ATTACH Menu_SetUp, hDlg
+    
+    DIALOG GET CLIENT hDlg TO cWidth, cHeight
+
+    '---Add controls. Size will be set by splitter automatically when control assigned to Splitter_SetPanes
+    control add textbox, hDlg, %ID_TEXTBOX1, "... and also here"     , , , , , %ES_WANTRETURN | %ES_MULTILINE | %ES_AUTOVSCROLL | %WS_VSCROLL
+    control add textbox, hDlg, %ID_TEXTBOX2, "Use split bars"        , , , , , %ES_WANTRETURN | %ES_MULTILINE | %ES_AUTOVSCROLL | %WS_VSCROLL
+
+
+    lvStyle =   %LV_VIEW_DETAILS | %LVS_SINGLESEL | %WS_VISIBLE | %WS_CHILD | %LVS_SHOWSELALWAYS | %WS_BORDER 
+    Control Add Listview, hDlg, %ID_LV_LEFT  , "", 10, 10, 210, 210, lvStyle
+      lvStyle = ListView_GetExtendedStyle(hDlg, %ID_LV_LEFT)
+      ListView_SetExtendedStyle hDlg, %ID_LV_LEFT,  %LVS_EX_FULLROWSELECT | %LVS_EX_GRIDLINES
+        listview_Setview      hDlg, %ID_LV_LEFT, %LV_VIEW_DETAILS
+        listview_insertcolumn hDlg, %ID_LV_LEFT, 1, 100, "Folders"      , %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_LEFT
+        listview_insertcolumn hDlg, %ID_LV_LEFT, 2,  50, "Size"         , %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_RIGHT
+        listview_insertcolumn hDlg, %ID_LV_LEFT, 3, 220, "Description"  , %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_LEFT
+
+      dim s(MaxLines, 3) as string
+      for Counter = 1 to MaxLines
+        s(Counter,1) = "Folder " & Counter, Counter, "Whatever data here regarding Folder " & Counter
+      next          
+      
+      listview_InsertData hDlg, %ID_LV_LEFT, s()
+
+    ListView_SetBkColor     hDlg, %ID_LV_LEFT, rgb(250, 250, 250)
+    ListView_SetTextBkColor hDlg, %ID_LV_LEFT, ListView_getBkColor(hDlg, %ID_LV_LEFT)
+ 
+ 
+    Splitter_Create         hDlg, %ID_V_SPLIT, %SWS_VERTICAL, , , 0, 0
+    Splitter_SetPanes       hDlg, %ID_V_SPLIT, %ID_LV_LEFT, %ID_TEXTBOX1
+    Splitter_SetSplitPos    hDlg, %ID_V_SPLIT, 400
+    Splitter_SetBarSize     hDlg, %ID_V_SPLIT, 5
+    Splitter_SetPaneMinSize hDlg, %ID_V_SPLIT, 50
+    Splitter_SetBackColor   hDlg, %ID_V_SPLIT, Rgb(255, 0, 0)
+
+    Splitter_Create         hDlg, %ID_H_SPLIT, %SWS_HORIZONTAL, , , cWidth, cHeight
+    Splitter_SetPanes       hDlg, %ID_H_SPLIT, %ID_V_SPLIT, %ID_TEXTBOX2
+    Splitter_SetSplitPosPct hDlg, %ID_H_SPLIT, 60
+    Splitter_SetBarSize     hDlg, %ID_H_SPLIT, 5
+    Splitter_SetBackColor   hDlg, %ID_H_SPLIT, Rgb(0,255,0)
+
+    control set resize      hDlg, %ID_H_SPLIT , 1, 1, 1, 1 
+    
+  End Function
+
+  '------------------------------------------------------------------------------
+  ' Main window message pump
+  '------------------------------------------------------------------------------
+  CALLBACK FUNCTION dlgCallback() as long
+  '------------------------------------------------------------------------------
+    Local nm            As NMHDR At CBNMHDR
+    LOCAL lvnm          as NM_LISTVIEW ptr
+
+    local Idx         as long
+    local hSplitterV  as long
+    local hSplitterH  as long
+
+    '---To be able to interact with controls inside a splitter, we need to collect the
+    '---Window control handler of the splitter
+    hSplitterH = CONTROL_GetHandle(cbHndl, %ID_H_SPLIT)         '---This control is child of main window
+    hSplitterV = CONTROL_GetHandle(hSplitterH, %ID_V_SPLIT)   '---This control is child of Hor splitter
+     
+      '---Now test the message 
+      SELECT CASE cbMsg
+
+        case %WM_COMMAND
+          select case cbCtl
+            case %ID_ABOUT
+              '---The parent window of text control 150 is the hor splitter and not the main window
+              '---So here we use hSplitterH as window handler
+              control appendtotop text cbHndl, %ID_TEXTBOX1, "Menu About selected" & $crlf
+            case %ID_HELP
+              control appendtotop text cbHndl, %ID_TEXTBOX1, "Menu Help selected" & $crlf
+            case %ID_EXIT
+              dialog end cbHndl
+          end select
+
+        case %WM_NOTIFY
+          
+          select case cbCtl
+              
+            case %ID_LV_LEFT
+              '---lParam contains a pointer to a listview notification structure
+              '---so assign it to our lvnm pointer
+              lvnm = cblParam
+
+              '---Now check the notification event occurred
+              select case nm.code
+                case %LVN_COLUMNCLICK
+                  '---Attention: when using API, they are usually zero based
+                  control appendtotop text cbhndl, %ID_TEXTBOX2, "Click on column " & str$(lvnm.iSubItem + 1) & $crlf
+
+                case %LVN_ITEMCHANGED
+                  '---When a selection change takes place, more %LVN_ITEMCHANGED are fired.
+                  '---To catch only the needed notification, check .uNewState notification member to have %LVIS_SELECTED on.
+                  if lvnm.uNewState and %LVIS_SELECTED or lvnm.uNewState and %LVIS_ACTIVATING then
+                    idx = ListView_GetNextItem(hSplitterV, %ID_LV_LEFT, -1, %LVNI_SELECTED)
+                    control appendtotop text cbhndl, %ID_TEXTBOX2, "%LVN_ITEMCHANGED " & idx & " " & lvnm.uOldState & " " & lvnm.uNewState & $crlf
+                  end if
+
+              end select
+            
+          end select            
+          
+      END SELECT
+
+  END FUNCTION
+
+  '------------------------------------------------------------------------------
+  ' Create menu and return menu handle
+  '------------------------------------------------------------------------------
+  function Menu_SetUp() as long
+  '------------------------------------------------------------------------------
+    LOCAL hMenu   AS dword
+    LOCAL hPopup1 AS dword
+    LOCAL hPopup2 AS dword
+
+    ' ** First create a top-level menu:
+    MENU NEW BAR TO hMenu
+
+    ' ** Add a top-level menu item with a popup menu:
+    MENU NEW POPUP TO hPopup1
+    MENU ADD POPUP,  hMenu, "&File", hPopup1, %MF_ENABLED
+    MENU ADD STRING, hPopup1, "&Exit", %ID_EXIT, %MF_ENABLED
+
+
+    ' ** Finally, we'll add a second top-level menu and popup.
+    MENU NEW POPUP TO hPopup2
+    MENU ADD POPUP,  hMenu, "&?", hPopup2, %MF_ENABLED
+    MENU ADD STRING, hPopup2, "&Help", %ID_HELP, %MF_ENABLED
+    MENU ADD STRING, hPopup2, "-",      0, 0
+    MENU ADD STRING, hPopup2, "&About", %ID_ABOUT, %MF_ENABLED
+
+    function = hMenu
+    
+  end function
+          

@@ -1,0 +1,118 @@
+
+'---------------------
+'co2 o2 compiler maker
+'=====================
+
+'Charles Pegge
+'Revised: 11:47 16/Aug/2010
+
+  uses "oxygen"
+
+  dim src as string
+
+  src = "
+  #basic
+  #file "co2.exe"
+
+ 
+  '------------
+  'SELECTED API
+  '============
+  '
+  extern stdcall lib "thinBasic_oxygen.dll"
+
+  declare sub      o2_asmo  (byval s as string)
+  declare sub      o2_basic (byval s as string)
+  declare function o2_buf   (byval n as long) as long
+  declare function o2_errno () as long
+  declare function o2_error () as string
+  declare function o2_exec  (optional byval p as long) as long
+  declare function o2_get   () as string
+  declare function o2_len   () as long
+  declare function o2_prep  (byval srcBSTR as string) as string
+  declare sub      o2_put   (byval c as string)
+  declare function o2_view  (byval srcBSTR as string) as string
+
+  end extern
+
+  DECLARE FUNCTION GetCommandLine LIB `KERNEL32.DLL` ALIAS `GetCommandLineA` () AS DWORD
+  
+  dim byref z as zstring 
+  
+  &z=GetCommandLine
+  
+  dim a as long
+  dim n,s,t,u as string
+  dim as string qu=chr(34)
+  dim as string cr=chr(13)+chr(10)
+  '
+  n=ltrim lcase z
+  a=asc(n,1)
+  '
+  'STRIP QUOTES
+  '
+  if a=34 then
+    a=instr 2,n,qu
+    n=mid n,2,a-2
+  end if
+  '
+  'CHECK FOR PARAMETER FOLLOWING
+  '
+  a=instr(1,n,` `)
+  if not a then
+    print `error 1: missing filename`
+    goto finish
+  end if
+  n=mid n,a+1,64
+  n=ltrim n
+  if not len(n) then
+    print `error 2: missing filename`
+    goto finish
+  end if
+  '
+  'CHECK FOR .BAS EXTENSION NAME
+  '
+  n=rtrim n
+  s=mid n,-4,4
+  if s=`.bas` then
+    s=n
+  else
+    s=n+`.bas`
+  end if
+  '
+  'ATTEMPT TO GET FILE
+  '
+  t=getfile s
+  if not len(t) then
+    print `error 3: file empty or not found: ` s
+    goto finish
+  end if
+
+  a=len(s)-3
+  s=left s,a
+  t="#basic" cr "#file " qu s "exe" qu cr t
+
+  o2_asmo t
+
+  if o2_errno then
+    print `error:
+    ` o2_error
+  else
+    print `compiled: ` n
+  end if
+
+  finish:
+  
+  "
+
+  o2_basic src
+  
+  if len(o2_error) then
+    msgbox 0, o2_error() : stop
+  else
+    msgbox 0,"compiled ok"
+  end if
+  
+
+  'o2_exec ' TO TEST THE PROGRAM
+  'msgbox 0,o2_prep src

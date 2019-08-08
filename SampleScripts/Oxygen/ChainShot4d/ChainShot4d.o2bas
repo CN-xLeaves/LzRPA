@@ -1,0 +1,323 @@
+  #compact
+  includepath "$\inc\"
+  % filename "t.exe"
+ 'include    "RTL32.inc"
+  % Title    "Chainshot3D:    (left-click & right-click)"
+  % Animated
+  % ScaleUp
+ '% PlaceCentral
+ '% AnchorCentral
+ '% ColorCodedPick
+  includepath "$\inc\"
+  include "ConsoleG.inc"
+  include "chaos.inc"
+  %side 8
+
+  indexbase 1
+
+  type celltype
+  long  a, n
+  long  x, y, z, w
+  float px,py,pz,pw
+  float tx,ty,tz,tw
+  end type
+
+  sys sseed=GetTickCount
+  celltype cell[1024]
+
+  sub initcells()
+  ===============  
+  sys r,x,y
+  'seed=0x2468abcd
+  seed=sseed
+  celltype *c
+  @c=@cell
+  for w=1 to 2
+    for z=1 to side
+      for y=1 to side
+        for x= 1 to side
+          r=irnd(1,4)
+          c.x=x
+          c.y=y
+          c.z=z
+          c.w=w
+          c.a=r
+          c.n=z*64+y*side+x-side
+          c.px= x*2
+          c.py=-y*2
+          c.pz=-z*2
+          c.pw= w*2
+          @c+=sizeof cell
+        next
+      next
+    next
+  next
+  end sub
+
+  initcells()
+
+  sub transfer(celltype *a,*b)
+  ============================
+  a.a=b.a        'TRANFER MATERIAL
+  a.n=b.n        'TRANSFER NAME
+  b.a=0          'CANCEL SOURCE MATERIAL
+  b.n=0          'CANCEL SOURCE NAME
+  a.tx=b.px-a.px 'TRANSIT X
+  a.ty=b.py-a.py 'TRANSIT Y
+  a.tz=b.pz-a.pz 'TRANSIT Z
+ 'a.tw=b.pw-a.pw 'TRANSIT W
+  end sub
+
+  sub ycompact()
+  ===============
+  sys i,j,k,w,x,y,z,zz,iz,ww
+  iz=side*side
+  for w=1 to 2
+    for z=1 to side
+      zz=ww+z*iz-side
+      for x=1 to side
+        i=zz+x
+        j=i
+        k=j-side
+        for y=side to 2 step -1
+          if cell[j].a then
+            j-=side
+          elseif cell[k].a then
+            transfer cell[j],cell[k]
+            j-=side
+          end if
+          k-=side
+        next
+      next
+    next
+    ww+=side*side*side
+  next
+  end sub
+  
+  sub xcompact()
+  ==============
+  sys i,j,k,w,x,y,z,zz,iz,ww
+  iz=side*side
+  for w=1 to 2
+    for z=1 to side
+      zz=ww+z*iz-iz
+      for y=1 to side
+        i=zz+y*side-side
+        j=i+1
+        k=j+1
+        for x=1 to <side
+          if cell[j].a then
+            j++
+          elseif cell[k].a then
+            transfer cell[j],cell[k]
+            j++
+          end if
+          k++
+        next
+      next
+    next
+    ww+=side*side*side
+  next
+  end sub
+
+  sub zcompact()
+  ==============
+  sys i,j,k,w,x,y,z,iz,ww
+  iz=side*side
+  for w=1 to 2
+    for y=1 to side
+      for x=1 to side
+        i=ww+y*side-side+x
+        j=i
+        k=j+iz
+        for z=1 to <side
+          if cell[j].a then
+            j+=iz
+          elseif cell[k].a then
+            transfer cell[j],cell[k]
+            j+=iz
+          end if
+          k+=iz
+        next
+      next
+    next
+    ww+=side*side*side
+  next
+  end sub
+
+  sub wcompact()
+  ==============
+  sys i,j,k,w,x,y,z,ii
+  ii=side*side*side
+  for z=1 to side
+    for y=1 to side
+      for x=1 to side
+        i=y*side-side+x
+        j=i
+        k=j+512
+        for w=1 to 1
+          if cell[j].a then
+            j+=ii
+          elseif cell[k].a then
+            transfer cell[j],cell[k]
+            j+=ii
+          end if
+          k+=ii
+        next
+      next
+    next
+  next
+  end sub
+
+  function GameLogic(sys i,optional a) as sys
+  ===========================================
+  '
+  sys j,m,x,y,z
+  if not i then exit sub
+  x=cell[i].x
+  y=cell[i].y
+  z=cell[i].z
+  w=cell[i].w
+  if not a then
+    a=cell[i].a
+    if not a then
+      exit sub
+    end if
+  end if
+  '
+  macro GameLogicAct()
+    if cell[j].a=a then
+      cell[j].a=0
+      'cell[i].a=0
+      GameLogic j,a 'RECURSE
+      m=1
+    end if
+  end macro
+  '
+  if x>1 then
+    j=i-1
+    GameLogicAct() 'LEFT
+  end if
+  if x<side then
+    j=i+1
+    GameLogicAct() 'RIGHT
+  end if
+  if y>1 then
+    j=i-side
+    GameLogicAct() 'ABOVE
+  end if
+  if y<side then
+    j=i+side
+    GameLogicAct() 'BELOW
+  end if
+  if z>1 then
+    j=i-64
+    GameLogicAct() 'NEAR
+  end if
+  if z<side then
+    j=i+64
+    GameLogicAct() 'FAR
+  end if
+  if w>1 then
+    j=i-512
+    GameLogicAct() 'HNEAR
+  end if
+  if w<2 then
+    j=i+512
+    GameLogicAct() 'HFAR
+  end if
+  return m
+  end function
+
+  sys vsphere
+
+  sub render(sys i)
+  =================
+  celltype c at (@cell[i])
+  sys a
+  a=c.a
+  if a then
+    if pick then
+      label i
+    else
+      select a
+      case 1 : RedShinyMaterial.act
+      case 2 : BlueShinyMaterial.act
+      case 3 : WhiteShinyMaterial.act
+      case 4 : GoldMaterial.act
+      end select
+    end if
+    glpushmatrix
+    move c.px+c.tx, c.py+c.ty, c.pz+c.tz
+    'REDUCE TRANSITION DISTANCE
+    if c.tx then c.tx*=.75
+    if c.ty then c.ty*=.75
+    if c.tz then c.tz*=.75
+   'if c.tw then c.tw*=.75
+    go vsphere
+    glpopmatrix
+   end if
+  end sub
+
+  sub main()
+  ==========
+  '
+  if not vsphere then
+    'CRUDE SPHERE
+    vsphere   = CompileList : Spheric 1,1,45 : glEndList
+  end if
+  '
+  static float ay
+  static sys   pki,count
+  glClearColor 0,0.10,0,0
+  '
+  pushstate
+  shading 'opposite of 'flat'
+  'DISPLAY TOP SECTION
+  pushstate
+    move 2
+    color .90,.90,.90,.99
+    scale 2 : print3d "clicks: " count
+  popstate
+  '
+  move 4,-8,-20
+  'scale .5
+  '
+  'DISPLAY
+  sys a,i,x,y,z,w
+  'if pick then
+  '  pickprep
+  'end if
+  i=0
+  glpushmatrix
+  rotatey ay
+  move -8,0,8
+  for i=1 to 512 : render i : next
+  glpopmatrix
+  move 25
+  glpushmatrix
+  rotatey ay
+  move -8,0,8
+  for i=513 to 1024 : render i : next
+  glpopmatrix
+  '
+  ay+=.125
+  picklabel 0
+  '
+  popstate 'whole
+  '
+  if GameLogic(picked) then
+    count++
+    if bRight then
+      xcompact()
+      zcompact()
+      wcompact()
+    else
+      ycompact()
+    end if
+    picked=0
+  end if
+  '
+  end sub
+
+  EndScript

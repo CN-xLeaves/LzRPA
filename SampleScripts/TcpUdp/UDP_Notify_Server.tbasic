@@ -1,0 +1,362 @@
+  ' -----------------------------------------------------------------
+  '
+  ' -----------------------------------------------------------------
+
+  #minversion 1.7.0.0
+
+  uses "UI"
+  uses "TCPUDP"       ' For internet communication
+  USES "INET"         ' To get mine IP
+
+  #include ".\UDP_Notify_Common.inc"
+  
+  begin const
+    %IDC_LOG          = 100
+    %IDC_LISTV_LOG    = 100
+    %IDC_BTN_SERVER
+    %IDC_BTN_CLIENT
+    %IDC_BTN_CLOSE
+    
+    %IDC_LISTV_SLOTS
+
+    %UDP_MAX_SLOTS    = 10
+
+    %WM_UDP_READ      = %WM_USER + 500 + 1
+    %WM_UDP_WRITE
+
+    %Mode_None        = 0
+    %Mode_Server      = 1
+    %Mode_Client      = 2
+  end const
+
+
+  type tSlotInfo
+    Active  as boolean
+    wHandle as long
+    IP      as long
+    Port    as long
+    x       as integer
+    y       as integer
+    w       as integer
+    h       as integer
+  end type
+  
+  dim UDP_Port_Recv     as long value 5000
+  dim UDP_File_Recv     as long
+
+  dim UDP_Port_Reply    as long
+  
+  dim Slots()           as tSlotInfo        '---Will store IP of the connected clients
+  
+  dim SourceIP          as long
+  dim SourcePort        as long
+  
+  dim gResult           as ext
+  dim gCount            as long
+  dim gData             as tUDPInfo
+  dim gCurrentMode      as long             '---Used to know in which mode we are: server or client
+  dim glvStyle          as long
+  
+  '----------------------------------------------------------------------------
+  '---PROGRAM START
+  '----------------------------------------------------------------------------
+  FUNCTION Main() as long
+  '----------------------------------------------------------------------------
+    local hDlg    AS LONG    '---Used to store window handle
+    local Count   as long
+
+    '---Create a new dialog
+    DIALOG NEW 0, "UDP_Notify control test", -1, -1, 520, 220, _
+                                                  %WS_DLGFRAME | _
+                                                  %DS_CENTER | _
+                                                  %WS_CAPTION | _
+                                                  %WS_SYSMENU | _
+                                                  %WS_OVERLAPPEDWINDOW  | _
+                                                  %WS_CLIPCHILDREN, 0 TO hDlg
+    '---Set window minimum size
+      DIALOG SET MINSIZE hDlg, 220, 200
+
+    '---Show dialog
+    DIALOG SHOW modeless hDlg, call cbDialog_Proc
+
+    Do
+      DIALOG DOEVENTS 0 To Count
+    Loop While Count
+
+  END FUNCTION
+
+  '------------------------------------------------------------------------------
+  ' Callback procedure for main window
+  '------------------------------------------------------------------------------
+  callback FUNCTION cbDialog_Proc() as long
+  '------------------------------------------------------------------------------
+    static nPackets as long
+    
+    select case cbmsg
+      
+      case %WM_INITDIALOG   '---Message fired when window is going to be created
+
+        '---Add controls
+          glvStyle =   %LV_VIEW_DETAILS | %LVS_SINGLESEL | %WS_VISIBLE | %WS_CHILD | %LVS_SHOWSELALWAYS | %WS_BORDER 
+          CONTROL ADD listview, cbhndl, %IDC_LISTV_LOG, "", 10, 10, 400, 80, glvStyle, %LVS_EX_FULLROWSELECT | %LVS_EX_GRIDLINES
+            listview_Setview      cbhndl, %IDC_LISTV_LOG, %LV_VIEW_DETAILS
+            listview_insertcolumn cbhndl, %IDC_LISTV_LOG,  1, 120, "Last Update", %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_LEFT
+            listview_insertcolumn cbhndl, %IDC_LISTV_LOG,  2, 400, "Information", %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_LEFT
+          
+          control add button  , cbhndl, %IDC_BTN_SERVER , "I'm a Server", 420, 10,  90,  15
+          'control add button  , cbhndl, %IDC_BTN_CLIENT , "I'm a Client", 420, 30,  90,  15
+          control add button  , cbhndl, %IDC_BTN_CLOSE  , "Close"       , 420, 75,  90,  15
+
+        '---Set resize properties                         L  R  T  B
+          control set resize  cbhndl, %IDC_LISTV_LOG    , 1, 1, 1, 1
+          control set resize  cbhndl, %IDC_BTN_SERVER   , 0, 1, 1, 0
+          control set resize  cbhndl, %IDC_BTN_CLIENT   , 0, 1, 1, 0
+          control set resize  cbhndl, %IDC_BTN_CLOSE    , 0, 1, 0, 1
+
+
+      case %WM_UDP_READ
+      '---User defined Message fired when data is ready to be read in UDP stack
+
+        select case LO(WORD, CBLPARAM)
+          case %FD_READ
+            
+            '---Ok, we are going to receive some data.
+            incr nPackets
+            gData = udp_recv(UDP_File_Recv, SourceIP, SourcePort)
+
+            '---Be sure data is the one expected
+            if gData.ID = %Stamp_ID then
+
+              '---Now check which info type
+              select case gData.InfoType
+
+                case %UDT_Type_Broadcast
+                  select case gData.InfoData.iBroadcast.ActionType
+                    case %UDT_BroadCastType_AskServer
+                      WriteLog cbhndl, "Someone is asking for a server. IP: "
+                      WriteLog cbhndl, "   IP is: " & INET_IpTostring(SourceIP)
+                      WriteLog cbhndl, "   Port is: " & SourcePort
+                      WriteLog cbhndl, "   Message is: " & gData.InfoData.iBroadcast.sMessage
+                      WriteLog cbhndl, "   Port is: " & gData.InfoData.iBroadcast.Port
+                      UDP_Port_Reply = gData.InfoData.iBroadcast.Port
+
+
+                      gData.InfoData.iBroadcast.ActionType = %UDT_BroadCastType_ReplyFromServer
+                      gData.InfoData.iBroadcast.sMessage = "Please to meet you"
+                      gData.SlotID = Slot_FindFirstFree(SourceIP, UDP_Port_Reply)
+                      UDP_Send(UDP_File_Recv, SourceIP, UDP_Port_Reply, gData)
+                      listview_Setitem  cbhndl, %IDC_LISTV_SLOTS, gData.SlotID,  2, "True"
+
+                  end select
+                   
+                case %UDT_Type_Connect
+                case %UDT_Type_DisConnect
+                case %UDT_Type_WinSize
+                  gCount = gData.SlotID'SourcePort - 5000
+                  listview_Setitem  cbhndl, %IDC_LISTV_SLOTS, gCount,  3, GetCurrentDateTime
+
+                  listview_Setitem  cbhndl, %IDC_LISTV_SLOTS, gCount,  6, gData.InfoData.iWinSize.x
+                  listview_Setitem  cbhndl, %IDC_LISTV_SLOTS, gCount,  7, gData.InfoData.iWinSize.y
+                  listview_Setitem  cbhndl, %IDC_LISTV_SLOTS, gCount,  8, gData.InfoData.iWinSize.w
+                  listview_Setitem  cbhndl, %IDC_LISTV_SLOTS, gCount,  9, gData.InfoData.iWinSize.h
+                  dialog set loc cbhndl, gData.InfoData.iWinSize.x - 200, gData.InfoData.iWinSize.y - 200
+
+              end select
+              reset gData
+            end if
+            
+        end select
+        
+      case %WM_COMMAND
+        
+        select case cbwparam
+
+          case %IDC_BTN_SERVER
+
+            if gCurrentMode = %Mode_None then
+              if SetUp_Server(cbhndl) = 0 then
+                gCurrentMode = %Mode_Server
+                'control disable cbhndl, %IDC_BTN_CLIENT
+                control set text cbhndl, %IDC_BTN_SERVER, "Stop server"
+              end if
+            elseif gCurrentMode = %Mode_Server then
+              '---Stop the server
+              SetUp_Close(cbhndl)
+              control set text cbhndl, %IDC_BTN_SERVER, "I'm a server"
+              gCurrentMode = %Mode_None
+            end if
+            
+          case %IDC_BTN_CLIENT
+            if gCurrentMode = %Mode_None then
+              gCurrentMode = %Mode_Client
+              control disable cbhndl, %IDC_BTN_SERVER
+              'SetUp_Server(cbhndl)
+              control set text cbhndl, %IDC_BTN_CLIENT, "Stop client"
+            elseif gCurrentMode = %Mode_Client then
+              '---Stop the server
+              beep
+            end if
+          case %IDC_BTN_CLOSE
+            SetUp_Close(cbhndl)
+            dialog end cbhndl
+
+        end select
+      case %WM_SIZE
+
+      CASE %WM_SYSCOMMAND
+        IF (CBWPARAM AND &HFFF0) = %SC_CLOSE THEN
+          '---To avoid closing with [X] or ALT+F4 just return FUNCTION = %TRUE
+          beep
+          beep
+          function = %TRUE
+        END IF
+        
+      case %WM_DESTROY
+        '---Do whatever needed just before dialog is destroyed.
+
+    end select
+  
+
+  END FUNCTION
+
+  '----------------------------------------------------------------------------
+  ' Compute and format current date/time
+  '----------------------------------------------------------------------------
+  function GetCurrentDateTime() as string
+  '----------------------------------------------------------------------------
+    function =  format$(right$(date$, 4   ), "0000") & "/" & _
+                format$( left$(date$, 2   ), "00"  ) & "/" & _
+                format$(  mid$(Date$, 4, 2), "00"  ) & " " & _
+                time$
+  end function
+  
+  '----------------------------------------------------------------------------
+  '
+  '----------------------------------------------------------------------------
+  function WriteLog(hWnd as long, sText as string) as long
+  '----------------------------------------------------------------------------
+    ListView_BeginUpdate hWnd, %IDC_LISTV_LOG   '---To minimize video redraw, better to stop control updates
+
+      '---Always use position 1. In this way line is added on top of all others.
+      listview_Insertitem hWnd, %IDC_LISTV_LOG, 1 , GetCurrentDateTime
+        listview_Setitem  hWnd, %IDC_LISTV_LOG, 1,  2, sText
+
+    ListView_EndUpdate hWnd, %IDC_LISTV_LOG   '---Restart control updates
+
+    '---Force a redraw
+    dialog redraw hWnd
+
+  end function
+
+  '----------------------------------------------------------------------------
+  '
+  '----------------------------------------------------------------------------
+  function SetUp_Server(hWnd as long) as long
+  '----------------------------------------------------------------------------
+      '---LISTENING
+      UDP_File_Recv = udp_FreeFile
+      gResult = udp_OpenServer(UDP_Port_Recv, UDP_File_Recv, 50)
+      WriteLog hWnd, "Open UDP port " &  UDP_Port_Recv & " on file " & UDP_File_Recv
+      WriteLog hWnd, "Result: " & gResult
+
+      function = gResult
+
+      if gResult = 0 then
+        UDP_notify(UDP_File_Recv, %NOTIFY_READ, hWnd, %WM_UDP_READ)
+
+        glvStyle =   %LV_VIEW_DETAILS | %LVS_SINGLESEL | %WS_VISIBLE | %WS_CHILD | %LVS_SHOWSELALWAYS | %WS_BORDER 
+        CONTROL ADD listview, hWnd, %IDC_LISTV_SLOTS, "", 10, 100, 500, 110, glvStyle, %LVS_EX_FULLROWSELECT | %LVS_EX_GRIDLINES
+          listview_Setview      hWnd, %IDC_LISTV_SLOTS, %LV_VIEW_DETAILS
+          listview_insertcolumn hWnd, %IDC_LISTV_SLOTS,  1,  30, "#"          , %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_RIGHT
+          listview_insertcolumn hWnd, %IDC_LISTV_SLOTS,  2,  80, "Active"     , %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_LEFT
+          listview_insertcolumn hWnd, %IDC_LISTV_SLOTS,  3, 120, "Last Update", %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_LEFT
+          listview_insertcolumn hWnd, %IDC_LISTV_SLOTS,  4,  70, "UDP Port"   , %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_RIGHT
+          listview_insertcolumn hWnd, %IDC_LISTV_SLOTS,  5,  70, "hWnd"       , %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_RIGHT
+          listview_insertcolumn hWnd, %IDC_LISTV_SLOTS,  6,  40, "X"          , %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_RIGHT
+          listview_insertcolumn hWnd, %IDC_LISTV_SLOTS,  7,  40, "Y"          , %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_RIGHT
+          listview_insertcolumn hWnd, %IDC_LISTV_SLOTS,  8,  40, "W"          , %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_RIGHT
+          listview_insertcolumn hWnd, %IDC_LISTV_SLOTS,  9,  40, "H"          , %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_RIGHT
+
+        redim Slots(%UDP_MAX_SLOTS)
+        'msgbox 0, Slot_FindFirstFree(1000, 1000)
+        for gCount = 1 to %UDP_MAX_SLOTS
+          ListView_BeginUpdate hWnd, %IDC_LISTV_SLOTS   '---To minimize video redraw, better to stop control updates
+            '---Always add new item at position 1. In this way it is added on top of all others.
+            listview_Insertitem hWnd, %IDC_LISTV_SLOTS, gCount,     gCount
+              listview_Setitem  hWnd, %IDC_LISTV_SLOTS, gCount,  2, iif$(Slots(gCount).Active, "True", "False")
+              listview_Setitem  hWnd, %IDC_LISTV_SLOTS, gCount,  3, ""'.GetCurrentDateTime
+              listview_Setitem  hWnd, %IDC_LISTV_SLOTS, gCount,  4, ""
+              listview_Setitem  hWnd, %IDC_LISTV_SLOTS, gCount,  5, 0
+              listview_Setitem  hWnd, %IDC_LISTV_SLOTS, gCount,  6, 0
+              listview_Setitem  hWnd, %IDC_LISTV_SLOTS, gCount,  7, 0
+              listview_Setitem  hWnd, %IDC_LISTV_SLOTS, gCount,  8, 0
+              listview_Setitem  hWnd, %IDC_LISTV_SLOTS, gCount,  9, 0
+          ListView_EndUpdate hWnd, %IDC_LISTV_SLOTS   '---Restart control updates
+
+        next
+        control set resize  hWnd, %IDC_LISTV_SLOTS  , 1, 1, 0, 1
+      else
+        beep
+        beep
+        WriteLog hWnd, "Error while trying to start the server."
+        writelog hWnd, "Check if another instance of the server is running on this machine."
+        
+      end if
+
+  end function
+
+  '----------------------------------------------------------------------------
+  '
+  '----------------------------------------------------------------------------
+  function Slot_FindFirstFree(IP as long, Port as long) as long
+  '----------------------------------------------------------------------------
+    local Counter as long
+
+    '---First check if IP and PORT are already there
+    for Counter = 1 to %UDP_MAX_SLOTS
+      if Slots(Counter).IP = IP and Slots(Counter).Port = Port then
+        Slots(Counter).Active = %TRUE
+        function = Counter
+        exit function
+      end if
+    next
+
+      '---If here, client is not yet connected so find a free place
+      for Counter = 1 to %UDP_MAX_SLOTS
+        if Slots(Counter).Active = %FALSE then
+          Slots(Counter).Active = %TRUE
+          Slots(Counter).IP = IP
+          Slots(Counter).Port = Port
+          function = Counter
+          exit function
+        end if
+      next
+    
+  end function
+
+  '----------------------------------------------------------------------------
+  '
+  '----------------------------------------------------------------------------
+  function SetUp_Close(hWnd as long) as long
+  '----------------------------------------------------------------------------
+    WriteLog hWnd, "Performing closure activities ..."
+    'dialog redraw hWnd
+    select case gCurrentMode
+      case %Mode_None
+        '---Nothing to do
+      case %Mode_Server
+        '---Close connection
+          WriteLog hWnd, "Closing udp ..."
+          gResult = udp_close(UDP_File_Recv)
+          WriteLog hWnd, "Result: " & gResult
+          CONTROL kill hWnd, %IDC_LISTV_SLOTS
+      case %Mode_Client
+        '---Close connection
+    end select
+
+    'dialog redraw hWnd
+    sleep 500
+    WriteLog hWnd, "Done!"
+    'dialog redraw hWnd
+    sleep 1000
+  end function

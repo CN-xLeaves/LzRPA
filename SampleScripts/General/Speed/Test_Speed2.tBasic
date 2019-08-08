@@ -1,0 +1,49 @@
+'---
+' Sample script to demonstrate how fast thinBasic is
+' The below function is resolved MaxCount times
+'---
+
+'---Some predefined values
+DIM n_str     AS EXT VALUE 10000
+DIM n_lvl     AS EXT VALUE 10000
+DIM n_wp      AS EXT VALUE 10000
+DIM n_vit     AS EXT VALUE 10000
+DIM n_adef    AS EXT VALUE 10000
+
+DIM MaxCount  AS LONG value 100000
+
+'--Results and counters
+DIM result    AS EXT
+DIM counter   AS LONG
+
+'---For time measuring
+DIM T1        AS quad
+DIM T2        AS quad
+
+'---Used for string output
+DIM Message   AS STRING
+
+'---Here we go ...
+'---Ask if ...
+Message = "This program will solve a simple math expression " & MaxCount & " times.\n"
+Message += "Please press Yes to go on, NO to Stop\n"
+DIM lResult AS LONG = MSGBOX(0, Message, %MB_YESNO, "Continue?")
+IF lResult <> %IDYES THEN
+  STOP
+END IF
+
+'---Get initial time
+T1 = gettickcount
+
+'---Loops and get result
+FOR counter = 1 TO MaxCount
+  result = (((n_str*85+n_lvl)*n_wp)-((n_vit*90+n_adef)*n_lvl))/2
+NEXT
+
+'---Get final time
+T2 = gettickcount
+
+'---Show results  
+MsgBox(0, "mSecs:"    & $TAB & Format$(T2 - T1, "#0") & $CRLF & 
+          "Result:"   & $TAB & result                 & $CRLF )
+            

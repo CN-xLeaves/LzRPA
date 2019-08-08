@@ -1,0 +1,93 @@
+Uses "console"
+
+'-----------------------------------------------------------------------------
+'Variable declaration
+'-----------------------------------------------------------------------------
+Dim T0, T1, T2, T3, T4, T9  AS quad
+
+Dim MaxLoops    As Long Value 1000000
+Dim Count       As Long 
+Dim tmpNumber   As Long 
+Dim tmpString   As String 
+Dim tFormat     As String Value "#0" 
+
+'-----------------------------------------------------------------------------
+'Confirm script execution
+'-----------------------------------------------------------------------------
+PrintL "This program will perform:"
+PrintL MaxLoops & " FOR"
+PrintL MaxLoops & " WHILE/WEND"
+PrintL MaxLoops & " DO/LOOP WHILE"
+PrintL MaxLoops & " DO/LOOP UNTIL"
+PrintL "Please press a key to continue"
+WaitKey
+PrintL
+PrintL "Wait ..."
+PrintL
+
+T0 = GetTickCount
+
+'-----------------------------------------------------------------------------
+'Test speed: FOR loop
+'-----------------------------------------------------------------------------
+T1 = GetTickCount
+tmpNumber = 2
+For Count = 1 To MaxLoops 
+  tmpNumber += 1
+  tmpNumber = (tmpNumber * 2) ^ 2
+  tmpNumber = 2
+Next 
+
+'-----------------------------------------------------------------------------
+'Test speed: WHILE loop
+'-----------------------------------------------------------------------------
+T2 = GetTickCount
+Count = 0
+tmpString = ""
+tmpNumber = 2
+While Count < MaxLoops 
+  Count += 1
+  tmpNumber = (tmpNumber * 2) ^ 2
+  tmpNumber = 2
+Wend 
+
+'-----------------------------------------------------------------------------
+'Test speed: DO loop WHILE
+'-----------------------------------------------------------------------------
+T3 = GetTickCount
+Count = 0
+tmpString = ""
+tmpNumber = 2
+Do 
+  Count += 1
+  tmpNumber = (tmpNumber * 2) ^ 2
+  tmpNumber = 2
+Loop While Count < MaxLoops 
+
+'-----------------------------------------------------------------------------
+'Test speed: DO loop UNTIL
+'-----------------------------------------------------------------------------
+T4 = GetTickCount
+Count = 0
+tmpString = ""
+tmpNumber = 2
+Do 
+  Count += 1
+  tmpNumber = (tmpNumber * 2) ^ 2
+  tmpNumber = 2
+Loop Until Count >= MaxLoops 
+
+T9 = GetTickCount
+
+'-----------------------------------------------------------------------------
+'Show results with some internal counters
+'-----------------------------------------------------------------------------
+PrintL "Results " & MaxLoops & " loops."
+PrintL MaxLoops & " FOR      "  & Format$(T2 - T1, tFormat)             & " msec."
+PrintL MaxLoops & " WHILE    "  & Format$(T3 - T2, tFormat)             & " msec." 
+PrintL MaxLoops & " DO WHILE "  & Format$(T4 - T3, tFormat)             & " msec."
+PrintL MaxLoops & " DO UNTIL "  & Format$(T9 - T4, tFormat)             & " msec."
+PrintL "Total                "  & Format$(T9 - T0, tFormat)             & " msec."
+PrintL
+PrintL "Please press a key to finish."
+WaitKey

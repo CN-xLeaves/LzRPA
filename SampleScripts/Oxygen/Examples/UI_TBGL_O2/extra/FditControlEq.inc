@@ -1,0 +1,41 @@
+'/*
+' * Edit Control Messages
+' */
+%EM_GETSEL              = &H00B0???
+%EM_SETSEL              = &H00B1???
+%EM_GETRECT             = &H00B2???
+%EM_SETRECT             = &H00B3???
+%EM_SETRECTNP           = &H00B4???
+%EM_SCROLL              = &H00B5???
+%EM_LINESCROLL          = &H00B6???
+%EM_SCROLLCARET         = &H00B7???
+%EM_GETMODIFY           = &H00B8???
+%EM_SETMODIFY           = &H00B9???
+%EM_GETLINECOUNT        = &H00BA???
+%EM_LINEINDEX           = &H00BB???
+%EM_SETHANDLE           = &H00BC???
+%EM_GETHANDLE           = &H00BD???
+%EM_GETTHUMB            = &H00BE???
+%EM_LINELENGTH          = &H00C1???
+%EM_REPLACESEL          = &H00C2???
+%EM_GETLINE             = &H00C4???
+%EM_LIMITTEXT           = &H00C5???
+%EM_CANUNDO             = &H00C6???
+%EM_UNDO                = &H00C7???
+%EM_FMTLINES            = &H00C8???
+%EM_LINEFROMCHAR        = &H00C9???
+%EM_SETTABSTOPS         = &H00CB???
+%EM_SETPASSWORDCHAR     = &H00CC???
+%EM_EMPTYUNDOBUFFER     = &H00CD???
+%EM_GETFIRSTVISIBLELINE = &H00CE???
+%EM_SETREADONLY         = &H00CF???
+%EM_SETWORDBREAKPROC    = &H00D0???
+%EM_GETWORDBREAKPROC    = &H00D1???
+%EM_GETPASSWORDCHAR     = &H00D2???
+'#if(WINVER >= 0x0400)
+%EM_SETMARGINS          = &H00D3???
+%EM_GETMARGINS          = &H00D4???
+%EM_SETLIMITTEXT        = %EM_LIMITTEXT
+%EM_GETLIMITTEXT        = &H00D5???
+%EM_POSFROMCHAR         = &H00D6???
+%EM_CHARFROMPOS         = &H00D7???

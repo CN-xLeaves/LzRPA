@@ -1,0 +1,117 @@
+  '
+  ' 3D Studio Max / GMax like control group 
+  ' collapsing and expanding
+  '
+  ' Petr Schreiber, 2006
+  ' v1.05 ( tuned )
+  '
+  
+  uses "UI"
+  
+  ' Include file with all you need for basic panels handling
+  ' The panels has ID generated from 10 001 up, so you have enough
+  ' space for controls
+  #INCLUDE "section_panels.inc" 
+
+  Begin ControlID
+    %ID_HELP_LABEL  
+
+    %ID_BUTTON_1
+    %ID_BUTTON_2 
+    %ID_BUTTON_3
+
+    %ID_BUTTON_PREV  
+    %ID_BUTTON_NEXT 
+
+    %ID_LCOORD_X 
+    %ID_LCOORD_Y 
+    %ID_LCOORD_Z 
+
+    %ID_TCOORD_X 
+    %ID_TCOORD_Y 
+    %ID_TCOORD_Z
+  End ControlID  
+  
+function Main()
+  DIM hDlg AS DWORD    
+   
+    
+  DIALOG NEW 0, "Section panel demo", -1, -1, 150, 200, _
+                                            %WS_DLGFRAME OR %DS_CENTER OR %WS_CAPTION OR %WS_SYSMENU , _
+                                            0 TO hDlg  
+
+  section_Init( 150 ) ' Dialog width - panel length will be derived from this
+  section_New( hDlg, "- My favourite buttons -", 5)
+  
+  CONTROL ADD button, hDlg, %ID_BUTTON_PREV ,"<< Prev", 5, 25, 60, 15
+  CONTROL ADD button, hDlg, %ID_BUTTON_NEXT ,"Next >>", 85, 25, 60, 15
+  
+  section_Assign(1, %ID_BUTTON_PREV)  ' Assigns control with ID %ID_BUTTON_PREV to section #1
+  section_Assign(1, %ID_BUTTON_NEXT)
+  
+  section_New( hDlg, "- Some XYZ values -", 55)  
+
+  control add label, hDlg, %ID_LCOORD_X, "X", 5, 75, 20, 15
+  control add textbox, hDlg, %ID_TCOORD_X, "1", 35, 75, 60, 14
+  
+  control add label, hDlg, %ID_LCOORD_Y, "Y", 5, 90, 20, 15
+  control add textbox, hDlg, %ID_TCOORD_Y, "2", 35, 90, 60, 14
+
+  control add label, hDlg, %ID_LCOORD_Z, "Z", 5, 105, 20, 15
+  control add textbox, hDlg, %ID_TCOORD_Z, "3", 35, 105, 60, 14
+  
+  
+  section_Assign(2, %ID_LCOORD_X)                                            
+  section_Assign(2, %ID_TCOORD_X)                                            
+  
+  section_Assign(2, %ID_LCOORD_Y)                                            
+  section_Assign(2, %ID_TCOORD_Y)                                            
+
+  section_Assign(2, %ID_LCOORD_Z)                                            
+  section_Assign(2, %ID_TCOORD_Z)                                            
+  
+  
+  section_New( hDlg, "- Mysterious X button -", 125)      
+  CONTROL ADD button, hDlg, %ID_BUTTON_3 ,"x", 5, 145, 60, 15  
+  
+  section_Assign(3, %ID_BUTTON_3)                     
+  
+  CONTROL ADD LABEL, hDlg, %ID_HELP_LABEL, "Click on the Sections to expand and collapse them !", 5, 165, 140, 30, %WS_BORDER or %SS_SUNKEN
+ 
+  control set color hDlg, %ID_HELP_LABEL, rgb(0,0,0), rgb(255,255,0)
+    
+  DIALOG SHOW modal hDlg, call dlgCallback
+end function  
+
+callback function dlgCallback() as long
+  
+  ' *******************************
+  ' No need to check which to collapse and when,
+  ' following function handles it all
+  section_Behaviour ( cbMsg, cbwParam )  
+  ' *******************************
+  
+  select case cbMsg
+    CASE %WM_COMMAND     
+        
+      SELECT CASE cbwParam 
+        case %ID_BUTTON_PREV
+          msgbox cbHndl, "You clicked PREV"
+
+        case %ID_BUTTON_NEXT
+          msgbox cbHndl, "You clicked NEXT"
+
+        case %ID_BUTTON_1
+          msgbox cbHndl, "You clicked 1"
+          
+        case %ID_BUTTON_2
+          msgbox cbHndl, "You clicked 2"
+          
+        case %ID_BUTTON_3
+          msgbox cbHndl, "You clicked X"
+            
+      end select
+      
+  END SELECT    
+
+end function

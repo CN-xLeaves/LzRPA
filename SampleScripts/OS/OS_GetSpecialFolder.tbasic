@@ -1,0 +1,111 @@
+Uses "Console"
+Uses "OS"
+
+PrintL "List of special folders"
+PrintL "--------------------------------------------------"
+PrintL "%CSIDL_ADMINTOOLS             :", OS_GetSpecialFolder(%CSIDL_ADMINTOOLS                 )
+PrintL "%CSIDL_ALTSTARTUP             :", OS_GetSpecialFolder(%CSIDL_ALTSTARTUP                 )
+PrintL "%CSIDL_APPDATA                :", OS_GetSpecialFolder(%CSIDL_APPDATA                    )
+PrintL "%CSIDL_BITBUCKET              :", OS_GetSpecialFolder(%CSIDL_BITBUCKET                  )
+PrintL "%CSIDL_CDBURN_AREA            :", OS_GetSpecialFolder(%CSIDL_CDBURN_AREA                )
+PrintL "%CSIDL_COMMON_ADMINTOOLS      :", OS_GetSpecialFolder(%CSIDL_COMMON_ADMINTOOLS          )
+PrintL "%CSIDL_COMMON_ALTSTARTUP      :", OS_GetSpecialFolder(%CSIDL_COMMON_ALTSTARTUP          )
+PrintL "%CSIDL_COMMON_APPDATA         :", OS_GetSpecialFolder(%CSIDL_COMMON_APPDATA             )
+PrintL "%CSIDL_COMMON_DESKTOPDIRECTORY:", OS_GetSpecialFolder(%CSIDL_COMMON_DESKTOPDIRECTORY    )
+PrintL "%CSIDL_COMMON_DOCUMENTS       :", OS_GetSpecialFolder(%CSIDL_COMMON_DOCUMENTS           )
+PrintL "%CSIDL_COMMON_FAVORITES       :", OS_GetSpecialFolder(%CSIDL_COMMON_FAVORITES           )
+PrintL "%CSIDL_COMMON_MUSIC           :", OS_GetSpecialFolder(%CSIDL_COMMON_MUSIC               )
+PrintL "%CSIDL_COMMON_PICTURES        :", OS_GetSpecialFolder(%CSIDL_COMMON_PICTURES            )
+PrintL "%CSIDL_COMMON_PROGRAMS        :", OS_GetSpecialFolder(%CSIDL_COMMON_PROGRAMS            )
+PrintL "%CSIDL_COMMON_STARTMENU       :", OS_GetSpecialFolder(%CSIDL_COMMON_STARTMENU           )
+PrintL "%CSIDL_COMMON_STARTUP         :", OS_GetSpecialFolder(%CSIDL_COMMON_STARTUP             )
+PrintL "%CSIDL_COMMON_TEMPLATES       :", OS_GetSpecialFolder(%CSIDL_COMMON_TEMPLATES           )
+PrintL "%CSIDL_COMMON_VIDEO           :", OS_GetSpecialFolder(%CSIDL_COMMON_VIDEO               )
+PrintL "%CSIDL_CONTROLS               :", OS_GetSpecialFolder(%CSIDL_CONTROLS                   )
+PrintL "%CSIDL_COOKIES                :", OS_GetSpecialFolder(%CSIDL_COOKIES                    )
+PrintL "%CSIDL_DESKTOP                :", OS_GetSpecialFolder(%CSIDL_DESKTOP                    )
+PrintL "%CSIDL_DESKTOPDIRECTORY       :", OS_GetSpecialFolder(%CSIDL_DESKTOPDIRECTORY           )
+PrintL "%CSIDL_DRIVES                 :", OS_GetSpecialFolder(%CSIDL_DRIVES                     )
+PrintL "%CSIDL_FAVORITES              :", OS_GetSpecialFolder(%CSIDL_FAVORITES                  )
+PrintL "%CSIDL_FLAG_CREATE            :", OS_GetSpecialFolder(%CSIDL_FLAG_CREATE                )
+PrintL "%CSIDL_FONTS                  :", OS_GetSpecialFolder(%CSIDL_FONTS                      )
+PrintL "%CSIDL_HISTORY                :", OS_GetSpecialFolder(%CSIDL_HISTORY                    )
+PrintL "%CSIDL_INTERNET               :", OS_GetSpecialFolder(%CSIDL_INTERNET                   )
+PrintL "%CSIDL_INTERNET_CACHE         :", OS_GetSpecialFolder(%CSIDL_INTERNET_CACHE             )
+PrintL "%CSIDL_LOCAL_APPDATA          :", OS_GetSpecialFolder(%CSIDL_LOCAL_APPDATA              )
+PrintL "%CSIDL_MYDOCUMENTS            :", OS_GetSpecialFolder(%CSIDL_MYDOCUMENTS                )
+PrintL "%CSIDL_MYMUSIC                :", OS_GetSpecialFolder(%CSIDL_MYMUSIC                    )
+PrintL "%CSIDL_MYPICTURES             :", OS_GetSpecialFolder(%CSIDL_MYPICTURES                 )
+PrintL "%CSIDL_MYVIDEO                :", OS_GetSpecialFolder(%CSIDL_MYVIDEO                    )
+PrintL "%CSIDL_NETHOOD                :", OS_GetSpecialFolder(%CSIDL_NETHOOD                    )
+PrintL "%CSIDL_NETWORK                :", OS_GetSpecialFolder(%CSIDL_NETWORK                    )
+PrintL "%CSIDL_PERSONAL               :", OS_GetSpecialFolder(%CSIDL_PERSONAL                   )
+PrintL "%CSIDL_PRINTERS               :", OS_GetSpecialFolder(%CSIDL_PRINTERS                   )
+PrintL "%CSIDL_PRINTHOOD              :", OS_GetSpecialFolder(%CSIDL_PRINTHOOD                  )
+PrintL "%CSIDL_PROFILE                :", OS_GetSpecialFolder(%CSIDL_PROFILE                    )
+PrintL "%CSIDL_PROGRAM_FILES          :", OS_GetSpecialFolder(%CSIDL_PROGRAM_FILES              )
+PrintL "%CSIDL_PROGRAM_FILES_COMMON   :", OS_GetSpecialFolder(%CSIDL_PROGRAM_FILES_COMMON       )
+PrintL "%CSIDL_PROGRAMS               :", OS_GetSpecialFolder(%CSIDL_PROGRAMS                   )
+PrintL "%CSIDL_RECENT                 :", OS_GetSpecialFolder(%CSIDL_RECENT                     )
+PrintL "%CSIDL_SENDTO                 :", OS_GetSpecialFolder(%CSIDL_SENDTO                     )
+PrintL "%CSIDL_STARTMENU              :", OS_GetSpecialFolder(%CSIDL_STARTMENU                  )
+PrintL "%CSIDL_STARTUP                :", OS_GetSpecialFolder(%CSIDL_STARTUP                    )
+PrintL "%CSIDL_SYSTEM                 :", OS_GetSpecialFolder(%CSIDL_SYSTEM                     )
+PrintL "%CSIDL_TEMPLATES              :", OS_GetSpecialFolder(%CSIDL_TEMPLATES                  )
+PrintL "%CSIDL_WINDOWS                :", OS_GetSpecialFolder(%CSIDL_WINDOWS                    )
+PrintL "--------------------------------------------------"
+PrintL "Press a key to finish"
+WaitKey
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

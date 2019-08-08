@@ -1,0 +1,16 @@
+{
+	"name": "John",
+	"age": 30,
+	"items": 	[
+					{
+						"name": "command",
+						"index": "1",
+						"optional": "0"
+					},
+					{
+						"name": "status",
+						"index": "0",
+						"optional": "1"
+					}
+				]
+}

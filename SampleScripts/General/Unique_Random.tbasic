@@ -1,0 +1,48 @@
+'
+'The code below is quite efficient to get 20 unique rnds from 1 to 4000.
+'
+
+uses "console"
+
+FUNCTION Main() as long
+   LOCAL randoms() AS LONG
+   LOCAL Integers() AS LONG
+   LOCAL i AS LONG, j AS LONG, ldup AS LONG, k AS LONG
+   LOCAL uniqueRndsFound AS LONG
+   LOCAL sTemp AS STRING
+   LOCAL n, m as long
+'
+  m=20                   'we only need 20 it seems
+  n=4000
+  REDIM integers(m)
+  REDIM Randoms(n)
+'
+  RANDOMIZE TIMER         'only call this once for much better randomness, so put it outside loop
+'
+  DO
+     k = RND(1, 4000)         'random from 1 to 4000
+     IF randoms(k) = 0 THEN
+        randoms(k) = 1        'keep track of which of the 4000 we've already used
+        INCR uniqueRndsFound  'add up until we get to 20
+        integers(uniqueRndsFound) = k         'store the rnd 1-4000 in integers()
+        IF uniqueRndsFound = 20 THEN EXIT DO  'exit as soon as we get 20 unique rnds
+     END IF
+  LOOP
+
+
+  stemp=""
+  FOR i=1 TO m
+    stemp=stemp+ FORMAT$(i, "00") & ")  " & FORMAT$(integers(i)) & $CRLF
+  NEXT i
+  MSGBOX 0, stemp
+
+  ARRAY SORT integers()
+  stemp=""
+  FOR i=1 TO m
+    stemp=stemp+ FORMAT$(i, "00") & ")  " & FORMAT$(integers(i)) & $CRLF
+  NEXT i
+  MSGBOX 0, stemp
+'
+END FUNCTION
+'
+ 

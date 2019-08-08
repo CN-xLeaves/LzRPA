@@ -1,0 +1,44 @@
+
+uses "oxygen","file"
+dim src as string
+
+'-------------
+'TRIG
+'=============
+
+
+src = "
+  '
+  dim as string tab=chr 9
+  dim as double ra,de,xx,yy
+  yy=2
+  xx=1
+  ra=atn  yy/xx
+  ra=atan (yy,xx) 'ALTERNATIVE
+  de=deg ra
+  print `
+  Y `       tab str(yy) `
+  X `       tab str(xx) `
+  Degrees ` tab str(de) `
+  Radians ` tab str(ra) `
+  `
+
+  "
+
+
+
+
+
+
+
+
+'msgbox 0, o2_prep src
+
+o2_basic src
+
+
+if len(o2_error) then
+  msgbox 0, o2_error : stop
+end if
+
+o2_exec

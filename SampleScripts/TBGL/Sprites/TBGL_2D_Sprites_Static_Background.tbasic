@@ -1,0 +1,78 @@
+  '=============================================================================
+  '=                                2D Sprites                                 =
+  '=                         Static background example                         =
+  '=                                                                           =
+  '=                          Michael Hartlef, 2009                            =
+  '=============================================================================
+
+
+Uses "TBGL"
+dim hWnd AS DWORD
+dim FrameRate AS DOUBLE
+
+FUNCTION Main()
+  local sprBackGround, width, height as long
+  local dirTextures       as string = "Textures\"
+  %texBackground = 1
+  
+  ' -- Create and show window
+  hWnd = TBGL_CreateWindowEx("TBGL 2D Sprite sample (static backgound) - press ESC to quit", 320, 240, 32, %TBGL_WS_WINDOWED or %TBGL_WS_CLOSEBOX)
+  TBGL_ShowWindow 
+
+  TBGL_GetWindowClient( hWnd, width, height )
+
+  ' -- Load the background texture separately as we wan tto filter it. Loosk better when we stretch a sprite  
+  tbgl_LoadTexture (APP_SOURCEPATH + dirTextures + "backtest2.bmp"    , %texBackground , %TBGL_Tex_ANISO,4)
+  ' -- Now create a sprite from the texture
+  sprBackGround  = tbgl_SpriteCreate(%texBackground)
+
+  
+  ' -- Set some render states
+  tbgl_uselighting %FALSE
+  tbgl_useblend %FALSE
+
+  TBGL_UseDepth %FALSE
+  tbgl_UseTexture %TRUE
+  TBGL_USEVSYNC %TRUE
+
+  tbgl_UseAlphaTest %TRUE
+  tbgl_AlphaFunc %tbGL_GREATER, 0.1
+
+  ' -- Resets status of all keys 
+  TBGL_ResetKeyState()
+  ' -- Set the TBGL color to pure white, so colors of sprites are the same like in the texture
+  tbgl_color 255,255,255
+  tbgl_backColor 0, 0 ,0
+      
+  ' -- Now set the sprites position in the middle of the screen
+  TBGL_SpriteSetPos(sprBackGround,width/2,height/2)
+  
+  ' -- Set the size of the sprite to the size of the windows client area
+  TBGL_SpriteSetBaseSize ( sprBackGround, width, height )
+      ' -- Main loop
+
+  While TBGL_IsWindow(hWnd) 
+    FrameRate = TBGL_GetFrameRate
+
+    ' -- Set the render matrix to the window clients resolution
+    TBGL_Rendermatrix2D (0,height,width,0)
+    
+    ' -- Not really important to clear a frame here as we draw a background anyway
+    TBGL_ClearFrame
+    
+    ' -- With one command you draw all active sprites, even if it is just one :-)
+    TBGL_SpritesDrawAll
+    
+    ' -- Flip the buffer so you see something on the screen
+    TBGL_DrawFrame 
+
+    ' -- ESCAPE key to exit application
+    If TBGL_GetWindowKeyState(hWnd, %VK_ESCAPE) Then Exit While 
+  Wend 
+
+  ' -- Now let's clean up the memory
+  TBGL_SpritesDeleteAll
+  
+  TBGL_DestroyWindow
+END FUNCTION 
+

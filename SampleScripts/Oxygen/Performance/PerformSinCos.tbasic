@@ -1,0 +1,113 @@
+' Test of loop optimization with Oxygen
+uses "Console", "Oxygen"
+ 
+dim T1        as quad
+dim T2        as quad
+ 
+dim p0,p1,p2 as dword
+dim src as string
+ 
+' -- Prepare Oxygen script
+
+src = "
+ 
+  function Calculate_basic(c as long) as long  link #p1
+    local ic, jc as double
+    local i
+    '
+    '
+    'BASIC VERSION
+    '
+    for i=1 to c
+      ic = sin(i)
+      jc = cos(i)
+    next
+  end function
+  
+  
+    '
+    
+
+  function Calculate_asm(c as long) as long  link #p2
+    local ic, jc as double, i as long
+    '
+    'ASSEMBLER VERSION
+    '
+    '
+    dim a=&c
+    mov eax,a
+    mov edx,[eax]
+    fld1
+    fld1
+    (
+     fsincos
+     fstp  qword jc
+     fstp qword ic
+     fld1
+     faddp st(1),st(0)
+     fld st(0),st(0)
+     dec edx
+     jg repeat
+    )
+    fcomp st(0),st(0)
+    '
+  end function
+ 
+  sub finish()  link #p0 
+    terminate
+  end sub
+"
+ 
+o2_basic src
+if len(o2_error) then
+  msgbox 0, o2_error : stop
+end if
+o2_exec
+
+
+dim c as long=1000000
+
+declare function Calculate_o2bas(c as long) as long at p1
+declare function Calculate_o2asm(c as long) as long at p2
+declare sub finish () at p0
+
+printl "SPEED BENCHMARKS:"
+printl "" 
+printl "Double precision Sin & Cos Test: loops=" & c
+printl ""
+
+doevents(off)
+ 
+hirestimer_init
+ 
+T1 = hirestimer_get
+Counter c
+T2 = hirestimer_get
+
+printl "Script:     microSecs:" & $tab & FORMAT$(T2 - T1, "#,")
+ 
+T1 = hirestimer_get
+Calculate_o2bas c
+T2 = hirestimer_get
+
+printl "Compiled:   microSecs:" & $tab & FORMAT$(T2 - T1, "#,")
+
+T1 = hirestimer_get
+Calculate_o2asm c
+T2 = hirestimer_get
+
+printl "Assembler:  microSecs:" & $tab & FORMAT$(T2 - T1, "#,")
+
+finish
+waitkey
+ 
+function Counter( MaxCount as long ) as long
+  local ic, jc as double,i as long
+  For i = 1 To MaxCount
+    jc = sin(i)
+    jc = cos(i) 
+  Next
+end function
+
+
+ 

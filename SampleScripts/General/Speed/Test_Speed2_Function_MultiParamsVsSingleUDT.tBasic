@@ -1,0 +1,140 @@
+Dim n_str   As Long Value 10000
+Dim n_lvl   As Long Value 10000
+Dim n_wp    As Long Value 10000
+Dim n_vit   As Long Value 10000
+Dim n_adef  As Long Value 10000
+Dim Result  As Ext
+DIM counter AS LONG
+Dim MaxCount As Long = 100000
+
+'---Speed up operations a bit
+doevents(off)
+
+DIM T1      AS DOUBLE
+DIM T2      AS DOUBLE
+
+type MultiVar
+  Param1 As Long
+  Param2 As Long
+  Param3 As Long
+End Type
+
+dim Param1 as MultiVar
+
+DIM Message AS STRING
+Message = "This program will solve a simple math expression " & MaxCount & " times.\n"
+Message += "Please press Yes to go on, NO to Stop\n"
+
+DIM lResult AS LONG
+lResult = MSGBOX(0, Message, %MB_YESNO, "Continue?")   
+IF lResult <> %IDYES THEN
+  STOP
+END IF
+
+T1 = Timer
+Result = 0
+For counter = 1 To MaxCount
+    result = CalcFormulaByValWithLocals(Result, Result, Result)
+Next
+T2 = Timer
+
+MsgBox(0, _
+              "Timer for 1 function with 3 params passed BYVAL plus Local var"  & $CRLF & _
+              "Seconds:"    & $TAB  & $TAB & Format$(T2 - T1, "#0.000000")      & $CRLF & _
+              "Result:"     & $TAB  & $TAB & result                             & $CRLF & _
+              "" _
+          )
+
+
+T1 = TIMER
+Result = 0
+FOR counter = 1 TO MaxCount
+    result = CalcFormulaByVal(Result, Result, Result)
+NEXT
+T2 = TIMER
+
+MSGBOX(0, _
+              "Timer for 1 function with 3 params passed BYVAL"             & $CRLF & _
+              "Seconds:"    & $tab  & $tab & FORMAT$(T2 - T1, "#0.000000")  & $CRLF & _
+              "Result:"     & $tab  & $tab & result                         & $crlf & _
+              "" _
+          )
+
+T1 = TIMER
+Result = 0
+FOR counter = 1 TO MaxCount
+    result = CalcFormulaByRef(Result, Result, Result)
+NEXT
+T2 = TIMER
+
+MSGBOX(0, _
+              "Timer for 1 function with 3 params passed BYREF"             & $CRLF & _
+              "Seconds:"    & $tab  & $tab & FORMAT$(T2 - T1, "#0.000000")  & $CRLF & _
+              "Result:"     & $tab  & $tab & result                         & $crlf & _
+              "" _
+          )
+
+Param1.Param1 = 1
+T1 = TIMER
+Result = 0
+FOR counter = 1 TO MaxCount
+    result = CalcFormulaUDT(Param1)
+NEXT
+T2 = TIMER
+
+MSGBOX(0, _
+              "Timer for 1 function with UDT containing 3 elements"         & $CRLF & _
+              "Seconds:"    & $tab  & $tab & FORMAT$(T2 - T1, "#0.000000")  & $CRLF & _
+              "Result:"     & $tab  & $tab & result                         & $crlf & _
+              "" _
+          )
+
+T1 = TIMER
+Result = 0
+FOR counter = 1 TO MaxCount
+    result = CalcFormulaNoParam()
+NEXT
+T2 = TIMER
+
+MsgBox(0, "Timer for 1 function without any parameters"         & $CRLF & 
+          "Seconds:"    & $TAB  & $TAB & Format$(T2 - T1, "#0.000000")  & $CRLF & 
+          "Result:"     & $TAB  & $TAB & result                         & $CRLF   )
+
+  '---
+  ' Different kind of functions
+  '----------------------------------------------------------------------------------------
+  Function CalcFormulaByValWithLocals(ByVal Param1 As Long, ByVal Param2 As Long, ByVal Param3 As Long) As Ext
+    Dim ln_str   As Long
+    Dim ln_lvl   As Long
+    Dim ln_wp    As Long
+    Dim ln_vit   As Long
+    Dim ln_adef  As Long
+  
+    ln_str   = n_str 
+    ln_lvl   = n_lvl 
+    ln_wp    = n_wp  
+    ln_vit   = n_vit 
+    ln_adef  = n_adef
+  
+    Function = (((ln_str*85+ln_lvl)*ln_wp)-((ln_vit*90+ln_adef)*ln_lvl))/2'+Param1
+  End Function
+  
+  '----------------------------------------------------------------------------------------
+  Function CalcFormulaByVal(ByVal Param1 As Long, ByVal Param2 As Long, ByVal Param3 As Long) As Ext
+    Function = (((n_str*85+n_lvl)*n_wp)-((n_vit*90+n_adef)*n_lvl))/2'+Param1
+  End Function
+  
+  '----------------------------------------------------------------------------------------
+  Function CalcFormulaByRef(ByRef Param1 As Long, ByRef Param2 As Long, ByRef Param3 As Long) As Ext
+    Function = (((n_str*85+n_lvl)*n_wp)-((n_vit*90+n_adef)*n_lvl))/2'+Param1
+  End Function
+  
+  '----------------------------------------------------------------------------------------
+  Function CalcFormulaUDT(Param1 As MultiVar) As Ext
+    Function = (((n_str*85+n_lvl)*n_wp)-((n_vit*90+n_adef)*n_lvl))/2'+Param1.Param1
+  End Function
+  
+  '----------------------------------------------------------------------------------------
+  Function CalcFormulaNoParam() As Ext
+    Function = (((n_str*85+n_lvl)*n_wp)-((n_vit*90+n_adef)*n_lvl))/2
+  End Function

@@ -1,0 +1,57 @@
+ Uses "CONSOLE"
+ Uses "WinMM"
+ 
+ Dim hmidiout As Long
+
+ Dim instrument  As Long
+ Dim noteNumber  As Long
+ Dim x  As Long
+ Dim y  As Long
+ 
+ Dim note  As String
+ Dim tempo As String
+ Dim rtn As Long
+ Dim vel As Single = 0
+ Const Device = 0       '<<<=== THIS IS DEVICE INDEX if don't work change to -1 (MidiMapper) or 1,2,3,4 etc......
+ 
+ note = 58586158585861 & 58586166656363 & 61 & 56585956565859 & 56565965636165 & _  'note string
+  66545466635961 & 58545459616361 & 54546663596158 & 54545961595856 & 54
+
+ tempo = 446744674464488 & 446744674444779 & 4484478447779 & 448447844644679        'duration string
+
+ MidiOut_Close hmidiout                  'close midi Out port if already opened
+ rtn = MidiOut_Open hmidiout, 0, Device, 0, 0  'open midi Out port   (second number is devices index)
+ 
+ If rtn <> 0 Then PrintL "Unable to open MidiOut port!" : Stop
+ 
+ PrintL CRLF & "Port " & Device & " is open"
+ 
+ For instrument = 0 To 127 Step 35                   'instrument
+ 
+    PrintL CRLF & "New instrument: " & instrument : Sleep 1000
+ 
+    For noteNumber = 1 To Len(note) Step 2           'note
+        y = Val(Mid$(note, noteNumber, 2))
+        x = Val(Mid$(tempo, noteNumber / 2 + 1, 1)) * 100     
+        
+        x = x / 5      '<<<=== CHANGE THIS TO SET TIME OF SONG
+         
+        '**** I USE RGB FUNCTION, THIS IS A TRICK TO CONVERT 3 BYTES TO WORD ****                  
+         MidiOut_ShortMsg hmidiOut, Rgb(192, instrument, 127)        'CHANGE INSTRUMENT (192 IS PCHANGE) 
+                          
+         MidiOut_ShortMsg hmidiOut, Rgb(144, 12 + y, vel)   'PLAY NOTE   (144 IS NOTEON),note,velocity
+         Sleep x                                           'NOTE LENGHT
+         MidiOut_ShortMsg hmidiOut, Rgb(128, 12 + y, 127)   'STOP NOTE   (128 IS NOTEOFF),note,velocity
+        
+         PrintL "Instrument: " & instrument & "       Note: " & y & "       Duration: " & x & "ms" & $TAB & "Velocity: " & Format$(vel,"0")
+         vel += 0.55
+         DoEvents
+    Next noteNumber
+ Next instrument
+ 
+ PrintL CRLF & "End of execution!"
+
+ MidiOut_Close hmidiout             '<<<=== ALWAYS CLOSE MIDI PORT ON EXIT
+ PrintL CRLF & "Port is close - press any key to exit"    
+   
+ Console_WaitKey

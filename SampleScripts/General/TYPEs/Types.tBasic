@@ -1,0 +1,33 @@
+type MyType
+    aaa     as string * 10
+    bbb(10) as string * 2
+    ccc     as long
+    ddd(10) as long
+end type
+
+dim x1 as mytype
+dim count as long
+
+x1.aaa = "123456789|"
+
+msgbox 0, "x.aaa: " & x1.aaa
+
+for count = 1 to 10
+    x1.bbb(count)  = Count
+    x1.ccc         = x1.bbb(count)
+    x1.ddd(Count)  = x1.ccc
+next
+
+msgbox 0, x1
+msgbox 0, "x1.bbb(10): " & "[" & x1.bbb(10) & "]"
+msgbox 0, "x1.ccc:     " & "[" & x1.ccc & "]"
+msgbox 0, "x1.ddd(5):  " & "[" & x1.ddd(5) & "]"
+
+x1.ddd(5) += 1
+msgbox 0, "x1.ddd(5):  " & "[" & x1.ddd(5) & "]"
+
+
+dim x2(100,10) as mytype
+
+x2(10,10).ddd(10) = 234
+msgbox 0, "x2(10).ddd(10): " & x2(10,10).ddd(10)

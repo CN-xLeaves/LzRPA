@@ -1,0 +1,34 @@
+USES "Dictionary"     '---Instruct thinBasic engine we need Dictionary module
+USES "FILE"           '---Instruct thinBasic engine we need File module
+
+
+'---Define a LONG that will hold a reference to a new dictionary
+'---This variable will be used in every Dictionary functions for referencing
+'---to Fruit dictionary
+DIM FruitDict AS LONG
+
+'---Create a new dictionary with 1000 unique single buckets
+'---Total number of elements can be more than 1000. Dictionary will
+'---Automatically manage collisions.
+'---A good initial value to use is usually (NumberOfKeys * 2)
+'---This will give few collision and speed will be the best
+DIM NumberOfKeys AS LONG VALUE 1000
+FruitDict = Dictionary_Create(NumberOfKeys, %true)
+
+'---Now add some key/data pairs
+Dictionary_Add(FruitDict, "plums" , "Here you can add any kind of text even multimegabytes of data")
+Dictionary_Add(FruitDict, "apples", "Again some data. Limit is the limit of dynamic strings, so 2Gb each key")
+Dictionary_Add(FruitDict, "oranges" , "Dictionary is only limited by the available memory present in the computer")
+
+'---Now add a bigger data. Load this script source code and repeat it for 5000 times
+'---More than 6Mb of data
+Dictionary_Add(FruitDict, "scriptsource" , Repeat$(5000, FILE_Load(APP_SourceName)) )
+
+'---Output Some info
+msgbox 0, "Total keys: " & Dictionary_Count(FruitDict)
+msgbox 0, "Plums data: " & $crlf & Dictionary_Find(FruitDict, "Plums")
+MsgBox 0, "Keys present: " & $CRLF & Dictionary_ListKeys(FruitDict, $CRLF, %DICTIONARY_SORTKEYS Or %DICTIONARY_SORTDESCENDING)
+msgbox 0, "Size of key 'scriptsource' is: " & $crlf & len(Dictionary_Find(FruitDict, "scriptsource")) & " bytes."
+
+'---Remove the whole dictionary and all its keys and data from memory
+Dictionary_Free(FruitDict)

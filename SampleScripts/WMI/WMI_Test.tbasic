@@ -1,0 +1,30 @@
+  uses "WMI"
+  uses "OS"
+  uses "CONSOLE"
+    
+  dim vData()       as string
+  dim nItems        as long
+  dim Counter       as long
+  dim ComputerName  as string   value OS_GetComputerName
+  dim sBuffer       as string
+
+  '---Ask data to WMI system
+
+  sBuffer = WMI_GetData(ComputerName, "", "", "", "Win32_LogicalDisk", "DeviceID = 'C:'", "Name, Size" )
+
+  '---Parse returned data into single lines
+  nItems = PARSE( sBuffer, vData(), $crlf)
+
+  '---Print lines
+  for Counter = 1 to nItems
+    PrintL vData(Counter)
+  next
+
+  '---Finished
+  PrintL "-----------------------------------------------------"
+  PrintL "Number of lines: " & nItems
+  PrintL "---------------------------Press a key to finish-----"    
+  WaitKey
+
+    
+    

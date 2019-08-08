@@ -1,0 +1,349 @@
+  '---
+  ' Version 1.0.0
+  '---
+  
+  USES "UI", "FILE"
+
+  #include "%APP_INCLUDEPATH%\RichEdit32.inc"
+
+  Begin ControlID
+    %ID_TEXT_CurLine 
+    %ID_TEXT_CurPos   
+
+    %ID_TEXT_BufSize  
+    %ID_TEXT_BufPos   
+    %ID_TEXT_BufLines 
+
+    %ID_TEXT_SelStart 
+    %ID_TEXT_SelEnd   
+    %ID_TEXT_SelText  
+
+    %ID_TEXT_LineStart
+    %ID_TEXT_LineEnd  
+    %ID_TEXT_LineText 
+
+    %ID_RICHEDIT        
+    
+    %ID_MENU_OPEN
+    %ID_MENU_EXIT
+    %ID_MENU_HELP
+    %ID_MENU_ABOUT
+    %ID_MENU_FORMAT_BG 
+    %ID_MENU_FORMAT_FG 
+  End ControlID
+  
+  global hMenu as dword
+  global hEdit as dword
+  
+  function Main()  
+    DIM hDlg  AS LONG   '---Handle of the main window
+
+    DIALOG NEW 0, "RichEdit control example", 100, 50, 500, 300, _
+                                                  %WS_DLGFRAME          OR  _
+                                                  %ds_center            or  _
+                                                  %WS_CAPTION           OR  _
+                                                  %WS_SYSMENU           OR  _
+                                                  %WS_OVERLAPPEDWINDOW  ,   _
+                                                  0 TO hDlg
+
+    DIM lx, ly, wx, hy AS LONG
+    DIALOG GET SIZE   hDlg TO lx, ly
+    DIALOG GET CLIENT hDlg TO wx, hy
+
+
+    ' ** First create a top-level menu:
+    
+    local hPopupFile, hPopupFormat, hPopupHelp AS dword
+
+      '---First create a top-level menu:
+      MENU NEW BAR TO hMenu
+
+      '---Add a top-level menu item with a popup menu:
+      MENU NEW POPUP TO hPopupFile
+      MENU ADD POPUP,  hMenu, "&File", hPopupFile, %MF_ENABLED
+      MENU ADD STRING, hPopupFile, "&Open ...", %ID_MENU_OPEN, %MF_ENABLED
+      MENU ADD STRING, hPopupFile, "-",      0, 0
+      MENU ADD STRING, hPopupFile, "&Exit", %ID_MENU_EXIT, %MF_ENABLED
+
+      '---Add a top-level menu item with a popup menu:
+      MENU NEW POPUP TO hPopupFormat
+      MENU ADD POPUP,  hMenu, "&Format", hPopupFormat, %MF_ENABLED
+      MENU ADD STRING, hPopupFormat, "&Background color ...", %ID_MENU_FORMAT_BG, %MF_ENABLED
+      MENU ADD STRING, hPopupFormat, "&Foreground color ...", %ID_MENU_FORMAT_FG, %MF_ENABLED
+
+      '---Finally, we'll add a second top-level menu and popup
+      '---For this popup, we can reuse the first popup variable:
+      MENU NEW POPUP TO hPopupHelp
+      MENU ADD POPUP , hMenu     , "&Help"  , hPopupHelp, %MF_ENABLED
+      MENU ADD STRING, hPopupHelp, "&Help"  , %ID_MENU_HELP, %MF_ENABLED
+      MENU ADD STRING, hPopupHelp, "-"      , 0, 0
+      MENU ADD STRING, hPopupHelp, "&About" , %ID_MENU_ABOUT, %MF_ENABLED
+
+   
+    '---Information about cursor position
+    control add frame       , hDlg, 0                 , "Cursor"      , 205,   5,  70,  50
+      control add label     , hDlg, 0                 , "Line"        , 210,  25,  20,  12
+      control add label     , hDlg, 0                 , "Pos"         , 210,  40,  20,  12
+
+      CONTROL ADD TEXTBOX   , hDlg, %ID_TEXT_CurLine  , ""            , 240,  22,  30,  13, %WS_TABSTOP or %ES_NUMBER or %ES_RIGHT , %WS_EX_CLIENTEDGE
+      CONTROL ADD TEXTBOX   , hDlg, %ID_TEXT_CurPos   , ""            , 240,  37,  30,  13, %WS_TABSTOP or %ES_NUMBER or %ES_RIGHT , %WS_EX_CLIENTEDGE
+
+    '---Information about text buffer inside rich edit control
+    control add frame       , hDlg, 0                 , "Text Buffer" , 205,  60,  70,  65
+      control add label     , hDlg, 0                 , "Size"        , 210,  80,  20,  12
+      control add label     , hDlg, 0                 , "Pos"         , 210,  95,  20,  12
+      control add label     , hDlg, 0                 , "N. lines"    , 210, 110,  30,  12
+
+      CONTROL ADD TEXTBOX   , hDlg, %ID_TEXT_BufSize  , ""            , 240,  77,  30,  13, %WS_TABSTOP or %ES_NUMBER or %ES_RIGHT , %WS_EX_CLIENTEDGE
+      CONTROL ADD TEXTBOX   , hDlg, %ID_TEXT_BufPos   , ""            , 240,  92,  30,  13, %WS_TABSTOP or %ES_NUMBER or %ES_RIGHT , %WS_EX_CLIENTEDGE
+      CONTROL ADD TEXTBOX   , hDlg, %ID_TEXT_BufLines , ""            , 240, 107,  30,  13, %WS_TABSTOP or %ES_NUMBER or %ES_RIGHT , %WS_EX_CLIENTEDGE
+
+    '---Information about current line
+    control add frame       , hDlg, 0                 , "Current Line", 205, 130, 290,  50
+      control add label     , hDlg, 0                 , "Start"       , 210, 145,  20,  12
+      control add label     , hDlg, 0                 , "Len"         , 210, 160,  20,  12
+
+      CONTROL ADD TEXTBOX   , hDlg, %ID_TEXT_LineStart, ""            , 240, 142,  30,  13, %WS_TABSTOP or %ES_NUMBER or %ES_RIGHT , %WS_EX_CLIENTEDGE
+      CONTROL ADD TEXTBOX   , hDlg, %ID_TEXT_LineEnd  , ""            , 240, 157,  30,  13, %WS_TABSTOP or %ES_NUMBER or %ES_RIGHT , %WS_EX_CLIENTEDGE
+      CONTROL ADD TEXTBOX   , hDlg, %ID_TEXT_LineText , ""            , 280, 140, 205,  30, %WS_TABSTOP OR %ES_READONLY or %ES_AUTOVSCROLL or %ES_multiline or %WS_VSCROLL, %WS_EX_CLIENTEDGE
+
+
+
+    '---Information about text selected inside rich edit control
+    control add frame       , hDlg, 0                 , "Selection"  , 280,   5, 215, 120
+      control add label     , hDlg, 0                 , "Start"      , 285,  25,  20,  12
+      control add label     , hDlg, 0                 , "End"        , 285,  40,  20,  12
+      control add label     , hDlg, 0                 , "Text"       , 285,  55,  20,  12
+
+      CONTROL ADD TEXTBOX   , hDlg, %ID_TEXT_SelStart , ""           , 315,  22,  30,  13, %WS_TABSTOP or %ES_NUMBER or %ES_RIGHT , %WS_EX_CLIENTEDGE
+      CONTROL ADD TEXTBOX   , hDlg, %ID_TEXT_SelEnd   , ""           , 315,  37,  30,  13, %WS_TABSTOP or %ES_NUMBER or %ES_RIGHT , %WS_EX_CLIENTEDGE
+      CONTROL ADD TEXTBOX   , hDlg, %ID_TEXT_SelText  , ""           , 315,  50, 170,  65, %WS_TABSTOP OR %ES_READONLY or %ES_AUTOVSCROLL or %ES_multiline or %WS_VSCROLL, %WS_EX_CLIENTEDGE
+    
+    '---Status Bar
+    Control Add statusbar, hDlg, 1000, "This is my statusbar", %NULL, %NULL, %NULL, %NULL, _
+                                                      %WS_CHILD           Or _
+                                                      %WS_VISIBLE
+
+    DIALOG GET CLIENT hDlg TO wx, hy
+    wx = 200
+    hY = hY - 30
+    CONTROL ADD rtf_GetClass, hDlg, %ID_RICHEDIT, "", 0, 0, wx, hy, _
+                                                      %WS_CHILD           OR _
+                                                      %WS_CLIPCHILDREN    OR _
+                                                      %WS_VISIBLE         OR _
+                                                      %ES_MULTILINE       OR _
+                                                      %WS_VSCROLL         OR _
+                                                      %WS_HSCROLL         OR _
+                                                      %ES_AUTOVSCROLL     OR _
+                                                      %ES_AUTOHSCROLL     OR _
+                                                      %ES_WANTRETURN      , _
+                                                      %WS_EX_CLIENTEDGE
+    control set resize hDlg, %ID_RICHEDIT, 1, 0, 1, 1
+    
+    '---Return a window handle for the specified control ID
+    CONTROL HANDLE hDlg, %ID_RICHEDIT TO hEdit
+
+    '---Must set the event mask, so we can pick up a few events from Richedit
+    SendMessage(hEdit, %EM_SETEVENTMASK, 0, %ENM_SELCHANGE OR %ENM_CHANGE OR %ENM_UPDATE or %ENM_KEYEVENTS or %ENM_MOUSEEVENTS)
+    SendMessage(hEdit, %EM_SETLIMITTEXT, &H100000, 0) 'make it accept text > 32767 bytes &H100000&
+
+    'DIM hFont AS DWORD = createfont(60,30,0,0,0,0,0,0,0,0,0,0,0,"Courier")
+    DIM hFont AS DWORD resource = Font_Create("Courier New", 10)
+    SendMessage hEdit, %WM_SETFONT, hFont, 0
+
+
+      
+    '---Show dialog in MODAL state 
+    DIALOG SHOW MODAL hDlg, call dlgCallback
+  
+  end function
+
+  callback function dlgCallback() as long
+    DIM sBUF8 as string
+    dim sBuffer as string  
+    dim sFileName as string
+    dim lColor as long  
+    
+    
+    
+    '---Now test the message
+    SELECT CASE cbMsg
+
+      case %WM_INITDIALOG  '---Message fired at the very beginning when dialog is initialized
+        '---Attach menu to dialog          
+        MENU ATTACH hMenu, cbHndl
+
+      case %WM_notify
+        'CONTROL SET TEXT cbHndl, %ID_TEXT_SelText, "NOTIFY: " & msg & " - " & wparam & "(" & hiwrd(wparam) & "/" & lowrd(wparam) & ") - " & Lparam & "(" & hiwrd(Lparam) & "/" & lowrd(Lparam) & ")"
+        SELECT CASE cbCtl
+          CASE %ID_RICHEDIT
+            RichEdit_UpdateInfo(cbHndl, hEdit)
+        end select
+        
+      CASE %WM_COMMAND
+        SELECT CASE cbCtl
+          case %ID_MENU_EXIT
+            dialog end cbHndl
+              
+          case %ID_MENU_OPEN
+            sFileName = RichEdit_OpenFile(cbHndl)
+            if sFileName <> "" then
+              RTF_LoadFromFile(cbHndl, %ID_RICHEDIT, sFileName, %TM_RICHTEXT)
+            else
+              msgbox 0, "No file selected"
+            end if
+
+          case %ID_MENU_FORMAT_BG
+            lColor = Dialog_ChooseColor(cbHndl, rgb(255, 0, 0), %CC_RGBINIT OR %CC_FULLOPEN )
+            SetRichTextBGColor(hEdit, lColor, lColor)
+          case %ID_MENU_FORMAT_FG
+            lColor = Dialog_ChooseColor(cbHndl, rgb(255, 0, 0), %CC_RGBINIT OR %CC_FULLOPEN )
+            SetRichTextFGColor(hEdit, lColor, lColor)
+            
+          CASE %ID_RICHEDIT                'Some Richedit events, just to
+            RichEdit_UpdateInfo(cbHndl, hEdit)
+
+        END SELECT 
+      
+      
+    END SELECT
+
+  end function  
+  
+  '-----------------------------------------------------------------------------
+  ' Update information about rich edit
+  '-----------------------------------------------------------------------------
+  function RichEdit_UpdateInfo(byval hWnd as long, byval hEdit as long) as long
+
+    dim lCR         as CHARRANGE
+    dim lTR         as TEXTRANGE
+    dim sBigBuffer  as string
+    
+    dim SelStart, SelEnd, SelNBytes as long
+    dim BufSize as long
+    dim CurLine, CurPos, LineStart, LineLen as long
+    
+    '---Selection informations
+
+      '---Selection start/end
+      SendMessage(hEdit, %EM_EXGETSEL, 0, varptr(lCR)) '---
+      SelStart = lCR.cpMin                             '---
+      SelEnd   = lCR.cpMax
+      CONTROL SET TEXT hWnd, %ID_TEXT_SelStart, SelStart
+      CONTROL SET TEXT hWnd, %ID_TEXT_SelEnd  , SelEnd
+
+      '---Selected text
+        '---Allocate a string buffer big enough to get selected text plus 1 byte more in case of $NUL
+        sBigBuffer = string$((SelEnd - SelStart + 1) * 2, chr$(0))
+        '---Returns selected text
+        'SelNBytes = SendMessage(hEdit, %EM_GETSELTEXT, 0, STRPTR(sBigBuffer))
+        control send hWnd, %ID_RICHEDIT, %EM_GETSELTEXT, 0, STRPTR(sBigBuffer) to SelNBytes
+        '---Check and write if ok
+        if SelNBytes > 0 then
+          if IsUnicode(sBigBuffer) then 
+            CONTROL SET TEXT hWnd, %ID_TEXT_SelText, left$(acode$(sBigBuffer), SelNBytes)
+          else
+            CONTROL SET TEXT hWnd, %ID_TEXT_SelText, left$(sBigBuffer, SelNBytes)
+          end if
+        else
+         CONTROL SET TEXT hWnd, %ID_TEXT_SelText, ""
+        end if
+
+    '---Buffer information
+      '---Buffer size
+      BufSize = SendMessage(hEdit, %WM_GETTEXTLENGTH, 0, 0)
+      CONTROL SET TEXT hWnd, %ID_TEXT_BufSize, BufSize
+
+      '---Buffer Position
+      if SelStart - SelEnd = 0 then
+        CONTROL SET TEXT hWnd, %ID_TEXT_BufPos, SelStart
+      else
+        CONTROL SET TEXT hWnd, %ID_TEXT_BufPos, "N/D"
+      end if
+      CONTROL SET TEXT hWnd, %ID_TEXT_BufLines, SendMessage(hEdit, %EM_GETLINECOUNT, 0, 0)
+
+    '---Cursor information
+      '---Line number
+      CurLine = SendMessage(hEdit, %EM_EXLINEFROMCHAR, 0, SelStart)
+      '---Position inside the line
+      CurPos  = SelEnd - SendMessage(hEdit, %EM_LINEINDEX, -1, 0)
+      '---Show results
+      CONTROL SET TEXT hWnd, %ID_TEXT_CurLine, format$(CurLine + 1)
+      CONTROL SET TEXT hWnd, %ID_TEXT_CurPos , format$(CurPos  + 1)
+
+    '---Line information
+      '---Line start
+      LineStart = SendMessage(hEdit, %EM_LINEINDEX , CurLine, 0)
+      '---Line len
+      LineLen   = SendMessage(hEdit, %EM_LINELENGTH, LineStart, 0)
+      '---Show results
+      CONTROL SET TEXT hWnd, %ID_TEXT_LineStart, LineStart
+      CONTROL SET TEXT hWnd, %ID_TEXT_LineEnd  , LineLen
+
+    '---Line text
+      sBigBuffer = string$((LineLen + 1) * 2, chr$(0))
+      lTR.cpMin     = LineStart
+      lTR.cpMax     = LineStart + LineLen
+      lTR.lpstrText = strptr(sBigBuffer)
+
+      
+      '---Get the text of the current line
+      LineLen = SendMessage(hEdit, %EM_GETTEXTRANGE, 0, varptr(lTR))
+      '---Change the text field
+      if isunicode(sBigBuffer) then
+        CONTROL SET TEXT hWnd, %ID_TEXT_LineText , left$(acode$(sBigBuffer), LineLen)
+      else
+        CONTROL SET TEXT hWnd, %ID_TEXT_LineText , left$(sBigBuffer, LineLen)
+      end if
+  end function
+  
+  '-----------------------------------------------------------------------------
+  ' Load a file inside rich edit control
+  '-----------------------------------------------------------------------------
+  function RichEdit_OpenFile(hDlg as dword) as string
+    dim sFile   as string
+    dim sFilter as string
+
+    sFilter  = "Rich Text Format (*.rtf)|*.rtf|"
+    sFilter += "thinBasic Files (*.tBasic, *.tBasicc)|*.tBasic;*.tBasicc|"
+    sFilter += "Basic Files (*.BAS, *.INC)|*.BAS;*.INC|"
+    sFilter += "Resource Files (*.RC)|*.RC|"
+    sFilter += "Help files (*.HLP)|*.HLP|"
+    sFilter += "Text Files (*.TXT)|*.TXT|"
+    sFilter += "Word processing (*.RTF)|*.RTF|"
+    sFilter += "All Files (*.*)|*.*"
+
+    sFile = Dialog_OpenFile(hDlg, _
+                            "Open an file", _
+                            DIR_GetCurrent, _
+                            sFilter, _
+                            "rtf", _
+                            %OFN_FILEMUSTEXIST OR %OFN_HIDEREADONLY or %OFN_ENABLESIZING)
+    function = sFile
+  end function
+
+  function SetRichTextFGColor(byval hEdit as dword, ByVal nFGColor As Dword, ByVal nBGColor As Dword) 
+                            
+    Local cf As CHARFORMAT2 
+
+    cf.cbSize      = Len(cf)                        'Length of structure 
+    cf.dwMask      = %CFM_COLOR   'Set mask to colors only 
+    cf.crTextColor = nFGColor                       'Set the new text color value 
+    cf.crBackColor = nBGColor                       'Set text background color 
+
+    SendMessage(hEdit, %EM_SETCHARFORMAT, %SCF_SELECTION, VarPtr(cf)) 
+
+  End function
+
+  function SetRichTextBGColor(byval hEdit as dword, ByVal nFGColor As Dword, ByVal nBGColor As Dword) 
+                            
+    Local cf As CHARFORMAT2 
+
+    cf.cbSize      = Len(cf)                        'Length of structure 
+    cf.dwMask      = %CFM_BACKCOLOR   'Set mask to colors only 
+    cf.crTextColor = nFGColor                       'Set the new text color value 
+    cf.crBackColor = nBGColor                       'Set text background color 
+
+    SendMessage(hEdit, %EM_SETCHARFORMAT, %SCF_SELECTION, VarPtr(cf)) 
+
+  End function

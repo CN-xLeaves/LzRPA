@@ -1,0 +1,9 @@
+Uses "PC"
+
+Function Main () As Long  
+
+    MsgBox 0, "System was up since: " & PC_SYSTEMUPFROM()
+
+End Function
+
+

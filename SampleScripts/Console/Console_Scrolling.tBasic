@@ -1,0 +1,171 @@
+uses "Console"
+
+type ZoneInfo
+  X         as long     '---Upper left X
+  Y         as long     '---Upper left Y
+  W         as long     '---Width
+  H         as long     '---Height
+  LastLine  as long
+  BGColor   as long
+end type
+  
+'---Logica
+'   Prendere file "FNVAB00R.DAT"
+
+'---Init screen
+Screen_Init(80, 25)
+
+Zone_Status_Print_Top("Finished setting up screen and globnal variables.")
+
+'console_line(10, 10, 60, 24)
+'console_line(10, 30, 60, 24)
+'console_line(10, 10, 21, 24, 1)
+'console_line(10, 27, 20, 24, 0)
+'console_line(10, 10, 20, 24, 1)
+'console_line(15, 10, 20, 24, 1)
+'console_line(20,  8, 20, 24, 1)
+'console_waitkey
+
+
+dim Count as long
+dim MaxCount as long value 80
+
+dim CountItems  as long
+dim MaxItems    as long value 1000
+dim TotCount    as quad
+
+dim rndPBColor  as long
+
+dim sChar as string
+dim PBLen as long
+
+for CountItems = 1 to MaxItems
+  
+  'call "Zone_Status_Print_" & iif$(isodd(CountItems/100),"Top","Bottom") (format$(CountItems, "000") & " ---> " & repeat$(rnd(20,gMaxX),  chr$( asc("A") + mod(CountItems, asc("Z")-asc("A")) - 1) )  )
+  Zone_Status_Print_Bottom(format$(CountItems, "000") & " ---> " & repeat$(rnd(20,gMaxX),  chr$( asc("A") + mod(CountItems, asc("Z")-asc("A")) - 1) )  )
+
+  MaxCount = rnd(1000, 10000)
+  rndPBColor = rnd(16, 31)
+  console_printat(format$(MaxCount, "0000000000"), 2, 3, 7)
+  PBLen = rnd(10, 30)  
+  for Count = 1 to MaxCount
+    Console_ProgressBar(1, gZoneStatusX1 + gZoneStatusW - 30, gZoneStatusLastLine, PBLen, rndPBColor, 1, MaxCount, Count)
+  next
+  TotCount += MaxCount
+  console_printat(format$(TotCount, "0000000000"), 2, 4, 7)
+
+  sChar = Console_Inkey
+  if sCHar = chr$(0, 27) then
+    console_printat(sChar, 2, 2, 7)
+    exit for
+  end if
+  
+next
+
+'---------------------------------------------------------------------------
+' Inizializzazione console
+'---------------------------------------------------------------------------
+function Screen_Init(lMaxX as long, lMaxY as long)
+
+  '---
+  '---Define global variables
+  '------
+  
+    '---Console screen size
+    global gMaxX              as long value lMaxX
+    global gMaxY              as long value lMaxY
+  
+    '---Status Zone
+    global gZoneStatusX1       as long value 1
+    global gZoneStatusW        as long value gMaxX
+    global gZoneStatusH        as long value 12
+    global gZoneStatusY1       as long value gMaxY - gZoneStatusH - 1
+
+    global gZoneStatusLastLine AS long
+    global gZoneStatusColor    as long value 24
+
+    '---Upper Zone
+    global gZoneUpperX1       as long value 1
+    global gZoneUpperY1       as long value 1
+    global gZoneUpperW        as long value gMaxX - 2
+    global gZoneUpperH        as long value 3
+
+    global gZoneUpperColor    as long value 24
+  
+  '---
+  '---Setup screen and zones
+  '------
+
+    '---Clear the console screen
+    console_cls
+    console_printat("Initializing console screen buffer ...", 1, 1, 7)
+
+    '---Set size and window position    
+    Console_SetScreenBufferSize(gMaxX, gMaxY)
+    Console_ShowWindow(%Console_SW_MAXIMIZE)
+
+    '---Creates an upper box used to show script info
+    CONSOLE_box(gZoneUpperX1,  gZoneUpperY1, gZoneUpperW, gZoneUpperH, gZoneUpperColor, 17, "", 26, %Console_BOX_FLAG_3Doff)
+  
+    '---Create s status zone
+    Zone_Status_Create("Status")
+  
+  randomize
+end function
+
+function Zone_Status_Create(sTitle as string)
+  CONSOLE_box(gZoneStatusX1, gZoneStatusY1, gZoneStatusW, gZoneStatusH, gZoneStatusColor, 17, sTitle, 26, %Console_BOX_FLAG_3DON)
+end function
+  
+
+function Zone_Status_Print_Bottom(sText as string)
+  dim X1, Y1, X2, Y2, NewX, NewY as long
+  
+  if gZoneStatusLastLine = 0 then
+    gZoneStatusLastLine = gZoneStatusY1 + 1
+  else
+    incr gZoneStatusLastLine
+    if gZoneStatusLastLine > gZoneStatusY1 + gZoneStatusH then
+      X1    = gZoneStatusX1 + 1
+      Y1    = gZoneStatusY1 + 1 + 1
+      X2    = gZoneStatusX1 + gZoneStatusW
+      Y2    = gZoneStatusY1 + gZoneStatusH
+      NewX  = gZoneStatusX1 + 1
+      NewY  = gZoneStatusY1 + 1
+
+      'console_printat("X1=" & format$(X1, "00")   , 60, 10, gZoneStatusColor)
+      'console_printat("Y1=" & format$(Y1, "00")   , 60, 11, gZoneStatusColor)
+      'console_printat("X2=" & format$(X2, "00")   , 60, 12, gZoneStatusColor)
+      'console_printat("Y2=" & format$(Y2, "00")   , 60, 13, gZoneStatusColor)
+      'console_printat("NX=" & format$(NewX, "00") , 60, 14, gZoneStatusColor)
+      'console_printat("NY=" & format$(NewY, "00") , 60, 15, gZoneStatusColor)
+
+      Console_ScrollBuffer(X1, Y1, X2, Y2, NewX, NewY, gZoneStatusColor)
+
+      gZoneStatusLastLine = gZoneStatusY1 + gZoneStatusH
+      
+    end if
+  end if
+
+  if len(sText) > gZoneStatusW - 40 then sText = left$(sText, gZoneStatusW - 40)
+  console_printat(sText, gZoneStatusX1 + 1, gZoneStatusLastLine, gZoneStatusColor)
+  
+end function
+
+function Zone_Status_Print_Top(sText as string)
+  dim X1, Y1, X2, Y2, NewX, NewY as long
+  
+  X1    = gZoneStatusX1 + 1
+  Y1    = gZoneStatusY1 + 1
+  X2    = gZoneStatusX1 + gZoneStatusW
+  Y2    = gZoneStatusY1 + gZoneStatusH - 1
+  NewX  = gZoneStatusX1 + 1
+  NewY  = gZoneStatusY1 + 2
+
+  Console_ScrollBuffer(X1, Y1, X2, Y2, NewX, NewY, gZoneStatusColor)
+
+  if len(sText) > gZoneStatusW - 40 then sText = left$(sText, gZoneStatusW - 40)
+  console_printat(sText, gZoneStatusX1 + 1, gZoneStatusY1 + 1, gZoneStatusColor)
+  
+end function
+  

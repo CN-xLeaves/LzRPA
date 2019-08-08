@@ -1,0 +1,357 @@
+  '---
+  ' A revised calculator example
+  ' Author: Psch
+  '---
+
+  uses "UI" 
+
+
+  DIM hDlg    AS LONG 
+  
+  DIM PostOperation AS LONG    '---Used to save operation 
+  DIM PrevVal       AS EXT     '---Used to save first operand 
+  DIM ClearNext     AS LONG    '---Used to understand if text box has to be deleted before posting new value 
+  DIM NextHasComma  AS LONG 
+ 
+  Begin ControlID 
+    %CtrlRes '---Result text box 
+    
+    %CtrlN00 '--Button 0 
+    %CtrlN01 '--Button 1 
+    %CtrlN02 '--Button 2 
+    %CtrlN03 '--Button 3 
+    %CtrlN04 '--Button 4 
+    %CtrlN05 '--Button 5 
+    %CtrlN06 '--Button 6 
+    %CtrlN07 '--Button 7 
+    %CtrlN08 '--Button 8 
+    %CtrlN09 '--Button 9 
+    %CtrlPM  
+    %CtrlCOM 
+  
+    %CtrlPlu 
+    %CtrlMin 
+    %CtrlMul 
+    %CtrlDiv 
+    %CtrlEqu 
+    %Ctrl1x  
+    %CtrlPct 
+    %CtrlSqr 
+  
+    %CtrlRCL 
+    %CtrlSTO 
+  
+    %CtrlBac 
+    %CtrlCe  
+    %Ctrlc   
+  
+    %CtrlLOG 
+    %CtrlLN  
+  
+    %CtrlSIN 
+    %CtrlCOS 
+    %CtrlTAN 
+  
+    %CtrlXuY 
+    %CtrlFCT 
+    %CtrlPI  
+  End ControlID
+
+
+    
+  DIM tmpStr    AS STRING 
+  DIM tmpRes    AS EXT 
+  DIM tempEXT   AS EXT
+
+  DIM CalcMemory AS EXT 
+  DIM tempLNG    AS LONG, i AS LONG 
+  
+  '---Create a new dialog 
+  DIALOG NEW 0, "thinBASIC Calculator", -1, -1, 185, 200, _ 
+                                                %WS_DLGFRAME OR %DS_CENTER OR %WS_CAPTION OR %WS_SYSMENU, _ 
+                                                0 TO hDlg 
+
+  CONTROL ADD TEXTBOX , hDlg, %CtrlRes, "0",   5,  15, 175, 15, _ 
+                                                %WS_BORDER OR %ES_RIGHT OR %ES_NUMBER, _ 
+                                                %WS_EX_CLIENTEDGE    
+
+  CONTROL ADD BUTTON  , hDlg, %Ctrl1x , "1/x", 5, 45,  25, 20 
+  CONTROL ADD BUTTON  , hDlg, %CtrlSqr, "SQR", 35, 45,  25, 20 
+  CONTROL ADD BUTTON  , hDlg, %CtrlLOG , "LOG", 65, 45,  25, 20 
+  CONTROL ADD BUTTON  , hDlg, %CtrlLN , "LN", 95, 45,  25, 20 
+  CONTROL ADD BUTTON  , hDlg, %CtrlCe ,  "CE",  125,  45,  25, 20 
+  CONTROL ADD BUTTON  , hDlg, %CtrlC  ,   "C", 155,  45,  25, 20 
+
+
+  CONTROL ADD BUTTON  , hDlg, %CtrlSTO , "STO",   5,  70,  25, 20  
+  CONTROL ADD BUTTON  , hDlg, %CtrlRCL , "RCL",  35,  70,  25, 20  
+  CONTROL ADD BUTTON  , hDlg, %CtrlPM,  "+/-",  65, 70,  25, 20 
+  CONTROL ADD BUTTON  , hDlg, %CtrlSIN , "SIN", 95, 70,  25, 20 
+  CONTROL ADD BUTTON  , hDlg, %CtrlCOS , "COS", 125, 70,  25, 20 
+  CONTROL ADD BUTTON  , hDlg, %CtrlTAN , "TAN", 155, 70,  25, 20 
+
+  CONTROL ADD BUTTON  , hDlg, %CtrlFCT,   "n!", 5,  170,  25, 20 
+  CONTROL ADD BUTTON  , hDlg, %CtrlPI ,   "pi", 5,  95,  25, 20 
+
+
+  CONTROL ADD BUTTON  , hDlg, %CtrlPct,   "%", 5,  120,  25, 20 
+  CONTROL ADD BUTTON  , hDlg, %CtrlXuY,   "x^y", 5,  145,  25, 20 
+
+  
+  CONTROL ADD BUTTON  , hDlg, %CtrlN07,   "7",  65,  95,  25, 20 
+  CONTROL ADD BUTTON  , hDlg, %CtrlN08,   "8",  95,  95,  25, 20 
+  CONTROL ADD BUTTON  , hDlg, %CtrlN09,   "9", 125,  95,  25, 20 
+  CONTROL ADD BUTTON  , hDlg, %CtrlDiv,   "/", 155,  95,  25, 20 
+
+
+
+  CONTROL ADD BUTTON  , hDlg, %CtrlN04,   "4",  65,  120,  25, 20 
+  CONTROL ADD BUTTON  , hDlg, %CtrlN05,   "5",  95,  120,  25, 20 
+  CONTROL ADD BUTTON  , hDlg, %CtrlN06,   "6", 125,  120,  25, 20 
+  CONTROL ADD BUTTON  , hDlg, %CtrlMul,   "*", 155,  120,  25, 20 
+  
+  CONTROL ADD BUTTON  , hDlg, %CtrlN01,   "1",  65, 145,  25, 20 
+  CONTROL ADD BUTTON  , hDlg, %CtrlN02,   "2",  95, 145,  25, 20 
+  CONTROL ADD BUTTON  , hDlg, %CtrlN03,   "3", 125, 145,  25, 20 
+  CONTROL ADD BUTTON  , hDlg, %CtrlMin,   "-", 155, 145,  25, 20 
+  
+  CONTROL ADD BUTTON  , hDlg, %CtrlN00,   "0",  65, 170,  25, 20 
+  CONTROL ADD BUTTON  , hDlg, %CtrlCOM,   ",", 95, 170,  25, 20 
+  CONTROL ADD BUTTON  , hDlg, %CtrlEqu,   "=", 125, 170,  25, 20 
+  CONTROL ADD BUTTON  , hDlg, %CtrlPlu,   "+", 155, 170,  25, 20 
+    
+  '---Show dialog in MODELESS state, the only managed state at the moment 
+  DIALOG SHOW modal hDlg, call cbDialog
+  
+  
+  '-------------------------------------------------------------
+  callback function cbDialog() as long
+  '-------------------------------------------------------------
+
+    '---Now test the message 
+    SELECT CASE cbMsg 
+
+      CASE %WM_COMMAND 
+
+        '---Test which control has been clicked 
+        SELECT CASE cbctl 
+          CASE %CtrlN00, %CtrlN01, %CtrlN02, %CtrlN03, %CtrlN04, %CtrlN05, %CtrlN06, %CtrlN07, %CtrlN08, %CtrlN09 
+            '---Numbers 
+
+              CONTROL GET TEXT CBHNDL, %CtrlRes TO tmpStr 
+              IF ClearNext = %TRUE THEN 
+                ClearNext = %FALSE 
+                tmpStr = VAL(FORMAT$(cbwParam - %CtrlN00)) 
+              ELSE                
+                IF NextHasComma = %TRUE THEN 
+                  NextHasComma = %FALSE 
+                  tmpStr = VAL(VAL(tmpStr) & "." & FORMAT$(cbwParam - %CtrlN00)) 
+                ELSE 
+                  tmpStr = VAL(VAL(tmpStr) & FORMAT$(cbwParam - %CtrlN00)) 
+                END IF 
+              END IF 
+              CONTROL SET TEXT CBHNDL, %CtrlRes, tmpStr 
+
+          CASE %CtrlPlu, %CtrlMin, %CtrlMul, %CtrlDiv, %CtrlPct, %CtrlXuY 
+            '---Operation 
+            PostOperation = cbwParam 
+            CONTROL GET TEXT CBHNDL, %CtrlRes TO tmpStr 
+            PrevVal = VAL(tmpStr) 
+            ClearNext = %TRUE 
+
+          CASE %CtrlCOM 
+            CONTROL GET TEXT CBHNDL, %CtrlRes TO tmpStr 
+
+            tmpStr = TRIM$(tmpStr) 
+            IF instr(tmpStr, ".") = 0 THEN tmpStr += "." 
+            Control Set Text CBHNDL, %CtrlRes, tmpStr 
+
+            IF NOT NextHasComma THEN NextHasComma = 1 
+            
+
+            
+          CASE %CtrlEqu 
+            '---Result 
+            IF PostOperation <> 0 THEN 
+              CONTROL GET TEXT CBHNDL, %CtrlRes TO tmpStr 
+              SELECT CASE PostOperation 
+                CASE %CtrlPlu 
+                  tmpStr = FORMAT$( VAL(PrevVal) + VAL(tmpStr) ) 
+
+                CASE %CtrlMin 
+                  tmpStr = FORMAT$( VAL(PrevVal) - VAL(tmpStr) ) 
+
+                CASE %CtrlMul 
+                  tmpStr = FORMAT$( VAL(PrevVal) * VAL(tmpStr) ) 
+
+                CASE %CtrlDiv                        
+                  IF VAL(tmpStr) <> 0 THEN 
+                    tmpStr = FORMAT$( VAL(PrevVal) / VAL(tmpStr) ) 
+                  ELSE 
+                    BEEP 
+                    tmpStr = "Error: division by zero." 
+                    CONTROL SET COLOR CBHNDL, %CtrlRes, RGB(255,0,0), RGB(0,0,0) 
+                    CONTROL SET TEXT CBHNDL, %CtrlRes, tmpStr 
+                    tmpStr = "0" 
+                    SLEEP 1500 
+                    Control Set Color CBHNDL, %CtrlRes, Rgb(0,0,0), Rgb(255,255,255) 
+                  END IF 
+
+                CASE %CtrlPct 
+                  tmpStr = FORMAT$( Pct(VAL(PrevVal), VAL(tmpStr) ) ) 
+
+                CASE %CtrlXuY 
+                  tmpStr = FORMAT$( VAL(PrevVal) ^ (VAL(tmpStr)) ) 
+                    
+
+              END SELECT 
+              CONTROL SET TEXT CBHNDL, %CtrlRes, tmpStr 
+              PostOperation = 0 
+              ClearNext = %TRUE 
+            END IF 
+          
+          CASE %CtrlPM 
+            CONTROL GET TEXT CBHNDL, %CtrlRes TO tmpStr 
+            tmpStr = FORMAT$( -1 * VAL(tmpStr) ) 
+            CONTROL SET TEXT CBHNDL, %CtrlRes, tmpStr 
+            
+          CASE %CtrlSqr 
+            '---Result 
+
+            CONTROL GET TEXT CBHNDL, %CtrlRes TO tmpStr 
+            IF VAL(tmpStr) < 0 THEN 
+              BEEP 
+              CONTROL SET COLOR CBHNDL, %CtrlRes, RGB(255,0,0), RGB(0,0,0) 
+              CONTROL SET TEXT CBHNDL, %CtrlRes, "Error: Number must be positive" 
+              SLEEP 1500 
+              Control Set Color CBHNDL, %CtrlRes, Rgb(0,0,0), Rgb(255,255,255) 
+                UpdateDisplay(CBHNDL, Val(tmpStr), 0) 
+            ELSE 
+                UpdateDisplay(CBHNDL, SQR(VAL(tmpStr)), 0) 
+            END IF 
+
+
+          CASE %CtrlLOG 
+            '---Result 
+            CONTROL GET TEXT CBHNDL, %CtrlRes TO tmpStr 
+            IF VAL(tmpStr) < 0 THEN 
+              BEEP 
+              CONTROL SET COLOR CBHNDL, %CtrlRes, RGB(255,0,0), RGB(0,0,0) 
+              CONTROL SET TEXT CBHNDL, %CtrlRes, "Error: Number must be greater than 0" 
+              SLEEP 1500 
+              CONTROL SET COLOR CBHNDL, %CtrlRes, RGB(0,0,0), RGB(255,255,255) 
+                UpdateDisplay(CBHNDL, Val(tmpStr), 0) 
+            ELSE 
+                UpdateDisplay(CBHNDL, Log10(Val(tmpStr)), 0) 
+            END IF 
+            
+          CASE %CtrlLN 
+            '---Result 
+            CONTROL GET TEXT CBHNDL, %CtrlRes TO tmpStr 
+            IF VAL(tmpStr) < 0 THEN 
+              BEEP 
+              CONTROL SET COLOR CBHNDL, %CtrlRes, RGB(255,0,0), RGB(0,0,0) 
+              CONTROL SET TEXT CBHNDL, %CtrlRes, "Error: Number must be greater than 0" 
+              SLEEP 1500 
+              Control Set Color CBHNDL, %CtrlRes, Rgb(0,0,0), Rgb(255,255,255) 
+                UpdateDisplay(CBHNDL, VAL(tmpStr), 0) 
+            ELSE 
+                UpdateDisplay(CBHNDL, LOG(VAL(tmpStr)), 0) 
+            END IF 
+
+          CASE %CtrlSTO 
+            '---Result 
+            CONTROL GET TEXT CBHNDL, %CtrlRes TO tmpStr 
+            CalcMemory = FORMAT$( VAL(tmpStr) ) 
+
+          CASE %CtrlRCL 
+            '---Result 
+            CONTROL SET TEXT CBHNDL, %CtrlRes, FORMAT$(CalcMemory) 
+            PostOperation = 0 
+
+          CASE %CtrlSIN 
+            '---Result 
+            CONTROL GET TEXT CBHNDL, %CtrlRes TO tmpStr 
+            UpdateDisplay(CBHNDL, SIN(VAL(tmpStr)), 0) 
+
+          CASE %CtrlCOS 
+            '---Result 
+            CONTROL GET TEXT CBHNDL, %CtrlRes TO tmpStr 
+            UpdateDisplay(CBHNDL, Cos(Val(tmpStr)), 0) 
+            PostOperation = 0 
+
+          CASE %CtrlTAN 
+            '---Result 
+            CONTROL GET TEXT CBHNDL, %CtrlRes TO tmpStr 
+            UpdateDisplay(CBHNDL, TAN(VAL(tmpStr)), 0) 
+            PostOperation = 0 
+      
+          CASE %Ctrl1x 
+            '---Result 
+            Control Get Text CBHNDL, %CtrlRes To tmpStr 
+            IF VAL(tmpStr) <> 0 THEN 
+              tmpStr = FORMAT$( 1/(VAL(tmpStr)) ) 
+            ELSE  
+              BEEP 
+              tmpStr = "Error: division by zero." 
+              CONTROL SET COLOR CBHNDL, %CtrlRes, RGB(255,0,0), RGB(0,0,0) 
+              CONTROL SET TEXT CBHNDL, %CtrlRes, tmpStr 
+              tmpStr = "0" 
+              SLEEP 1500 
+              CONTROL SET COLOR CBHNDL, %CtrlRes, RGB(0,0,0), RGB(255,255,255) 
+            END IF 
+            CONTROL SET TEXT CBHNDL, %CtrlRes, tmpStr 
+            PostOperation = 0 
+
+          CASE %CtrlPI 
+            UpdateDisplay(CBHNDL, 4 * Atn(1), 0) 
+
+          CASE %CtrlFCT 
+
+            CONTROL GET TEXT CBHNDL, %CtrlRes TO tmpStr 
+            IF VAL(tmpStr) < 0 THEN 
+              BEEP 
+              CONTROL SET COLOR CBHNDL, %CtrlRes, RGB(255,0,0), RGB(0,0,0) 
+              CONTROL SET TEXT CBHNDL, %CtrlRes, "Error: Number must be positive whole number" 
+              SLEEP 1500 
+              Control Set Color CBHNDL, %CtrlRes, Rgb(0,0,0), Rgb(255,255,255) 
+                UpdateDisplay(CBHNDL, VAL(tmpStr), 0) 
+            ELSE 
+              tempEXT = 1 
+              FOR i = 2 TO VAL(tmpStr) 
+                tempEXT = tempEXT * i 
+              NEXT 
+              UpdateDisplay(CBHNDL, tempEXT, 0) 
+
+            END IF 
+
+
+          CASE %CtrlBac 
+            Control Get Text CBHNDL, %CtrlRes To tmpStr 
+            UpdateDisplay(CBHNDL, VAL(LEFT$(tmpStr, -1) ), -1) 
+            
+          CASE %CtrlCe 
+            UpdateDisplay(CBHNDL, 0, -1) 
+
+          CASE %CtrlC 
+            UpdateDisplay(CBHNDL, 0, 0) 
+            PrevVal = 0 
+
+        END SELECT 
+        
+      
+    END SELECT 
+    
+  end function
+  
+
+  Function UpdateDisplay(lCBHNDL As Long, someValue As Single, OperationStaus As Long ) As Long 
+
+    LOCAL tmpStr AS STRING 
+
+    tmpStr = FORMAT$( someValue ) 
+    Control Set Text lCBHNDL, %CtrlRes, tmpStr 
+    IF OperationStaus <> -1 THEN PostOperation = OperationStaus    ' Let's treat -1 as "Let it be" 
+
+  END FUNCTION 
+

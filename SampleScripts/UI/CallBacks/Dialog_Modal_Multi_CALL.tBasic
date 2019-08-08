@@ -1,0 +1,262 @@
+  USES "UI"
+  uses "console"
+
+  DIM hDlg_1        AS LONG         '---Dialog handle
+  DIM hDlg_Multy()  AS LONG         '---Dialog handle
+
+  dim wx        as long         '---Used to get client width
+  dim hy        as long         '---Used to get client height
+
+  dim Max_wx    as long         
+  dim Max_hy    as long         
+  
+  DIM Counter   AS LONG         '---Counter to count output lines
+
+  '---Control IDs
+  %MAX_TEXTBOX = 10
+  dim ID_TEXTBOX(%MAX_TEXTBOX) as long value 10, 11, 12, 13, 14, 15, 16, 17, 18, 19
+
+  %ID_MainFrame       = 50            '---Frame around
+  %ID_LBLENTER        = 60            '---Input field label
+  %ID_ButtonNewWindow = 70
+  %ID_ButtonArrangeWindow = 80
+  
+  '---Set starting width and height of the window
+  Max_wx = 300
+  Max_hy = 250
+  
+  '------------------------------------------------------------------------
+  '---Create main dialog
+  '------------------------------------------------------------------------
+  DIALOG NEW 0, "Dialog with CallBacks ! And is fast !", -1, -1, Max_wx, Max_hy, _
+                                                %WS_DLGFRAME          OR _
+                                                %DS_CENTER            OR _
+                                                %WS_CAPTION           OR _
+                                                %WS_SYSMENU           OR _
+                                                %WS_OVERLAPPEDWINDOW  , _
+                                                0 TO hDlg_1
+
+  'DIALOG SET MINSIZE hDlg_1, wx, hy
+ 
+  '---Show dialog
+  DIALOG SHOW modal hDlg_1, call cbDialog_1
+
+
+  '------------------------------------------------------------------------
+  callback function cbDialog_1() as long
+  '------------------------------------------------------------------------
+    static Events as long
+ 
+    incr Events
+    'if cbmsg then printl "WIN_MAIN", Events, CBHNDL, CBmsg, cbctl, cbctlmsg, CBLPARAM, CBWPARAM
+    console_settitle "Stack Level: " & Function_GetStackLevel
+
+    select case cbmsg
+      case %WM_INITDIALOG
+        CONTROL ADD frame , CBHNDL, %ID_MainFrame, "Please fill relevant fields:" , 2,  2, Max_wx - 5, Max_hy - 50
+
+        for Counter = 1 to %MAX_TEXTBOX
+          CONTROL ADD label   , CBHNDL, 0, "Field " & Counter,  5, 50 + (Counter-1) * 15,  40, 12
+          CONTROL ADD TEXTBOX , CBHNDL, ID_TEXTBOX(Counter),  "", 55, 49 + (Counter-1) * 15, 130, 12, , , call TextBox_CB '<<<--The same callback for all text fields
+        next
+
+        '---This button will fire a sersonalized callback
+        control add button , CBHNDL, %ID_ButtonNewWindow, "New Window"     ,   5, 49 + (Counter) * 15, 100, 15, %BS_DEFAULT, , call cbButtonNewWindow
+        control add button , CBHNDL, %ID_ButtonArrangeWindow, "Arrange Windows", 120, 49 + (Counter) * 15, 100, 15, , , call cbButtonArrangeWindow
+      case %WM_PAINT
+        printl "-WM_PAINT-------"
+        
+      case %WM_SIZE
+        '---Real time sizing !!!!!!!!!!!!!!!
+        dialog get client CBHNDL to wx, hy
+        CONTROL set size  CBHNDL, %ID_MainFrame       ,  wx - 5, hy - 50
+        for Counter = 1 to %MAX_TEXTBOX
+          CONTROL set size  CBHNDL, ID_TEXTBOX(Counter) ,  wx - 70, 12
+        next
+        
+      case %WM_DESTROY
+        '---Do whatever needed just before dialog is destroyed.
+        
+        '---Because this window is the main one, when user close it
+        '   check if there are other windows and close them all
+        for Counter = 1 to ubound(hDlg_Multy)
+          if iswindow(hDlg_Multy(Counter)) then
+            dialog end hDlg_Multy(Counter)
+          end if
+        next
+    end select
+
+  end function
+
+  '------------------------------------------------------------------------
+  callback function cbButtonNewWindow() as long
+  '------------------------------------------------------------------------
+    static NumberOfWindows as long
+    static LastX, LastY as long = 1
+    local hDlg as long
+    
+
+    if cbmsg = %WM_COMMAND then
+      if cbctlmsg = %BN_CLICKED then
+
+        NumberOfWindows += 1
+        
+        'printl function_name & ": ", CBHNDL, CBmsg, cbctl, cbctlmsg, CBLPARAM, CBWPARAM
+      
+        '---Redim the array tha store windows handlers
+        redim preserve hDlg_Multy(NumberOfWindows)
+        console_settitle "NUMBER OF WINDOWS: " & NumberOfWindows & "-" & ubound(hDlg_Multy) & "-" & LastX & "-" & LastY
+
+        DIALOG NEW 0, "Window " & NumberOfWindows, LastX, LastY, Max_wx - 50, Max_hy - 50, _
+                                                      %WS_DLGFRAME          OR _
+                                                      %WS_CAPTION           OR _
+                                                      %WS_SYSMENU           OR _
+                                                      %WS_OVERLAPPEDWINDOW  , _
+                                                      0 TO hDlg
+        hDlg_Multy(NumberOfWindows) = hDlg
+
+        LastX += 20
+        LastY += 20
+        
+        '---Save the window number in one of the window user fields
+        dialog set user hDlg_Multy(NumberOfWindows), 1, NumberOfWindows
+
+        '---Show dialog
+        '---Every new windows will have the same callback but because callback
+        '   function is a string expression, you can dynamically associate any
+        '   callback present in the script
+        '---IMPORTANT: if DIALOG SHOW is called from inside a script function,
+        '              it is mandatory to use MODELESS way otherwise
+        '              script will never exit from function
+        DIALOG SHOW modeless hDlg_Multy(NumberOfWindows), call cbDialog_Multy
+      
+        dialog set topmost CBHNDL, %HWND_TOPMOST
+        
+      end if
+    end if
+    
+  end function
+  
+  '------------------------------------------------------------------------
+  callback function TextBox_CB() as long
+  '------------------------------------------------------------------------
+
+    '---Common to all fields
+    select case CBCTLMSG
+      case %EN_SETFOCUS
+        '---When textbox get focus, change colors
+        CONTROL SET COLOR CBHNDL, CBCTL, rgb(255, 0, 0), rgb(255, 255, 128)
+        '---Select all the text inside.
+        control send CBHNDL, CBCTL, %EM_SETSEL, 0, -1
+        return %TRUE
+      case %EN_KILLFOCUS
+        '---When the control lost its focus, change colors to standard one.
+        CONTROL SET COLOR CBHNDL, CBCTL, 0             , rgb(255, 255, 255)
+        return %TRUE
+      case %EN_UPDATE
+        printl "Event UPDATE. Text LEN is: " & len(control_gettext(CBHNDL, CBCTL))
+      case %EN_CHANGE
+        printl "Event CHANGE. Text LEN is: " & len(control_gettext(CBHNDL, CBCTL))
+      case else
+        printl "Unhandled event intextbox: ", CBHNDL, CBmsg, cbctl, cbctlmsg, CBLPARAM, CBWPARAM
+        function = %FALSE
+     end select    
+  
+  end function
+
+
+  '------------------------------------------------------------------------
+  ' This callback function will be common to all the new windows
+  '------------------------------------------------------------------------
+  callback function cbDialog_Multy() as long
+  '------------------------------------------------------------------------
+    static Events as long
+    local WinNum  as long
+    local sText   as string
+    
+    incr Events
+    dialog get user CBHNDL, 1 to WinNum
+
+    'if cbmsg then printl "WIN_" & WinNum, Events, CBHNDL, CBmsg, CBLPARAM, CBWPARAM
+
+    select case cbmsg
+      case %WM_INITDIALOG
+        
+        sText = "Hi there." & $crlf & "I'm the window number " & WinNum & "." 
+        dialog get client CBHNDL to wx, hy
+        control add textbox CBHNDL, 10, sText, 10, 10, wx - 20, hy - 20, _
+                                                                  %ES_MULTILINE     | _
+                                                                  %ES_WANTRETURN    | _
+                                                                  %WS_BORDER        | _
+                                                                  %ES_AUTOVSCROLL   | _
+                                                                  %WS_VSCROLL       , , call cbSubField_Events
+      case %WM_SIZE
+        dialog get client CBHNDL to wx, hy
+        CONTROL set size  CBHNDL, 10 ,  wx - 20, hy - 20
+
+      case %WM_DESTROY
+        '---Do whatever needed just before dialog is destroyed.
+
+    end select
+
+  end function
+
+  '------------------------------------------------------------------------
+  callback function cbSubField_Events() as long
+  '------------------------------------------------------------------------
+    'randomize
+
+    printl function_name, CBHNDL, CBmsg, cbctl, cbctlmsg, CBLPARAM, CBWPARAM
+
+    '---Common to all fields
+    select case CBCTLMSG
+      case %EN_SETFOCUS
+        '---When textbox get focus, change colors
+        control append text CBHNDL, CBCTL, $crlf & "I got focus at " & time$
+        return %TRUE
+      case %EN_KILLFOCUS
+        '---When the control lost its focus, change colors to standard one.
+        return %TRUE
+     end select    
+  
+  end function
+
+  '------------------------------------------------------------------------
+  callback function cbButtonArrangeWindow() as long
+  '------------------------------------------------------------------------
+    local ScreenX, ScreenY  as long
+    local SizeX, SizeY      as long
+    local LocX, LocY        as long
+    local Counter           as long
+    local nCols             as long
+
+    if cbmsg = %WM_COMMAND then
+      if cbctlmsg = %BN_CLICKED then
+             
+        DESKTOP GET client TO ScreenX, ScreenY
+        DIALOG PIXELS cbhndl, ScreenX, ScreenY TO UNITS ScreenX, ScreenY
+
+        dialog get size hDlg_1 to SizeX, SizeY
+        dialog set loc hDlg_1, 0, ScreenY - SizeY
+
+        for Counter = 1 to ubound(hDlg_Multy)
+          if iswindow(hDlg_Multy(Counter)) then
+            dialog get size hDlg_Multy(Counter) to SizeX, SizeY
+            
+            dialog set loc hDlg_Multy(Counter), LocX, LocY
+            LocX += 20
+            LocY += 20
+
+            if LocY + SizeY > ScreenY then
+              incr nCols
+              LocX = (SizeX * (nCols))/3
+              LocY = 0
+            end if
+            
+          end if
+        next
+
+        dialog set topmost CBHNDL, %HWND_TOPMOST
+      end if
+    end if
+  end function

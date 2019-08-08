@@ -1,0 +1,49 @@
+' ========================================================================================
+' Demonstrates the use of the attributes property.
+' The following example creates an IXMLDOMNamedNodeMap object from a document's attributes
+' property, and then displays the number of nodes in the object.
+' ========================================================================================
+
+Uses "Console"
+
+#default declare Checkduplicates    %TRUE
+#default declare CheckMissing       %TRUE
+
+#INCLUDE "%APP_INCLUDEPATH%\TB_XML60.INC"
+
+' ========================================================================================
+' Main
+' ========================================================================================
+Function Main() As Long
+
+   Local pXmlDoc        As DWord
+   Local pRootNode      As DWord
+   Local pNode          As DWord
+   Local pNamedNodeMap  As DWord
+   Local length         As Long
+
+   pXmlDoc = XmlCreateObject("Msxml2.DOMDocument")
+     IXMLDOMDocument_put_async pXmlDoc, %FALSE
+  
+     IXMLDOMDocument_load(pXmlDoc, "books.xml")
+     If XmlParseError_get_errorCode(pXmlDoc) <> 0 Then
+        PrintL XmlParseError_get_reason(pXmlDoc)
+     Else
+        pRootNode = IXMLDOMDocument_get_documentElement(pXmlDoc)
+        pNode = IXMLDOMElement_get_firstChild(pRootNode)
+        pNamedNodeMap = IXMLDOMDocument_get_attributes(pNode)
+        length = IXMLDOMNamedNodeMap_get_length(pNamedNodeMap)
+        PrintL "Length = " & Format$(length)
+     End If
+  
+     '---cleanup
+     XmlRelease pRootNode
+     XmlRelease pNode
+     XmlRelease pNamedNodeMap
+     
+   XmlRelease pXmlDoc
+   
+   PrintL "--- Press any key to finish ---"
+   WaitKey
+
+END FUNCTION

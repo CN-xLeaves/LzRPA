@@ -1,0 +1,96 @@
+  '===============================================================================
+  '=                             TBGL 0.2.0.0 demo                               =
+  '=                        Model shaders extended syntax                        =
+  '=                                                                             =
+  '=                            Petr Schreiber, 2007                             =
+  '===============================================================================
+
+  Uses "TBGL" 
+
+  Dim hWnd As Dword 
+
+  hWnd = TBGL_CreateWindowEx("Model shaders - press ESC to quit", 640, 480, 32, 0) 
+  TBGL_ShowWindow 
+
+  TBGL_ResetKeyState() ' Resets status of all keys 
+  
+  %MAXGRASS = 256
+  ' One model slot and %MAXGRASS*4 vertices - budget for our script :)
+  tbgl_m15InitModelbuffers 1, %MAXGRASS*4
+  
+  tbgl_LoadTexture "Textures\grassWalpha.tga", 1, %TBGL_Tex_Mipmap
+  CreateGrassTurfs(%MAXGRASS)
+
+  TBGL_BackColor 0, 128, 255  
+  tbgl_UseAlphatest 1
+  tbgl_AlphaFunc %tbGL_GREATER, 0.5
+
+  While TBGL_IsWindow(hWnd) 
+
+
+    tbgl_ClearFrame 
+    tbgl_Camera 0,0.75,2.5,0,0.2,0
+    AnimateGrassTurfs
+    tbgl_m15DrawModel 1
+    tbgl_DrawFrame 
+
+    If TBGL_GetWindowKeyState( hWnd, %VK_ESCAPE) Then Exit While 
+
+  Wend 
+
+  TBGL_DestroyWindow 
+  
+  sub CreateGrassTurfs( count as long)
+  
+    local i as long
+    local vertexIndex as long 
+    local posx, posy, posz as single
+
+    tbgl_m15SetModelVertexCount( 1, count * 4 )    
+        
+    ' We will create quads, this sets white color to whole buffer
+    tbgl_m15SetVertexRGB( 1, 1, count * 4, 255, 255, 255 )
+    
+    ' ...this sets texture to whole buffer
+    tbgl_m15SetVertexTexN( 1, 1, count * 4, 1 )
+    
+   
+    for i = 1 to count
+      posx = rndf(-1.75,1.75)
+      posz = rndf(-1.75,1.75)
+          
+      ' Lets create quads
+      incr vertexIndex      
+      tbgl_m15SetVertexXYZ( 1, vertexIndex, posx-0.25, 0, posz )
+      tbgl_m15SetVertexTexXY( 1, vertexIndex, 0, 0 )      
+      
+      incr vertexIndex      
+      tbgl_m15SetVertexXYZ( 1, vertexIndex, posx+0.25, 0, posz )
+      tbgl_m15SetVertexTexXY( 1, vertexIndex, 1, 0 )      
+      
+      incr vertexIndex      
+      tbgl_m15SetVertexXYZ( 1, vertexIndex, posx+0.25, 0.5, posz )
+      tbgl_m15SetVertexTexXY( 1, vertexIndex, 1, 1 )      
+
+      incr vertexIndex      
+      tbgl_m15SetVertexXYZ( 1, vertexIndex, posx-0.25, 0.5, posz )
+      tbgl_m15SetVertexTexXY( 1, vertexIndex, 0, 1 )      
+      
+      tbgl_m15SetVertexPStop( 1, vertexIndex, 1 )                  
+      
+    next  
+    
+  end sub 
+  
+  sub AnimateGrassTurfs()
+    local vtxCount as long = tbgl_m15GetModelVertexCount(1)
+    local i as long
+    local deviation as single 
+    
+    for i = 3 to vtxCount step 4
+      deviation = cos(gettickcount/1000+i)/2000
+      tbgl_m15SetVertexX(1, i  , tbgl_m15GetVertexX(1, i)+deviation  )
+      tbgl_m15SetVertexX(1, i+1, tbgl_m15GetVertexX(1, i+1)+deviation )      
+    next
+    
+  end sub

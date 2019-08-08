@@ -1,0 +1,96 @@
+' SingleBuffer vs. DoubleBuffer
+' Start Date 01-26-2009
+' Created by by Petr Schreiber
+ 
+USES "UI"
+
+' -- ID numbers of controls
+Begin ControlID
+  %cCanvasSB 
+  %cCanvasDB
+  %btnClose  
+  
+  %tAnimationTimer
+End ControlID
+
+' -- Create dialog here
+FUNCTION Main()
+  LOCAL hDlg AS DWORD
+
+  DIALOG New 0, "Canvas in single buffer and double buffermode",-1,-1, 282, 170, _
+                                    %WS_POPUP Or %WS_VISIBLE Or _
+                                     %WS_CLIPCHILDREN Or %WS_CAPTION OR _
+                                     %WS_SYSMENU Or %WS_MINIMIZEBOX, 0 To hDlg
+  
+  ' -- Place controls here
+  dim cx, cy as long
+  dialog pixels hDlg, 200, 200 to units cx, cy
+  CONTROL ADD CANVAS, hDlg, %cCanvasSB, "", 5, 25, cx, cy
+  CONTROL ADD CANVAS, hDlg, %cCanvasDB, "", 5+cx+5, 25, cx,cy
+  
+  CONTROL ADD LABEL, hDlg, -1, "Single buffer"+$CRLF+"(immediate, but with flicker)", 5, 5, cx, 30
+  CONTROL ADD LABEL, hDlg, -1, "Double buffer"+$CRLF+"(draws all at once, no flicker)", 5+cx+5, 5, cx, 30
+  
+  CONTROL ADD BUTTON, hDlg, %btnClose, "Click to close", 10+cx, 30+cy, cx, 14, CALL btnCloseProc
+ 
+  DIALOG SHOW MODAL hDlg, CALL dlgProc
+
+END FUNCTION
+
+' -- Callback for dialog
+CALLBACK FUNCTION dlgProc()
+
+  ' -- Test for messages
+  SELECT CASE CBMSG
+
+    CASE %WM_INITDIALOG
+    ' -- Put code to be executed after dialog creation here
+      DIALOG SET TIMER CBHNDL, %tAnimationTimer, 10, %NULL
+
+    CASE %WM_TIMER
+      DIM tx, ty as long
+
+      
+      Canvas_Attach(cbhndl, %cCanvasSB, %false)
+        DrawGraphics()      
+      'Canvas_Redraw    ' -- No need for it
+
+      Canvas_Attach(cbhndl, %cCanvasDB, %true)
+        DrawGraphics()
+      Canvas_Redraw     ' -- Needs this to sync   
+      
+    CASE %WM_CLOSE
+    ' -- Put code to be executed before dialog end here
+
+  END SELECT
+
+END FUNCTION
+ 
+' -- Callback for close button
+CALLBACK FUNCTION btnCloseProc()
+
+  IF CBMSG = %WM_COMMAND THEN
+    IF CBCTLMSG = %BN_CLICKED THEN
+      ' -- Closes the dialog 
+      DIALOG END CBHNDL
+    END IF
+  END IF
+
+END FUNCTION
+
+SUB DrawGraphics()
+  DIM tx, ty AS LONG
+
+  tx = 100+cos(gettickcount/100)*10
+  ty = 100+sin(gettickcount/100)*10  
+  
+  canvas_COLOR rgb(128, 255, 0), RGB(0, 0, 0)
+  Canvas_Clear(rgb(0,0,0))
+  Canvas_Box(tx-50,ty-50,tx,ty, 0, rgb(255, 0, 0), rgb(255,128,0),%Canvas_FillStyle_DiagonalCrossedLines )
+  canvas_print "Ciao"+STR$(rnd(1,256))
+  canvas_print "a tutti"+STR$(rnd(1,256))
+
+  Canvas_Line ((0,0), (200, 200), rgb(255,0,0))
+  Canvas_Line ((200,0), (0, 200), rgb(255,0,0))
+
+END SUB

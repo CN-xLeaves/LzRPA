@@ -1,0 +1,138 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<title>命令帮助</title>
+	<style type="text/css">
+		/* =====css reset===== */
+		body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, a, big, em, font, img, strong, tt, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, table, caption, tbody, tfoot, thead, tr, th, td { padding: 0; margin: 0; }
+		table { border-collapse: collapse; border-spacing: 0; }
+		button, input, select, textarea { font-size: 12px;font-family:"SimSun";}
+
+		/* =====public===== */
+		body {border:0px; color:#293955; margin: 0 auto; font-size: 12px; font-family:"Simsun"; padding:8px; overflow: auto; }
+		td { font-size: 12px; line-height: 120%; }
+		a { outline: none; text-decoration: none; }
+		.wrap table{width: 100%;}
+		.wrap table tr{ margin:2px 0; display:block}
+		.wrap table tr .tab_left{width: 48px; text-align:right}
+		.blue{color:#293955; font-weight:bold; font-size: 14px}
+		.gray{color:#747474; }
+		pre{margin:0; font-size: 12px; font-family:"Simsun";}
+	</style>
+	<script type="text/javascript">
+		function GetTypeName(sType){
+			switch (sType)
+			{
+				case "Integer":
+				case "Long":
+					return "[整数]"
+					break;
+				case "String":
+					return "[字符串]"
+					break;
+				case "Double":
+					return "[数字]"
+					break;
+				case "Boolean":
+					return "[逻辑]"
+					break;
+				case "Object":
+					return "[对象]"
+					break;
+				case "Time":
+					return "[时间]"
+					break;
+				case "Array":
+					return "[数组]"
+					break;
+				case "Any":
+					return "[任意]"
+					break;
+				case "Ptr":
+					return "[指针]"
+					break;
+				default:
+					return "[" + sType + "]"
+			}
+		}
+		function AiBot_Help(sJson){
+			var xTbl = eval('(' + sJson + ')');
+			if (xTbl.Caption)
+			{
+				var ele = document.getElementById("HelpTitle")
+				ele.innerHTML = xTbl.Caption.replace("\\n", "<br>")
+			}
+			if (xTbl.Define)
+			{
+				var ele = document.getElementById("HelpDefine")
+				ele.innerHTML = xTbl.Define.replace("\\n", "<br>")
+			}
+			if (xTbl.Describe)
+			{
+				var ele = document.getElementById("HelpDescribe")
+				ele.innerHTML = xTbl.Describe.replace("\\n", "<br>")
+			}
+			if (xTbl.Return)
+			{
+				var ele = document.getElementById("HelpReturn")
+				ele.innerHTML = GetTypeName(xTbl.RetType) + " " + xTbl.Return.replace("\\n", "<br>")
+			}
+			if (typeof(xTbl.Param) == "object")
+			{
+				if (xTbl.Param.length == 0)
+				{
+					var ele = document.getElementById("HelpArgs")
+					ele.innerHTML = "无"
+				}
+				else
+				{
+					var html = "<table>"
+					for(var i = 0,len = xTbl.Param.length; i < len; i++){
+						html = html + "<tr><td>" + xTbl.Param[i].Caption + "</td>"
+						html = html + "<td>" + GetTypeName(xTbl.Param[i].DataType) + "</td>"
+						if (xTbl.Param[i].Optional)
+						{
+							html = html + "<td>[可选]</td>"
+						} else {
+							html = html + "<td>[必选]</td>"
+						}
+						html = html + "<td>" + xTbl.Param[i].Describe + "</td>"
+					}
+					html = html + "</table>"
+					var ele = document.getElementById("HelpArgs")
+					ele.innerHTML = html.replace("\\n", "<br>")
+				}
+			}
+			else
+			{
+				var ele = document.getElementById("HelpArgs")
+				ele.innerHTML = xTbl.Param.toString()
+			}
+		}
+	</script>
+</head>
+<body>
+<div class="wrap">
+	<td><span class="blue" id="HelpTitle"></span></td>
+	<table>
+		<tr>
+			<td class="tab_left" valign="top">语法：</td>
+			<td><span class="gray" id="HelpDefine"></span></td>
+		</tr>
+		<tr>
+			<td class="tab_left" valign="top">功能：</td>
+			<td><span class="gray" id="HelpDescribe"></td>
+		</tr>
+		<tr>
+			<td class="tab_left" valign="top">参数：</td>
+			<td><span class="gray" id="HelpArgs"></td>
+		</tr>
+		<tr>
+			<td class="tab_left" valign="top">返回值：</td>
+			<td><span class="gray" id="HelpReturn"></td>
+		</tr>
+	</table>
+</div>
+</body>
+</html>

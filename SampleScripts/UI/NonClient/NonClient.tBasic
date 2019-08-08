@@ -1,0 +1,65 @@
+  uses "UI"
+  
+  Begin ControlID
+  %ButtonExit 
+  %ButtonFlip 
+  End ControlID
+   
+  %StyleCaption = %WS_POPUP       Or %WS_THICKFRAME   Or %WS_CAPTION      Or %WS_SYSMENU Or _
+                  %WS_MINIMIZEBOX Or %WS_MAXIMIZEBOX  Or %WS_CLIPSIBLINGS Or %WS_VISIBLE Or _
+                  %DS_3DLOOK      Or %DS_NOFAILCREATE Or %DS_SETFONT      Or %WS_BORDER
+   
+  %StyleFull    = %WS_POPUP       Or %WS_THICKFRAME   Or %WS_CLIPSIBLINGS Or %WS_VISIBLE Or _
+                  %DS_3DLOOK      Or %DS_NOFAILCREATE Or %DS_SETFONT
+
+  '------------------------------------------------------------------------------
+  Function Main() as long
+  '------------------------------------------------------------------------------
+    Local hDlg As Dword
+
+    Dialog New %HWND_DESKTOP ,"Full screen", - 1, -1 , 120, 60, %StyleCaption, 0 To hDlg
+    Control Add Button, hDlg, %ButtonFlip, "Full", 30, 10, 55, 15
+    Control Add Button, hDlg, %ButtonExit, "Exit", 30, 35, 55, 15
+    Dialog Show Modal hDlg Call DlgProc
+
+  End Function
+
+  '------------------------------------------------------------------------------
+  CallBack Function DlgProc() as long
+  '------------------------------------------------------------------------------
+    Static SizeX As Long
+    Static SizeY As Long
+    Static PosX  As Long
+    Static PosY  As Long
+
+    Select Case CbMsg
+      Case %WM_COMMAND
+        Select Case LoWrd(CbWParam)
+
+          Case %ButtonFlip
+            If CbCtlMsg = %BN_CLICKED Then
+              If win_IsZoomed(CbHndl) Then                           'Is window maximized ?
+                win_SetWindowLong CbHndl, %GWL_STYLE, %StyleCaption        'Set style with caption
+                Dialog Set Loc CbHndl, PosX, PosY                    'Put back to old position
+                Dialog Set Size CbHndl, SizeX, SizeY                 'Set back previous size
+                win_Show CbHndl, %SW_SHOWNORMAL                      'Use "normal" instead of "maximized"
+                Control Set Text CbHndl, %ButtonFlip, "Full"         'Set button text
+              Else                                                   'Window was not maximized
+                Dialog Get Size CbHndl To SizeX, SizeY               'Memorize size for future "normal" use
+                Dialog Get Loc CbHndl To PosX, PosY                  'Memorize location for future "normal" use
+                win_SetWindowLong CbHndl, %GWL_STYLE, %StyleFull           'Set style with no caption
+                win_Show CbHndl, %SW_SHOWMAXIMIZED                   'Use "maximized" instead of "normal"
+                Control Set Text CbHndl, %ButtonFlip, "Normal"       'Set button text
+              End If
+            End If
+
+          Case %ButtonExit
+            If CbCtlMsg = %BN_CLICKED Then
+              Dialog End CbHndl
+            End If
+
+        End Select
+    End Select
+
+  End Function
+   

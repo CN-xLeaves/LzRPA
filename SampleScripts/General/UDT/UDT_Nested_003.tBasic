@@ -1,0 +1,513 @@
+uses "console"
+
+'------------------------------------------------------------------------
+'---SetUp console screen
+'------------------------------------------------------------------------
+  dim MaxCols as long value 100
+  dim MaxRows as long value 600
+  Dim MaxSpaceForResult As Long Value 45
+
+  Console_SetScreenBufferSize(MaxCols, MaxRows)                   '---80 columns, 60 rown
+  Console_ShowWindow(%Console_SW_MAXIMIZE)              '---Maximize window
+
+'------------------------------------------------------------------------
+'---SetUp Initial params
+'------------------------------------------------------------------------
+  alias console_writeline as WL                         '---Alias to short script
+  alias console_write     as W                          '---Alias to short script
+  dim sFormat as string = "#####"                       '---
+ 
+'------------------------------------------------------------------------
+'---Start
+'------------------------------------------------------------------------
+  wl "This script is used to test how thinBasic is able to handle simple and"
+  wl "complex UDT (User Defined Types)."
+  wl "Press a key to continue"
+console_waitkey
+
+TYPE COORD
+  x AS INTEGER
+  y AS INTEGER
+END TYPE
+
+type MainUDT
+  x as long
+  c as coord
+end type
+
+dim mt as MainUDT
+dim p  as long = varptr(mt)
+
+
+wStartSection  "Simple 1 level nested UDT"
+  wInfoResult "Type name", "MainUDT"
+  wInfoResult "Variable name", "mt"
+  wInfoResult "Size of MT var is", sizeof(mt)
+    mt.x    = 1234
+    mt.c.x  = 10
+    mt.c.y  = 20
+  wInfoResult "Assignment", "OK, done"
+
+  wInfoResult "Value of MT.x"   , mt.x
+  wInfoResult "Value of MT.c.x" , mt.c.x
+  wInfoResult "Value of MT.c.y" , mt.c.y
+
+
+
+wStartSection  "A more complex UDT with up to 3 nested level"
+'----------------------------------------------------------------------------------
+'---A more complex UDT
+type tmt
+  mt      as MainUDT
+  ee(10)  as ext
+  mtt     as MainUDT
+  sn      as string * 10
+  ss(20)  as string * 100
+  vv      as variant
+end type
+
+'---Define a variable of TMT type
+dim mx as tmt
+
+  wInfoResult "Type name", "TMT"
+  wInfoResult "Variable name", "mx"
+  wInfoResult "Size of mx var is", sizeof(mx)
+
+  '------------------------------------------------------------------------
+  '---Fill variable. Still not avaiable all types of nested UDT assignment
+  mx.mt.x       = 4321
+  mx.mt.c.x     = 11
+  mx.mt.c.y     = 21
+  mx.ee(1)      = 9876.54321
+  mx.ee(10)     = -12345.6789
+  mx.mtt.x      = 12345
+  mx.mtt.c.x    = -27
+  mx.mtt.c.y    = -250
+  mx.ss(1)      = "[ABCDEFGHIJ]"
+  mx.ss(10)     = "[1234567890]"
+  wInfoResult "Assignment", "OK, done"
+  '------------------------------------------------------------------------
+
+  wInfoResult "Structure of mx variable", "see below"
+  wInfo       "TYPE TMT"
+  wInfo       "  mt      as MainUDT"
+  wInfo       "   |-->     x AS LONG"
+  wInfo       "   |-->     c AS COORD"
+  wInfo       "            |-->   x  AS INTEGER"
+  wInfo       "            |-->   y  AS INTEGER"
+  wInfo       "  ee(10)  AS EXT"
+  wInfo       "  mtt     AS MainUDT"
+  wInfo       "   |-->     x AS LONG"
+  wInfo       "   |-->     c AS COORD"
+  wInfo       "            |-->   x  AS INTEGER"
+  wInfo       "            |-->   y  AS INTEGER"
+  wInfo       "  sn      AS STRING * 10"
+  wInfo       "  ss(20)  AS STRING * 100"
+  wInfo       "  vv      AS VARIANT"
+  wInfo       "END TYPE"
+
+  '---OK, ready to test data reading
+  wInfoResult "Value of Mx.mt.x"        , mx.mt.x
+  wInfoResult "Value of Mx.mt.c.x"      , mx.mt.c.x
+  wInfoResult "Value of Mx.mt.c.y"      , mx.mt.c.y
+  wInfoResult "Value of Mx.ee(1)"       , mx.ee(1)
+  wInfoResult "Value of Mx.ee(10)"      , mx.ee(10)
+  wInfoResult "Value of Mx.mtt.x"       , mx.mtt.x
+  wInfoResult "Value of Mx.mtt.c.x"     , mx.mtt.c.x
+  wInfoResult "Value of Mx.mtt.c.y"     , mx.mtt.c.y
+  wInfoResult "Value of Mx.ss(10) (excluded ""-"")" , "-" & trim$(mx.ss(10)) & "-"
+  wInfoResult "Value of Mx.ss( 1) (excluded ""-"")" , "-" & trim$(mx.ss(1)) & "-"
+
+
+wStartSection  "Some speed tests"
+
+'----------------------------------------------------------------------------------
+' Some speed tests. It is important to evaluate how nesting level influence
+' execution speed
+'----------------------------------------------------------------------------------
+
+dim T1, T2      as double               '---Time measure
+dim Counter     as long                 '---Looper
+dim MaxCount    as long value 100000    '---Max loops
+dim lTmp        as long                 '---Temp long var
+dim eTmp        as ext                  '---Temp EXT var
+dim sTmp        as string               '---Temp string var
+dim TestNumber  as long
+'----------------------------------------------------------------------------------
+' Test: 2 levels of UDT
+'----------------------------------------------------------------------------------
+
+incr TestNumber
+T1 = timer
+For Counter = 1 to MaxCount
+  lTmp = mx.mtt.x
+next
+T2 = timer
+wInfoResult "Speed Test " & TestNumber & ": " & MaxCount & " loops", format$(T2-T1, "#0.000") & " secs (2 levels of UDT)"
+
+'----------------------------------------------------------------------------------
+' Test: 3 levels of UDT
+'----------------------------------------------------------------------------------
+incr TestNumber
+T1 = timer
+For Counter = 1 to MaxCount
+  lTmp = mx.mtt.c.y
+next
+T2 = timer
+wInfoResult "Speed Test " & TestNumber & ": " & MaxCount & " loops", format$(T2-T1, "#0.000") & " secs (3 levels of UDT)"
+
+'----------------------------------------------------------------------------------
+' Test: array of elements 1st level
+'----------------------------------------------------------------------------------
+incr TestNumber
+T1 = timer
+For Counter = 1 to MaxCount
+  eTmp = mx.ee(10)
+next
+T2 = timer
+wInfoResult "Speed Test " & TestNumber & ": " & MaxCount & " loops", format$(T2-T1, "#0.000") & " secs (array element)"
+
+'----------------------------------------------------------------------------------
+' Test: string first level
+'----------------------------------------------------------------------------------
+incr TestNumber
+T1 = timer
+For Counter = 1 to MaxCount
+  sTmp = mx.ss(1)
+next
+T2 = timer
+wInfoResult "Speed Test " & TestNumber & ": " & MaxCount & " loops", format$(T2-T1, "#0.000") & " secs (String)"
+
+'----------------------------------------------------------------------------------
+' Test: some operations with 3 levels of UDT
+'----------------------------------------------------------------------------------
+incr TestNumber
+T1 = timer
+For Counter = 1 to MaxCount
+  eTmp = (mx.mtt.c.x + mx.mtt.c.y)/2
+next
+T2 = timer
+wInfoResult "Speed Test " & TestNumber & ": " & MaxCount & " loops", format$(T2-T1, "#0.000") & " secs (operations on 3rd UDT levels)"
+
+'----------------------------------------------------------------------------------
+' Test: assignment
+'----------------------------------------------------------------------------------
+incr TestNumber
+T1 = timer
+For Counter = 1 to MaxCount
+   mx.mtt.c.x = eTmp
+next
+T2 = timer
+wInfoResult "Speed Test " & TestNumber & ": " & MaxCount & " loops", format$(T2-T1, "#0.000") & " secs (3rd UDT level assign)"
+
+'----------------------------------------------------------------------------------
+' Test: assignment and read at the same time
+'----------------------------------------------------------------------------------
+incr TestNumber
+T1 = timer
+For Counter = 1 to MaxCount
+   mx.mtt.c.x = mx.mtt.c.y
+next
+T2 = timer
+wInfoResult "Speed Test " & TestNumber & ": " & MaxCount & " loops", format$(T2-T1, "#0.000") & " secs (3rd UDT level assign/read)"
+
+'----------------------------------------------------------------------------------
+'----------------------------------------------------------------------------------
+'----------------------------------------------------------------------------------
+'----------------------------------------------------------------------------------
+'----------------------------------------------------------------------------------
+
+
+wStartSection  "Now something using standard Windows API declares"
+
+
+TYPE FILETIME
+  dwLowDateTime       AS DWORD
+  dwHighDateTime      AS DWORD
+END TYPE
+
+TYPE WIN32_FIND_DATA
+  dwFileAttributes    AS DWORD
+  ftCreationTime      AS FILETIME
+  ftLastAccessTime    AS FILETIME
+  ftLastWriteTime     AS FILETIME
+  nFileSizeHigh       AS DWORD
+  nFileSizeLow        AS DWORD
+  dwReserved0         AS DWORD
+  dwReserved1         AS DWORD
+  cFileName           AS ASCIIZ * %MAX_PATH
+  cAlternateFileName  AS ASCIIZ * 14
+END TYPE
+
+TYPE SMALL_RECT
+  xLeft               AS INTEGER
+  xTop                AS INTEGER
+  xRight              AS INTEGER
+  xBottom             AS INTEGER
+END TYPE
+
+TYPE CONSOLE_SCREEN_BUFFER_INFO
+  dwSize              AS COORD
+  dwCursorPosition    AS COORD
+  wAttributes         AS WORD
+  srWindow            AS SMALL_RECT
+  dwMaximumWindowSize AS COORD
+END TYPE
+
+
+type AMoreComplicatedOne
+  CSBI                as CONSOLE_SCREEN_BUFFER_INFO
+  W32FD               as WIN32_FIND_DATA
+end type
+
+dim CSBIWFD           as AMoreComplicatedOne
+
+  wInfoResult "Defined variable CSBIWFD", "Done"
+  wInfoResult "Structure of CSBIWFD variable", "see below"
+  wInfo       "TYPE FILETIME"
+  wInfo       "  dwLowDateTime       AS DWORD"
+  wInfo       "  dwHighDateTime      AS DWORD"
+  wInfo       "END TYPE"
+  wInfo       ""
+  wInfo       "TYPE WIN32_FIND_DATA"
+  wInfo       "  dwFileAttributes    AS DWORD"
+  wInfo       "  ftCreationTime      AS FILETIME"
+  wInfo       "  ftLastAccessTime    AS FILETIME"
+  wInfo       "  ftLastWriteTime     AS FILETIME"
+  wInfo       "  nFileSizeHigh       AS DWORD"
+  wInfo       "  nFileSizeLow        AS DWORD"
+  wInfo       "  dwReserved0         AS DWORD"
+  wInfo       "  dwReserved1         AS DWORD"
+  wInfo       "  cFileName           AS ASCIIZ * %MAX_PATH"
+  wInfo       "  cAlternateFileName  AS ASCIIZ * 14"
+  wInfo       "END TYPE"
+  wInfo       ""
+  wInfo       "TYPE SMALL_RECT"
+  wInfo       "  xLeft               AS INTEGER"
+  wInfo       "  xTop                AS INTEGER"
+  wInfo       "  xRight              AS INTEGER"
+  wInfo       "  xBottom             AS INTEGER"
+  wInfo       "END TYPE"
+  wInfo       ""
+  wInfo       "TYPE CONSOLE_SCREEN_BUFFER_INFO"
+  wInfo       "  dwSize              AS COORD"
+  wInfo       "  dwCursorPosition    AS COORD"
+  wInfo       "  wAttributes         AS WORD"
+  wInfo       "  srWindow            AS SMALL_RECT"
+  wInfo       "  dwMaximumWindowSize AS COORD"
+  wInfo       "END TYPE"
+  wInfo       ""
+  wInfo       "TYPE AMoreComplicatedOne"
+  wInfo       "  CSBI                AS CONSOLE_SCREEN_BUFFER_INFO"
+  wInfo       "  W32FD               AS WIN32_FIND_DATA"
+  wInfo       "END TYPE"
+
+  wInfoResult "Size of CSBIWFD var is", sizeof(CSBIWFD)
+  CSBIWFD.CSBI.dwSize.x               = 10
+  CSBIWFD.CSBI.dwSize.y               = 20
+  CSBIWFD.CSBI.srWindow.xLeft         = 1
+  CSBIWFD.CSBI.srWindow.xTop          = 2
+  CSBIWFD.CSBI.srWindow.xRight        = 3
+  CSBIWFD.CSBI.srWindow.xBottom       = 4
+  CSBIWFD.CSBI.dwMaximumWindowSize.x  = 50
+  CSBIWFD.CSBI.dwMaximumWindowSize.y  = 60
+
+  wInfoResult "Assignment", "OK, done"
+  wInfoResult "CSBIWFD.CSBI.dwSize.x"               , CSBIWFD.CSBI.dwSize.x
+  wInfoResult "CSBIWFD.CSBI.dwSize.y"               , CSBIWFD.CSBI.dwSize.y
+  wInfoResult "CSBIWFD.CSBI.srWindow.xLeft"         , CSBIWFD.CSBI.srWindow.xLeft
+  wInfoResult "CSBIWFD.CSBI.srWindow.xTop"          , CSBIWFD.CSBI.srWindow.xTop
+  wInfoResult "CSBIWFD.CSBI.srWindow.xRight"        , CSBIWFD.CSBI.srWindow.xRight
+  wInfoResult "CSBIWFD.CSBI.srWindow.xBottom"       , CSBIWFD.CSBI.srWindow.xBottom
+  wInfoResult "CSBIWFD.CSBI.dwMaximumWindowSize.x"  , CSBIWFD.CSBI.dwMaximumWindowSize.x
+  wInfoResult "CSBIWFD.CSBI.dwMaximumWindowSize.y"  , CSBIWFD.CSBI.dwMaximumWindowSize.y
+
+'----------------------------------------------------------------------------------
+' Speed Test: 4 levels of UDT
+'----------------------------------------------------------------------------------
+incr TestNumber
+T1 = timer
+For Counter = 1 to MaxCount
+  lTmp = CSBIWFD.CSBI.dwMaximumWindowSize.x
+next
+T2 = timer
+wInfoResult "Speed Test " & TestNumber & ": " & MaxCount & " loops", format$(T2-T1, "#0.000") & " secs (4 levels of UDT)"
+
+'----------------------------------------------------------------------------------
+' Speed Test: 4 levels of UDT
+'----------------------------------------------------------------------------------
+incr TestNumber
+T1 = timer
+For Counter = 1 to MaxCount
+  CSBIWFD.CSBI.dwMaximumWindowSize.x = CSBIWFD.CSBI.dwMaximumWindowSize.x + CSBIWFD.CSBI.dwMaximumWindowSize.y
+next
+T2 = timer
+wInfoResult "Speed Test " & TestNumber & ": " & MaxCount & " loops", format$(T2-T1, "#0.000") & " secs (4 levels sum and assign)"
+
+
+'----------------------------------------------------------------------------------
+' Array of complex UDT
+'----------------------------------------------------------------------------------
+dim vCSBIWFD(10)           as AMoreComplicatedOne
+
+wStartSection "Array of complex UDT"
+  wInfoResult "Define an arrays of UDT : vCSBIWFD(10)", "Done"
+  wInfoResult "Size of vCSBIWFD array (10 elements) is", sizeof(vCSBIWFD)
+
+  vCSBIWFD(1).CSBI.dwSize.x                         = -10
+  vCSBIWFD(1).CSBI.dwSize.y                         = -20
+  vCSBIWFD(1).W32FD.ftCreationTime.dwLowDateTime    = 123456
+  vCSBIWFD(10).W32FD.ftCreationTime.dwLowDateTime   = 789
+  vCSBIWFD(5).W32FD.cFileName                       = "[This is text]"
+
+  wInfoResult "vCSBIWFD(1).CSBI.dwSize.x"                       , vCSBIWFD(1).CSBI.dwSize.x
+  wInfoResult "vCSBIWFD(1).CSBI.dwSize.y"                       , vCSBIWFD(1).CSBI.dwSize.y
+  wInfoResult "vCSBIWFD(1).W32FD.ftCreationTime.dwLowDateTime"  , vCSBIWFD(1).W32FD.ftCreationTime.dwLowDateTime
+  wInfoResult "vCSBIWFD(10).W32FD.ftCreationTime.dwLowDateTime" , vCSBIWFD(10).W32FD.ftCreationTime.dwLowDateTime
+  wInfoResult "vCSBIWFD(5).W32FD.cFileName ""-"" excluded"      , "-" & vCSBIWFD(5).W32FD.cFileName & "-"
+
+
+'----------------------------------------------------------------------------------
+' Array of complex UDT containing some array
+'----------------------------------------------------------------------------------
+
+type ArrayOfArrays
+  CSBI(10)            as CONSOLE_SCREEN_BUFFER_INFO
+  W32FD(20)           as WIN32_FIND_DATA
+end type
+
+dim AOFA(20)          as ArrayOfArrays
+
+
+wStartSection "Array of complex UDT containing arrays"
+  wInfoResult "Define an arrays of UDT : AOFA(20)", "Done"
+  wInfoResult "Size of AOFA array (20 elements) is", sizeof(AOFA)
+
+  AOFA(1).CSBI(1).dwSize.x                         = -10
+  AOFA(1).CSBI(1).dwSize.y                         = -20
+
+  wInfoResult "AOFA(1).CSBI(1).dwSize.x"                       , AOFA(1).CSBI(1).dwSize.x
+  wInfoResult "AOFA(1).CSBI(1).dwSize.y"                       , AOFA(1).CSBI(1).dwSize.y
+
+  AOFA(1).W32FD(10).ftCreationTime.dwLowDateTime    = 12345
+  AOFA(1).W32FD(10).ftCreationTime.dwHighDateTime   = 67890
+  AOFA(1).W32FD(10).cFileName                       = "Hi there from thinBasic"
+
+
+  wInfoResult "AOFA(1).W32FD(10).ftCreationTime.dwLowDateTime"  , AOFA(1).W32FD(10).ftCreationTime.dwLowDateTime
+  wInfoResult "AOFA(1).W32FD(10).ftCreationTime.dwHighDateTime" , AOFA(1).W32FD(10).ftCreationTime.dwHighDateTime
+  wInfoResult "AOFA(1).W32FD(10).cFileName"                     , AOFA(1).W32FD(10).cFileName
+
+wHLine
+wl "Press any key to finish"
+wHLine
+console_waitkey
+
+
+'------------------------------------------------------------------------
+'------------------------------------------------------------------------
+'------------------------------------------------------------------------
+'------------------------------------------------------------------------
+'------------------------------------------------------------------------
+' Write an horizontal line
+'------------------------------------------------------------------------
+function wHLine()
+  dim OldColor as long = Console_GetTextAttribute
+  dim NewColor as long = 14
+  
+  Console_SetTextAttribute(NewColor) 
+    console_writeline repeat$(MaxCols - console_getcursorx - 1, "-")
+  Console_SetTextAttribute(OldColor)
+
+end function
+
+'------------------------------------------------------------------------
+' Write a result output
+'------------------------------------------------------------------------
+function wInfoResult(byval sDescrition as string, byval vResult as variant)
+  dim OldColor as long = Console_GetTextAttribute
+  dim DescriptionColor  as long = 2
+  dim DotColor          as long = 8
+  dim ResultColor       as long = 10
+  
+
+  Console_SetTextAttribute(DotColor) 
+    console_write " - "
+  Console_SetTextAttribute(DescriptionColor) 
+    console_write sDescrition & " "
+  Console_SetTextAttribute(DotColor) 
+    console_write repeat$(MaxCols - Console_GetCursorX - MaxSpaceForResult, ".") & ": "
+  Console_SetTextAttribute(ResultColor) 
+    console_Writeline vResult
+  Console_SetTextAttribute(OldColor)
+
+end function
+
+'------------------------------------------------------------------------
+' Write a result output
+'------------------------------------------------------------------------
+function wInfo(byval sDescrition as string)
+  dim OldColor as long = Console_GetTextAttribute
+  dim DescriptionColor  as long = 3
+  dim DotColor          as long = 8
+  
+  Console_SetTextAttribute(DotColor) 
+    console_write "   > "
+  Console_SetTextAttribute(DescriptionColor) 
+    console_writeline sDescrition & " "
+  Console_SetTextAttribute(OldColor)
+
+end function
+
+'------------------------------------------------------------------------
+' Start a new Section
+'------------------------------------------------------------------------
+function wStartSection(optional byval sTitle as string, byval lAlign as long)
+  dim OldColor as long = Console_GetTextAttribute
+  dim TitleColor as long = 12
+
+  if sTitle = "" then
+    wHLine
+    console_writeline
+  else
+    sTitle = "[" & sTitle & "] "
+    Console_SetTextAttribute(TitleColor) 
+      select case lAlign
+        case 0 '---Align left
+          console_write sTitle
+        case 1 '---Align center
+          console_write string$((MaxCols - len(sTitle))/2, " " ) & sTitle
+        case 2 '---Align right
+          console_write string$(MaxCols - 1 - len(sTitle), " " ) & sTitle
+      end select
+    Console_SetTextAttribute(OldColor)
+    wHLine
+  end if
+  
+end function
+
+'------------------------------------------------------------------------
+' End a Section
+'------------------------------------------------------------------------
+function wEndSection(optional byval sTitle as string, byval lAlign as long)
+  dim OldColor as long = Console_GetTextAttribute
+  dim NewColor as long = 12
+
+  if sTitle = "" then
+    wHLine
+    console_writeline
+  else
+    Console_SetTextAttribute(NewColor) 
+      select case lAlign
+        case 0 '---Align left
+          console_writeline sTitle
+        case 1 '---Align center
+          console_writeline string$((MaxCols - len(sTitle))/2, " " ) & sTitle
+        case 2 '---Align right
+          console_writeline string$(MaxCols - 1 - len(sTitle), " " ) & sTitle
+      end select
+    Console_SetTextAttribute(OldColor)
+    wHLine
+  end if
+  
+end function

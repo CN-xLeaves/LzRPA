@@ -1,0 +1,78 @@
+uses "console"
+uses "math" 
+
+#include "MAT_UtilityFunctions.inc"
+
+%MaxLoops = 10000
+
+randomize
+
+dim i           as long
+dim T1, T2      as double
+
+dim tmpVal      as ext  
+
+dim MyMat_1() as ext            '---Note that receiving matrix can be undefined.
+                                '---MAT will check it and automatically define as needed
+Dim MyMat_2(2,2) As Ext 
+
+' -- Use of square brackets forces row assignment
+MyMat_2() = [ 1, 2,
+              3, 4 ]
+                           
+Dim MyMat_3(2,2) As Ext 
+
+MyMat_3() = [ 10, 20,
+              30,40 ]
+
+MyMat_Print(MyMat_1, "M1 Before")
+MyMat_Print(MyMat_2, "M2 Before")
+MyMat_Print(MyMat_3, "M3 Before")
+
+'--------------------------------------------
+T1 = timer
+  for i = 1 to %MaxLoops
+    mat MyMat_1() = MyMat_2() + MyMat_3()
+  next
+T2 = timer
+MyMat_Print(MyMat_1, "M1 after M1() = M2() + M3()", %MaxLoops, T2 - T1)
+
+'--------------------------------------------
+T1 = timer
+  for i = 1 to %MaxLoops
+    mat MyMat_1() = MyMat_2() - MyMat_3()
+  next
+T2 = timer
+MyMat_Print(MyMat_1, "M1 after M1() = M2() - M3()", %MaxLoops, T2 - T1)
+
+'--------------------------------------------
+printl string$(70, "-")
+printl "--- Multiplication ---"
+printl string$(70, "-")
+dim MyMat_MUL_1() as ext
+Dim MyMat_MUL_2(2,3) As Ext 
+
+MyMat_MUL_2() =  [ 2,-2, 1,
+                   2, 3, 1 ]
+Dim MyMat_MUL_3(3,2) As Ext 
+
+MyMat_MUL_3() = [ 2, 3,
+                 -2, 1,
+                  2, 2]
+
+MyMat_Print(MyMat_MUL_1, "M1 Before")
+MyMat_Print(MyMat_MUL_2, "M2 Before")
+MyMat_Print(MyMat_MUL_3, "M3 Before")
+
+T1 = timer
+  for i = 1 to %MaxLoops
+    mat MyMat_MUL_1() = MyMat_MUL_2() * MyMat_MUL_3()
+  next
+T2 = timer
+MyMat_Print(MyMat_MUL_1, "M1 after M1() = M2() * M3()", %MaxLoops, T2 - T1)
+
+'--------------------------------------------
+'---Program finished
+printl "--- Press a key to finish ---"
+waitkey
+'--------------------------------------------

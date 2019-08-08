@@ -1,0 +1,247 @@
+  Uses "TBGL", "Math"
+  
+  Randomize
+  
+  Type Quat ' Quaternion
+    t As String * 4 ' "Quat" typecheck
+    W As Double     ' cos of Angle / 2
+    X As Double     ' x
+    Y As Double     ' y
+    Z As Double     ' z
+  End Type
+ 
+  Global kThing     As Single = .4
+  Global hWnd       As Long
+ 
+  %MaxP   = 500
+  Global gc(%MaxP)   , _
+         gh(%MaxP)   , _
+         gi(%MaxP)   , _
+         gj(%MaxP)   , _
+         gk(%MaxP)   , _
+         gg(%MaxP)   , _
+         gw(%MaxP)   , _
+         gx(%MaxP)   , _
+         gy(%MaxP)   , _
+         gz(%MaxP)   , _
+         gv(%MaxP)   As Single
+
+  '----TBGL loop
+  hWnd = TBGL_CREATEWINDOWEX( _
+    "Arrow keys, PgUp, PgDn to rotate; A, Z for slider; G for grid; ESC to quit", _
+    1024, 738, 32, %TBGL_WS_WINDOWED or %TBGL_WS_CLOSEBOX) 
+  local hFont AS DWORD = TBGL_FontHandle("Courier New", 9) 
+  TBGL_BuildFont(hFont) ' for print
+  TBGL_ShowWindow 
+  TBGL_ResetKeyState()
+  Populate1() ' get random points
+  '----This is it
+  TBGL_BindPeriodicFunction( hWnd, "TBGLLoop", 30)
+  TBGL_ProcessPeriodicFunction(hWnd)
+  '----End TBGL loop
+  TBGL_DestroyWindow
+ 
+  Sub TBGLLoop()
+    If Not TBGL_IsWindow(hWnd) Then Exit Sub' ---------------------------loop
+    TBGL_ClearFrame
+    TBGL_Camera 0,0,15,  0,0,0
+    PreRotation()  ' fixed items
+    DoRotation()   ' do the rotation
+    PostRotation() ' rotating items
+    TBGL_DrawFrame
+    If TBGL_GetWindowKeyState(hWnd, %VK_ESCAPE) Then TBGL_UnBindPeriodicFunction( hWnd )
+  End Sub
+   
+  Sub PreRotation()
+    PlotSlider1()                    '
+  End Sub
+   
+  Sub DoRotation() ' using quaternions
+    Static Sw1 As Integer, QMain, QRotX, QRotY, QRotZ As Quat
+    Local Cosa, Sina, Ang As Single
+    Local dx, dy, dz As Integer ' rotation deltas
+    If TBGL_GetWindowKeyState( hWnd, %VK_DOWN)  Then dx = +1 ' sign only
+    If TBGL_GetWindowKeyState( hWnd, %VK_UP)    Then dx = -1
+    If TBGL_GetWindowKeyState( hWnd, %VK_RIGHT) Then dy = +1
+    If TBGL_GetWindowKeyState( hWnd, %VK_LEFT)  Then dy = -1
+    If TBGL_GetWindowKeyState( hWnd, %VK_PGUP)  Then dz = +1
+    If TBGL_GetWindowKeyState( hWnd, %VK_PGDN)  Then dz = -1
+    If Sw1 = 0 Then ' set up static variables
+      Sw1 = 1
+      Cosa = Cos(Pi/360.): Sina = Sin(Pi/360.) ' 
+      QMain = QLoadWXYZ(1, 0, 0, 0)
+      QRotX = QLoadWXYZ(Cosa, Sina, 0, 0)
+      QRotY = QLoadWXYZ(Cosa, 0, Sina, 0)
+      QRotZ = QLoadWXYZ(Cosa, 0, 0, Sina)
+    End If  
+    If dx <> 0 Then QMain = QMult(QRotX, QMain, dx)
+    If dy <> 0 Then QMain = QMult(QRotY, QMain, dy)
+    If dz <> 0 Then QMain = QMult(QRotZ, QMain, dz)
+    Ang = ATAN2(Sqr(1.-QMain.W^2), QMain.W) * 2
+    TBGL_Rotate Ang, QMain.X, QMain.Y, QMain.Z
+  End Sub
+   
+  Sub PostRotation()
+    Static gridsw As Integer
+    Local i1000 As Integer
+    If TBGL_GetWindowKeyOnce(hWnd, %VK_G) Then gridsw = 1-gridsw 
+    If gridsw Then PlotGridXZ(0, -2, 6, 8, -2, 6, 8): PlotGridY(-4,4,8)
+    For i1000 = 1 To %MaxP
+      If gc(i1000)  Then
+        TBGL_Color 255,000,000
+      Else
+        TBGL_Color 000,255,000
+      End If  
+      PlotPoint(gx(i1000), gw(i1000), gz(i1000))
+    Next
+  End Sub
+   
+  Sub PlotGridXZ(y0 As Single, xlo As Single, xhi As Single, xn As Integer, zlo As Single, zhi As Single, zn As Integer)
+    Local i As Integer, x, y, z As Single
+    For i = 0 To xn
+      x = LinInterp(xlo, xhi, i, 0, xn)
+      If Abs(x) < .0001 Then 
+        TBGL_Color 128,000,128 ' x-axis magenta
+      Else
+        TBGL_Color 064,064,064
+      End If
+      Plotline(x, y0, zlo, x, y0, zhi)
+    Next i
+    For i = 0 To zn
+      z = LinInterp(zlo, zhi, i, 0, zn)
+      If Abs(z) < .0001 Then 
+        TBGL_Color 000,128,128 ' z-axis magenta
+      Else
+        TBGL_Color 064,064,064
+      End If
+      Plotline(xlo, y0, z, xhi, y0, z)
+    Next i
+  End Sub
+   
+  Sub PlotGridY(ylo As Single, yhi As Single, yn As Integer)
+    Local i As Integer, x, y, z As Single
+    TBGL_Color 128,128,000 ' y-axis yellow
+    PlotLine(0,ylo,0, 0,yhi,0)
+    TBGL_PointSize 3
+    For i = 0 To yn
+      y = LinInterp(ylo, yhi, i, 0, yn)
+      PlotPoint(0,y,0)
+    Next i
+    TBGL_PointSize 1
+  End Sub
+   
+  Function QLoadWXYZ(qW As Double, qX As Double, qY As Double, qZ As Double) As String
+    Local q As Quat
+    q.t = "Quat" ' for typecheck
+    q.W = qW: q.X = qX: q.Y = qY: q.Z = qZ
+    Function = q
+  End Function
+   
+  Function QMult(sq1 As String, sq2 As String, iSign As Integer) As String ' quaternion multiplication
+    ' q1 and q2 had better be type "Quat"s
+    Local q, q1, q2 As Quat
+    q.t = "Quat": q1 = sq1: q2 = sq2
+    If q1.t <> "Quat" Then MsgBox 0, "TypeErr QM1": Stop
+    If q2.t <> "Quat" Then MsgBox 0, "TypeErr QM2": Stop
+    If Abs(iSign) <> 1 Then MsgBox 0, "iSign must be 1 or -1": Stop
+    q.W = q1.W*q2.W - (q1.X*q2.X + q1.Y*q2.Y + q1.Z*q2.Z) * iSign
+    q.X = q1.W*q2.X + (q1.X*q2.W + q1.Y*q2.Z - q1.Z*q2.Y) * iSign
+    q.Y = q1.W*q2.Y + (q1.Y*q2.W + q1.Z*q2.X - q1.X*q2.Z) * iSign
+    q.Z = q1.W*q2.Z + (q1.Z*q2.W + q1.X*q2.Y - q1.Y*q2.X) * iSign
+    Function = q
+  End Function
+   
+  Sub PlotPoint(x1 As Single, y1 As Single, z1 As Single)
+    TBGL_BeginPoly %GL_POINTS
+      TBGL_Vertex x1, y1, z1
+    TBGL_EndPoly
+  End Sub
+   
+  Sub PlotLine(x1 As Single, y1 As Single, z1 As Single, _
+    Optional x2 As Single = -999, y2 As Single, z2 As Single)
+    Static x3, y3, z3 As Single
+    TBGL_BeginPoly %GL_LINES
+      If x2 = -999 Then
+        TBGL_Vertex x3, y3, z3
+        TBGL_Vertex x1, y1, z1
+        x3 = x1: y3 = y1: z3 = z1
+      Else
+        TBGL_Vertex x1, y1, z1
+        TBGL_Vertex x2, y2, z2
+        x3 = x2: y3 = y2: z3 = z2
+      End If
+    TBGL_EndPoly
+  End Sub
+   
+  Sub PlotSlider1()
+    Local swDo As Integer
+    ' hard coded stuff
+    If TBGL_GetWindowKeyState( hWnd, %VK_A) Then kThing += .01: swDo = 1
+    If TBGL_GetWindowKeyState( hWnd, %VK_Z) Then kThing -= .01: swDo = 1
+    If kThing < -1 Then kThing = -1
+    If kThing >  1 Then kThing =  1
+    If swDo Then Populate2()
+    TBGL_Color 255,255,255
+    PlotLine(-6.0,-3.0,0, -6.0,3.0,0)
+    TBGL_PointSize 5
+    PlotPoint(-6, LinInterp(-2.9,2.9, kThing,-1,1), 0)
+    TBGL_PointSize 1
+  End Sub
+   
+  Function LinInterp(ylo As Single, yhi As Single, x As Single, xlo As Single, xhi As Single) As Single
+    Function = (ylo * (xhi - x) + yhi * (x - xlo)) / (xhi - xlo) ' what's a function for?
+  End Function
+   
+  Sub Populate1() ' get the 4000 random numbers
+    Local i1000 As Integer
+    For i1000 = 1 To %MaxP
+      ' get random points
+      gh(i1000) = -1 + 2 * Rnd
+      gi(i1000) = -1 + 2 * Rnd
+      gj(i1000) = -1 + 2 * Rnd
+      gk(i1000) = -1 + 2 * Rnd
+    Next
+    Populate2()
+  End Sub
+   
+  Sub Populate2() ' process the points
+    Local i1000 As Integer
+    Local w, x, y, z, v, d, a, b, c, kfac As Single
+    Local m11,m12,m13,m21,m22,m23,m31,m32,m33 As Single
+    For i1000 = 1 To %MaxP
+      ' make a quaternion  
+      w = gh(i1000):  x = gi(i1000):  y = gj(i1000):  z = gk(i1000)
+      v = Sqr(w^2+x^2+y^2+z^2)
+      kfac = Sqr((1 - kThing ^ 2) / (w ^ 2 + x ^ 2 + z ^ 2))
+      w = w * kfac
+      x = x * kfac
+      y = kThing
+      z = z * kfac
+      ' matrix from quaternion
+      m11 = w*w + x*x - y*y - z*z
+      m22 = w*w - x*x + y*y - z*z
+      m33 = w*w - x*x - y*y + z*z
+      m23 =  2*w*x + 2*y*z
+      m32 = -2*w*x + 2*y*z
+      m31 =  2*w*y + 2*z*x
+      m13 = -2*w*y + 2*z*x
+      m12 =  2*w*z + 2*x*y
+      m21 = -2*w*z + 2*x*y
+      ' kquaternion from matrix
+      d = 1 - m11 - m22 - m33
+      c = m23 + m31 + m12
+      b = m32 + m13 + m21
+      a = b + c + d
+      w = c - b
+      x = a + 2*m11 - m23 - m32
+      y = a + 2*m22 - m31 - m13
+      z = a + 2*m33 - m12 - m21
+      v = Sqr(w^2+x^2+y^2+z^2)
+      '-- it's the kquaternion we're looking at
+      gw(i1000) = w: gx(i1000) = x: gy(i1000) = y: gz(i1000) = z: gv(i1000) = v
+      gc(i1000) = IIf(y*kThing < 0, 1, 0) ' color
+      ' quaternion from kquaternion
+      ' w /= v: x /= v: y /= v: z /= v
+      ' v = sqr(w^2+x^2+y^2+z^2)
+    Next
+  End Sub  

@@ -1,0 +1,136 @@
+'
+' TBDI Demoscript : Read Joystick Version 1.3
+'
+' Michael Hartlef 2007-2011
+'
+
+Uses "TBGL", "TBDI"
+
+Function Main()
+  Dim hWnd As DWord
+  Dim i,j As Long
+  Dim ns As String
+  Dim myEffect, myEffect2 As Long
+  Dim shoot As Long 
+  
+  shoot = 0
+  
+  MsgBox 0, "Welcome to the TBDI module demonstration"+$CRLF(2)+"It reads all values of a connected joystick", %MB_ICONINFORMATION, "TBDI demo"
+  
+  ' -- Creates TBGL window
+  hWnd = TBGL_CreateWindowEx("Read Joystick - press ESC to quit", 640, 480, 32, %TBGL_WS_WINDOWED Or %TBGL_WS_CLOSEBOX) 
+  TBGL_ShowWindow                     
+  
+  ' -- Loads texture for font
+  TBGL_LoadBMPFont Replace$(APP_SourcePath, "\TBDI\", "\TBGL\Basic\Textures\")+"TBGL_Font.bmp",30    
+  
+  ' -- Initialize joystick device and load effects
+  TBDI_Init(hWnd)
+  TBDI_JoySetDeadZoneXYZ(0, 50) 
+  myEffect = TBDI_JoyLoadEffect(0, APP_SourcePath+"effects\dirt3.ffe")
+  myEffect2 = TBDI_JoyLoadEffect(0, APP_SourcePath+"effects\chaina.ffe")
+  
+  TBGL_ResetKeyState()
+  
+  While TBGL_IsWindow(hWnd)
+  
+    ' -- Prepares window for drawing
+    TBGL_ClearFrame                   
+    
+    TBGL_BeginPrintBMP  
+      TBGL_Color 255,128,0              
+      TBGL_PrintBMP "TBDI_JoyX= "+Str$(TBDI_JoyX(0)),1,1
+      TBGL_Color 0,0,255
+      TBGL_PrintBMP "TBDI_JoyY= "+Str$(TBDI_JoyY(0)),1,2
+      TBGL_Color 255,128,0              
+      TBGL_PrintBMP "TBDI_JoyZ= "+Str$(TBDI_JoyZ(0)),1,3
+      
+      TBGL_Color 0,0,255
+      TBGL_PrintBMP "TBDI_JoyRX= "+Str$(TBDI_JoyRX(0)),1,5
+      TBGL_Color 255,128,0              
+      TBGL_PrintBMP "TBDI_JoyRY= "+Str$(TBDI_JoyRY(0)),1,6
+      TBGL_Color 0,0,255
+      TBGL_PrintBMP "TBDI_JoyRZ= "+Str$(TBDI_JoyRZ(0)),1,7
+    
+      TBGL_Color 0,0,255
+      TBGL_PrintBMP "TBDI_JoyPOV(1)= "+Str$(TBDI_JoyPOV(0,1)),1,9
+      TBGL_Color 255,128,0              
+      TBGL_PrintBMP "TBDI_JoyPOV(2)= "+Str$(TBDI_JoyPOV(0,2)),1,10
+      TBGL_Color 0,0,255
+      TBGL_PrintBMP "TBDI_JoyPOV(3)= "+Str$(TBDI_JoyPOV(0,3)),1,11
+      TBGL_Color 255,128,0              
+      TBGL_PrintBMP "TBDI_JoyPOV(4)= "+Str$(TBDI_JoyPOV(0,4)),1,12
+    
+      TBGL_Color 0,0,255
+      TBGL_PrintBMP "TBDI_JoySlider(1)= "+Str$(TBDI_JoySlider(0,1)),1,14
+      TBGL_Color 255,128,0              
+      TBGL_PrintBMP "TBDI_JoySlider(2)= "+Str$(TBDI_JoySlider(0,2)),1,15
+    
+      TBGL_Color 0,0,255
+      TBGL_PrintBMP "TBDI_JoyAvail= "+Str$(TBDI_JoyAvail(0)),1,17
+      TBGL_Color 255,128,0              
+      TBGL_PrintBMP "TBDI_JoyCountBtn= "+Str$(TBDI_JoyCountBtn(0)),1,18
+      TBGL_Color 0,0,255
+      TBGL_PrintBMP "TBDI_JoyCountAxes= "+Str$(TBDI_JoyCountAxes(0)),1,19
+      TBGL_Color 255,128,0              
+      TBGL_PrintBMP "TBDI_JoyCountPOV= "+Str$(TBDI_JoyCountPov(0)),1,20
+      TBGL_Color 0,0,255
+      TBGL_PrintBMP "TBDI_JoyHasFF= "+Str$(TBDI_JoyHasFF(0)),1,21
+      TBGL_Color 255,128,0              
+      TBGL_PrintBMP "TBDI_JoyHasEffect= "+Str$(TBDI_JoyHasEffect(0)),1,22
+      TBGL_Color 255,128,0              
+      TBGL_PrintBMP "TBDI_JoyCountEffects= "+Str$(TBDI_JoyCountEffects(0)),1,23
+      j = 0
+      For i = 1 To TBDI_JoyCountEffects(0)
+          TBGL_Color 0,0,255
+                  
+          TBGL_PrintBMP "Name("+Str$(i)+")= "+TBDI_JoyGetEffectName(0,i),1,24+j
+          j = j + 1
+      Next
+      
+      j = 0
+      For i = 1 To TBDI_JoyCountBtn(0)
+          TBGL_Color 0,0,255
+                  
+        If TBDI_JoyButton(0,i) Then
+          TBGL_PrintBMP "TBDI_JOYBUTTON("+Str$(i)+")= "+Str$(TBDI_JoyButton(0,i)),1,24+j
+          j = j + 1
+        End If
+      Next
+      ' -- Play first effect
+      If TBDI_JoyButton(0,1) And shoot = 0 Then
+          TBDI_JoyPlayEffect(0,myeffect)
+          shoot = 1
+      End If            
+      
+      ' -- Play second effect
+      If TBDI_JoyButton(0,2) And shoot = 0 Then
+          TBDI_JoyPlayEffect(0,myeffect2)
+          shoot = 1
+      End If
+      If TBDI_JoyButton(0,1) = 0 And TBDI_JoyButton(0,2) = 0 Then
+          shoot = 0
+      End If   
+      
+      ' -- Set Autocenter ON
+      If TBDI_JoyButton(0,3) Then
+          TBDI_JoySetAutocenter(0,%TRUE)
+      End If   
+      
+      ' -- Set Autocenter OFF
+      If TBDI_JoyButton(0,4) Then
+          TBDI_JoySetAutocenter(0,%FALSE)
+      End If        
+    TBGL_EndPrintBMP  
+  
+    ' -- Swaps the buffers - displays rendered image
+    TBGL_DrawFrame                   
+      
+    If TBGL_GetWindowKeyState(hWnd, %VK_ESCAPE) Then Exit While
+                       
+  Wend
+  
+  ' -- Closes TBGL window
+  TBGL_DestroyWindow                
+
+End Function

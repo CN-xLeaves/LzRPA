@@ -1,0 +1,62 @@
+  uses "UI"
+  
+  Begin ControlID
+    %ID_BUDDY  
+    %ID_UPDOWN 
+  End ControlID
+
+  FUNCTION Main() as long
+    DIM hDlg AS LONG
+
+    DIALOG NEW 0, "Up-Down demo", -1, -1, 130, 70, %WS_OVERLAPPED OR %WS_SYSMENU OR %WS_DLGFRAME TO hDlg
+    DIALOG SHOW MODAL hDlg CALL DlgProc
+
+  END FUNCTION
+
+  CALLBACK FUNCTION DlgProc() as long
+    DIM lpNmh       AS NMHDR      PTR
+    dim lpNMUPDOWN  AS NM_UPDOWN  PTR
+    dim uda()       AS UDACCEL
+    
+    SELECT CASE CBMSG
+      CASE %WM_INITDIALOG
+        Control Add TextBox, CbHndl, %ID_BUDDY, "", 57, 12, 66, 12, %ES_AUTOHSCROLL | %ES_LEFT, %WS_EX_CLIENTEDGE
+        Control Add UPDOWN, CbHndl, %ID_UPDOWN, "", 0, 0, 8, 8, %WS_CHILD | %WS_VISIBLE | %UDS_WRAP | %UDS_ARROWKEYS | %UDS_ALIGNRIGHT | %UDS_SETBUDDYINT | %UDS_NOTHOUSANDS 
+
+
+        '---Link the buddy textbox
+        UpDown_SetBuddy CBHNDL, %ID_UPDOWN, %ID_BUDDY
+        '---Set the min and max range
+        UpDown_SetRange CBHNDL, %ID_UPDOWN, -1000, 1000000
+
+        '---Set the increment at different time. Attention to set them in ascending order in the array
+        redim uda(4)
+        uda(1).nSec = 1   : uda(1).nInc = 5     '---First increment will last for the first 5 secs
+        uda(2).nSec = 5   : uda(2).nInc = 50    '---After 5 secs the increment will be by 50
+        uda(3).nSec = 10  : uda(3).nInc = 500   '---After 10 secs increment will be by 500
+        uda(4).nSec = 15  : uda(4).nInc = 1000  '---And last, after 15 secs we will increment by 1000
+
+        '---Now set it indicating how many and a pointer to the first element
+        UpDown_SetAccell   CBHNDL, %ID_UPDOWN, 4, VARPTR(uda(1))
+        
+        '---Set starting position
+        UpDown_SetPosition CBHNDL, %ID_UPDOWN, 40
+        
+      CASE %WM_NOTIFY
+        lpNmh = CBLPARAM
+        IF lpNmh.Code = %UDN_DELTAPOS THEN
+          IF (lpNmh.idFrom = %ID_UPDOWN) THEN
+            lpNMUPDOWN = CBLPARAM
+
+            IF lpNMUPDOWN.iDelta > 0 THEN
+              dialog set Text CBHNDL, "Up"
+            ELSE
+              dialog Set Text CBHNDL, "Down"
+            end if
+
+          END IF
+        END IF
+
+    END SELECT
+  END FUNCTION
+

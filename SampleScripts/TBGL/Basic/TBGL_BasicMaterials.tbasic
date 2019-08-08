@@ -1,0 +1,115 @@
+'
+' Little example on materials
+' Petr Schreiber, 2009 
+'
+
+#MINVERSION 1.7.10.0
+
+Uses "TBGL"
+          
+Begin Const
+  ' -- Scene IDs
+  %sScene  = 1
+ 
+  ' -- Entity IDs 
+  %eCamera = 1
+  %eLight  
+  %eRed     
+  %eGreen
+  %eBlue
+End Const 
+         
+Function Main()
+  Local hWnd As DWord
+  Local FrameRate As Double
+  
+  ' -- Create and show window
+  hWnd = TBGL_CreateWindowEx("3 different materials - press ESC to quit", 640, 480, 32, %TBGL_WS_WINDOWED Or %TBGL_WS_CLOSEBOX) 
+  TBGL_ShowWindow 
+  
+  ' -- High quality primitives
+  TBGL_SetPrimitiveQuality 100
+  
+  ' -- Create scene
+  TBGL_SceneCreate(%sScene)
+  
+  ' -- Create basic entities
+  ' -- Create camera to look from 15, 15, 15 to 0, 0, 0 
+  TBGL_EntityCreateCamera(%sScene, %eCamera)
+    TBGL_EntitySetPos(%sScene, %eCamera, 5, 5, 5)
+    TBGL_EntitySetTargetPos(%sScene, %eCamera, 0, 0, 0)  
+    
+  ' -- Create point light  
+  TBGL_EntityCreateLight(%sScene, %eLight)
+    TBGL_EntitySetPos(%sScene, %eLight, 0, 10, 0)
+    TBGL_EntitySetSpecular(%sScene, %eLight, 255, 255, 255)
+  
+  ' -- Define some materials                                 
+  Global mRed As Long = tbgl_NewMaterial
+    TBGL_SetMaterialDiffuse(mRed, 255, 0, 0)
+    TBGL_SetMaterialAmbient(mRed, 255, 0, 0)
+    TBGL_SetMaterialSpecular(mRed, 255, 255, 255)
+    TBGL_SetMaterialSpecularExponent(mRed, 8)
+  
+  Global mGreen As Long = tbgl_NewMaterial  
+    TBGL_SetMaterialDiffuse(mGreen, 0, 255, 0)
+    TBGL_SetMaterialAmbient(mGreen, 0, 255, 0) 
+    TBGL_SetMaterialSpecular(mGreen, 255, 255, 255)
+    TBGL_SetMaterialSpecularExponent(mGreen, 16)
+
+  Global mBlue As Long = TBGL_NewMaterial
+    TBGL_SetMaterialDiffuse(mBlue, 0, 0, 255)
+    TBGL_SetMaterialAmbient(mBlue, 0, 0, 255)
+    TBGL_SetMaterialSpecular(mBlue, 255, 255, 255)
+    TBGL_SetMaterialSpecularExponent(mBlue, 128)
+  
+  ' -- Create something to look at
+  TBGL_EntityCreateFuncSlot(%sScene, %eRed, 0, "Sphere_Render")
+    TBGL_EntitySetPos(%sScene, %eRed,-2, 0, 0) 
+    
+    TBGL_EntitySetUserData(%sScene, %eRed, mRed)
+
+  TBGL_EntityCreateFuncSlot(%sScene, %eGreen, 0, "Sphere_Render")
+    TBGL_EntitySetPos(%sScene, %eGreen, 0, 0, 0)
+    
+    TBGL_EntitySetUserData(%sScene, %eGreen, mGreen)
+
+  TBGL_EntityCreateFuncSlot(%sScene, %eBlue, 0, "Sphere_Render")
+    TBGL_EntitySetPos(%sScene, %eBlue, 2, 0, 0) 
+    
+    TBGL_EntitySetUserData(%sScene, %eBlue, mBlue)
+
+  ' -- Resets status of all keys 
+  TBGL_ResetKeyState() 
+
+  ' -- Main loop
+  While TBGL_IsWindow(hWnd) 
+    FrameRate = TBGL_GetFrameRate
+
+    TBGL_EntityTurn(%sScene, %eRed  , 10/FrameRate, 0, 0)
+    TBGL_EntityTurn(%sScene, %eGreen, 10/FrameRate, 10/FrameRate, 10/FrameRate)
+    TBGL_EntityTurn(%sScene, %eBlue , 0, 0, 10/FrameRate)
+    TBGL_ClearFrame 
+
+      TBGL_SceneRender(%sScene)
+      
+    TBGL_DrawFrame 
+
+    ' -- ESCAPE key to exit application
+    If TBGL_GetWindowKeyState(hWnd, %VK_ESCAPE) Then Exit While
+
+  Wend 
+             TBGL_DeleteMaterial(mGreen)
+  TBGL_DestroyWindow
+End Function
+  
+Sub Sphere_Render()
+  
+  Dim element As TBGL_tEntityIdentifier At TBGL_CallingEntity 
+  Dim material As Long At TBGL_EntityGetUserDataPointer(element.scene, element.entity)  
+  
+  tbgl_PushMaterial(material) 
+    TBGL_Torus 0.2, 0.8  
+  TBGL_PopMaterial    
+  
+End Sub  

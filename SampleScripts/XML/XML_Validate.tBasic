@@ -1,0 +1,65 @@
+' ========================================================================================
+' Demonstrates the use of the validate method.
+' When used with MSXML 6.0, you should get the following output:
+' Invalid Dom: Element 'review' is unexpected according to content model of parent
+' element 'book'
+' Expecting: price.
+' ========================================================================================
+
+uses "Console"
+
+#default declare Checkduplicates    %TRUE
+#default declare CheckMissing       %TRUE
+
+#INCLUDE "%APP_INCLUDEPATH%\TB_XML60.INC"
+
+' ========================================================================================
+' Main
+' ========================================================================================
+FUNCTION MAIN() as long
+
+   LOCAL pXmlDoc      AS DWORD
+   LOCAL pSchemaCache AS DWORD
+   LOCAL pNodeList    AS DWORD
+   LOCAL pNode        AS DWORD
+   LOCAL pParseError  AS DWORD
+   LOCAL i            AS LONG
+
+   pXmlDoc = XmlCreateObject("Msxml2.DOMDocument.6.0")
+   pSchemaCache = XmlCreateObject("Msxml2.XMLSchemaCache.6.0")
+   IXMLDOMSchemaCollection_add(pSchemaCache, "urn:books", "validateNode.xsd")
+   IXMLDOMDocument2_putref_schemas pXmlDoc, pSchemaCache
+   IXMLDOMDocument_put_validateOnParse pXmlDoc, %FALSE
+   IXMLDOMDocument_put_async pXmlDoc, %FALSE
+
+   IXMLDOMDocument_load(pXmlDoc, "validateNode.xml")
+   pParseError = IXMLDOMDocument2_validate(pXmlDoc)
+   IF XmlResult = %S_FALSE THEN
+      console_writeline "Invalid DOM - Error &H: " & HEX$(IXMLDOMParseError_get_errorCode(pParseError))
+      console_writeline IXMLDOMParseError_get_reason(pParseError)
+   ELSEIF XmlResult = %E_PENDING THEN
+      console_writeline "The document is not completely loaded."
+   ELSEIF XmlResult <> %S_OK THEN
+      console_writeline "Error &H" & HEX$(XmlResult)
+   ELSE
+      console_writeline "DOM is valid: " & IXMLDOMDocument_get_xml(pXmlDoc)
+      pNodeList = IXMLDOMDocument_selectNodes(pXmlDoc, "//book")
+      FOR i = 0 TO IXMLDOMNodeList_get_length(pNodeList) - 1
+         pNode = IXMLDOMNodeList_get_item(pNodeList, i)
+         console_writeline IXMLDOMDocument_get_xml(pNode)
+         XmlRelease pNode
+      NEXT
+   END IF
+
+   ' cleanup
+   XmlRelease pParseError
+   XmlRelease pNodeList
+   XmlRelease pSchemaCache
+   XmlRelease pXmlDoc
+   
+   console_writeline "--- Press any key to finish ---"
+   console_WAITKEY
+
+END FUNCTION
+
+Main

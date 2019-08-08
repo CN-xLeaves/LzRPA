@@ -1,0 +1,187 @@
+'------------------------------------------------------------------------------
+'Midi In Test
+'------------------------------------------------------------------------------
+
+#MINVERSION 1.9.4.0
+
+'---Needed thinBasic modules
+Uses "UI"
+Uses "WinMM"
+
+'---Controls IDs---
+Begin ControlID
+	%IDC_EDIT_MIDI
+End ControlID
+
+'------------------------------------------------------------------------------
+' Main thinBasic function
+'------------------------------------------------------------------------------
+Function Main() As Long
+
+	MainWindow_Create(%HWND_DESKTOP)
+
+End Function
+
+'------------------------------------------------------------------------------
+' Create main Window
+'------------------------------------------------------------------------------
+Function MainWindow_Create(ByVal hParent As Long) As Long
+
+	Local hDlg      As Long
+	Local lStyle    As Long
+	Local lStyleEx  As Long
+	Local Count     As Long
+	
+	lStyle = _                          
+	        %WS_DLGFRAME          | _   
+	        %WS_CAPTION           | _   
+	        %WS_SYSMENU           | _   
+	        %WS_OVERLAPPEDWINDOW  | _   
+	        %WS_CLIPCHILDREN      | _   
+	        %WS_CLIPSIBLINGS      | _   
+	        %DS_CENTER                  
+	lStyleEx = 0                        
+
+	'---Create the main dialog
+	Dialog New Pixels, hParent, "MidiIn Test", -1, -1, 640, 480, lStyle, lStyleEx, To hDlg
+
+  '---Set the minimum size of the dialog
+  Dialog Set MinClientSize hDlg, 640, 480
+
+  '---Translations
+	Control Add Textbox , hDlg, %IDC_EDIT_MIDI, "" ,  1, 1, 640, 480, %WS_CHILD Or %WS_CLIPSIBLINGS Or %WS_TABSTOP Or %WS_VISIBLE Or %ES_AUTOHSCROLL Or %ES_AUTOVSCROLL Or %WS_VSCROLL Or %WS_HSCROLL Or %ES_LEFT Or %ES_MULTILINE Or %ES_WANTRETURN, %WS_EX_CLIENTEDGE
+
+	Control Set Resize hDlg, %IDC_EDIT_MIDI        , 1, 1, 1, 1
+
+  '---Show main window in modal way
+	Dialog Show Modal hDlg, Call MainWindow_Proc
+  Dialog Show Modeless hDlg Call MainWindow_Proc
+  Do
+    Dialog DoEvents 0 To Count
+  Loop While Count
+  
+  '---Final clean up
+
+End Function
+
+'------------------------------------------------------------------------------
+' Main WIndow CallBack handler
+'------------------------------------------------------------------------------
+CallBack Function MainWindow_Proc() As Long
+    Local  midiErr        As Long
+    Local  ptMidiInHdr1   As MIDIHDR At 0
+    Local  ptMidiInHdr2   As MIDIHDR At 0
+    Local  ptMidiInHdrRet As MIDIHDR At 0
+    Local  hdrDummy       As MIDIHDR
+    Local  lMidiIn        As Long
+    Static hWndIn         As DWord
+    Static hWndOut        As DWord
+    Local  lBuffSize      As Long
+    Local  sStatus        As String * 2
+    Local  sNote          As String * 2
+    Local  sVelo          As String * 2
+    Static lBuffRet       As Long
+    Static lInreset       As Long
+    Local  lcount         As Long
+
+  '---We need to determine what kind of event has been fired
+  '---Pseudo variable CBMSG (CallBack Message) can be used to find it
+	Select Case CBMSG
+
+    '---This event is fired only once when Window is created.
+	  Case %WM_INITDIALOG
+      '---In this examplewe just need to fill server combo box
+
+        lMidiIn   = 0  '---<<< Change MIDI IN DEVIVE  example 8
+        lBuffSize = 384
+
+        midiErr = MidiIn_Open(hWndIn, lMidiIn, CBHNDL, 0, %CALLBACK_WINDOW Or %MIDI_IO_STATUS)
+
+        'no input available
+        If IsTrue(midiErr) Or IsFalse(hWndIn) Then
+           lBuffRet = 3
+           Dialog Set Text CBHNDL, "No valid input available! Error code:" & Str$(midiErr)
+           Exit Function
+        End If
+
+        ptMidiInHdr1 = HEAP_Alloc(Len(hdrDummy))
+        ptMidiInHdr2 = HEAP_Alloc(Len(hdrDummy))
+
+        'prepare Midi header1
+        ptMidiInHdr1.lpdata          = HEAP_Alloc(lBuffSize)
+        ptMidiInHdr1.dwbufferlength  = lBuffSize
+        ptMidiInHdr1.dwbytesrecorded = 0
+        ptMidiInHdr1.dwUser          = 1 'indicates buffer number
+        ptMidiInHdr1.dwFlags         = 0
+
+        'prepare Midi header2
+        ptMidiInHdr2.lpdata          = HEAP_Alloc(lBuffSize)
+        ptMidiInHdr2.dwbufferlength  = lBuffSize
+        ptMidiInHdr2.dwbytesrecorded = 0
+        ptMidiInHdr2.dwUser          = 2 'indicates buffer number
+        ptMidiInHdr2.dwFlags         = 0
+
+        midiErr  = midiIn_PrepareHeader(hWndIn,  ptMidiInHdr1)
+        midiErr  = midiIn_PrepareHeader(hWndIn,  ptMidiInHdr2)
+
+        midiErr  = midiIn_AddBuffer(hWndIn, ptMidiInHdr1)
+        midiErr  = midiIn_AddBuffer(hWndIn, ptMidiInHdr2)
+
+        midiErr  = midiIn_Start(hWndIn)
+
+    Case %MM_MIM_DATA
+
+        sStatus = Mid$(Hex$(CBLPARAM, 6), 5, 2)
+        sNote   = Mid$(Hex$(CBLPARAM, 6), 3, 2)
+        sVelo   = Mid$(Hex$(CBLPARAM, 6), 1, 2)
+
+        'display regular midi events
+        'Dialog Set Text CBHNDL, sStatus & "," & sNote & "," & sVelo
+        Append_Text(CBHNDL, %IDC_EDIT_MIDI, EXPAND$("Status: $sStatus  Note: $sNote  Velo: $sVelo"))
+
+    Case %MM_MIM_LONGERROR
+
+         ptMidiInHdrRet = lParam
+         midiErr = midiIn_AddBuffer(hWndIn, ptMidiInHdrRet)
+
+    Case %MM_MIM_LONGDATA
+
+        ptMidiInHdrRet = lParam
+
+        If IsFalse(lInReset) Then
+
+           'display SysEx midi events
+           Dialog Set Text CBHNDL, Chr$(@ptMidiInHdrRet.lpdata)
+           midiErr = midiIn_AddBuffer(hWndIn, ptMidiInHdrRet)
+
+        Else
+
+           lBuffRet = lBuffRet + @ptMidiInHdrRet.dwUser
+           midiErr  = midiIn_UnprepareHeader(hWndIn,  ptMidiInHdrRet)
+           midiErr  = HEAP_Free(ptMidiInHdrRet.lpdata)
+           midiErr  = HEAP_Free(ptMidiInHdrRet)
+
+        End If
+
+      
+    Case %WM_DESTROY
+    
+        '[breakpoint] <Any note here. Breakpoint will be set to line following this statement>
+        lInReset = %TRUE
+        midiErr = midiIn_Reset(CBHNDL)
+        'While lBuffRet <> 3
+        '   Dialog DoEvents 1 To lCount
+        'Wend
+        midiErr = MidiIn_Close(hWndIn)
+
+    '---This event is fired every time a command (button, menu, ...) is used/clicked
+	  Case %WM_COMMAND
+	     
+
+	End Select
+	
+End Function
+
+Function Append_Text(ByVal hWnd As DWord, ByVal ctrlID As DWord, ByVal sText As String) As Long
+  Control AppendToTop Text hwnd, ctrlID, sText & $CRLF
+End Function

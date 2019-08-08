@@ -1,0 +1,105 @@
+  ' ----------------------------------------------------
+  ' List needed modules
+  ' ----------------------------------------------------
+  uses "UI", "File"
+  
+  ' ----------------------------------------------------
+  ' Global variables and equates
+  ' ----------------------------------------------------
+  Begin ControlID
+    %lvwListView1    
+    %btnCheckAll
+    %btnCheckNone
+    %btnCheckGet
+  End ControlID  
+ 
+  ' ----------------------------------------------------
+  ' Main script
+  ' ----------------------------------------------------
+  function Main() as long
+    ' ----------------------------------------------------
+    ' Contains the window creation, controls handling 
+    ' ----------------------------------------------------
+ 
+    local hDlg          as dword
+ 
+    dialog new 0, "ListView with CheckBoxes", -1, -1, 210, 180, %WS_CLIPCHILDREN or %WS_OVERLAPPEDWINDOW to hDlg
+    dialog set minsize hDlg, 210, 180
+ 
+    ' -- Add controls
+    control add listview, hDlg, %lvwListView1  , "", 5, 5, 200, 150, _
+                                                  %LV_VIEW_DETAILS | %LVS_SINGLESEL | %WS_VISIBLE | %WS_CHILD | %LVS_SHOWSELALWAYS | %WS_BORDER, _
+                                                  %LVS_EX_FULLROWselect  | %LVS_EX_GRIDLINES | %LVS_EX_CHECKBOXES
+ 
+      '---Automatic resizing control
+      control set resize hDlg, %lvwListView1  , 1, 1, 1, 1
+      listview_Setview      hDlg, %lvwListView1, %LV_VIEW_DETAILS
+      listview_insertcolumn hDlg, %lvwListView1, 1, 150, "Module"       , %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_LEFT
+      listview_insertcolumn hDlg, %lvwListView1, 2, 100, "Size"         , %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_RIGHT
+ 
+      dim sDir      as string = "LIB\"
+      dim m()       as string
+      dim nm        as long = dir_listArray(m, app_path + sDir, "*.DLL")
+      dim i         as long
+      dim s(nm, 2)  as string
+ 
+      for i = 1 to nm
+        s(i,1) = m(i), format$(file_size(APP_Path + sDir + m(i)), "0,")
+      next
+ 
+      listview_InsertData hDlg, %lvwListView1, s()
+ 
+    control add button, hDlg, %btnCheckAll  , "Check all", 5, 160, 60, 15
+      control set resize hDlg, %btnCheckAll  , 0, 1, 0, 1    
+ 
+    control add button, hDlg, %btnCheckNone , "Check none", 75, 160, 60, 15
+      control set resize hDlg, %btnCheckNone  , 0, 1, 0, 1    
+ 
+    control add button, hDlg, %btnCheckGet  , "Get checked", 145, 160, 60, 15
+      control set resize hDlg, %btnCheckGet  , 0, 1, 0, 1    
+ 
+    '---Show dialog in MODAL state
+    dialog SHOW MODAL hDlg, call dlgCallback
+  end function
+ 
+    callback function dlgCallback() as long           
+      local i as long
+      local s, temp as string
+      local fSize as long
+ 
+      '---Now test the message
+      select case cbMsg
+ 
+        case %WM_Command
+ 
+          select case cbCtl
+            case %btnCheckAll
+              ListView_SetCheckState(cBhndl, %lvwListView1, -1, %TRUE)
+ 
+            case %btnCheckNone
+              ListView_SetCheckState(cBhndl, %lvwListView1, -1, %FALSE)
+ 
+            case %btnCheckGet
+              for i = 1 to ListView_GetItemCount(cBhndl, %lvwListView1)
+                if ListView_GetCheckState(cbHndl, %lvwListView1, i) then
+                  s     += ListView_GetItemText(cbHndl, %lvwListView1, i, 1)+$CRLF
+                  temp = ListView_GetItemText(cbHndl, %lvwListView1, i, 2)
+                  temp = digit$(temp)
+                  fSize += val(temp)
+                end if  
+              next  
+ 
+              if len(s) = 0 then 
+                s = "No items checked"
+              else
+                s += $CRLF(2)+"Total size:"+$TAB+format$(fSize,"0,") +" bytes" 
+              end if  
+ 
+              msgbox cbHndl, s, %MB_OK or %MB_ICONINFORMATION, "Info on checked items"
+ 
+          end select
+ 
+ 
+      end select
+  end function
+ 

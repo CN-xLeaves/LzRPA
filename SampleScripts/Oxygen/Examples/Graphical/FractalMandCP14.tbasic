@@ -1,0 +1,381 @@
+
+
+  'Mandelbroy Fractal Texture using complex numbers
+  'Charles E V Pegge 2010
+
+  Uses "TBGL","Oxygen"
+
+  Dim hWnd As Dword 
+
+  ' -- Creates window and returns handle by which we can identify it
+  hWnd = TBGL_CreateWindowEx("Mandelbrot Fractal Texture, press ESC to quit", 512, 512, 32, %TBGL_WS_WINDOWED) 
+  TBGL_ShowWindow 
+
+  type tbgl_tRGBA
+    r as byte
+    g as byte
+    b as byte
+    a as byte
+  end type  
+
+  Dim render,kef,kspf as long
+  Dim TexString As String
+  Texstring=string$(&h100000,chr$(0))
+
+
+  '
+  'THESE VARIABLES ARE LINKED TO OXYGEN
+  '
+
+  Dim pTexture as long
+  pTexture=strptr(Texstring)
+
+
+  Dim xcor,ycor, xstp, ystp, xoff, yoff, lmt,esc as Double
+  Dim maxit,shmo,algo as long
+
+
+  '--------------
+  'INITIAL VALUES
+  '--------------
+
+  xoff=-2    '-2
+  yoff=-1.5  '-1.5
+  xstp=3/512 'X STEPPING 3 max
+  ystp=3/512 'Y STEPPING 3 max
+  lmt=4      '1..16
+  maxit=20   '20..100
+  shmo=2     '1..7
+  algo=0     '1
+
+
+
+  '--------------------------------------------
+  'OXYGEN COMPILE & EXEC TEXTURE GENERATION
+  '--------------------------------------------
+  dim src as string
+
+  src="
+
+
+  basic
+
+
+  '------------------------------------
+  'DEFINE STRUCTURE FOR COMPLEX NUMBERS
+  '====================================
+
+  type complex
+    r as double
+    i as double
+  end type
+  '
+
+
+  '===============================
+  'GENERATE MANDELBROT IMAGE ARRAY
+  '===============================
+
+
+
+  '
+  'LINKED VARIABLES
+  '
+  dim as double
+    xcor at #xcor,
+    ycor at #ycor,
+    xstp at #xstp,
+    ystp at #ystp,
+    xoff at #xoff,
+    yoff at #yoff,
+    lmt at  #lmt,
+    esc at  #esc
+
+  dim as long
+    maxit at #maxit,
+    shmo at #shmo,
+    algo at #algo
+
+  dim i,p,xpix, ypix, color as long
+  dim tex at p as long : p=[#pTexture] 'LINK TEXTURE
+  dim zzman,zzcor,b as complex
+  '
+  b=>2,0
+  '
+  ycor=yoff
+  for ypix=1 to 512
+    xcor=xoff
+    for xpix=1 to 512
+      'i=0
+      zzman=>0,0
+      zzcor=>xcor,ycor
+      mov dl,shmo
+      mov dh,algo
+      mov ecx,0
+      (
+        'zzman=zzman*zzman+zzcor 'COMPLEX OPERATIONS
+        'esc=zzman.r * zzman.r + zzman.i * zzman.i
+        'if esc>lmt then jmp fwd xff
+        fld qword zzman.r
+        fmul st(0),st(0)
+        fld qword zzman.i
+        fmul st(0),st(0)
+        (
+         cmp dh,1 : jnz exit
+         fsin
+        )
+        fsubp st(1),st(0)
+        fld qword zzman.r
+        fmul qword zzman.i
+        (
+         cmp dh,1 : jnz exit
+         fsin
+        )
+        fadd st(0),st(0)
+        fadd qword zzcor.i
+        fst qword zzman.i
+        (
+          cmp dl,3 : jz exit
+          fmul st(0),st(0)
+        )
+        fstp  qword esc
+        fadd qword zzcor.r
+        fst qword zzman.r
+        (
+          cmp dl,3 : jz exit
+          fmul st(0),st(0)
+        )
+        fadd qword esc
+        fst qword esc
+        fld qword lmt
+        fcomip st(1)
+        fcomp st(0),st(0)
+        jb exit
+        inc ecx : cmp ecx,maxit : jl long repeat
+      )
+      mov i,ecx
+      '
+      'VARIOUS SHADING SCHEMES
+      '-----------------------
+      '
+      if shmo and 1 then
+        esc=(esc-lmt)*0x80/lmt
+      else
+        esc=esc*64/lmt
+      end if
+      '
+      if shmo and 2 then
+        color = esc*0x100
+      else
+        color = trunc(esc)*0x100
+      end if
+      '
+      if shmo=4 then
+        color=i*0x010101/maxit
+      end if
+      '
+      if shmo=5 then
+        color=i*0x100/maxit and 0xff
+        color= color+color*0x100+color*0x10000
+       
+      end if
+      '
+      if i>=maxit then color = 0xc02020
+      '
+      tex=color : p+=4
+      xcor+=xstp
+    next
+    ycor+=ystp
+  next
+
+  "
+  'msgbox 0,o2_prep src
+  o2_asmo src
+  if len(o2_error) then
+    msgbox 0,o2_error
+    stop
+  end if
+  '--------------------------------------------
+
+  While 1
+  
+  o2_exec 'GENERATE TEXTURE
+
+  ' Making BMP file from TexString variable, size 512*512, to slot #2 with 16x anisotropic filtering 
+  TBGL_MakeTexture TexString, %TBGL_DATA_RGBA, 512, 512, 1, %TBGL_TEX_ANISO, 16 
+  
+  ' -- Enables aplication of textures to objects
+  tbgl_UseTexturing %TRUE
+  
+  ' -- We will apply texture 1
+  tbgl_BindTexture 1
+
+  TBGL_ResetKeyState() ' -- Resets status of all keys 
+
+  ' -- Main loop
+  render=1
+  While TBGL_IsWindow(hWnd) 
+    
+    if render then
+
+    ' -- Erases previous frame
+    tbgl_ClearFrame 
+      
+      ' -- Sets camera to look from 0,0,5 to 0,0,0
+      tbgl_Camera 0, 0, 5, _
+                  0, 0, 0
+
+      tbgl_scale 2,2,1
+    
+      ' -- All following geometry will be rotated around vector 0,0,1
+      ' -- That is - Z axis
+      'tbgl_Rotate GetTickCount/30, 0, 0, 1
+
+      tbgl_Color 255,255,255 'WHITE
+      
+      ' -- Creates quads, shapes with 4 vertices
+      tbgl_BeginPoly %GL_QUADS
+        'tbgl_Color 255,   0,   0    ' -- Red color
+        tbgl_TexCoord2D 0, 0        ' -- Texture coordinate, lower left corner
+        tbgl_Vertex -1, -1,  0
+        
+        'tbgl_Color   0, 255,   0    ' -- Green color
+        tbgl_TexCoord2D 1, 0        ' -- Texture coordinate, lower right corner        
+        tbgl_Vertex  1, -1,  0
+                
+        'tbgl_Color   0,   0, 255    ' -- Blue color
+        tbgl_TexCoord2D 1, 1        ' -- Texture coordinate, higher right corner                
+        tbgl_Vertex  1,  1,  0        
+        
+        'tbgl_Color 255, 255, 0      ' -- Yellow color
+        tbgl_TexCoord2D 0, 1        ' -- Texture coordinate, higher left corner                        
+        tbgl_Vertex -1,  1,  0                
+      tbgl_EndPoly
+
+    ' -- Finishes drawing
+    tbgl_DrawFrame
+    'render=0 
+
+    end if
+    '
+    '----------------
+    'KEYBOARD CONTROL
+    '----------------
+    '
+    kef=0
+
+    ' -- If ESC key is pressed, it will jump out of loop
+    If TBGL_GetWindowKeyState( hWnd, %VK_ESCAPE) Then kef=2
+ 
+    If TBGL_GetWindowKeyState( hWnd, %VK_PGUP) Then
+      xstp=xstp*.925 : ystp=ystp*.925 'ZOOM IN
+      Xoff+=Xstp*16 'ADJUST X OFFSET
+      yoff+=ystp*16 'ADJUST Y OFFSET
+      kef=1
+    End If
+    If TBGL_GetWindowKeyState( hWnd, %VK_PGDN) Then
+      Xoff-=Xstp*16 'ADJUST X OFFSET
+      yoff-=ystp*16 'ADJUST Y OFFSET
+      xstp=xstp/.925 : ystp=ystp/.925 'ZOOM OUT
+      kef=1
+    End If
+    If TBGL_GetWindowKeyState( hWnd, %VK_UP) Then
+      yoff+=ystp*5 'MOVE UP
+      kef=1
+    End If
+    If TBGL_GetWindowKeyState( hWnd, %VK_DOWN) Then
+      yoff-=ystp*5 'MOVE DOWN
+      kef=1
+    End If
+    If TBGL_GetWindowKeyState( hWnd, %VK_LEFT) Then
+      Xoff-=Xstp*5 'MOVE LEFT
+      kef=1
+    End If
+    If TBGL_GetWindowKeyState( hWnd, %VK_RIGHT) Then
+      Xoff+=Xstp*5 'MOVE RIGHT
+      kef=1
+    End If
+    If TBGL_GetWindowKeyState( hWnd, %VK_HOME) Then
+      maxit+=2 'INCREASE RESOLUTION
+      kef=1
+    End If
+    If TBGL_GetWindowKeyState( hWnd, %VK_END) Then
+      maxit-=2 'DECREASE RESOLUTION
+      kef=1
+    End If
+    '
+    '----------------
+    'ALGORITHM SELECT
+    '----------------
+    '
+    If TBGL_GetWindowKeyState( hWnd, %VK_SPACE) Then
+      if kspf=0 then
+        algo+=1
+        if algo>1 then algo=0
+        kef=1
+        kspf=1 'INHIBIT UNTIL SPACE KEY RELEASED
+      End If
+    Else
+      kspf=0
+    End If
+    '
+    '--------------------
+    'COLORING MODE SELECT
+    '--------------------
+    '
+    If TBGL_GetWindowKeyState( hWnd, %VK_1) Then
+      shmo=1
+      kef=1
+    End If
+    If TBGL_GetWindowKeyState( hWnd, %VK_2) Then
+      shmo=2
+      kef=1
+    End If
+    If TBGL_GetWindowKeyState( hWnd, %VK_3) Then
+      shmo=3
+      kef=1
+    End If
+    If TBGL_GetWindowKeyState( hWnd, %VK_4) Then
+      shmo=4
+      kef=1
+    End If
+    If TBGL_GetWindowKeyState( hWnd, %VK_5) Then
+      shmo=5
+      kef=1
+    End If
+    If TBGL_GetWindowKeyState( hWnd, %VK_6) Then
+      shmo=6
+      kef=1
+    End If
+    If TBGL_GetWindowKeyState( hWnd, %VK_7) Then
+      shmo=7
+      kef=1
+    End If
+    If TBGL_GetWindowKeyState( hWnd, %VK_8) Then
+      shmo=8
+      kef=1
+    End If
+    If TBGL_GetWindowKeyState( hWnd, %VK_9) Then
+      shmo=9
+      kef=1
+    End If
+
+    if kef then exit while
+
+  Wend
+
+  TBGL_DeleteTexture 1 
+  if kef=2 then exit while
+
+  Wend
+
+
+  ' -- Destroys window
+  TBGL_DestroyWindow
+ 
+   
+
+
+
+
+

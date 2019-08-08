@@ -1,0 +1,8 @@
+uses "LAN"
+
+dim sLocalPath as string = "s:\set.txt"
+
+msgbox 0,   "Universal:" + $TAB + LAN_GetUniversalName(sLocalPath) + $CRLF + _
+            "Connection:" + $TAB + LAN_GetConnectionName(sLocalPath) + $CRLF + _
+            "Remaining:" + $TAB + LAN_GetRemainingName(sLocalPath), %MB_OK, _
+            "Names for " + sLocalPath

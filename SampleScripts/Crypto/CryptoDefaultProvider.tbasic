@@ -1,0 +1,5 @@
+Uses "Console", "Crypto"
+
+Console_WriteLine("The default providers is: " + Crypto_GetDefaultProvider(%Crypto_PROV_RSA_FULL))
+
+Console_WaitKey(10)  

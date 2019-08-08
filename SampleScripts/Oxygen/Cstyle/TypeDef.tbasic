@@ -1,0 +1,91 @@
+uses "oxygen"
+
+dim s as string
+s="
+
+basic
+
+
+'----------------
+'DEFINE STRUCTURE
+'================
+
+struct color {
+  red;
+  green;
+  blue;
+};
+
+color puce
+
+
+print `ok struct ` puce.green
+
+
+'--------------------------------------------
+'CREATE A STRUCTURE FROM A PREVIOUS STRUCTURE
+'============================================
+
+typedef color colour;
+
+
+'----------------
+'CREATE VARIABLE
+'===============
+
+colour mauve
+
+
+print `ok typedef ` mauve.green
+
+'----------------------------------
+'CREATE TYPES FROM ANONYMOUS STRUCT
+'==================================
+
+typedef struct {
+  single x;
+  single y;
+  single z;
+} vector, *pVector;
+
+
+
+'---------------
+'CREATE VARIABLE
+'===============
+
+vector victor;
+
+victor.x=42.42
+
+print `ok typedef struct ` victor.x
+
+
+'---------------------
+'CREATE VARIABLE BYREF
+'=====================
+
+pvector pv
+
+
+'-----------------------------------------
+'ASSIGN ADDRESS POINTING TO VICTOR ADDRESS
+'=========================================
+
+&pv=&victor
+
+print `ok typedef struct pointer ` pv.x
+
+
+"
+
+'msgbox 0,o2_prep s
+
+o2_asmo s
+
+if len(o2_error) then
+  msgbox 0,o2_error
+else
+  'o2_exec
+  msgbox 0,"okay"
+end if

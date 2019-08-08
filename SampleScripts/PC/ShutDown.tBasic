@@ -1,0 +1,15 @@
+Uses "PC"
+
+Function Main () As Long  
+
+	PC_ShutDown($PC_SD_MY_PC, "System ShutDown ...", %PC_SD_DONOT_REBOOT, 60, %PC_SD_DONOT_FORCE)
+	
+  MsgBox(0, "Just press OK to cancel the shutdown sequence", %MB_ICONINFORMATION Or %MB_OK)
+
+  PC_PreventShutDown($PC_SD_MY_PC)	
+
+End Function
+
+
+
+

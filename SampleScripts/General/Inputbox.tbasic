@@ -1,0 +1,13 @@
+'-----------------------------------------
+' InputBox$ examples
+'-----------------------------------------
+
+Dim s As String
+
+s = InputBox$ 0, "This is the prompt", "This is title", "This is default text"
+
+MsgBox 0, "You entered:" & $CRLF & s
+
+s = InputBox$ 0, "Please type a password", "Password mask example", "Secret", %TRUE
+
+MsgBox 0, "Your password is:" & $CRLF & s

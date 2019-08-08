@@ -1,0 +1,2459 @@
+{
+    "Caption": "SmWeb",
+    "Remark": "神梦浏览器自动化",
+    "ModuleName": "SmWeb",
+    "Icon": "公文包",
+    "Visible": true,
+    "Templet": "document.html",
+    "Help": {
+        "Caption": "神梦填表插件",
+        "Document": "【神梦填表插件 SmWeb.dll】<br><br>支持 IE、谷歌浏览器<br><br>支持跨域跨框架穿透填表"
+    },
+    "Child": [
+        {
+            "Caption": "单文件使用扩展库",
+            "Icon": "信息",
+            "Visible": true,
+            "Templet": "document.html",
+            "Help": {
+                "Caption": "扩展库使用帮助",
+                "Document": "在项目中使用扩展库功能会自动将扩展库引入项目，项目编译或运行时，自动加入扩展库依赖代码和文件。<br><br>如果您在单文件中希望使用本扩展库，则必须编写扩展库依赖代码才能调用扩展库中的函数，否则会报错，LzRPA 建议使用工程方式编写程序，但仍保留单文件使用扩展库的方法。<br><br>扩展库依赖代码：<br>&nbsp;&nbsp;#Include &quot;%APP_PATH%\\\\..\\\\Modules\\\\SmWeb\\\\boot.tbs&quot;<br><br>建议将引用扩展库代码统一添加到全局代码块，也就是代码的最上面。<br><br>使用 SmWeb 扩展库除了要引用扩展库文件外，还需要将 SmWeb.dll 文件复制到生成的 exe 或脚本文件同一目录下，SmWeb.dll 文件保存在软件安装目录下的 Modules\\\\SmWeb 子目录内。"
+            }
+        },
+        {
+            "Caption": "【作者】：神梦无痕",
+            "Icon": "收藏夹",
+            "Visible": true,
+            "InsCodeTop": "/*作者：神梦无痕*/",
+            "Templet": "document.html",
+            "Help": {
+                "Caption": "作者：",
+                "Document": "神梦无痕"
+            }
+        },
+        {
+            "Caption": "【ＱＱ】：1042207232",
+            "Icon": "收藏夹",
+            "Visible": true,
+            "InsCodeTop": "/*ＱＱ：1042207232*/",
+            "Templet": "document.html",
+            "Help": {
+                "Caption": "ＱＱ：",
+                "Document": "1042207232"
+            }
+        },
+        {
+            "Caption": "【Ｑ群】：624655641",
+            "Icon": "收藏夹",
+            "Visible": true,
+            "InsCodeTop": "/*Ｑ群：624655641*/",
+            "Templet": "document.html",
+            "Help": {
+                "Caption": "Ｑ群：",
+                "Document": "624655641"
+            }
+        },
+        {
+            "Caption": "CreaTray",
+            "Remark": "创建托盘",
+            "Icon": "属性",
+            "Visible": true,
+            "Function": true,
+            "InsCode": "CreaTray(\"LzRPA\", -1)",
+            "Templet": "command.html",
+            "Help": {
+                "Caption": "CreaTray",
+                "Define": "CreaTray(Title, [hWnd])",
+                "Describe": "创建托盘",
+                "RetType": "Null",
+                "Return": "无",
+                "Param": [
+                    {
+                        "Caption": "Title",
+                        "DataType": "String",
+                        "Describe": "托盘标题",
+                        "Optional": false
+                    },
+                    {
+                        "Caption": "hWnd",
+                        "DataType": "Long",
+                        "Describe": "窗口句柄，-1表示通过标题查找窗口句柄",
+                        "Optional": true
+                    }
+                ]
+            }
+        },
+        {
+            "Caption": "Tips",
+            "Remark": "托盘气泡提示",
+            "Icon": "属性",
+            "Visible": true,
+            "Function": true,
+            "InsCode": "Tips(\"我是气泡提示。。。\") : TracePrint(运行状态)",
+            "Templet": "command.html",
+            "Help": {
+                "Caption": "Tips",
+                "Define": "Tips(Text)",
+                "Describe": "托盘气泡提示",
+                "RetType": "Null",
+                "Return": "无",
+                "Param": [
+                    {
+                        "Caption": "Text",
+                        "DataType": "String",
+                        "Describe": "提示内容",
+                        "Optional": false
+                    }
+                ]
+            }
+        },
+        {
+            "Caption": "UnTray",
+            "Remark": "卸载托盘",
+            "Icon": "属性",
+            "Visible": true,
+            "Function": true,
+            "InsCode": "UnTray()",
+            "Templet": "command.html",
+            "Help": {
+                "Caption": "UnTray",
+                "Define": "UnTray()",
+                "Describe": "卸载托盘",
+                "RetType": "Null",
+                "Return": "无",
+                "Param": []
+            }
+        },
+        {
+            "Caption": "About",
+            "Remark": "生成插件帮助文档",
+            "Visible": true,
+            "Function": true,
+            "InsCode": "TracePrint SmWeb.About()",
+            "Templet": "command.html",
+            "Help": {
+                "Caption": "About",
+                "Define": "sRet = SmWeb.About()",
+                "Describe": "生成插件帮助文档",
+                "RetType": "String",
+                "Return": "返回文档路径",
+                "Param": []
+            }
+        },
+        {
+            "Caption": "Ver",
+            "Remark": "取插件版本",
+            "Visible": true,
+            "Function": true,
+            "InsCode": "TracePrint SmWeb.Ver()",
+            "Templet": "command.html",
+            "Help": {
+                "Caption": "Ver",
+                "Define": "sRet = SmWeb.Ver()",
+                "Describe": "取插件版本",
+                "RetType": "String",
+                "Return": "返回版本号",
+                "Param": []
+            }
+        },
+        {
+            "Caption": "GetBasePath",
+            "Remark": "取插件路径",
+            "Visible": true,
+            "Function": true,
+            "InsCode": "TracePrint SmWeb.GetBasePath()",
+            "Templet": "command.html",
+            "Help": {
+                "Caption": "GetBasePath",
+                "Define": "sRet = SmWeb.GetBasePath()",
+                "Describe": "取插件路径",
+                "RetType": "String",
+                "Return": "返回插件路径",
+                "Param": []
+            }
+        },
+        {
+            "Caption": "GetID",
+            "Remark": "取插件对象ID",
+            "Visible": true,
+            "Function": true,
+            "InsCode": "TracePrint SmWeb.GetID()",
+            "Templet": "command.html",
+            "Help": {
+                "Caption": "GetID",
+                "Define": "sRet = SmWeb.GetID()",
+                "Describe": "取插件对象ID",
+                "RetType": "Integer",
+                "Return": "返回对象ID",
+                "Param": []
+            }
+        },
+        {
+            "Caption": "GetLastError",
+            "Remark": "获取错误描述",
+            "Visible": true,
+            "Function": true,
+            "InsCode": "TracePrint SmWeb.GetLastError()",
+            "Templet": "command.html",
+            "Help": {
+                "Caption": "GetLastError",
+                "Define": "sRet = SmWeb.GetLastError()",
+                "Describe": "获取插件最后一次出错的错误描述",
+                "RetType": "String",
+                "Return": "返回错误描述",
+                "Param": []
+            }
+        },
+        {
+            "Caption": "SetShowErrorMsg",
+            "Remark": "设置是否显示弹窗错误",
+            "Visible": true,
+            "Function": true,
+            "InsCode": "TracePrint SmWeb.SetShowErrorMsg(IsShow)",
+            "Templet": "command.html",
+            "Help": {
+                "Caption": "SetShowErrorMsg",
+                "Define": "iRet = SmWeb.SetShowErrorMsg(false)",
+                "Describe": "设置是不显示弹窗错误",
+                "RetType": "Boolean",
+                "Return": "成功返回 1，失败返回 0",
+                "Param": [
+                    {
+                        "Caption": "IsShow",
+                        "DataType": "Integer",
+                        "Describe": "是否显示",
+                        "Optional": false
+                    }
+                ]
+            }
+        },
+        {
+            "Caption": "基本命令",
+            "Remark": "",
+            "Icon": "文件夹",
+            "Visible": true,
+            "Templet": "index.html",
+            "Help": {
+                "Caption": ""
+            },
+            "Child": [
+                {
+                    "Caption": "Init",
+                    "Remark": "初始化插件",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "'//记得要先初始化插件，才能用其他功能\nTracePrint SmWeb.Init()\n\n'//启动谷歌浏览器\nIf SmWeb.Bind(\"Chrome.exe\") Then \n    \n    '打开百度网址\n    SmWeb.TabGo(\"https://www.baidu.com/\")\n    Delay(2000)\n    \n    '输入“神梦填表”\n    SmWeb.HtmlInput(\"神梦填表\", \"id:kw\") \n    Delay(2000)\n    \n    '点击百度一下\n    SmWeb.HtmlClick(\"id:su\")\n    Delay(3500)\n    \n    MsgBox \"脚本执行完毕！\", 1+64+4096, \"填表例子\"\nElse \n    MsgBox \"出错，绑定浏览器失败！\", 1 + 16 + 4096, \"警告！\"\n    ExitScript \nEnd If\n\n\n",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "Init",
+                        "Define": "iRet = SmWeb.Init()",
+                        "Describe": "初始化插件，使用其他功能前必须调用该命令。",
+                        "RetType": "Boolean",
+                        "Return": "成功返回 1，失败返回 0",
+                        "Param": []
+                    }
+                },
+                {
+                    "Caption": "FindWebHwnd",
+                    "Remark": "查找符合要求的浏览器句柄",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint SmWeb.FindWebHwnd(\"http://www.baidu.com\", 1 + 0)",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "FindWebHwnd",
+                        "Define": "sRet = SmWeb.FindWebHwnd(KeyStr, Mode)",
+                        "Describe": "查找符合要求的浏览器句柄",
+                        "RetType": "Integer",
+                        "Return": "返回 IE=窗口句柄；谷歌=标签ID",
+                        "Param": [
+                            {
+                                "Caption": "KeyStr",
+                                "DataType": "String",
+                                "Describe": "搜索的文本",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "Mode",
+                                "DataType": "Long",
+                                "Describe": "<br>匹配模式，可组合〔方式+内核〕<br>方式：1=包含网址<br>　　　2=包含标题<br>　　　3=匹配网址<br>　　　4=匹配标题<br>　　　5=匹配句柄<br>　　　6=正则匹配网址<br>　　　7=正则匹配标题<br>　　　8=匹配激活标签页<br>内核：0=IE；16=谷歌",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Bind",
+                    "Remark": "绑定浏览器",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "'绑定IE浏览器\nTracePrint SmWeb.Bind(\"IE.exe\")\n\n'绑定谷歌浏览器\nTracePrint SmWeb.Bind(\"Chrome.exe\")\n\n'绑定浏览器句柄\nTracePrint SmWeb.Bind(123456)",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "Bind",
+                        "Define": "iRet = SmWeb.Bind(hWnd)",
+                        "Describe": "绑定浏览器",
+                        "RetType": "Boolean",
+                        "Return": "成功返回 1，失败返回 0",
+                        "Param": [
+                            {
+                                "Caption": "hWnd",
+                                "DataType": "String",
+                                "Describe": "绑定句柄，类型如下：<br>整数型：窗口句柄〔类名为：Internet Explorer_Server〕<br>文本型：进程名〔IE.exe=IE浏览器；Chrome.exe=谷歌浏览器〕<br>　　　　全路径〔“C:\\\\Chrome.exe”〕",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Quit",
+                    "Remark": "退出绑定的浏览器",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint SmWeb.Quit()",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "Quit",
+                        "Define": "sRet = SmWeb.Quit()",
+                        "Describe": "退出绑定的浏览器",
+                        "RetType": "Boolean",
+                        "Return": "成功返回 1，失败返回 0",
+                        "Param": []
+                    }
+                }
+            ]
+        },
+        {
+            "Caption": "网页命令",
+            "Remark": "",
+            "Icon": "文件夹",
+            "Visible": true,
+            "Templet": "index.html",
+            "Help": {
+                "Caption": ""
+            },
+            "Child": [
+                {
+                    "Caption": "ClearHistory",
+                    "Remark": "清除历史记录",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint SmWeb.ClearHistory()",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "ClearHistory",
+                        "Define": "iRet = SmWeb.ClearHistory()",
+                        "Describe": "清除历史记录",
+                        "RetType": "Boolean",
+                        "Return": "成功返回 1，失败返回 0",
+                        "Param": []
+                    }
+                },
+                {
+                    "Caption": "ClearTemp",
+                    "Remark": "清除临时文件",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint SmWeb.ClearTemp()",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "ClearTemp",
+                        "Define": "sRet = SmWeb.ClearTemp()",
+                        "Describe": "清除临时文件",
+                        "RetType": "Boolean",
+                        "Return": "成功返回 1，失败返回 0",
+                        "Param": []
+                    }
+                },
+                {
+                    "Caption": "ClearCookie",
+                    "Remark": "清除Cookie",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint SmWeb.ClearCookie()",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "ClearCookie",
+                        "Define": "sRet = SmWeb.ClearCookie()",
+                        "Describe": "清除Cookie",
+                        "RetType": "Boolean",
+                        "Return": "成功返回 1，失败返回 0",
+                        "Param": []
+                    }
+                },
+                {
+                    "Caption": "SetProxy",
+                    "Remark": "设置浏览器代理IP",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "'设置代理IP\nTracePrint SmWeb.SetProxy(\"127.0.0.1:80\")\n\n'取消代理IP\nTracePrint SmWeb.SetProxy()\n\n\n",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "SetProxy",
+                        "Define": "iRet = SmWeb.SetProxy([IP])",
+                        "Describe": "设置浏览器代理IP",
+                        "RetType": "Boolean",
+                        "Return": "成功返回 1，失败返回 0",
+                        "Param": [
+                            {
+                                "Caption": "IP",
+                                "DataType": "String",
+                                "Describe": "代理IP，设置格式：代理IP+冒号+端口〔127.0.0.1:80〕；留空取消代理",
+                                "Optional": true
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "SetjQuery",
+                    "Remark": "设置引用jQuery",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "'引用百度的JQ库\nTracePrint SmWeb.SetjQuery(\"baidu\")\n\n'引用内网的JQ库\nTracePrint SmWeb.SetjQuery(\"localhost\")\n\n'引用官网的JQ库\nTracePrint SmWeb.SetjQuery(\"jquery\")\n\n'取消JQ效果\nTracePrint SmWeb.SetjQuery()\n\n\n",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "SetjQuery",
+                        "Define": "iRet = SmWeb.SetProxy([src])",
+                        "Describe": "设置引用jQuery",
+                        "RetType": "Boolean",
+                        "Return": "成功返回 1，失败返回 0",
+                        "Param": [
+                            {
+                                "Caption": "src",
+                                "DataType": "String",
+                                "Describe": "JQ库链接，baidu=百度引用；localhost=内网引用；jquery=官网引用；留空取消JQ效果",
+                                "Optional": true
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Frame_Enum",
+                    "Remark": "递归枚举网页框架",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Dim Framelist As Variant\nFramelist = SmWeb.Frame_Enum()\nFramelist = Split(Framelist, \"|\")\nFor i = 0 To Ubound(Framelist)\n    TracePrint \"框架索引：\" & Framelist(i)\nNext",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "Frame_Enum",
+                        "Define": "sRet = SmWeb.Frame_Enum()",
+                        "Describe": "递归枚举网页框架",
+                        "RetType": "String",
+                        "Return": "返回框架列表，多个框架用“|”分割",
+                        "Param": []
+                    }
+                },
+                {
+                    "Caption": "Frame_Load",
+                    "Remark": "进入框架",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint SmWeb.Frame_Load(\"0>1\")",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "Frame_Load",
+                        "Define": "iRet = SmWeb.Frame_Load(FrameIndex)",
+                        "Describe": "进入框架索引为 FrameIndex 的网页里",
+                        "RetType": "Boolean",
+                        "Return": "成功返回 1，失败返回 0",
+                        "Param": [
+                            {
+                                "Caption": "FrameIndex",
+                                "DataType": "String",
+                                "Describe": "框架索引",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Frame_Exit",
+                    "Remark": "退出框架",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint SmWeb.Frame_Exit()",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "Frame_Exit",
+                        "Define": "iRet = SmWeb.Frame_Exit()",
+                        "Describe": "退出框架，回到主页面",
+                        "RetType": "Boolean",
+                        "Return": "成功返回 1，失败返回 0",
+                        "Param": []
+                    }
+                },
+                {
+                    "Caption": "TabRunJS",
+                    "Remark": "当前网页执行JS代码",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "'可以用 jQuery 来修改标题, 我内置集成了 jQuery 1.11.3\nSmWeb.TabRunJS(0, \"$('title').html('神梦无痕');\")\n\n'利用JS语句返回网页标题，必须加 return 语句才有返回值\nTracePrint SmWeb.TabRunJS(1, \"var t=document.title;return t;\")\n\n'获取传入JS的参数\nTracePrint SmWeb.TabRunJS(1, \"return arguments[0];\", \"我是传入的参数\")",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "TabRunJS",
+                        "Define": "sRet = SmWeb.TabRunJS(IsRet, JSCode, [arguments])",
+                        "Describe": "当前网页执行JS代码，并返回执行结果",
+                        "RetType": "String",
+                        "Return": "返回执行结果",
+                        "Param": [
+                            {
+                                "Caption": "IsRet",
+                                "DataType": "Integer",
+                                "Describe": "执行类型：0=表示执行js不带返回值；1=表示执行js并返回返回值，需要js中有return语句",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "JSCode",
+                                "DataType": "String",
+                                "Describe": "JS代码",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "arguments",
+                                "DataType": "String",
+                                "Describe": "传入JS代码中的参数，JS代码里用 arguments[0] 获取传入值",
+                                "Optional": true
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "TabGetHwnd",
+                    "Remark": "获取网页句柄",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint SmWeb.TabGetHwnd()",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "TabGetHwnd",
+                        "Define": "iRet = SmWeb.TabGetHwnd()",
+                        "Describe": "获取网页句柄",
+                        "RetType": "Integer",
+                        "Return": "成功返回网页句柄，否则返回空值",
+                        "Param": []
+                    }
+                },
+                {
+                    "Caption": "TabGetURL",
+                    "Remark": "获取网页地址",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint SmWeb.TabGetURL() ",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "TabGetURL",
+                        "Define": "sRet = SmWeb.TabGetURL() ",
+                        "Describe": "获取网页地址",
+                        "RetType": "String",
+                        "Return": "成功返回网址",
+                        "Param": []
+                    }
+                },
+                {
+                    "Caption": "TabGetTitle",
+                    "Remark": "获取网页标题",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint SmWeb.TabGetTitle()",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "TabGetTitle",
+                        "Define": "sRet = SmWeb.TabGetTitle()",
+                        "Describe": "获取网页标题",
+                        "RetType": "String",
+                        "Return": "成功返回标题",
+                        "Param": []
+                    }
+                },
+                {
+                    "Caption": "TabGetHTML",
+                    "Remark": "获取网页源码",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint SmWeb.TabGetHTML()",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "TabGetHTML",
+                        "Define": "sRet = SmWeb.TabGetHTML()",
+                        "Describe": "获取网页源码",
+                        "RetType": "String",
+                        "Return": "返回网页源码",
+                        "Param": []
+                    }
+                },
+                {
+                    "Caption": "TabGetCharset",
+                    "Remark": "获取网页编码",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint SmWeb.TabGetCharset()",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "TabGetCharset",
+                        "Define": "sRet = SmWeb.TabGetCharset()",
+                        "Describe": "获取网页编码",
+                        "RetType": "String",
+                        "Return": "返回网页编码",
+                        "Param": []
+                    }
+                },
+                {
+                    "Caption": "TabGetCookie",
+                    "Remark": "获取网页Cookie",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint SmWeb.TabGetCookie()",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "TabGetCookie",
+                        "Define": "sRet = SmWeb.TabGetCookie()",
+                        "Describe": "获取网页Cookie",
+                        "RetType": "String",
+                        "Return": "返回Cookie",
+                        "Param": []
+                    }
+                },
+                {
+                    "Caption": "TabGetUserAgent",
+                    "Remark": "获取当前网页UserAgent",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint  SmWeb.TabGetUserAgent()",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "TabGetUserAgent",
+                        "Define": "sRet = SmWeb.TabGetUserAgent()",
+                        "Describe": "获取当前网页UserAgent",
+                        "RetType": "String",
+                        "Return": "返回UserAgent",
+                        "Param": []
+                    }
+                },
+                {
+                    "Caption": "TabGetScroll",
+                    "Remark": "获取滚动条所在位置",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint  SmWeb.TabGetScroll()",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "TabGetScroll",
+                        "Define": "sRet = SmWeb.TabGetScroll()",
+                        "Describe": "获取滚动条所在位置",
+                        "RetType": "String",
+                        "Return": "返回滚动条位置 x|y",
+                        "Param": []
+                    }
+                },
+                {
+                    "Caption": "TabIsReady",
+                    "Remark": "判断网页是否加载完毕",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint  SmWeb.TabIsReady(30)",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "TabIsReady",
+                        "Define": "iRet = SmWeb.TabIsReady(OutTime)",
+                        "Describe": "判断网页是否加载完毕",
+                        "RetType": "Boolean",
+                        "Return": "成功返回 1，否则返回 0",
+                        "Param": [
+                            {
+                                "Caption": "OutTime",
+                                "DataType": "String",
+                                "Describe": "超时秒数，默认 30",
+                                "Optional": true
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "TabIsReadyEx",
+                    "Remark": "判断网页是否加载完毕加强版",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint  SmWeb.TabIsReadyEx(\"张三|李四|王五\", 0, 5)",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "TabIsReadyEx",
+                        "Define": "iRet = SmWeb.TabIsReadyEx(StrKey, Compare, OutTime)",
+                        "Describe": "判断网页是否加载完毕加强版",
+                        "RetType": "Integer",
+                        "Return": "返回文本索引(从1开始)比如：关键字=“张三|李四|王五”,找到“张三”返回1，找到“李四”返回2；失败返回0",
+                        "Param": [
+                            {
+                                "Caption": "StrKey",
+                                "DataType": "String",
+                                "Describe": "欲判断的关键字，多个用“|”分割",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "Compare",
+                                "DataType": "String",
+                                "Describe": "判断方式（0=文本方式，1=源码方式）",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "OutTime",
+                                "DataType": "String",
+                                "Describe": "超时时间（单位秒）",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "TabGo",
+                    "Remark": "打开地址，跳转到新的页面",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint  SmWeb.TabGo(\"http://www.神梦.com\")",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "TabGo",
+                        "Define": "iRet = SmWeb.TabGo(URL)",
+                        "Describe": "打开地址，跳转到新的页面",
+                        "RetType": "Boolean",
+                        "Return": "成功返回 1，失败返回 0",
+                        "Param": [
+                            {
+                                "Caption": "URL",
+                                "DataType": "String",
+                                "Describe": "网址",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "TabForward",
+                    "Remark": "前进操作",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint  SmWeb.TabForward()",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "TabForward",
+                        "Define": "iRet = SmWeb.TabForward()",
+                        "Describe": "前进操作",
+                        "RetType": "Boolean",
+                        "Return": "成功返回 1，失败返回 0",
+                        "Param": []
+                    }
+                },
+                {
+                    "Caption": "TabBack",
+                    "Remark": "后退操作",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint  SmWeb.TabBack()",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "TabBack",
+                        "Define": "iRet = SmWeb.TabBack()",
+                        "Describe": "后退操作",
+                        "RetType": "Boolean",
+                        "Return": "成功返回 1，失败返回 0",
+                        "Param": []
+                    }
+                },
+                {
+                    "Caption": "TabRefresh",
+                    "Remark": "刷新当前页面",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint  SmWeb.TabRefresh()",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "TabRefresh",
+                        "Define": "iRet = SmWeb.TabRefresh()",
+                        "Describe": "刷新当前页面",
+                        "RetType": "Boolean",
+                        "Return": "成功返回 1，失败返回 0",
+                        "Param": []
+                    }
+                },
+                {
+                    "Caption": "TabStop",
+                    "Remark": "停止加载页面",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint  SmWeb.TabStop()",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "TabStop",
+                        "Define": "sRet = SmWeb.TabStop()",
+                        "Describe": "停止加载页面",
+                        "RetType": "Boolean",
+                        "Return": "成功返回 1，失败返回 0",
+                        "Param": []
+                    }
+                },
+                {
+                    "Caption": "TabNew",
+                    "Remark": "创建一个新的标签",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint  SmWeb.TabNew(\"about:blank\")",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "TabNew",
+                        "Define": "iRet = SmWeb.TabNew(URL)",
+                        "Describe": "创建一个新的标签，并打开网址",
+                        "RetType": "Integer",
+                        "Return": "成功返回网页句柄（IE=窗口句柄；谷歌=标签ID），失败返回空值",
+                        "Param": [
+                            {
+                                "Caption": "URL",
+                                "DataType": "String",
+                                "Describe": "网址",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "TabGoto",
+                    "Remark": "切换到指定标签页",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "'IE浏览器切换标签页\nTracePrint  SmWeb.TabGoto(123456)\n\n'谷歌浏览器切换标签页\nTracePrint  SmWeb.TabGoto(\"D038B8E1D711176709F3C233D064F80D\")",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "TabGoto",
+                        "Define": "iRet = SmWeb.TabGoto(hWnd)",
+                        "Describe": "切换到指定标签页",
+                        "RetType": "Boolean",
+                        "Return": "成功返回 1，失败返回 0",
+                        "Param": [
+                            {
+                                "Caption": "hWnd",
+                                "DataType": "String",
+                                "Describe": "网页句柄",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "TabClose",
+                    "Remark": "关闭当前标签，也支持指定标签句柄",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "'关闭当前标签页\nTracePrint  SmWeb.TabClose()\n\n'IE浏览器关闭指定标签页\nTracePrint  SmWeb.TabClose(123456)\n\n'谷歌浏览器关闭指定标签页\nTracePrint  SmWeb.TabClose(\"D038B8E1D711176709F3C233D064F80D\")",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "TabClose",
+                        "Define": "iRet = SmWeb.TabClose([hWnd])",
+                        "Describe": "关闭当前标签，也支持指定",
+                        "RetType": "Boolean",
+                        "Return": "成功返回 1，失败返回 0",
+                        "Param": [
+                            {
+                                "Caption": "hWnd",
+                                "DataType": "String",
+                                "Describe": "网页句柄",
+                                "Optional": true
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "TabEnumEle",
+                    "Remark": "当前网页枚举标记指定标签",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint  SmWeb.TabEnumEle(\"A\")",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "TabEnumEle",
+                        "Define": "iRet = SmWeb.TabEnumEle(tag)",
+                        "Describe": "当前网页枚举标记指定标签",
+                        "RetType": "Integer",
+                        "Return": "返回枚举数量",
+                        "Param": [
+                            {
+                                "Caption": "tag",
+                                "DataType": "String",
+                                "Describe": "　　 网页元素标签〔tag〕：<br>　　 A      超链接标签<br>　　 img    图像标签<br>　　 input  输入框标签<br>　　 select 下拉框标签<br>　　 button 按钮标签<br>　　 div    定义块标签<br>　　 span   组合框标签<br>　　 p      段落标签<br><br>　　 〔...还有很多，自己去发掘吧！〕",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "TabScrollTo",
+                    "Remark": "当前网页滚动到指定位置",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint  SmWeb.TabScrollTo(123, 456)",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "TabScrollTo",
+                        "Define": "iRet = SmWeb.TabScrollTo(Left, Top)",
+                        "Describe": "当前网页滚动到指定位置",
+                        "RetType": "Boolean",
+                        "Return": "成功返回 1，失败返回 0",
+                        "Param": [
+                            {
+                                "Caption": "Left",
+                                "DataType": "String",
+                                "Describe": "水平位置",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "Top",
+                                "DataType": "String",
+                                "Describe": "竖直位置",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "TabSetCookie",
+                    "Remark": "设置当前页面Cookie",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint  SmWeb.TabSetCookie(\"smwh=123;\")",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "TabSetCookie",
+                        "Define": "iRet = SmWeb.TabSetCookie(NewCookie)",
+                        "Describe": "设置当前页面Cookie",
+                        "RetType": "Boolean",
+                        "Return": "成功返回 1，失败返回 0",
+                        "Param": [
+                            {
+                                "Caption": "NewCookie",
+                                "DataType": "String",
+                                "Describe": "新Cookie",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "TabSetUserAgent",
+                    "Remark": "设置浏览器UserAgent",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint  SmWeb.TabSetUserAgent(\"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.50 (KHTML, like Gecko) Version/5.1 Safari/534.50\")",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "TabSetUserAgent",
+                        "Define": "iRet = SmWeb.TabSetUserAgent(UserAgent)",
+                        "Describe": "设置浏览器UserAgent",
+                        "RetType": "Boolean",
+                        "Return": "成功返回 1，失败返回 0",
+                        "Param": [
+                            {
+                                "Caption": "UserAgent",
+                                "DataType": "String",
+                                "Describe": "新UserAgent",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "TabNoMsgbox",
+                    "Remark": "禁止当前网页中弹出的信息框",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint  SmWeb.TabNoMsgbox()",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "TabNoMsgbox",
+                        "Define": "iRet = SmWeb.TabNoMsgbox()",
+                        "Describe": "禁止当前网页中弹出的信息框",
+                        "RetType": "Boolean",
+                        "Return": "成功返回 1，失败返回 0",
+                        "Param": []
+                    }
+                },
+                {
+                    "Caption": "TabZoom",
+                    "Remark": "放大或缩小网页视图",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint  SmWeb.TabZoom(50)",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "TabZoom",
+                        "Define": "iRet = SmWeb.TabZoom(Zoom)",
+                        "Describe": "放大或缩小网页视图",
+                        "RetType": "Boolean",
+                        "Return": "成功返回 1，失败返回 0",
+                        "Param": [
+                            {
+                                "Caption": "Zoom",
+                                "DataType": "String",
+                                "Describe": "缩放百分比",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "TabKeyLight",
+                    "Remark": "高亮网页上指定的关键字",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint  SmWeb.TabKeyLight(\"神梦\", \"FF0000\", \"D6F20D\", True)",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "TabKeyLight",
+                        "Define": "iRet = SmWeb.TabKeyLight(StrKey, [Color], [BackColor] , [IsB])",
+                        "Describe": "高亮网页上指定的关键字",
+                        "RetType": "Integer",
+                        "Return": "返回关键字数量",
+                        "Param": [
+                            {
+                                "Caption": "StrKey",
+                                "DataType": "String",
+                                "Describe": "关键字，多个用“｜”分割",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "Color",
+                                "DataType": "String",
+                                "Describe": "文字颜色，默认 “FF0000”",
+                                "Optional": true
+                            },
+                            {
+                                "Caption": "BackColor",
+                                "DataType": "String",
+                                "Describe": "背景颜色，默认 “D6F20D”",
+                                "Optional": true
+                            },
+                            {
+                                "Caption": "IsB",
+                                "DataType": "String",
+                                "Describe": "是否加粗，默认 false",
+                                "Optional": true
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "TabPreDialog",
+                    "Remark": "预处理弹窗",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint  SmWeb.TabPreDialog(\"神梦无痕\",  true, 30)",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "TabPreDialog",
+                        "Define": "iRet = SmWeb.TabPreDialog(Text, Button, OutTimer)",
+                        "Describe": "预处理弹窗",
+                        "RetType": "Boolean",
+                        "Return": "成功返回 1，失败返回 0",
+                        "Param": [
+                            {
+                                "Caption": "Text",
+                                "DataType": "String",
+                                "Describe": "写入内容，多个用“｜”分割",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "Button",
+                                "DataType": "String",
+                                "Describe": "点击按钮，true=确定；false=取消，多个用“｜”分割",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "OutTimer",
+                                "DataType": "String",
+                                "Describe": "超时秒数，默认 30",
+                                "Optional": true
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "TabGetDialog",
+                    "Remark": "获取弹出窗口上的文本内容",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint  SmWeb.TabGetDialog()",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "TabGetDialog",
+                        "Define": "sRet = SmWeb.TabGetDialog()",
+                        "Describe": "获取弹出窗口上的文本内容",
+                        "RetType": "String",
+                        "Return": "返回弹窗内容，多个用“||”分割",
+                        "Param": []
+                    }
+                },
+                {
+                    "Caption": "TabSnapShot",
+                    "Remark": "网页截屏并保存图像",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint  SmWeb.TabSnapShot(0, 0, 0, 0, \"C:\\1.jpg\")",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "TabSnapShot",
+                        "Define": "iRet = SmWeb.TabSnapShot(x1, y1, x2, y2, FileName)",
+                        "Describe": "网页截屏并保存图像",
+                        "RetType": "Boolean",
+                        "Return": "成功返回 1，失败返回 0",
+                        "Param": [
+                            {
+                                "Caption": "x1",
+                                "DataType": "Long",
+                                "Describe": "左上角X坐标",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "y1",
+                                "DataType": "Long",
+                                "Describe": "左上角Y坐标",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "x2",
+                                "DataType": "Long",
+                                "Describe": "右下角X坐标",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "y2",
+                                "DataType": "Long",
+                                "Describe": "右下角Y坐标",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "FileName",
+                                "DataType": "String",
+                                "Describe": "保存图片路径",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "TabSave",
+                    "Remark": "下载保存文件",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint  SmWeb.TabSave(\"http://bbs.anjian.com/templates/default/Images/logo1.png\", \"C:\\logo1.png\")",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "TabSave",
+                        "Define": "iRet = SmWeb.TabSave(URL, Path)",
+                        "Describe": "下载保存文件",
+                        "RetType": "Boolean",
+                        "Return": "成功返回 1，失败返回 0",
+                        "Param": [
+                            {
+                                "Caption": "URL",
+                                "DataType": "String",
+                                "Describe": "下载链接",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "Path",
+                                "DataType": "String",
+                                "Describe": "保存路径",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "Caption": "元素命令",
+            "Remark": "",
+            "Icon": "文件夹",
+            "Visible": true,
+            "Templet": "index.html",
+            "Help": {
+                "Caption": ""
+            },
+            "Child": [
+                {
+                    "Caption": "HtmlExists",
+                    "Remark": "判断网页元素是否存在",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "'WQM格式\nTracePrint  SmWeb.HtmlExists(\"id:su\")\n\n'CSS格式\nTracePrint  SmWeb.HtmlExists(\"#su\")\n\n'XPath格式\nTracePrint  SmWeb.HtmlExists(\"//*[@id='su']\")",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "HtmlExists",
+                        "Define": "iRet = SmWeb.HtmlExists(ET)",
+                        "Describe": "判断网页元素是否存在",
+                        "RetType": "Boolean",
+                        "Return": "成功返回 1，失败返回 0",
+                        "Param": [
+                            {
+                                "Caption": "ET",
+                                "DataType": "String",
+                                "Describe": "元素特征码",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "HtmlEnum",
+                    "Remark": "枚举网页元素匹配数量",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Dim 元素特征 As String\nDim Enums As Long\nDim i As Long\n\n'//枚举标记同名的txt特征\n元素特征 = \"tag:A&txt:今日热点\"\nEnums = SmWeb.HtmlEnum(元素特征)\nFor i = 0 To Enums - 1\n    TracePrint \"【\"& i &\"】：\" & SmWeb.HtmlGet(\"outerHTML\",  元素特征 & \"&enum:\" & i)\nNext",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "HtmlEnum",
+                        "Define": "iRet = SmWeb.HtmlEnum(ET)",
+                        "Describe": "枚举网页元素匹配数量",
+                        "RetType": "Integer",
+                        "Return": "返回枚举数量",
+                        "Param": [
+                            {
+                                "Caption": "ET",
+                                "DataType": "String",
+                                "Describe": "元素特征码",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "HtmlFocus",
+                    "Remark": "设置元素焦点",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint SmWeb.HtmlFocus(\"id:kw\")",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "HtmlFocus",
+                        "Define": "iRet = SmWeb.HtmlFocus(ET)",
+                        "Describe": "设置元素焦点",
+                        "RetType": "Boolean",
+                        "Return": "成功返回 1，失败返回 0",
+                        "Param": [
+                            {
+                                "Caption": "ET",
+                                "DataType": "String",
+                                "Describe": "元素特征码",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "HtmlBlur",
+                    "Remark": "失去元素焦点",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint SmWeb.HtmlBlur(\"id:kw\")",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "HtmlBlur",
+                        "Define": "iRet = SmWeb.HtmlBlur(ET)",
+                        "Describe": "失去元素焦点",
+                        "RetType": "Boolean",
+                        "Return": "成功返回 1，失败返回 0",
+                        "Param": [
+                            {
+                                "Caption": "ET",
+                                "DataType": "String",
+                                "Describe": "元素特征码",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "HtmlClick",
+                    "Remark": "点击网页元素",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint SmWeb.HtmlClick(\"id:su\")",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "HtmlClick",
+                        "Define": "iRet = SmWeb.HtmlClick(ET)",
+                        "Describe": "点击网页元素，点击网页中指定特征的按钮或链接，或者是其他元素",
+                        "RetType": "Boolean",
+                        "Return": "成功返回 1，失败返回 0",
+                        "Param": [
+                            {
+                                "Caption": "ET",
+                                "DataType": "String",
+                                "Describe": "元素特征码",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "HtmlInput",
+                    "Remark": "往文本框中输入文字",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint SmWeb.HtmlInput(\"id:kw\")",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "HtmlInput",
+                        "Define": "iRet = SmWeb.HtmlInput(ET)",
+                        "Describe": "往文本框中输入文字，向网页中指定特征的文本框输入内容",
+                        "RetType": "Boolean",
+                        "Return": "成功返回 1，失败返回 0",
+                        "Param": [
+                            {
+                                "Caption": "ET",
+                                "DataType": "String",
+                                "Describe": "元素特征码",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "HtmlCheck",
+                    "Remark": "选择/清除网页中的单选框或复选框",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint SmWeb.HtmlCheck(\"id:myCheck\")",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "HtmlCheck",
+                        "Define": "iRet = SmWeb.HtmlCheck(ET)",
+                        "Describe": "选择/清除网页中的单选框或复选框",
+                        "RetType": "Boolean",
+                        "Return": "成功返回 1，失败返回 0",
+                        "Param": [
+                            {
+                                "Caption": "ET",
+                                "DataType": "String",
+                                "Describe": "元素特征码",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "HtmlSelect",
+                    "Remark": "选择网页中的下拉框",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint SmWeb.HtmlSelect(\"id:mySelect\")",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "HtmlSelect",
+                        "Define": "iRet = SmWeb.HtmlSelect(ET)",
+                        "Describe": "选择网页中的下拉框，支持多选",
+                        "RetType": "Boolean",
+                        "Return": "成功返回 1，失败返回 0",
+                        "Param": [
+                            {
+                                "Caption": "ET",
+                                "DataType": "String",
+                                "Describe": "元素特征码",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "HtmlGet",
+                    "Remark": "获取网页元素的信息",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint SmWeb.HtmlGet(\"value\", \"id:su\")",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "HtmlGet",
+                        "Define": "sRet = SmWeb.HtmlGet(Name, ET)",
+                        "Describe": "获取网页元素的信息，获取网页元素指定属性的信息",
+                        "RetType": "String",
+                        "Return": "返回属性值",
+                        "Param": [
+                            {
+                                "Caption": "Name",
+                                "DataType": "String",
+                                "Describe": "属性名",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "ET",
+                                "DataType": "String",
+                                "Describe": "元素特征码",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "HtmlSet",
+                    "Remark": "设置网页元素的信息",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint SmWeb.HtmlSet(\"value\", \"神梦无痕\", \"id:su\")",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "HtmlSet",
+                        "Define": "iRet = SmWeb.HtmlSet(Name, Value, ET)",
+                        "Describe": "设置网页元素的信息，设置网页元素指定属性的信息",
+                        "RetType": "Boolean",
+                        "Return": "成功返回 1，失败返回 0",
+                        "Param": [
+                            {
+                                "Caption": "Name",
+                                "DataType": "String",
+                                "Describe": "属性名",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "Value",
+                                "DataType": "String",
+                                "Describe": "属性值",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "ET",
+                                "DataType": "String",
+                                "Describe": "元素特征码",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "HtmlScroll",
+                    "Remark": "网页滚动到指定网页元素位置",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint SmWeb.HtmlScroll(\"id:su\")",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "HtmlScroll",
+                        "Define": "iRet = SmWeb.HtmlScroll(ET)",
+                        "Describe": "网页滚动到指定网页元素位置，使网页元素在视窗范围",
+                        "RetType": "Boolean",
+                        "Return": "成功返回 1，失败返回 0",
+                        "Param": [
+                            {
+                                "Caption": "ET",
+                                "DataType": "String",
+                                "Describe": "元素特征码",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "HtmlHover",
+                    "Remark": "执行指定网页元素悬停事件",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint SmWeb.HtmlHover(\"id:su\")",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "HtmlHover",
+                        "Define": "iRet = SmWeb.HtmlHover(ET)",
+                        "Describe": "执行指定网页元素悬停事件",
+                        "RetType": "Boolean",
+                        "Return": "成功返回 1，失败返回 0",
+                        "Param": [
+                            {
+                                "Caption": "ET",
+                                "DataType": "String",
+                                "Describe": "元素特征码",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "HtmlSwipe",
+                    "Remark": "执行指定网页元素滑动事件",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint SmWeb.HtmlSwipe(123, 456, 789, 456, \"id:mySwipe\")",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "HtmlSwipe",
+                        "Define": "iRet = SmWeb.HtmlSwipe(x1, y1, x2, y2, ET)",
+                        "Describe": "执行指定网页元素滑动事件",
+                        "RetType": "Boolean",
+                        "Return": "成功返回 1，失败返回 0",
+                        "Param": [
+                            {
+                                "Caption": "x1",
+                                "DataType": "String",
+                                "Describe": "起点坐标X",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "y1",
+                                "DataType": "String",
+                                "Describe": "起点坐标Y",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "x2",
+                                "DataType": "String",
+                                "Describe": "终点坐标X",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "y2",
+                                "DataType": "String",
+                                "Describe": "终点坐标Y",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "HtmlEvent",
+                    "Remark": "执行指定网页元素相关事件方法",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint SmWeb.HtmlEvent(\"change\", \"id:kw\")",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "HtmlEvent",
+                        "Define": "iRet = SmWeb.HtmlEvent(evtName, ET)",
+                        "Describe": "执行指定网页元素相关事件方法",
+                        "RetType": "Boolean",
+                        "Return": "成功返回 1，失败返回 0",
+                        "Param": [
+                            {
+                                "Caption": "evtName",
+                                "DataType": "String",
+                                "Describe": "事件名称，事件参考：http://www.w3school.com.cn/jsref/dom_obj_event.asp",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "ET",
+                                "DataType": "String",
+                                "Describe": "元素特征码",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "HtmlInputFile",
+                    "Remark": "上传文件",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint SmWeb.HtmlInputFile(\"C:\\1.jpg|C:\\2.jpg\", \"tag:INPUT&type:file\")",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "HtmlInputFile",
+                        "Define": "iRet = SmWeb.HtmlInputFile(Path, ET)",
+                        "Describe": "设置网页中指定特征的文件框的文件路径",
+                        "RetType": "Boolean",
+                        "Return": "成功返回 1，失败返回 0",
+                        "Param": [
+                            {
+                                "Caption": "Path",
+                                "DataType": "String",
+                                "Describe": "文件路径，多个文件用“｜”分割",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "ET",
+                                "DataType": "String",
+                                "Describe": "元素特征码",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "HtmlBorder",
+                    "Remark": "设置网页元素边框添加或还原",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint SmWeb.HtmlBorder(true, \"id:myBorder\")",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "HtmlBorder",
+                        "Define": "iRet = SmWeb.HtmlBorder(IsBorder, ET)",
+                        "Describe": "设置网页元素边框添加或还原",
+                        "RetType": "Boolean",
+                        "Return": "成功返回 1，失败返回 0",
+                        "Param": [
+                            {
+                                "Caption": "IsBorder",
+                                "DataType": "Integer",
+                                "Describe": "是否加边框",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "ET",
+                                "DataType": "String",
+                                "Describe": "元素特征码",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "HtmlEnabled",
+                    "Remark": "设置网页元素是否启用",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint SmWeb.HtmlEnabled()",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "HtmlEnabled",
+                        "Define": "iRet = SmWeb.HtmlEnabled(IsEnabled, ET)",
+                        "Describe": "设置网页元素是否启用",
+                        "RetType": "Boolean",
+                        "Return": "成功返回 1，失败返回 0",
+                        "Param": [
+                            {
+                                "Caption": "IsEnabled",
+                                "DataType": "Integer",
+                                "Describe": "是否启用",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "ET",
+                                "DataType": "String",
+                                "Describe": "元素特征码",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "HtmlVisible",
+                    "Remark": "设置网页元素是否显示",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint SmWeb.HtmlVisible(false, \"id:su\")",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "HtmlVisible",
+                        "Define": "iRet = SmWeb.HtmlVisible(IsVisible, ET)",
+                        "Describe": "设置网页元素是否显示",
+                        "RetType": "Boolean",
+                        "Return": "成功返回 1，失败返回 0",
+                        "Param": [
+                            {
+                                "Caption": "IsVisible",
+                                "DataType": "Integer",
+                                "Describe": "是否显示",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "ET",
+                                "DataType": "String",
+                                "Describe": "元素特征码",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "IsVisible",
+                                "DataType": "String",
+                                "Describe": "",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "HtmlIsEnabled",
+                    "Remark": "判断网页元素是否启用",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint SmWeb.HtmlIsEnabled(\"id:su\")",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "HtmlIsEnabled",
+                        "Define": "iRet = SmWeb.HtmlIsEnabled(ET)",
+                        "Describe": "判断网页元素是否启用",
+                        "RetType": "Boolean",
+                        "Return": "启用返回 1，禁用返回 0",
+                        "Param": [
+                            {
+                                "Caption": "ET",
+                                "DataType": "String",
+                                "Describe": "元素特征码",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "HtmlIsVisible",
+                    "Remark": "判断网页元素是否显示",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint SmWeb.HtmlIsVisible(\"id:su\")",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "HtmlIsVisible",
+                        "Define": "iRet = SmWeb.HtmlIsVisible(ET)",
+                        "Describe": "判断网页元素是否显示",
+                        "RetType": "Boolean",
+                        "Return": "显示返回 1，隐藏返回 0",
+                        "Param": [
+                            {
+                                "Caption": "ET",
+                                "DataType": "String",
+                                "Describe": "元素特征码",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "HtmlImage",
+                    "Remark": "获取网页元素的图片并保存",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint SmWeb.HtmlImage(\"C:\\img.jpg\", \"tag:IMG\")",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "HtmlImage",
+                        "Define": "iRet = SmWeb.HtmlImage(Path, ET)",
+                        "Describe": "获取网页元素的图片并保存",
+                        "RetType": "Boolean",
+                        "Return": "成功返回 1，失败返回 0",
+                        "Param": [
+                            {
+                                "Caption": "Path",
+                                "DataType": "String",
+                                "Describe": "保存路径",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "ET",
+                                "DataType": "String",
+                                "Describe": "元素特征码",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "HtmlOffset",
+                    "Remark": "获取网页元素的坐标",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint SmWeb.HtmlOffset(\"id:su\")",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "HtmlOffset",
+                        "Define": "sRet = SmWeb.HtmlOffset(ET)",
+                        "Describe": "获取网页元素的坐标",
+                        "RetType": "String",
+                        "Return": "返回 x|y",
+                        "Param": [
+                            {
+                                "Caption": "ET",
+                                "DataType": "String",
+                                "Describe": "元素特征码",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "HtmlReadCSS",
+                    "Remark": "获取指定网页元素的 CSS 选择器",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint SmWeb.HtmlReadCSS(\"#su\")",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "HtmlReadCSS",
+                        "Define": "sRet = SmWeb.HtmlReadCSS(ET)",
+                        "Describe": "获取指定网页元素的 CSS 选择器",
+                        "RetType": "String",
+                        "Return": "返回CSS选择器",
+                        "Param": [
+                            {
+                                "Caption": "ET",
+                                "DataType": "String",
+                                "Describe": "元素特征码",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "HtmlReadXPath",
+                    "Remark": "获取指定网页元素的 XPath 选择器",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint SmWeb.HtmlReadXPath(\"//*[@id='su']\")",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "HtmlReadXPath",
+                        "Define": "sRet = SmWeb.HtmlReadXPath(ET)",
+                        "Describe": "获取指定网页元素的 XPath 选择器",
+                        "RetType": "String",
+                        "Return": "返回 XPath 选择器",
+                        "Param": [
+                            {
+                                "Caption": "ET",
+                                "DataType": "String",
+                                "Describe": "元素选择器",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "HtmlReadWQM",
+                    "Remark": "获取指定网页元素的 WQM 选择器",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint SmWeb.HtmlReadWQM(\"id:su\")",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "HtmlReadWQM",
+                        "Define": "sRet = SmWeb.HtmlReadWQM(ET)",
+                        "Describe": "获取指定网页元素的 WQM 选择器",
+                        "RetType": "String",
+                        "Return": "返回 WQM 选择器",
+                        "Param": [
+                            {
+                                "Caption": "ET",
+                                "DataType": "String",
+                                "Describe": "元素特征码",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "HtmlTable",
+                    "Remark": "操作网页中的表格",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint SmWeb.HtmlTable(\"0\", 0, 1, \"神梦无痕\", \"id:myTable\")",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "HtmlTable",
+                        "Define": "iRet = SmWeb.HtmlTable(Table,Row, Cel, Text, ET)",
+                        "Describe": "操作网页中的表格，向表格指定单元格写入内容",
+                        "RetType": "Boolean",
+                        "Return": "成功返回 1，失败返回 0",
+                        "Param": [
+                            {
+                                "Caption": "Table",
+                                "DataType": "String",
+                                "Describe": "表单元，表头“^”；表身用数字{从0开始}；表尾“$”",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "Row",
+                                "DataType": "Long",
+                                "Describe": "行，从0开始",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "Cel",
+                                "DataType": "Long",
+                                "Describe": "列，从0开始",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "Text",
+                                "DataType": "String",
+                                "Describe": "文本内容",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "ET",
+                                "DataType": "String",
+                                "Describe": "元素特征码",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "HtmlGetTable",
+                    "Remark": "获取网页中的表格",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint SmWeb.HtmlGetTable(\"0\", 0, 1, \"id:myTable\")",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "HtmlGetTable",
+                        "Define": "sRet = SmWeb.HtmlGetTable(Table,Row, Cel, Text, ET)",
+                        "Describe": "获取网页中表格的指定单元格内容",
+                        "RetType": "String",
+                        "Return": "返回单元格内容",
+                        "Param": [
+                            {
+                                "Caption": "Table",
+                                "DataType": "String",
+                                "Describe": "表单元，表头“^”；表身用数字{从0开始}；表尾“$”",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "Row",
+                                "DataType": "Long",
+                                "Describe": "行，从0开始",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "Cel",
+                                "DataType": "Long",
+                                "Describe": "列，从0开始",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "ET",
+                                "DataType": "String",
+                                "Describe": "元素特征码",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "HtmlGetList",
+                    "Remark": "获取网页中的列表指定索引内容",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint SmWeb.HtmlGetList(0, \"id:myList\")",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "HtmlGetList",
+                        "Define": "sRet = SmWeb.HtmlGetList(index, ET)",
+                        "Describe": "获取网页中的列表指定索引内容",
+                        "RetType": "String",
+                        "Return": "返回指定项内容",
+                        "Param": [
+                            {
+                                "Caption": "index",
+                                "DataType": "Long",
+                                "Describe": "列表索引",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "ET",
+                                "DataType": "String",
+                                "Describe": "元素特征码",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "Caption": "图色命令",
+            "Remark": "",
+            "Icon": "文件夹",
+            "Visible": true,
+            "Templet": "index.html",
+            "Help": {
+                "Caption": ""
+            },
+            "Child": [
+                {
+                    "Caption": "GetPixelColor",
+                    "Remark": "后台取色",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint SmWeb.GetPixelColor(123, 456)",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "GetPixelColor",
+                        "Define": "sRet = SmWeb.GetPixelColor(x, y)",
+                        "Describe": "后台获取窗口内指定点颜色",
+                        "RetType": "String",
+                        "Return": "返回16进制颜色BGR",
+                        "Param": [
+                            {
+                                "Caption": "x",
+                                "DataType": "Integer",
+                                "Describe": "坐标X",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "y",
+                                "DataType": "Integer",
+                                "Describe": "坐标Y",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "CmpColor",
+                    "Remark": "后台比色",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint SmWeb.CmpColor(123, 345, \"FF00FF\", 0.9)",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "CmpColor",
+                        "Define": "iRet = SmWeb.CmpColor(x, y, color, sim)",
+                        "Describe": "后台对比判断窗口内指定点颜色",
+                        "RetType": "Boolean",
+                        "Return": "符合返回 1，否则返回 0",
+                        "Param": [
+                            {
+                                "Caption": "x",
+                                "DataType": "Integer",
+                                "Describe": "坐标X",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "y",
+                                "DataType": "Integer",
+                                "Describe": "坐标Y",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "color",
+                                "DataType": "String",
+                                "Describe": "16进制颜色值",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "sim",
+                                "DataType": "Double",
+                                "Describe": "相似度",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "FindColor",
+                    "Remark": "后台找色",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Dim intX, intY As Integer\nTracePrint SmWeb.FindColor(0, 0, 0, 0, \"FF00FF\", 0,9, intX, intY)\nTracePrint intX\nTracePrint intY\n\n",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "FindColor",
+                        "Define": "iRet = SmWeb.FindColor(x1, y1, x2, y2, color, sim, intX, intY)",
+                        "Describe": "后台窗口内区域找色",
+                        "RetType": "String",
+                        "Return": "返回 x|y",
+                        "Param": [
+                            {
+                                "Caption": "x1",
+                                "DataType": "Integer",
+                                "Describe": "起点坐标X",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "y1",
+                                "DataType": "Integer",
+                                "Describe": "起点坐标Y",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "x2",
+                                "DataType": "Integer",
+                                "Describe": "终点坐标X",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "y2",
+                                "DataType": "Integer",
+                                "Describe": "终点坐标Y",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "color",
+                                "DataType": "String",
+                                "Describe": "十六进制颜色BGR",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "sim",
+                                "DataType": "Double",
+                                "Describe": "相似度，范围 0~1.0",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "intX",
+                                "DataType": "Integer",
+                                "Describe": "〔变参指针〕返回X坐标",
+                                "Optional": true
+                            },
+                            {
+                                "Caption": "intY",
+                                "DataType": "Integer",
+                                "Describe": "〔变参指针〕返回Y坐标",
+                                "Optional": true
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "FindPic",
+                    "Remark": "后台找图",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Dim intX, intY As Integer\nTracePrint SmWeb.FindPic(0, 0, 0, 0, \"C:\\1.bmp|C:\\2.bmp\", 0,9, intX, intY)\nTracePrint intX\nTracePrint intY\n\n",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "FindPic",
+                        "Define": "iRet = SmWeb.FindPic(x1, y1, x2, y2, pic_path, sim, intX, intY)",
+                        "Describe": "后台窗口内区域找图",
+                        "RetType": "String",
+                        "Return": "返回 x|y",
+                        "Param": [
+                            {
+                                "Caption": "x1",
+                                "DataType": "Integer",
+                                "Describe": "起点坐标X",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "y1",
+                                "DataType": "Integer",
+                                "Describe": "起点坐标Y",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "x2",
+                                "DataType": "Integer",
+                                "Describe": "终点坐标X",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "y2",
+                                "DataType": "Integer",
+                                "Describe": "终点坐标Y",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "pic_path",
+                                "DataType": "String",
+                                "Describe": "图片路径，多个用“｜”分割",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "sim",
+                                "DataType": "Double",
+                                "Describe": "相似度，范围 0~1.0",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "intX",
+                                "DataType": "Integer",
+                                "Describe": "〔变参指针〕返回X坐标",
+                                "Optional": true
+                            },
+                            {
+                                "Caption": "intY",
+                                "DataType": "Integer",
+                                "Describe": "〔变参指针〕返回Y坐标",
+                                "Optional": true
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "Caption": "鼠键命令",
+            "Remark": "",
+            "Icon": "文件夹",
+            "Visible": true,
+            "Templet": "index.html",
+            "Help": {
+                "Caption": ""
+            },
+            "Child": [
+                {
+                    "Caption": "KeyDown",
+                    "Remark": "模拟键盘按下",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint SmWeb.KeyDown(65)",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "KeyDown",
+                        "Define": "iRet = SmWeb.KeyDown(vKey)",
+                        "Describe": "向当前标签的网页发送一个键盘按下消息",
+                        "RetType": "Boolean",
+                        "Return": "成功返回 1，失败返回 0",
+                        "Param": [
+                            {
+                                "Caption": "vKey",
+                                "DataType": "Integer",
+                                "Describe": "按键码",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "KeyUp",
+                    "Remark": "模拟键盘弹起",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint SmWeb.KeyUp(65)",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "KeyUp",
+                        "Define": "iRet = SmWeb.KeyUp(vKey)",
+                        "Describe": "向当前标签的网页发送一个键盘弹起消息",
+                        "RetType": "Boolean",
+                        "Return": "成功返回 1，失败返回 0",
+                        "Param": [
+                            {
+                                "Caption": "vKey",
+                                "DataType": "Integer",
+                                "Describe": "按键码",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "KeyPress",
+                    "Remark": "模拟键盘点击",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint SmWeb.KeyPress(13)",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "KeyPress",
+                        "Define": "iRet = SmWeb.KeyPress(vKey)",
+                        "Describe": "向当前标签网页发送一个按键消息",
+                        "RetType": "Boolean",
+                        "Return": "成功返回 1，失败返回 0",
+                        "Param": [
+                            {
+                                "Caption": "vKey",
+                                "DataType": "Integer",
+                                "Describe": "按键码",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "KeyGroup",
+                    "Remark": "模拟键盘组合键",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint SmWeb.KeyGroup(\"Ctrl+A\")",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "KeyGroup",
+                        "Define": "iRet = SmWeb.KeyGroup(Keys)",
+                        "Describe": "向当前标签网页发送一个组合键消息",
+                        "RetType": "Boolean",
+                        "Return": "成功返回 1，失败返回 0",
+                        "Param": [
+                            {
+                                "Caption": "Keys",
+                                "DataType": "String",
+                                "Describe": "组合键，Ctrl+A、 Ctrl+Enter",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "SendString",
+                    "Remark": "模拟输入文字",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint SmWeb.SendString(\"神梦无痕\")",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "SendString",
+                        "Define": "iRet = SmWeb.SendString(text)",
+                        "Describe": "发送字符串文本消息",
+                        "RetType": "Boolean",
+                        "Return": "成功返回 1，失败返回 0",
+                        "Param": [
+                            {
+                                "Caption": "text",
+                                "DataType": "String",
+                                "Describe": "文本内容",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "MoveTo",
+                    "Remark": "模拟鼠标移动",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint SmWeb.MoveTo(123, 456)",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "MoveTo",
+                        "Define": "iRet = SmWeb.MoveTo(x, y)",
+                        "Describe": "向当前标签的网页发送一个鼠标移动消息",
+                        "RetType": "Boolean",
+                        "Return": "成功返回 1，失败返回 0",
+                        "Param": [
+                            {
+                                "Caption": "x",
+                                "DataType": "Integer",
+                                "Describe": "坐标X",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "y",
+                                "DataType": "Integer",
+                                "Describe": "坐标Y",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "LeftDown",
+                    "Remark": "模拟鼠标左键按下",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint SmWeb.LeftDown(123, 456)",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "LeftDown",
+                        "Define": "iRet = SmWeb.LeftDown(x, y)",
+                        "Describe": "向当前标签的网页发送一个鼠标移动消息",
+                        "RetType": "Boolean",
+                        "Return": "成功返回 1，失败返回 0",
+                        "Param": [
+                            {
+                                "Caption": "x",
+                                "DataType": "Integer",
+                                "Describe": "坐标X",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "y",
+                                "DataType": "Integer",
+                                "Describe": "坐标Y",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "LeftUp",
+                    "Remark": "模拟鼠标左键弹起",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint SmWeb.LeftUp(123, 456)",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "LeftUp",
+                        "Define": "iRet = SmWeb.LeftUp(x, y)",
+                        "Describe": "向当前网页发送一个鼠标左键弹起",
+                        "RetType": "Boolean",
+                        "Return": "成功返回 1，失败返回 0",
+                        "Param": [
+                            {
+                                "Caption": "x",
+                                "DataType": "Integer",
+                                "Describe": "坐标X",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "y",
+                                "DataType": "Integer",
+                                "Describe": "坐标Y",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "LeftClick",
+                    "Remark": "模拟鼠标左键单击",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint SmWeb.LeftClick(123, 456)",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "LeftClick",
+                        "Define": "iRet = SmWeb.LeftClick(x, y)",
+                        "Describe": "向当前标签的网页发送一个左键单击",
+                        "RetType": "Boolean",
+                        "Return": "成功返回 1，失败返回 0",
+                        "Param": [
+                            {
+                                "Caption": "x",
+                                "DataType": "Integer",
+                                "Describe": "坐标X",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "y",
+                                "DataType": "Integer",
+                                "Describe": "坐标Y",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "LeftDoubleClick",
+                    "Remark": "模拟鼠标左键双击",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint SmWeb.LeftDoubleClick(123, 456)",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "LeftDoubleClick",
+                        "Define": "iRet = SmWeb.LeftDoubleClick(x, y)",
+                        "Describe": "LeftDoubleClick",
+                        "RetType": "Boolean",
+                        "Return": "成功返回 1，失败返回 0",
+                        "Param": [
+                            {
+                                "Caption": "x",
+                                "DataType": "Integer",
+                                "Describe": "坐标X",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "y",
+                                "DataType": "Integer",
+                                "Describe": "坐标Y",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "MouseWheel",
+                    "Remark": "模拟鼠标滚轮滚动",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "TracePrint SmWeb.MouseWheel(100)",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "MouseWheel",
+                        "Define": "iRet = SmWeb.MouseWheel(n)",
+                        "Describe": "向当前网页发送鼠标滚轮滚动",
+                        "RetType": "Boolean",
+                        "Return": "成功返回 1，失败返回 0",
+                        "Param": [
+                            {
+                                "Caption": "n",
+                                "DataType": "Integer",
+                                "Describe": "滚动量，为正向上滚动；否则向下滚动",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    ]
+}

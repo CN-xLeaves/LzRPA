@@ -1,0 +1,79 @@
+Uses "UI"
+
+' -- ID numbers of controls
+Begin ControlID
+  %lFontDemo      
+  %bClose  
+End ControlID    
+
+Begin Const    
+  $FontFile = APP_SourcePath + "scrgunny\" +  "scrgunny.ttf"
+
+  %MAIN_WIDTH   = 320
+  %MAIN_HEIGHT  = 240
+End Const
+
+' -- Create dialog here
+Function Main()
+  Local hDlg As DWord
+
+  Dialog New Pixels, 0, "Testing font magic",-1,-1, %MAIN_WIDTH, %MAIN_HEIGHT, _
+                %WS_POPUP Or %WS_VISIBLE Or %WS_CAPTION Or %WS_SYSMENU Or %WS_MINIMIZEBOX To hDlg
+  
+  ' -- Place controls here
+  Control Add Label, hDlg, %lFontDemo, "Some text using default font", 10, 10, %MAIN_WIDTH-20, 40  
+  Control Add Button, hDlg, %bClose, "Click to close", %MAIN_WIDTH-105, %MAIN_HEIGHT-30, 100, 25, Call cbCloseButton
+ 
+  Dialog Show Modal hDlg, Call cbDialog
+
+End Function
+
+' -- Callback for dialog
+CallBack Function cbDialog()
+  Long  successFlag
+  DWord hFont
+  
+  ' -- Test for messages
+  Select Case CBMSG
+
+    Case %WM_INITDIALOG
+    ' -- Put code to be executed after dialog creation here
+    successFlag = Win_AddFontResource($FontFile)
+    
+    If successFlag = 0 Then
+      MsgBox 0, "Failed to install"
+    Else
+      MsgBox 0, "Success installing the font"
+      SendMessage(CBHNDL, %WM_FONTCHANGE, 0, 0) 
+      
+      hFont = Font_Create("Gunny Handwriting", 12)
+      Control Send CBHNDL, %lFontDemo, %WM_SETFONT, hFont, 0
+      Control Set Text CBHNDL, %lFontDemo, "Some text using new font"
+      Control Redraw CBHNDL, %lFontDemo 
+    End If
+
+    Case %WM_CLOSE         
+      Win_DeleteObject(hFont)
+      
+      successFlag = Win_RemoveFontResource($FontFile)
+      If successFlag = 0 Then
+        MsgBox 0, "Failed to uninstall"
+      Else
+        MsgBox 0, "Success uninstalling the font"        
+      End If    
+          
+  End Select
+
+End Function
+
+' -- Callback for close button
+CallBack Function cbCloseButton()
+
+  If CBMSG = %WM_COMMAND Then
+    If CBCTLMSG = %BN_CLICKED Then
+      ' -- Closes the dialog 
+      Dialog End CBHNDL
+    End If
+  End If
+
+End Function

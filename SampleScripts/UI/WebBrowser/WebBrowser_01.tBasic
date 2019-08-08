@@ -1,0 +1,109 @@
+  '------------------------------------------------------------------
+  ' Pre-processor prerequisites
+  '------------------------------------------------------------------
+  #minversion 1.7.8.0
+  
+  '------------------------------------------------------------------
+  ' Declare needed thinBasic modules
+  '------------------------------------------------------------------
+  USES "UI"
+  USES "UIAdv"
+  uses "console"
+  
+  '------------------------------------------------------------------
+  ' Global declarations
+  '------------------------------------------------------------------
+    begin const
+      %ID_WEB1           = 200
+      %ID_WEB2         
+      %ID_OK
+      
+      %TM_WEB2_Busy
+    end const
+
+  '------------------------------------------------------------------
+  ' Main script entry point
+  '------------------------------------------------------------------
+  function Main() as long
+    local hDlg    AS LONG
+    local Count   as long
+    
+    '---Create a new window
+    DIALOG NEW pixels, 0, "Web Browser control test", _
+                                        -1, -1, 640, 600, _
+                                        %WS_CLIPCHILDREN      or _
+                                        %WS_CLIPSIBLINGS      or _
+                                        %WS_DLGFRAME          OR _
+                                        %DS_CENTER            OR _
+                                        %WS_CAPTION           OR _
+                                        %WS_SYSMENU           OR _
+                                        %WS_OVERLAPPEDWINDOW  ,  _
+                                        0 _
+                                        TO hDlg
+
+    '---Show new window and assign it callback function
+    DIALOG SHOW MODELESS hDlg, call cbDialog_Proc
+    Do
+      DIALOG DOEVENTS 0 To Count
+    Loop While Count
+
+  end function
+
+  '------------------------------------------------------------------
+  ' Window callback handle. Use to handle message pump of main window
+  '------------------------------------------------------------------
+  callback function cbDialog_Proc() as long
+    local sStr    as string
+    local lValue  as long
+    local IsBusy  as long
+        
+    SELECT CASE cbMsg
+      
+      CASE %WM_INITDIALOG
+        'Control Add WEBBROWSER, cbhndl, %ID_WEB, "", 100, 10, 300, 240 'call cbWeb
+        DIALOG SET TIMER cbhndl, %TM_WEB2_Busy, 500
+ 
+        WebBrowser_Create cbhndl, %ID_WEB1, "", 0,   0, 640, 150, %WS_CHILD Or %WS_VISIBLE
+        WebBrowser_Create cbhndl, %ID_WEB2, "", 0, 150, 640, 450, %WS_CHILD Or %WS_VISIBLE
+
+        WebBrowser_Navigate2(cbhndl, %ID_WEB1, "file://" & app_sourcepath & "test.html")
+
+        WebBrowser_Navigate2(cbhndl, %ID_WEB2, "http://www.thinbasic.com")
+
+        control set resize cbhndl, %ID_WEB1, 1, 1, 1, 0
+        control set resize cbhndl, %ID_WEB2, 1, 1, 1, 1
+        'control add button cbhndl, %ID_OK, "OK", 10, 10, 40, 20
+      case %WM_TIMER
+        select case cbctl
+          case %TM_WEB2_Busy
+            if WebBrowser_Busy(cbhndl, %ID_WEB2) then
+              dialog set text cbhndl, "Busy ..."
+            else
+              dialog set text cbhndl, "Done!"
+              DIALOG kill TIMER cbhndl, %TM_WEB2_Busy
+            end if
+        end select
+                
+      case %WM_DESTROY
+        'DIALOG kill TIMER cbhndl, %TM_WEB2_Busy
+        
+      'case %WM_COMMAND
+      '  select case cbctl
+      '    case %ID_OK
+      '      sStr = WebBRowser_Doc_GetElementValueById(cbhndl, %ID_WEB, "Input_text")
+      '      msgbox 0, sStr
+      '      sStr = WebBRowser_Doc_GetElementInnerHtmlById(cbhndl, %ID_WEB, "Output")
+      '      msgbox 0, acode$(sStr)
+      '      
+      '  end select
+    END SELECT
+
+  end function
+
+  '------------------------------------------------------------------
+  callback function cb_Web2_Busy() as long
+  '------------------------------------------------------------------
+  
+    
+  end function
+    

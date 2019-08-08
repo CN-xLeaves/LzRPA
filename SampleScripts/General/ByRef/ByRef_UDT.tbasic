@@ -1,0 +1,33 @@
+'---Declare a new type
+type MyType
+  s1 as string * 10
+  l1 as long
+  s2 as string * 20
+  l2 as long
+end type
+
+'---Allocate a new variable of that type
+dim MyTypeVariable as MyType
+
+'---Assign some data  
+MyTypeVariable.s1 = "Hello"
+MyTypeVariable.s2 = "World"
+
+'---See data before passing UDT to function
+MsgBox 0, MyTypeVariable.s1 & $CRLF &
+          MyTypeVariable.s2
+
+'---Execute the function that will have a reference to MyTypeVariable
+'---When UDT parameters a re declared, automatic BYREF passing is used
+ChangeIt(MyTypeVariable)
+
+'---Now show again to see what happened       
+msgbox 0, MyTypeVariable.s1 & $crlf & 
+          MyTypeVariable.s2
+
+'---------------------------------------------
+function ChangeIt(ReferencedUDT as MyType)
+'---------------------------------------------
+  ReferencedUDT.s1 = "A123"
+  ReferencedUDT.s2 = "B456"
+End Function

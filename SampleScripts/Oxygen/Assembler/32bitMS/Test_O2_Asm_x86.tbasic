@@ -1,0 +1,26 @@
+
+
+  ' Test Asmosphere with x86 instruction set
+  '
+  ' this assembles source code into o2 code.
+  ' and checks each line against an expected result
+  ' disagreements are marked with double pling !!
+  
+  ' beware this code is not suitable for execution :)
+
+  ' the agreement test is activated by putting !? in
+  ' a comment, followed by the expected opcodes.
+ 
+  '---------------------------------------------------------------------------
+  '---x86 programing reference :
+  '---http://developer.intel.com/design/pentiumii/manuals/243191.htm
+  '---------------------------------------------------------------------------
+
+  Uses "File"
+  Uses "Oxygen"
+  file_save ("t.txt",o2_view_file("o2asmtest.txt"))
+  msgbox 0,_
+  "COMPLETED TEST."+$cr+_
+  "Results reported in t.txt"+$cr+_
+  " !! double pling marks errors or disagreement "
+

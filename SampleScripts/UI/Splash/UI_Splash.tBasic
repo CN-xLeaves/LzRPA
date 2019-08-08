@@ -1,0 +1,81 @@
+uses "UI"
+
+Begin ControlID
+  %ID_LISTVIEW  
+  %ID_PROGRESS_1  
+  %ID_TEXT_INFO   
+  %ID_BUTTON_OK   
+  %ID_TIMER
+End ControlID  
+
+global MaxItems as long = 100
+global lx, ly, wx, hy AS LONG
+
+FUNCTION Main() AS LONG
+
+  LOCAL hDlg    AS DWORD
+  DIALOG NEW 0, "Wait while loading resources ...", -1, -1, 330, 150, %WS_DLGFRAME          | _
+                                                                      %ds_center            | _
+                                                                      %WS_CAPTION           | _
+                                                                      %WS_SYSMENU             _
+                                                                      TO hDlg
+
+  '---Save dialog size/client
+  DIALOG GET SIZE   hdlg TO lx, ly
+  DIALOG GET CLIENT hdlg TO wx, hy
+
+  CONTROL ADD listview, hDlg, %ID_LISTVIEW, "", 5, 5, wx - 12, 80, %WS_CHILD OR %WS_VISIBLE
+  ListView_SetBkImage hDlg, %ID_LISTVIEW, APP_SourcePath & "TopDown_Splash.png", %LVBKIF_STYLE_TILE | %LVBKIF_SOURCE_URL
+   
+  '---Show dialog in MODELESS state, the only managed state at the moment
+  DIALOG SHOW MODAL hDlg, call dlgCallback
+end function
+
+callback function dlgCallback() as long
+    static count AS LONG
+    '---Now test the message
+    SELECT CASE cbMsg
+
+      case %wm_initdialog
+        '---Automatic resizing control
+        CONTROL ADD label         , cbHndl, %ID_TEXT_INFO , "", 5,  90, wx - 12, 12, %WS_TABSTOP or %ES_NUMBER or %ES_LEFT
+        CONTROL ADD progressbar   , cbHndl, %ID_PROGRESS_1, "", 5, 105, wx - 12,  8, %WS_CHILD OR %WS_VISIBLE 
+
+        CONTROL ADD BUTTON, cbHndl, %ID_BUTTON_OK,     "&Start TopDown 3D",  5, 130, wx - 12, 14, %BS_DEFAULT
+        control disable cbHndl, %ID_BUTTON_OK
+
+        control set resize cbHndl, %ID_LISTVIEW,   1, 1, 1, 0
+        control set resize cbHndl, %ID_TEXT_INFO,  1, 1, 1, 0
+        control set resize cbHndl, %ID_PROGRESS_1, 1, 1, 1, 0
+        control set resize cbHndl, %ID_BUTTON_OK,  1, 1, 1, 0
+
+        ProgressBar_SetRange    cbHndl, %ID_PROGRESS_1, 0, MaxItems           '---Set PB min and max values
+        ProgressBar_SetStep     cbHndl, %ID_PROGRESS_1, 1                     '---Set automatic step increment
+        ProgressBar_SetPos      cbHndl, %ID_PROGRESS_1, 0                     '---Set current bar position
+        ProgressBar_SetBarColor cbHndl, %ID_PROGRESS_1, RGB(rnd(128,255), rnd(128,255), 0)    '---Set bar color
+        ProgressBar_SetBkColor  cbHndl, %ID_PROGRESS_1, RGB(0, 0, rnd(0,255))    '---Set backgound color
+        
+        dialog set timer cbhndl, %ID_TIMER, 10
+
+      case %WM_TIMER
+        incr count
+        if count > MaxItems then
+          dialog kill timer cbHndl, %ID_TEXT_INFO
+          control enable cbHndl, %ID_BUTTON_OK
+          exit function
+        end if  
+        
+        ProgressBar_Stepit cbHndl, %ID_PROGRESS_1
+        control set text cbHndl, %ID_TEXT_INFO, "Loading data ... " & ProgressBar_GetPos (cbHndl, %ID_PROGRESS_1)
+
+      CASE %WM_COMMAND
+        SELECT CASE cbCtl
+          case %ID_BUTTON_OK
+            msgbox cbHndl, "Add here the code you want execute ... Now script will just stop here."
+            dialog end cbHndl
+        end select
+      
+    END SELECT
+
+
+END FUNCTION

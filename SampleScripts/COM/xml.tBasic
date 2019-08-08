@@ -1,0 +1,97 @@
+uses "COM"
+
+%MAX_NUMBER_OF_PARAMETERS   =   3
+
+dim hXMLHTTP as dword
+dim vParam(%MAX_NUMBER_OF_PARAMETERS) as variant
+dim vResult as variant
+
+hXMLHTTP = COM_CreateObject("MSXML2.XMLHTTP.3.0")
+
+IF COM_Succeeded(hXMLHTTP) THEN
+    vParam(1) = "GET"
+    vParam(2) = "http://www.w3.org/Math/XSL/pmathml2.xml"
+    vParam(3) = 0 as boolean
+    if COM_Succeeded(COM_CallMethod(hXMLHTTP, "open", %MAX_NUMBER_OF_PARAMETERS, vParam(1), 0)) then
+        if COM_Succeeded(COM_CallMethod(hXMLHTTP, "send", 0, 0, 0)) then
+            if COM_Succeeded(COM_GetProperty(hXMLHTTP, "responseText", vResult)) then
+                msgbox 0, vResult 
+            end if
+        end if
+        COM_Release(hXMLHTTP)
+    end if
+end if
+
+''''''''''''''''''''''''''''''''''''''''''''
+'' FUNCTIONS
+''
+'COM_CLSIDFromProgID()
+'COM_ProgIDFromCLSID() 
+'COM_CLSIDFromString() 
+'COM_StringFromCLSID() 
+'COM_DisplayError()    
+'COM_IsEqualGUID()     
+'COM_IsEqualCLSID()    
+'COM_IsEqualIID()      
+'COM_CreateObject()    
+'COM_GetObject()       
+'COM_Release()         
+'COM_VariantInit()     
+'COM_VariantClear()    
+'COM_VariantCopy()     
+'COM_BuildVariant()    
+'COM_Execute()         
+'COM_QueryInterface()  
+'COM_Succeeded()       
+'COM_GetEngineGuid()   
+'COM_GetActiveObject() 
+'COM_SetErrorBehavior()
+'COM_GetErrorBehavior()
+'COM_GetProperty(dwObject as DWORD, sPropertyName as STRING, vResult as VARIANT) as dwError    
+'COM_SetProperty()     
+'COM_CallMethod()      
+'COM_VariantChangeType()
+'COM_VariantGetType()  
+'COM_GetIndexedProperty()
+'COM_SetIndexedProperty()
+
+''''''''''''''''''''''''''''''''''''''''''''
+'' EQUATES
+''
+''ERRORS
+'%TB_S_OK
+'%TB_S_FALSE
+'%TB_E_INVALIDARG
+'%TB_E_OUTOFMEMORY
+'%TB_E_NOINTERFACE
+'%TB_CO_E_CLASSSTRING
+'%TB_REGDB_E_WRITEREGDB
+'%TB_REGDB_E_CLASSNOTREG
+'%TB_CLASS_E_NOAGGREGATION
+'%TB_MK_E_SYNTAX
+'%TB_MK_E_NOOBJECT
+'%TB_MK_E_EXCEEDEDDEADLINE
+'%TB_MK_E_CONNECTMANUALLY
+'%TB_MK_E_INTERMEDIATEINTERFACENO
+''IDISPATCH
+'%TB_DISPATCH_METHOD
+'%TB_DISPATCH_PROPERTYGET
+'%TB_DISPATCH_PROPERTYPUT
+'%TB_DISPATCH_PROPERTYPUTREF
+'%TB_DISPATCH_INDEXEDPROPERTYGET
+'%TB_DISPATCH_INDEXEDPROPERTYPUT
+''VARIANT TYPES
+'%TB_VT_EMPTY 
+'%TB_VT_NULL
+'%TB_VT_BOOL
+'%TB_VT_I2
+'%TB_VT_I4
+'%TB_VT_R4
+'%TB_VT_R8
+'%TB_VT_CY
+'%TB_VT_DATE
+'%TB_VT_BSTR
+''FOR GetErrorBehavior() AND SetErrorBehavior()
+'%TB_ERROR_BEHAVIOR_DISPLAY_STOP
+'%TB_ERROR_BEHAVIOR_DONT_DISPLAY
+'%TB_ERROR_BEHAVIOR_DONT_STOP 

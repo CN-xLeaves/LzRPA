@@ -1,0 +1,278 @@
+  '=============================================================================
+  '=                               Simple chart                                =
+  '=                                    v3                                     =
+  '=                                                                           =
+  '=                           Petr Schreiber, 2007                            =
+  '=============================================================================
+
+  Uses "TBGL" 
+  Uses "UI" 
+
+  begin const
+    %ID_OK       = 1
+    %ID_CANCEL   = 2  
+
+    %MYDATADIM1 = 4
+    %MYDATADIM2 = 4
+  end const
+
+  dim ChartName as string = "My Chart"
+  dim MyData(%MYDATADIM1, %MYDATADIM2) as single
+  dim ChartMode as long = 1
+  dim Response as string
+  dim Angle, Angle2 as double
+  dim hWnd As Dword 
+
+  function Main()
+    dim i, j as long
+
+    for i = 1 to %MYDATADIM1      
+      for j = 1 to %MYDATADIM2
+          MyData(i, j) = rnd(1,4)
+      next  
+    next  
+
+    hWnd = TBGL_CreateWindowEx("Chart render - press [ESC] to quit", 640, 480, 32, %TBGL_WS_WINDOWED) 
+    TBGL_ShowWindow 
+
+    dim hFont as dword = tbgl_FontHandle("Arial Black", 12)
+    TBGL_BuildFont hFont
+
+    TBGL_LoadBMPFont App_Sourcepath+"Textures\tbgl_font.bmp"
+
+    TBGL_ResetKeyState() ' Resets key status before keypress checking 
+
+    tbgl_UseLightSource %GL_LIGHT0, %TRUE
+    tbgl_SetLightparameter %GL_LIGHT0, %TBGL_LIGHT_POSITION, 2, 2, 2, 0
+    tbgl_SetLightparameter %GL_LIGHT0, %TBGL_LIGHT_DIFFUSE , 1, 1, 1, 0
+
+    TBGL_BindPeriodicFunction(hWnd, "Render", 10)
+    TBGL_ProcessPeriodicFunction(hWnd)
+  
+    TBGL_DestroyWindow 
+  end function  
+  
+  function Render() as long
+
+    tbgl_ClearFrame 
+    
+    tbgl_Camera -%MYDATADIM1 * 3, (%MYDATADIM1+%MYDATADIM2) * 3, %MYDATADIM2 * 3, 0, 0, -%MYDATADIM2/2      
+    if ChartMode = 1 then 
+      tbgl_Rotate GetTickCount/25,0,1,0
+    else
+      tbgl_Rotate Angle,0,1,0  
+      tbgl_Rotate Angle2,0,0,1      
+    end if  
+
+    tbgl_PushMatrix
+      tbgl_Translate -%MYDATADIM1,0,-%MYDATADIM2
+
+      tbgl_UseLighting %TRUE 
+      RenderGraph
+
+      tbgl_UseLighting %FALSE
+      RenderGrid
+      
+    tbgl_PopMatrix
+     
+    TBGL_ResetMatrix
+    TBGL_Color 255,255,255              ' Defines color  
+    tbgl_UseLighting %FALSE   
+    tbgl_UseBlend %TRUE
+    TBGL_PrintBMP ChartName, 0, 0, %TBGL_ALIGN_CENTER_UP
+    TBGL_PrintBMP FORMAT$(TBGL_GetFrameRate, "0")+" FPS", 0, 0, %TBGL_ALIGN_RIGHT_UP
+    TBGL_PrintBMP "Press [M] to toggle mode ", 0, -3, %TBGL_ALIGN_LEFT_DOWN
+    TBGL_PrintBMP "Current mode is "+IIF$(ChartMode = 0, "<User input>", "<Mad chart>"), 0, -2, %TBGL_ALIGN_LEFT_DOWN
+    if ChartMode = 0 then 
+      TBGL_PrintBMP "Press [F1] to change values", 0, -1, %TBGL_ALIGN_LEFT_DOWN
+      TBGL_PrintBMP "Use arrows to rotate chart", 0, 0, %TBGL_ALIGN_LEFT_DOWN
+    end if  
+    tbgl_UseBlend %FALSE
+    
+    tbgl_DrawFrame 
+
+    If tbgl_GetWindowKeyState( hWnd, %VK_ESCAPE) Then TBGL_UnbindPeriodicFunction(hWnd)
+    
+    if tbgl_GetWindowKeyOnce( hWnd, %VK_M) Then 
+      ChartMode = ChartMode xor 1
+    end if  
+    
+    if ChartMode = 0 then ' If mode is "<User input>"
+      If tbgl_GetWindowKeyState( hWnd, %VK_F1) Then EditValues
+      if tbgl_GetWindowKeyState( hWnd, %VK_left)   then Angle += 1.1
+      if tbgl_GetWindowKeyState( hWnd, %VK_right)  then Angle -= 1.1
+
+      if tbgl_GetWindowKeyState( hWnd, %VK_down)   then Angle2 += 1.1  
+      if tbgl_GetWindowKeyState( hWnd, %VK_up)     then Angle2 -= 1.1
+      
+    end if
+
+  end function
+
+  function RenderGraph() as long
+    static i, j as long
+    tbgl_PushMatrix
+    
+    for i = 1 to %MYDATADIM1
+      for j = 1 to %MYDATADIM2
+         
+      if ChartMode = 1 then ' If mode is "<Mad chart>"   
+        ' Generation of new data  
+        MyData(i, j) += sin((GetTickCount)/(i*j*20))/10    
+        if MyData(i, j) < 0 then MyData(i, j) = 0
+      end if
+      
+      tbgl_Color 255-j*(255/%MYDATADIM2),i*(255/%MYDATADIM1),0
+      
+        tbgl_PushMatrix
+          tbgl_Translate i*2,MyData(i, j)/2,j*2
+
+          tbgl_Box 1,MyData(i, j),1
+
+         tbgl_Translate 0,MyData(i, j)/2+0.5,0
+          tbgl_Color 255,255,255
+          tbgl_UseLighting %FALSE
+          tbgl_PrintFont format$(MyData(i, j), "##0"),0,0,0
+          tbgl_UseLighting %TRUE        
+        tbgl_PopMatrix
+      next  
+    next  
+    
+    tbgl_PopMatrix
+    
+  end function
+
+  function RenderGrid() as long
+    local i,j as long
+    tbgl_PushMatrix
+    
+      tbgl_Translate 1,0,1
+      tbgl_BeginPoly %GL_LINES
+      for i = 0 to %MYDATADIM1*2 step 2
+        for j = 0 to %MYDATADIM2*2 step 2
+          tbgl_Vertex 0             ,0  ,j
+          tbgl_Vertex %MYDATADIM1*2 ,0  ,j
+          tbgl_Vertex i             ,0  ,%MYDATADIM2*2
+          tbgl_Vertex i             ,0  ,0
+        next
+      next     
+      tbgl_EndPoly
+
+    tbgl_PopMatrix
+
+    tbgl_PushMatrix
+
+      tbgl_Translate 1,0,1
+      tbgl_BeginPoly %GL_LINES
+      for i = 0 to %MYDATADIM1*2 step 2
+        For j = 0 To 10 Step 2
+          tbgl_Vertex 0             ,j  ,0
+          tbgl_Vertex %MYDATADIM1*2 ,j  ,0
+          tbgl_Vertex i             ,10 ,0
+          tbgl_Vertex i             ,0  ,0
+        next
+      next     
+      tbgl_EndPoly
+
+    tbgl_PopMatrix
+
+    tbgl_PushMatrix
+
+      tbgl_Translate 1,0,1
+      tbgl_BeginPoly %GL_LINES
+      for i = 0 to %MYDATADIM2*2 step 2
+        for j = 0 to 10 step 2
+          tbgl_Vertex %MYDATADIM1*2 ,j    ,0
+          tbgl_Vertex %MYDATADIM1*2 ,j    ,%MYDATADIM2*2
+          tbgl_Vertex %MYDATADIM1*2 ,10   ,i
+          tbgl_Vertex %MYDATADIM1*2 ,0    ,i
+        next
+      next     
+      tbgl_EndPoly
+
+    tbgl_PopMatrix
+
+    tbgl_Color 255,255,0
+    for i = 0 to 10 step 2
+      
+      tbgl_PushMatrix
+        tbgl_PrintFont FORMAT$(i), 1, i, 1    
+        tbgl_PrintFont FORMAT$(i), 1+%MYDATADIM1*2, i, 1+%MYDATADIM2*2    
+      tbgl_PopMatrix
+    next 
+
+    tbgl_UseBlend %TRUE
+    tbgl_Color 128,128,128
+
+      tbgl_BeginPoly %GL_QUADS
+        tbgl_Vertex 1, 0, 1
+        tbgl_Vertex 1+%MYDATADIM1*2, 0, 1
+        tbgl_Vertex 1+%MYDATADIM1*2,10, 1
+        tbgl_Vertex 1,10,1
+      tbgl_EndPoly
+
+    tbgl_UseBlend %FALSE
+    
+
+  end function
+
+  function EditValues() as long
+
+      LOCAL hDlg        AS long
+      local cols, rows, id as long
+
+      ' ** Create a new dialog template
+      DIALOG NEW hWnd, "Value editor - enter values in range 0 to 10", -1, -1, %MYDATADIM1*50+20, -5+((%MYDATADIM2+4)*15), _
+                                                  %WS_DLGFRAME OR %DS_CENTER OR %WS_CAPTION OR %WS_SYSMENU OR %WS_OVERLAPPEDWINDOW, _
+                                                  0 TO hDlg
+       for rows = 1 to %MYDATADIM2
+        for cols = 1 to %MYDATADIM1
+            incr id
+            CONTROL ADD TEXTBOX , hDlg, 1000+id, FORMAT$(MyData(rows, cols), "0.00"), -40+(cols*50),  -5+(rows*15), 50, 15, 0
+        next    
+       next          
+       
+       CONTROL ADD BUTTON  , hDlg, %ID_OK     , "OK"    , 10                          , -5+((%MYDATADIM2+2)*15), 50, 15, %BS_DEFAULT
+       CONTROL ADD BUTTON  , hDlg, %ID_CANCEL , "Cancel", -40+((%MYDATADIM1+1)*50)-50 , -5+((%MYDATADIM2+2)*15), 50, 15, 0
+                                                  
+
+      ' ** Display the dialog
+      DIALOG SHOW MODAL hDlg, call dlgEditCallback
+
+  end function
+  
+  callback function dlgEditCallback() as long
+    local id, rows, cols as long
+    local temp as string
+    '---Now test the message
+    SELECT CASE cbMsg       
+                      
+      case %WM_Command
+        
+        select case cbctl
+         case %ID_CANCEL
+            dialog end cbhndl
+            
+          case %ID_OK
+           id = 0
+           for rows = 1 to %MYDATADIM2
+            for cols = 1 to %MYDATADIM1
+                incr id
+                CONTROL get text  cbhndl, 1000+id to Temp
+
+                MyData(rows, cols) = val(Temp)
+                if MyData(rows, cols) < 0  then MyData(rows, cols) = 0
+                if MyData(rows, cols) > 10 then MyData(rows, cols) = 10                  
+            next    
+           next          
+           dialog end cbhndl
+            
+        end select    
+
+    end select
+  end function
+
+
+
+
+

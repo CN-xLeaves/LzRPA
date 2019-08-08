@@ -1,0 +1,43 @@
+Uses "TBASS", "CONSOLE"
+ 
+Function Main()
+  Dim Channel     As DWord 
+  Dim SamChannel  As DWord
+  Dim CurrentPos_Bytes    As Quad      
+  Dim CurrentPos_Seconds  As Double
+
+  If TBASS_Init(-1, 44100, 0, 0, 0) = 0 Then Stop   
+  
+  '---Attention
+  '---"BlackBox.mp3" is inside the following directory: \thinBasic\SampleScripts\TBASS\
+  '---
+  Channel = TBASS_StreamCreateFile(%TBASS_FALSE, "BlackBox.mp3", 0, 0, %TBASS_STREAM_PRESCAN )
+  
+  PrintL "TBASS_GetVersion.....................:", Hex$(TBASS_GetVersion)
+  PrintL "Channel..............................:", Channel
+  PrintL "TBASS_ChannelGetLength...............:", TBASS_ChannelGetLength(Channel)
+  PrintL "TBASS_ChannelSeconds2Bytes.15........:", TBASS_ChannelSeconds2Bytes (Channel, 15)
+  PrintL "Error................................:", TBASS_ErrorGetCode & " " & TBASS_ErrorToString(TBASS_ErrorGetCode)
+  PrintL "TBASS_ChannelBytes2Seconds 1700000...:", Format$(TBASS_ChannelBytes2Seconds (Channel, 1700000), "#0.00")
+  PrintL "Error................................:", TBASS_ErrorGetCode & " " & TBASS_ErrorToString(TBASS_ErrorGetCode)
+  PrintL "TBASS_ChannelSetPosition.............:", TBASS_ChannelSetPosition(Channel, TBASS_ChannelSeconds2Bytes (Channel, 15) ) 
+  PrintL "Error................................:", TBASS_ErrorGetCode & " " & TBASS_ErrorToString(TBASS_ErrorGetCode)
+  PrintL 
+  PrintL 
+  PrintL "---Press any key to stop. Execution will stop at the end of the ChannelPlay---"
+   
+  TBASS_ChannelPlay(Channel, %TBASS_FALSE)
+  
+  While Len(Console_InKeyB) = 0 And TBASS_ChannelIsActive(Channel)
+    CurrentPos_Bytes    = TBASS_ChannelGetPosition(Channel)
+    CurrentPos_Seconds  = TBASS_ChannelBytes2Seconds(Channel, CurrentPos_Bytes)
+    
+    PrintAt "Current position in bytes............: " & CurrentPos_Bytes                                        , 1, 15
+    PrintAt "Current position in seconds..........: " & Format$(CurrentPos_Seconds, "#0.00")                    , 1, 16
+    PrintAt "Current position in seconds to bytes.: " & TBASS_ChannelSeconds2Bytes(Channel, CurrentPos_Seconds) , 1, 17
+  Wend  
+ 
+  TBASS_Free
+
+End Function
+

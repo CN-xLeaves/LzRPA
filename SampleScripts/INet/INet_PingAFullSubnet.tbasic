@@ -1,0 +1,68 @@
+'---------
+' Modules
+'---
+  uses "inet"
+  uses "console"
+
+'---------
+' Constants
+'---
+  %MaxIp        = 255
+  
+  %Pos_IP       = 1
+  %Pos_Results  = 2
+  %Pos_Mac      = 3
+  
+'---------
+' Variables
+'---
+  dim Counter as long     '---Used to count IPs
+  dim sIP     as string   '---Used to form full IP
+
+  dim sResults(3, %MaxIp) as string '---Store results
+
+'---------
+' Script
+'---
+  '---Determine first IP. ATTENTION, you can have more than one IP configured
+  '   both in the same NIC or in different NIC
+  dim MyFirstIP as string = INET_GetIp(1)
+  console_writeline "My first IP is: " & MyFirstIP
+  
+  '---Determine your lan assuming subnet mask is 255.255.255.0
+  dim sSubNet   as string   '---Store initial subnet
+  dim lPos      as long
+  
+  '---Search the position of the 3rd "."
+  lPos = instr(MyFirstIP, ".", 3)
+  '---If found, extract the subnet part (assuming mask is 255.255.255.0)
+  if lPos then
+    sSubNet = left$(MyFirstIP, lPos)
+    console_writeline "My SubNet is: " & sSubNet
+  else
+    '---Something wrong
+    console_writeline "Something wrong with subnet/ip numbers. Check data."
+    console_waitkey
+    stop
+  end if
+  '---
+  
+  for Counter = 1 to %MaxIp
+    sIP = sSubNet & Counter
+
+    sResults(%Pos_IP      , Counter) = sIP
+    sResults(%Pos_Results , Counter) = INET_Ping(sIP, 100, "abcdefghijklmnopqrstu")
+    sResults(%Pos_Mac     , Counter) = INET_GetRemoteMACAddress(sIP)
+    
+    Console_writeline _
+                      format$(Counter, "000")           & " " & _
+                      using$("\              \", sResults(%Pos_IP, Counter))  & _
+                      using$("\                    \", parse$(sResults(%Pos_Results, Counter), $tab, 3)) & _
+                      sResults(%Pos_Mac, Counter) & _
+                      ""
+    
+  next
+
+  '---Here you can do what you need with IP and mac address pair.
+  
+  console_waitkey

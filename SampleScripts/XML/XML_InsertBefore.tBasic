@@ -1,0 +1,42 @@
+' ========================================================================================
+' Demonstrates the use of the insertBefore method.
+' ========================================================================================
+
+uses "Console"
+
+#default declare Checkduplicates    %TRUE
+#default declare CheckMissing       %TRUE
+
+#INCLUDE "%APP_INCLUDEPATH%\TB_XML60.INC"
+
+' ========================================================================================
+' Main
+' ========================================================================================
+FUNCTION MAIN() as long
+
+   LOCAL pXmlDoc AS DWORD
+   LOCAL pPri AS DWORD
+   LOCAL pNodeList AS DWORD
+   LOCAL pItem AS DWORD
+   LOCAL pNewNode AS DWORD
+
+   pXmlDoc = XmlCreateObject("Msxml2.DOMDocument.6.0")
+   IF ISTRUE IXMLDOMDocument_load(pXmlDoc, "books.xml") THEN
+      pPri = IXMLDOMDocument_createProcessingInstruction(pXmlDoc, "xml", "version=""1.0""")
+      pNodeList = IXMLDOMDocument_get_childNodes(pXmlDoc)
+      pItem = IXMLDOMNodeList_get_item(pNodeList, 0)
+      pNewNode = IXMLDOMDocument_insertBefore(pXmlDoc, pPri, pItem)
+      console_writeline IXMLDOMDocument_get_xml(pXmlDoc)
+      XmlRelease pNewNode
+      XmlRelease pItem
+      XmlRelease pPri
+      XmlRelease pNodeList
+   END IF
+   XmlRelease pXmlDoc
+   
+   console_writeline "--- Press any key to finish ---"
+   console_WAITKEY
+
+END FUNCTION
+
+Main

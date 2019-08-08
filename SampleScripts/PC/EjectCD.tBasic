@@ -1,0 +1,13 @@
+Uses "PC"
+
+Function Main () As Long  
+    Local nError As Number
+
+    nError = PC_EJECTCD()
+    If nError Then
+        MsgBox 0, PC_DECODECDERROR(nError)
+    End If
+
+End Function
+
+

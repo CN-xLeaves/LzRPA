@@ -1,0 +1,68 @@
+  uses "UI"
+   
+  Begin  ControlID 
+  %ID_LABEL  
+  %ID_TEXT   
+  %ID_UPDOWN 
+ 
+  End ControlID
+  %MAX_SPIN  = 7
+  %MIN_SPIN  = 100  
+      
+  'いいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいい
+  ' Main entrance
+  'いいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいい
+  FUNCTION Main() as long
+    LOCAL hDlg AS LONG
+   
+   
+    DIALOG NEW 0, "UpDown demo", -1, -1, 94, 50, %WS_BORDER OR %WS_SYSMENU TO hDlg
+    CONTROL ADD TEXTBOX, hDlg, %ID_TEXT, "Monday", 10, 10, 60, 12, _
+                               %ES_AUTOHSCROLL OR %ES_LEFT, %WS_EX_CLIENTEDGE
+   
+    CONTROL ADD UPDOWN, hDlg, %ID_UPDOWN, "", 70, 10, 18, 12, %WS_CHILD OR %WS_VISIBLE OR %UDS_WRAP OR %UDS_ARROWKEYS, %WS_EX_STATICEDGE
+   
+    UpDown_SetRange hDlg, %ID_UPDOWN, %MIN_SPIN, %MAX_SPIN
+
+    UpDown_SetPosition hDlg, %ID_UPDOWN, 1
+   
+    DIALOG SHOW MODAL hDlg CALL DlgCallback
+  END FUNCTION
+   
+  'いいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいい
+  ' Main dialog procedure
+  'いいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいい
+  CALLBACK FUNCTION DlgCallback() as long
+    STATIC udPos AS LONG
+
+    SELECT CASE CBMSG
+       CASE %WM_INITDIALOG
+          udPos = 1
+   
+       CASE %WM_COMMAND 
+          IF CBCTL = %IDCANCEL THEN DIALOG END CBHNDL
+   
+       CASE %WM_NOTIFY
+         LOCAL pNmud AS NM_UPDOWN PTR
+         pNmud = CBLPARAM
+   
+         IF pNmud.hdr.code = %UDN_DELTAPOS THEN
+            udPos = udPos - pNmud.iDelta
+            IF udPos > 7 THEN udPos = 1
+            IF udPos < 1 THEN udPos = 7
+   
+            SELECT CASE udPos
+              CASE 1  : CONTROL SET TEXT CBHNDL, %ID_TEXT, "Monday"
+              CASE 2  : CONTROL SET TEXT CBHNDL, %ID_TEXT, "Tuesday"
+              CASE 3  : CONTROL SET TEXT CBHNDL, %ID_TEXT, "Wednesday"
+              CASE 4  : CONTROL SET TEXT CBHNDL, %ID_TEXT, "Thursday"
+              CASE 5  : CONTROL SET TEXT CBHNDL, %ID_TEXT, "Friday"
+              CASE 6  : CONTROL SET TEXT CBHNDL, %ID_TEXT, "Saturday"
+              CASE 7  : CONTROL SET TEXT CBHNDL, %ID_TEXT, "Sunday"
+            END SELECT
+
+         END IF
+   
+    END SELECT
+   
+  END FUNCTION

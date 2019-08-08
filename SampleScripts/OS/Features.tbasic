@@ -1,0 +1,38 @@
+Uses "OS"
+
+dim sMsg as string
+
+sMsg = "Present: "
+
+IF OS_IsWOW64() then 
+    sMsg += "64"
+else
+    sMsg += "32"
+end if
+
+sMsg = sMsg + " bit Windows"
+
+IF OS_IsFeaturePresent(%PF_MMX_INSTRUCTIONS_AVAILABLE) then 
+    sMsg += ", MMX"
+end if
+IF OS_IsFeaturePresent(%PF_XMMI_INSTRUCTIONS_AVAILABLE) then 
+    sMsg += ", SSE"
+end if
+IF OS_IsFeaturePresent(%PF_RDTSC_INSTRUCTION_AVAILABLE) then 
+    sMsg += ", RDTSC"
+end if
+IF OS_IsFeaturePresent(%PF_3DNOW_INSTRUCTIONS_AVAILABLE) then 
+    sMsg += ", 3DNOW"
+end if
+IF OS_IsFeaturePresent(%PF_PAE_ENABLED) then 
+    sMsg += ", PAE"
+end if
+IF OS_IsFeaturePresent(%PF_NX_ENABLED) then 
+    sMsg += ", DEP"
+end if
+IF OS_IsFeaturePresent(%PF_SSE3_INSTRUCTIONS_AVAILABLE) then 
+    sMsg += ", SSE3"
+end if
+
+OS_ShellAbout 0, "Available Processor's Features","ThinBasic discovered the following feature:", sMsg, 0
+

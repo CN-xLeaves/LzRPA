@@ -1,0 +1,141 @@
+/* Text Styles */
+hr { color: #000000}
+body, table /* Normal */
+{
+ font-size: 10pt;
+ font-family: 'Arial';
+ font-style: normal;
+ font-weight: normal;
+ color: #000000;
+ text-decoration: none;
+}
+span.f_CodeExample /* Code Example */
+{
+ font-family: 'Courier New';
+ color: #000000;
+}
+span.f_Code_Comment /* Code_Comment */
+{
+ font-family: 'Courier New';
+ color: #008000;
+}
+span.f_Code_Keyword /* Code_Keyword */
+{
+ font-family: 'Courier New';
+ font-weight: bold;
+ color: #000080;
+}
+span.f_Code_String /* Code_String */
+{
+ font-family: 'Courier New';
+ color: #800080;
+}
+span.f_Comment /* Comment */
+{
+}
+span.f_Format3 /* Format3 */
+{
+ color: #000000;
+}
+span.f_Format4 /* Format4 */
+{
+ color: #000000;
+}
+span.f_Format5 /* Format5 */
+{
+ color: #000000;
+}
+span.f_Format6 /* Format6 */
+{
+ color: #000000;
+}
+span.f_Headingredunderlined /* Heading, red underlined */
+{
+ font-size: 12pt;
+ font-weight: bold;
+ color: #ff0000;
+ text-decoration: underline;
+}
+span.f_Heading1 /* Heading1 */
+{
+ font-size: 14pt;
+ font-weight: bold;
+ color: #000000;
+}
+span.f_ImageCaption /* Image Caption */
+{
+ font-size: 8pt;
+ font-weight: bold;
+}
+span.f_Leftindentto72 /* Left indent to 72 */
+{
+ color: #000000;
+}
+span.f_Notes /* Notes */
+{
+}
+span.f_TAB_Header /* TAB_Header */
+{
+ color: #000003;
+}
+span.f_TextMSSerif8 /* Text MSSerif8 */
+{
+ font-size: 8pt;
+ font-family: 'MS Sans Serif';
+ color: #000000;
+}
+span.f_TextParameters /* Text Parameters */
+{
+ font-size: 8pt;
+ color: #000000;
+}
+span.f_Title_Black10 /* Title_Black (10) */
+{
+ font-weight: bold;
+ color: #000000;
+}
+span.f_Title_Blue11 /* Title_Blue (11) */
+{
+ font-size: 11pt;
+ font-weight: bold;
+ color: #000004;
+}
+span.f_Title_BlueLight11 /* Title_BlueLight (11) */
+{
+ font-size: 11pt;
+ font-weight: bold;
+ color: #000000;
+}
+span.f_Title_Red10 /* Title_Red (10) */
+{
+ font-size: 11pt;
+ font-weight: bold;
+ color: #ff0000;
+}
+/* Paragraph styles */
+p /* Normal */
+{
+ text-align: left;
+ text-indent: 0px;
+ padding: 0px 0px 0px 0px;
+ margin: 0px 0px 0px 0px;
+}
+.p_CodeExample /* Code Example */
+{
+ white-space: nowrap;
+}
+.p_Comment /* Comment */
+{
+}
+.p_Heading1 /* Heading1 */
+{
+}
+.p_ImageCaption /* Image Caption */
+{
+}
+.p_Notes /* Notes */
+{
+}
+.p_TAB_Header /* TAB_Header */
+{
+}

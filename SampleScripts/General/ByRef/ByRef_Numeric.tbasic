@@ -1,0 +1,10 @@
+dim MyLongVar as long value 123
+
+msgbox 0, MyLongVar
+FillIt(MyLongVar)
+msgbox 0, MyLongVar
+
+
+Function FillIt(ByRef a As Long)
+    a = 456
+End Function

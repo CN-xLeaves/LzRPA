@@ -1,0 +1,20 @@
+' Service sample
+uses "OS"
+
+' Shows a list of active service
+Display("Active", %SERVICE_ACTIVE)
+
+' Shows a list of inactive service
+Display("Inactive", %SERVICE_INACTIVE)
+
+'------------------------------------------------------------------------------------------------------------
+Sub Display(sTxt As String, ServiceStatus As Long)
+  Dim sServiceList As String
+  Dim sSeparator As String = ";"
+  Dim sComputerName As String = "" ' Choose a computer in the neighbourhood
+
+  sServiceList = OS_ServiceGetList(sComputerName, sSeparator, %SERVICE_WIN32, ServiceStatus, %SERVICE_INFO_DISPLAY_NAME)
+  sServiceList = replace$(sServiceList, sSeparator, $CRLF)
+  msgbox 0, sServiceList, %MB_OK, sTxt & " Service List on computer " & sComputerName
+
+End Sub

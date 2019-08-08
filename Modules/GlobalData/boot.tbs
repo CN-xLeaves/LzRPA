@@ -1,0 +1,45 @@
+
+' Redis 服务器端口 [由模板随机生成]
+Dim LzBot_Thread_RedisServer_Port As Long
+
+' 全局数据访问对象
+Dim G As Redis
+
+
+
+Sub LzBot_Thread_Init_Main()
+    ' 为 Redis 服务器找到一个可用的端口
+    Randomize
+    Dim Redis_Config As String = Load_File(APP_ScriptPath & "templet.redis.conf")
+    Do
+		' 生成随机端口
+        LzBot_Thread_RedisServer_Port = Rnd(10000, 65535)
+        Dim OutputConfig As String = Expand$(Redis_Config)
+		Save_File(APP_ScriptPath & "redis.conf", OutputConfig)
+        ' 启动 Redis 服务器，用于跨进程传递数据
+		Dim PID As Long = RedisServer_Run()
+		' 连接到 Redis 服务器
+		If G.Connect("127.0.0.1", LzBot_Thread_RedisServer_Port, 3000) Then
+            If G.Ping("OK") = "OK" Then
+				Exit Do
+            End If
+        End If
+        ' 如果 Redis 服务器没连接成功，就关闭服务器重新生成端口连接
+        RedisServer_ForceClose(PID)
+    Loop
+End Sub
+
+Sub LzBot_Thread_Unit_Main()
+    ' 通过客户端关闭服务器 (会在服务器关闭之前保存数据)
+    G.Shutdown()
+End Sub
+
+Sub LzBot_Thread_Init_Work()
+    ' 连接到 Redis 服务器
+	If G.Connect("127.0.0.1", LzBot_Thread_RedisServer_Port, 3000) Then
+		If G.Ping("OK") = "OK" Then
+			' 连接成功
+		End If
+    End If
+	' 连接失败
+End Sub

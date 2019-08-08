@@ -1,0 +1,54 @@
+' =========================================================================================
+' Demonstrates the use of the save method.
+' The following example creates a DomDocument object from a string, then saves the
+' document to a file in the application folder. If you look at the resulting file you will
+' see that, instead of one continuous line of text, after each tag or data string. That is
+' because of the  $LF constant inserted in the string at the appropriate locations.
+' =========================================================================================
+
+uses "Console"
+
+#default declare Checkduplicates    %TRUE
+#default declare CheckMissing       %TRUE
+
+#INCLUDE "%APP_INCLUDEPATH%\TB_XML60.INC"
+
+' ========================================================================================
+' Main
+' ========================================================================================
+FUNCTION MAIN() as long
+
+   LOCAL pXmlDoc AS DWORD
+
+   pXmlDoc = XmlCreateObject("Msxml2.DOMDocument.6.0")
+
+   IXMLDOMDocument_put_async pXmlDoc, %FALSE
+   IXMLDOMDocument_put_validateOnParse pXmlDoc, %FALSE
+
+   IXMLDOMDocument_loadXML pXmlDoc, _
+      "<?xml version='1.0'?>" + $LF + _
+      "<doc title='test'>" + $LF + _
+      "   <page num='1'>" + $LF + _
+      "      <para title='Saved at last'>" + $LF + _
+      "          This XML data is finally saved." + $LF + _
+      "      </para>" + $LF + _
+      "   </page>" + $LF + _
+      "   <page num='2'>" + $LF + _
+      "      <para>" + $LF + _
+      "          This page is intentionally left blank." + $LF + _
+      "      </para>" + $LF + _
+      "   </page>" + $LF + _
+      "</doc>" + $LF
+
+   IXMLDOMDocument_save pXmlDoc, "saved.xml"
+   IF XmlResult = %S_OK THEN console_writeline "Saved."
+
+   ' cleanup
+   XmlRelease pXmlDoc
+   
+   console_writeline "--- Press any key to finish ---"
+   console_WAITKEY
+
+END FUNCTION
+
+Main

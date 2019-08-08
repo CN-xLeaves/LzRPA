@@ -1,0 +1,191 @@
+uses "console"
+
+Console_SetScreenBufferSize(80, 60)
+Console_ShowWindow(%Console_SW_MAXIMIZE)
+
+alias console_writeline as WL
+
+dim sFormat as string = "#####"
+ 
+wl repeat$(70, "-")
+  wl "This script is used to test how thinBasic is able to handle simple and"
+  wl "complex UDT (User Defined Types)."
+  wl "Press a key to continue"
+wl repeat$(70, "-")
+console_waitkey
+
+TYPE COORD
+  x AS INTEGER
+  y AS INTEGER
+END TYPE
+
+type MainUDT
+  x as long
+  c as coord
+end type
+
+dim mt as MainUDT
+dim p  as long = varptr(mt)
+
+'POKE(LONG, p, 1234) 
+'POKE(integer, p+4, 10) 
+'POKE(integer, p+6, 20) 
+
+mt.x = 1234
+mt.c.x = 10
+mt.c.y = 20
+
+wl repeat$(70, "-")
+wl        "| MT type"
+wl repeat$(70, "-")
+wl using$("Size of MT               var is: " & sFormat, sizeof(mt)             )
+wl        "Value of MT.x                is: ", mt.x
+wl        "Value of MT.c.x              is: ", mt.c.x
+wl        "Value of MT.c.y              is: ", mt.c.y
+wl
+
+wl repeat$(70, "-")
+wl        "| TMT type"
+wl repeat$(70, "-")
+
+'----------------------------------------------------------------------------------
+'---A more complex UDT
+type tmt
+  mt      as MainUDT
+  ee(10)  as ext
+  mtt     as MainUDT
+  ss      as string * 100
+  vv      as variant
+end type
+
+'---Define a variable of TMT type
+dim mx as tmt
+'---Get its pointer
+p = varptr(mx)
+
+'------------------------------------------------------------------------
+'---Fill variable. Still not avaiable all types of nested UDT assignment
+  'POKE(LONG   , p    , 4321)          ' fill: mx.mt.x
+  mx.mt.x = 4321
+
+  'POKE(integer, p+4  , 11)            ' fill: mx.mt.c.x
+  mx.mt.c.x = 11
+  'POKE(integer, p+6  , 21)            ' fill: mx.mt.c.y
+  mx.mt.c.y = 21
+
+  'POKE(ext    , p+8  , 9876.54321)    ' fill: mx.ee(1)
+  mx.ee(1) = 9876.54321
+
+  'POKE(ext    , p+98 , -12345.6789)   ' fill: mx.ee(10)
+  mx.ee(10) = -12345.6789
+
+  'POKE(LONG   , p+108 , 12345)        ' fill: mx.mtt.x
+  mx.mtt.x = 12345
+
+  'POKE(integer, p+112 , -27)          ' fill: mx.mtt.c.x
+  mx.mtt.c.x = -27
+
+  'POKE(integer, p+114 , -250)         ' fill: mx.mtt.c.y
+  mx.mtt.c.y = -250
+
+  POKE$(        p+116, "ABCDEFGHIJ")  ' fill: mx.ss
+'------------------------------------------------------------------------
+
+'---OK, ready to test data reading
+wl using$("Size of mx                var is: " & sFormat, sizeof(mx)             )
+wl        "Structure of mx variable is the following:"
+wl        "  type tmt"
+wl        "    mt      as MainUDT"
+wl        "     |-->     x as long"
+wl        "     |-->     c as coord"
+wl        "              |-->   x  AS INTEGER"
+wl        "              |-->   y  AS INTEGER"
+wl        "    ee(10)  as ext"
+wl        "    mtt     as MainUDT"
+wl        "     |-->     x as long"
+wl        "     |-->     c as coord"
+wl        "              |-->   x  AS INTEGER"
+wl        "              |-->   y  AS INTEGER"
+wl        "    ss      as string * 100"
+wl        "    vv      as variant"
+wl        "  end type"
+wl        "----------------------"
+wl        "Value of Mx.mt.x              is: ", mx.mt.x
+wl        "Value of Mx.mt.c.x            is: ", mx.mt.c.x
+wl        "Value of Mx.mt.c.y            is: ", mx.mt.c.y
+wl        "Value of Mx.ee(1)             is: ", mx.ee(1)
+wl        "Value of Mx.ee(10)            is: ", mx.ee(10)
+wl        "Value of Mx.mtt.x             is: ", mx.mtt.x
+wl        "Value of Mx.mtt.c.x           is: ", mx.mtt.c.x
+wl        "Value of Mx.mtt.c.y           is: ", mx.mtt.c.y
+wl        "Value of Mx.ss (string)       is: ", trim$(mx.ss)
+
+
+
+'----------------------------------------------------------------------------------
+' Some speed tests. It is important to evaluate how nesting level influence
+' execution speed
+'----------------------------------------------------------------------------------
+
+dim T1, T2 as double                '---Time measure
+dim Counter as long                 '---Looper
+dim MaxCount as long value 100000   '---Max loops
+dim lTmp as long                    '---Temp long var
+dim eTmp as ext                     '---Temp EXT var
+dim sTmp as string                  '---Temp string var
+
+'----------------------------------------------------------------------------------
+' Test: 2 levels of UDT
+'----------------------------------------------------------------------------------
+
+T1 = timer
+For Counter = 1 to MaxCount
+  lTmp = mx.mtt.x
+next
+T2 = timer
+wl        "Speed Test 001: " & MaxCount & " loops    : ", format$(T2-T1, "#0.000") & " secs (2 levels of UDT)"
+
+'----------------------------------------------------------------------------------
+' Test: 3 levels of UDT
+'----------------------------------------------------------------------------------
+T1 = timer
+For Counter = 1 to MaxCount
+  lTmp = mx.mtt.c.y
+next
+T2 = timer
+wl        "Speed Test 002: " & MaxCount & " loops    : ", format$(T2-T1, "#0.000") & " secs (3 levels of UDT)"
+
+'----------------------------------------------------------------------------------
+' Test: array of elements 1st level
+'----------------------------------------------------------------------------------
+T1 = timer
+For Counter = 1 to MaxCount
+  eTmp = mx.ee(10)
+next
+T2 = timer
+wl        "Speed Test 003: " & MaxCount & " loops    : ", format$(T2-T1, "#0.000") & " secs (array element)"
+
+'----------------------------------------------------------------------------------
+' Test: string first level
+'----------------------------------------------------------------------------------
+T1 = timer
+For Counter = 1 to MaxCount
+  sTmp = mx.ss
+next
+T2 = timer
+wl        "Speed Test 004: " & MaxCount & " loops    : ", format$(T2-T1, "#0.000") & " secs (String)"
+
+'----------------------------------------------------------------------------------
+' Test: some operations with 3 levels of UDT
+'----------------------------------------------------------------------------------
+T1 = timer
+For Counter = 1 to MaxCount
+  eTmp = (mx.mtt.c.x + mx.mtt.c.y)/2
+next
+T2 = timer
+wl        "Speed Test 005: " & MaxCount & " loops    : ", format$(T2-T1, "#0.000") & " secs (operations on 3rd UDT levels)"
+
+'----------------------------------------------------------------------------------
+wl repeat$(70, "-")
+wl "Press any key to finish"
+console_waitkey

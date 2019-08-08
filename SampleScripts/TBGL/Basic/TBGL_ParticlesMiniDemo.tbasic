@@ -1,0 +1,137 @@
+  '=============================================================================
+  '=                            Mini particle demo                             =
+  '=                                                                           =
+  '=                           Petr Schreiber, 2007                            =
+  '=============================================================================
+  
+  Uses "TBGL"
+
+  Dim hWnd As Dword
+  dim i as long
+
+  %MAXPARTICLES = 48                        ' Reduce this number to increase speed, optimal nuber for nice effect is 48
+  type tParticles
+    X     as double
+    Y     as double
+    Z     as double
+    Size  as double
+    Speed as double
+    Fade  as double
+    R     as double
+    G     as double
+    B     as double    
+  end type
+  Dim Particle(%MAXPARTICLES) as tParticles    ' Particle data...
+
+  ' Creates OpenGL window, it returns handle
+  hWnd = TBGL_CreateWindowex("Particle demo", 640, 480, 32, %TBGL_WS_WINDOWED)
+  TBGL_ShowWindow                           ' Shows the window
+
+  tbgl_LoadTexture APP_SourcePath+"Textures\MyFire.bmp",1,%TBGL_TEX_MIPMAP  ' This will load "flame" texture
+  tbgl_UseTexturing %TRUE 
+  tbgl_BindTexture 1                        ' We will use texture 1 in all parts of program
+
+  tbgl_BlendFunc %GL_SRC_ALPHA , %GL_ONE    ' This kind of blending is affected by tbgl_ColorAlpha
+  tbgl_UseBlend %TRUE
+  
+  global frameRate as double
+
+  InitParticles                             ' First we will initialize all particles
+local sheep as long
+  WHILE tbgl_IsWindow(hWnd)                      ' Main loop
+
+    '---Script will run on different PCs so we must assure
+    '---constant speed of movement by scaling movement relative to framerate
+    FrameRate = tbgl_GetFrameRate
+incr sheep
+if sheep > 200 then
+      TBGL_SetWindowTitle(hWnd, FrameRate)
+sheep = 0
+endif
+      TBGL_ClearFrame                       ' Prepares clear frame
+      TBGL_Camera 1,3,3,0,1,0               ' Setups camera
+      
+      RenderParticles
+      
+      TBGL_DrawFrame                        ' Swaps the buffers - displays rendered image
+
+
+      if tbgl_GetWindowKeyState( hWnd, %VK_ESCAPE) then  EXIT WHILE
+
+    WEND
+
+  TBGL_DestroyWindow                        ' Closes OpenGL window
+
+  ' This function serves ti initialize all particles
+  Function InitParticles( ) as long
+    For i = 1 to %MAXPARTICLES
+      BornParticle(i)
+    next  
+    
+  end function
+
+  ' This will prepare one particle
+  Function BornParticle( index as long ) as long
+
+    Particle(index).x    = rndf(-0.05, 0.05)
+    Particle(index).y    = 0
+    Particle(index).z    = -(%MAXPARTICLES / index / 10)
+    Particle(index).Size = rndf(0.125,0.25)
+    Particle(index).Speed= rndf(0.5,1.5)
+    
+  end function
+
+  ' This is the core of simple particle module
+  ' ... particles will change position and size
+
+  function RenderParticles () as long
+    for i = 1 to %MAXPARTICLES
+
+      Particle(i).Size += 0.1/ FrameRate
+      Particle(i).x += 0.1/ FrameRate
+      Particle(i).y = Particle(i).y + ( Particle(i).Speed / FrameRate )
+      
+      if Particle(i).y > 2 then BornParticle(i)    
+      
+      DrawParticle(i) 
+
+     
+
+    next  
+  end function
+
+  ' Renders single particle
+  fUNCTION DrawParticle ( index as long) as long
+    tbgl_PushMatrix
+    
+    tbgl_Translate Particle(index).x, Particle(index).y, Particle(index).z
+    tbgl_Rotate Particle(i).Speed / Gettickcount,0,0,1        ' Slow rotation of the "smokie" looks good
+    
+    tbgl_ColorAlpha 255,255,255,255-(Particle(index).y/2)*255' The particle will fade out
+    
+    tbgl_BeginPoly %GL_Quads
+    
+    
+      tbgl_TexCoord2D 0,1 
+      tbgl_Vertex -Particle(index).Size,Particle(index).Size,0
+      
+      tbgl_TexCoord2D 1,1 
+      tbgl_Vertex  Particle(index).Size,Particle(index).Size,0
+
+      tbgl_TexCoord2D 1,0 
+      tbgl_Vertex  Particle(index).Size,-Particle(index).Size,0
+
+      tbgl_TexCoord2D 0,0 
+      tbgl_Vertex -Particle(index).Size,-Particle(index).Size,0
+      
+    tbgl_EndPoly
+    
+    tbgl_PopMatrix
+    
+  end function
+
+
+
+
+
+

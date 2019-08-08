@@ -1,0 +1,192 @@
+' Test of loop optimization with Oxygen
+
+'SQUARES
+
+uses "Console", "Oxygen"
+ 
+dim T1        as quad
+dim T2        as quad
+ 
+dim p0,p1,p2,p3,p4 as dword
+dim src as string
+ 
+' -- Prepare Oxygen script
+
+src = "
+
+  def align o2 !10 'align 16 bytes
+ 
+  function Calculate_basic(c as long) as long  link #p1
+    local as double ic, jc
+    local as long i
+    '
+    '
+    'BASIC VERSION
+    '
+    align
+    for i=1 to c
+      ic = i*i
+    next
+    #endv
+    
+  end function
+
+  
+  function Calculate_asmbas(c as long) as long  link #p2
+    local as double ic, jc
+    local as long i
+    '
+    'ASSEMBLER / BASIC MIXED VERSION
+    '
+    ecx=c
+    align
+    do
+      dec ecx : jl exit
+      inc i : ic = i*i
+    end do
+  end function
+  
+  
+    '
+    
+
+  function Calculate_asm(c as long) as long  link #p3
+    local ic, jc as double, i as long
+    '
+    'ASSEMBLER VERSION
+    '
+    '
+    dim a=&c
+    mov eax,a
+    mov edx,[eax]
+    fld1
+    fld1
+    align
+    (
+     fmul st(0),st(0)
+     fstp qword ic
+     fld1
+     faddp st(1),st(0)
+     fld st(0),st(0)
+     dec edx
+     jg repeat
+    )
+    fcomp st(0),st(0)
+    '
+  end function
+
+
+ 
+  type simd
+    a as single
+    b as single
+    c as single
+    d as single
+  end type
+  '
+  function Calculate_simd(c as long) as long  link #p4
+    '
+    'SIMD VERSION
+    '
+    'declare xmm vars first for correct alignment
+    '
+    local ic,ia as simd
+    local i as long
+    ia.a=>4,4,4,4
+    movups xmm2,ia
+    ia.a=>1,2,3,4
+    movups xmm1,ia
+    movups xmm1,xmm0
+    ecx=c
+    align
+    do
+      sub ecx,4 : jl exit
+      movups xmm0,xmm1
+      mulps  xmm0,xmm0
+      movups ic,xmm0
+      addps  xmm1,xmm2
+    end do
+    
+    
+    '
+  end function
+ 
+  sub finish()  link #p0 
+    'print `This neither`
+    terminate
+  end sub
+
+
+"
+ 
+o2_basic src
+
+'msgbox 0, o2_len+$cr+o2_view "o2h "+src
+
+if len(o2_error) then
+  msgbox 0, o2_error : stop
+end if
+
+o2_exec
+
+
+dim c as long=1000000
+
+declare function Calculate_o2bas(c as long) as long at p1
+declare function Calculate_o2asmbas(c as long) as long at p2
+declare function Calculate_o2asm(c as long) as long at p3
+declare function Calculate_o2simd(c as long) as long at p4
+declare sub finish () at p0
+
+printl "SPEED BENCHMARKS:"
+printl "" 
+printl "Double precision square Test: loops=" & c
+printl ""
+
+doevents(off)
+ 
+hirestimer_init
+T1 = hirestimer_get
+Counter c
+T2 = hirestimer_get
+printl "Script:     microSecs:" & $tab & FORMAT$(T2 - T1, "#,")
+ 
+hirestimer_init
+T1 = hirestimer_get
+Calculate_o2bas c
+T2 = hirestimer_get
+printl "Compiled:   microSecs:" & $tab & FORMAT$(T2 - T1, "#,")
+
+hirestimer_init
+T1 = hirestimer_get
+Calculate_o2asmbas c
+T2 = hirestimer_get
+printl "Mixed:      microSecs:" & $tab & FORMAT$(T2 - T1, "#,")
+
+
+hirestimer_init
+T1 = hirestimer_get
+Calculate_o2asm c
+T2 = hirestimer_get
+printl "Assembler:  microSecs:" & $tab & FORMAT$(T2 - T1, "#,")
+
+hirestimer_init
+T1 = hirestimer_get
+Calculate_o2simd c
+T2 = hirestimer_get
+printl "SIMD:       microSecs:" & $tab & FORMAT$(T2 - T1, "#,")
+
+
+
+finish
+waitkey
+ 
+function Counter( MaxCount as long ) as long
+  local ic, jc as double,i as long
+  For i = 1 To MaxCount
+    ic = i*i
+  Next
+end function
+
+
+ 

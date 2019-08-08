@@ -1,0 +1,67 @@
+uses "Console"
+uses "OnlineScores"
+
+randomize
+
+'---GUID for testing game
+dim sGameCode   as string = "{00000000-0000-0000-0000-000000000000}"
+dim sUserName   as string
+dim sResult     as string
+dim sComment    as string
+dim sBuffer     as string
+dim vResults()  as string
+dim nResults    as long
+dim Counter     as long
+dim nTop        as long
+dim sReturn     as string
+
+'---Syntax is  : GameCode, Gamer name, score (as string)
+'---Return code: if 0 all ok
+Printl "Adding a new score ... "
+sUserName = "Testing " & timer
+sResult   = rnd(12345, 423456)
+sComment  = "Auto generated comment at " & str$(timer)
+
+printl "Adding the folllowing result:"
+printl "  User name   :", sUserName
+printl "  Result value:", sResult
+sReturn = OnlineScores_AddResult(sGameCode, sUserName, sResult, sComment)
+PRINTL "Result of adding a score value (negative numbers indicate error):", sReturn
+
+
+'---Syntax of OnlineScores_GetHiScores function is:
+'   OnlineScores_GetHiScores(GameCode [, OnlyRecordCount [, TopX]])
+'  Params:
+'   GameCode       : game code
+'   OnlyRecordCount: if true it will return the numer of scores for the given game code
+'   TopX           : used to return only the top x scores. Usefull when too many scores
+'--------------------------------------------------------------------------
+'---Return code: a string matrix made of tab plus line delimiter
+'---Fields are : user, score value, date when done
+'---Soring is  : ScoreValue DESC, Date ASC (first that did same score value comes first)
+printl
+nResults = OnlineScores_GetHiScores(sGameCode, %TRUE )
+printl    "Number of scores present: " & nResults
+
+if nResults < 0 then
+  printl "There was an error getting score results. Error code:", nResults
+elseif nResults = 0 then
+  printl "There are no scores for game: ", sGameCode
+else
+  nTop = 15
+  sBuffer = OnlineScores_GetHiScores(sGameCode, 0, nTop)
+  nResults = Parse (sBuffer, vResults, $crlf, $tab )  
+  printl    "We will return only the first " & nTop & ". They are: "
+  printl "-----------------------------------------------------------------------"
+  for Counter = 1 to nResults
+    printl  vResults(Counter, %OLS_ScoreCol_UserName) , _
+            vResults(Counter, %OLS_ScoreCol_Score)    , _
+            vResults(Counter, %OLS_ScoreCol_Date)     , _
+            vResults(Counter, %OLS_ScoreCol_Obfuscated)
+  next
+end if
+
+'Url for looking Scores: http://community.thinbasic.com/gaming/
+printl "--- All done. Press akey to finish ---"
+waitkey
+

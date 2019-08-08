@@ -1,0 +1,570 @@
+'------------------------------------------------------------------------------
+'   Delete blocks by clicking a figure
+'   consisting on 3 or more bricks of the same color. Enjoy!
+'------------------------------------------------------------------------------
+
+'---thinBasic minimum version
+#MINVERSION 1.8.9
+
+'---Script version
+#SCRIPTVERSION 1.0.0
+
+'--------------
+ 
+  uses "UI"
+'  Uses "console"
+    
+'--------------         
+  Begin ControlID
+    %IDD_MAIN    
+    %IDC_GRAPHIC 
+    %IDC_PLAY    
+    %IDC_QUIT    
+    %IDC_LEVEL   
+    %IDC_TIMER   
+  End ControlID
+'----------------------------------------------
+
+
+  GLOBAL Level        as long
+  GLOBAL Score        as long
+  global MaxScore     as long
+  GLOBAL CurColor     as long
+  GLOBAL Blocks()     as long
+  GLOBAL ColorInd()   as long
+  GLOBAL Game         as long
+  Global Delay        As Double
+
+'----------------------------------------------
+  %Max_Rows           = 16
+  %Max_Cols           = 10
+  %Block_InsideColor  = 1
+  %Block_BorderColor  = 2
+  Global BlockSize_X    As Long
+  Global BlockSize_Y    As Long
+
+  Global lDialogWidth   As Long Value 420
+  Global lDialogHeight  As Long Value 490
+  Global lSpacerV       As Long Value 10
+  Global lSpacerH       As Long Value 10
+  
+  Global TIMER_DELAY    As Long = 3000     ' Timer delay (in milliseconds)
+
+'----------------------------------------------
+
+
+  '----------------------------------------------
+  FUNCTION Main()
+  '----------------------------------------------
+    Level     = 1
+    Delay     = 0.5
+    MaxScore  = 0
+    Score     = 0
+
+    REDIM Blocks(%Max_Rows + 1, %Max_Cols + 1) 
+
+    redim ColorInd(5, 2)
+    '---SetUp blocks colors
+    ColorInd(1, %Block_InsideColor) = RGB(255, 255, 255)  ColorInd(1, %Block_BorderColor)  = RGB(240, 240, 240)   ' White
+    ColorInd(2, %Block_InsideColor) = RGB(250, 250,   0)  ColorInd(2, %Block_BorderColor)  = RGB(190, 190,   0)   ' Yellow
+    ColorInd(3, %Block_InsideColor) = RGB(255,  80,  80)  ColorInd(3, %Block_BorderColor)  = RGB(120,   0,   0)   ' Red
+    ColorInd(4, %Block_InsideColor) = RGB(  0, 220,   0)  ColorInd(4, %Block_BorderColor)  = RGB(  0, 150,   0)   ' Green
+    ColorInd(5, %Block_InsideColor) = RGB(120, 150, 255)  ColorInd(5, %Block_BorderColor)  = RGB(  0,   0, 255)   ' Blue
+
+    MAIN_Init(%HWND_DESKTOP)
+    'Main_Proc(hDlg)
+    
+  END FUNCTION
+
+  '---------------------------------------- Text -------------------------------
+  Sub Print_Cover(ByVal hWnd As Long)
+  '----------------------------------------------
+    Canvas_Attach hWnd, %IDC_GRAPHIC, %FALSE
+    
+    Canvas_Box lSpacerH * 2, 100, lDialogWidth - (lSpacerH * 4), 200, 10, 0, Rgb(255, 255, 200)
+    
+    Canvas_Color %RED, Rgb(255, 255, 200)
+    
+    Canvas_Font "Arial", 14, 1
+    Canvas_SetPos (50, 110)
+      Canvas_Print "Anti-TetriS"
+    Canvas_Color 0, Rgb(255, 255, 200)
+    Canvas_Font "Arial", 10, 0
+    Canvas_SetPos (30, 150)
+      Canvas_Print "Click 3 or more bricks"
+    Canvas_SetPos (45, 165)
+      Canvas_Print "of the same color"
+    Canvas_Redraw
+  End Sub
+
+  '----------------------------------------------
+  Sub Print_Score(ByVal hWnd As Long)
+  '----------------------------------------------
+    Canvas_Attach hWnd, %IDC_GRAPHIC, %FALSE
+    
+    Canvas_Box lSpacerH * 2, 100,  lDialogWidth - (lSpacerH * 4), 200, 10, 0, Rgb(255, 255, 200)
+    
+    Canvas_Color %RED, Rgb(255, 255, 200)
+    
+    Canvas_Font "Arial", 14, 1
+    Canvas_SetPos (45, 110)
+      Canvas_Print "Game Over!"
+    Canvas_Color 0,Rgb(255, 255, 200)
+    Canvas_Font "Arial", 10, 0
+    Canvas_SetPos (45,150)
+      Canvas_Print "Score : "
+    Canvas_SetPos (45,165)
+      Canvas_Print "Max Score : "
+    Canvas_Font "Arial", 10, 1
+    Canvas_SetPos (120, 150)
+      Canvas_Print Str$(Score)
+    Canvas_SetPos (120, 165)
+      Canvas_Print Str$(MaxScore)
+    Canvas_Redraw
+  End Sub
+
+  '----------------------------------- Dialog ------------------------------------------
+  FUNCTION MAIN_Init(BYVAL hParent AS DWORD) AS LONG
+  '----------------------------------------------
+    LOCAL lRslt   AS LONG
+    LOCAL hWndIm  AS DWORD
+    Local hWnd    As Long
+    
+    
+    Dialog New Pixels, hParent, " Anti-TetriS", , , lDialogWidth, lDialogHeight, _
+        %WS_POPUP         OR _
+        %WS_BORDER        OR _
+        %WS_DLGFRAME      OR _
+        %WS_CAPTION       OR _
+        %WS_SYSMENU       OR _
+        %WS_MINIMIZEBOX   OR _
+        %WS_CLIPSIBLINGS  OR _
+        %WS_VISIBLE       OR _
+        %DS_MODALFRAME    OR _
+        %DS_CENTER        OR _
+        %DS_3DLOOK        OR _
+        %DS_NOFAILCREATE  OR _
+        %DS_SETFONT          _
+        , _
+        %WS_EX_CONTROLPARENT   or _
+        %WS_EX_LEFT            or _
+        %WS_EX_LTRREADING      or _
+        %WS_EX_RIGHTSCROLLBAR   _
+        TO hWnd
+        
+    DIALOG  SET COLOR hWnd, -1, RGB(95, 175, 175)
+    
+    Control Add Button hWnd, %IDC_PLAY, "Play Game", 10, lDialogHeight - (lSpacerV * 4) , 70, 24, _
+        %WS_CHILD OR _
+        %WS_VISIBLE OR _
+        %WS_TABSTOP OR _
+        %BS_TEXT OR _
+        %BS_PUSHBUTTON OR _
+        %BS_FLAT OR _
+        %BS_CENTER OR _
+        %BS_VCENTER, _
+        %WS_EX_STATICEDGE OR _
+        %WS_EX_LEFT OR _
+        %WS_EX_LTRREADING
+
+    Control Add Button hWnd, %IDC_LEVEL, "Level  1", 80, lDialogHeight - (lSpacerV * 4), 60, 24, _
+       %WS_CHILD OR _
+       %WS_VISIBLE OR _
+       %WS_TABSTOP OR _
+       %BS_TEXT OR _
+       %BS_PUSHBUTTON OR _
+       %BS_FLAT OR _
+       %BS_CENTER OR _
+       %BS_VCENTER, _
+       %WS_EX_STATICEDGE OR _
+       %WS_EX_LEFT OR _
+       %WS_EX_LTRREADING
+
+    Control Add Button  hWnd, %IDC_QUIT, "Back to Job", 140, lDialogHeight - (lSpacerV * 4), 70, 24, _
+        %WS_CHILD OR _
+        %WS_VISIBLE OR _
+        %WS_TABSTOP OR _
+        %BS_TEXT OR _
+        %BS_PUSHBUTTON OR _
+        %BS_FLAT OR _
+        %BS_CENTER OR _
+        %BS_VCENTER, _
+        %WS_EX_STATICEDGE OR _
+        %WS_EX_LEFT OR _
+        %WS_EX_LTRREADING
+
+    Control Add Canvas hWnd, %IDC_GRAPHIC, "", lSpacerH, lSpacerV, lDialogWidth - (lSpacerH * 2), lDialogHeight - (lSpacerV * 6), _
+        %WS_CHILD OR _
+        %WS_VISIBLE OR _
+        %SS_OWNERDRAW or _
+        %SS_NOTIFY, call cbImage
+
+        '%WS_BORDER  OR _
+    BlockSize_X = (lDialogWidth  - (lSpacerH * 2)) / %Max_Cols
+    BlockSize_Y = (lDialogHeight - (lSpacerV * 6)) / %Max_Rows
+    
+    canvas_ATTACH hWnd, %IDC_GRAPHIC, %TRUE
+    canvas_CLEAR %WHITE
+
+    Print_Cover(hWnd)
+
+    DIALOG SHOW MODeless hWnd, call Main_Proc
+
+    Do
+      DIALOG DOEVENTS 1 To lRslt
+    Loop While lRslt
+
+  END FUNCTION
+
+  '---------------------------------- Callbacks ----------------------------------
+  callback FUNCTION MAIN_Proc() as long
+  '----------------------------------------------
+    STATIC  hWndSaveFocus AS long
+    local lRow, lCol as long
+    local p as pointapi
+
+      SELECT CASE cbMsg
+        CASE %WM_NCACTIVATE
+          IF ISFALSE cbWPARAM THEN
+            hWndSaveFocus = WIN_GetFocus
+          ELSEIF hWndSaveFocus THEN
+            WIN_SetFocus(hWndSaveFocus)
+            hWndSaveFocus = 0
+          END IF
+          
+        CASE %WM_COMMAND
+          
+          SELECT CASE CBCTL
+            CASE %IDC_GRAPHIC
+              '---Handled by callback
+              
+             CASE %IDC_PLAY
+              IF CBCTLMSG = %BN_CLICKED OR CBCTLMSG = 1 THEN
+                dialog kill Timer cbhndl, %IDC_TIMER
+                dialog Set Timer cbhndl, %IDC_TIMER, TIMER_DELAY
+                PlayGame(cbhndl)
+              END IF
+              
+            CASE %IDC_QUIT
+              IF CBCTLMSG = %BN_CLICKED OR CBCTLMSG = 1 THEN
+                  DIALOG END cbhndl
+              END IF
+              
+            CASE %IDC_LEVEL
+              IF CBCTLMSG = %BN_CLICKED OR CBCTLMSG = 1 THEN
+                INCR Level
+                IF Level > 10 THEN Level = 1
+                TIMER_DELAY = 2500 / Level
+                CONTROL SET TEXT cbhndl, %IDC_LEVEL, "Level " + STR$(Level)
+                dialog Kill Timer cbhndl, %IDC_TIMER
+                dialog set Timer cbhndl, %IDC_TIMER, TIMER_DELAY
+                PlayGame(cbhndl)
+              END IF
+              
+          END SELECT
+
+        CASE %WM_TIMER
+          FOR lRow = 1 TO %Max_Rows        '''' Shift UP
+            FOR lCol = 1 TO %Max_Cols
+              Blocks(lRow, lCol) = Blocks(lRow + 1, lCol)
+            NEXT
+          NEXT
+          FOR lCol = 1 TO %Max_Cols       '''' Fill last row
+            Blocks(%Max_Rows, lCol) = Rnd(1, 4)
+          NEXT
+          RefreshPicture(cbhndl)
+          FOR lCol = 1 TO %Max_Cols        '''' Check END
+            IF Blocks(1, lCol) <> 0 THEN
+              dialog Kill Timer cbhndl, %IDC_TIMER
+              Game = 0
+              Score = Score * Level
+              IF Score > MaxScore THEN MaxScore = Score
+              CONTROL ENABLE cbhndl, %IDC_PLAY
+              Print_Score(CBHNDL)
+              'exit while
+            end if
+          NEXT
+          
+          
+        CASE %WM_DESTROY 
+          dialog Kill Timer cbhndl, %IDC_TIMER
+
+      END SELECT
+
+    
+  End Function
+
+  '-----------------------------------------------
+  '   PICTURE CLICK
+  '-----------------------------------------------
+  CallBack Function CBImage () As Long 
+  '----------------------------------------------
+    Local X, Y, mx, my  As Long
+    Local lRow, lCol    As Long
+    Local lPoint        As POINTAPI
+
+    SELECT CASE cbMsg
+      CASE %WM_COMMAND ''''
+        IF Game = 0 THEN EXIT FUNCTION
+
+        select case CBCTLMSG
+          case %STN_CLICKED
+
+            '---Determine cursor position inside the control
+              Win_GetCursorPos(lPoint)
+              Win_ScreenToClient(Control_GetHandle(CBHNDL, CBCTL), lPoint)
+              Mx = lPoint.x
+              My = lPoint.y
+
+            x = My \ BlockSize_Y + 1                     ''' Blocks indexes
+            y = Mx \ BlockSize_X + 1
+'PrintL "X", mx, lPoint.x, BlockSize_X, x
+'PrintL "Y", my, lPoint.y, BlockSize_Y, y
+            If Blocks(x, y) = 0 Then Exit Function
+        
+            IF Check_3(x, y) > 2 THEN                 ''' 3 or more clicked:
+'              Console_Print_Grid("Before Hit", %Max_Cols * 1 + 2)
+              MarkChecked(x, y)                     ''' mark them,
+              FOR lRow = 1 TO %Max_Rows
+                FOR lCol = 1 TO %Max_Cols  ''' paint white,
+                  IF Blocks(lRow, lCol) = 9 THEN DrawBox(lCol, lRow, 0)
+                NEXT
+              NEXT
+              
+              DeleteChecked                          ''' Delete: in Blocks(),
+              RefreshPicture(cbhndl)                         ''' on screen
+'              Console_Print_Grid("After Hit", %Max_Cols * 2 + 4)
+            END IF
+        end select
+    END SELECT
+
+    
+  End Function
+
+
+
+  '---------------------------------- GAME main -------------------------
+  SUB PlayGame(byval hWnd as long)
+  '----------------------------------------------
+    local lRow, lCol, j as long
+    local t as double
+    local ContinueGame as long = %TRUE
+    
+    ReDim Blocks(%Max_Rows + 1, %Max_Cols + 1)
+    Game  = 1 
+    Score = 0
+    RANDOMIZE TIMER
+    canvas_CLEAR %WHITE
+    control DISABLE hWnd, %IDC_PLAY
+
+    FOR lRow = 1 TO %Max_Rows -1       '''' Shift UP
+      FOR lCol = 1 TO %Max_Cols
+        Blocks(lRow, lCol) = Blocks(lRow + 1, lCol)
+      NEXT
+    NEXT
+    FOR lCol = 1 TO %Max_Cols       '''' Fill last row
+      Blocks(%Max_Rows, lCol) = RND(1, 4)
+    NEXT
+    RefreshPicture(hWnd)
+    
+    
+  END SUB
+
+  '-------------------------------- Graphic ------------------------------------
+  SUB RefreshPicture(byval hWnd as long)
+  '----------------------------------------------
+    local lRow, lCol as long
+    
+    'printl "--------------------"
+    canvas_ATTACH hWnd, %IDC_GRAPHIC, %FALSE
+    FOR lRow = 1 TO %Max_Rows
+      FOR lCol = 1 TO %Max_Cols
+        DrawBox(lCol, lRow, Blocks(lRow, lCol))
+      NEXT
+    NEXT
+    canvas_REDRAW
+'    Console_Print_Grid("RealTime", 0)
+  END SUB
+
+  '-----------------------------------------
+  SUB DrawBox(byval lColumn as long, byval lRow as long, byval Clr as long)
+  '----------------------------------------------
+    local X as long
+    local Y as long
+
+    x = (lColumn - 1) * BlockSize_X
+    y = (lRow - 1) * BlockSize_Y
+    canvas_BOX x, y, x + BlockSize_X, y + BlockSize_Y, , ColorInd(Clr+1, 2), ColorInd(Clr+1, 1)
+    canvas_BOX x + 2, y + 2, x + BlockSize_X - 2, y + BlockSize_Y - 3, , ColorInd(Clr+1, 2)
+  END SUB
+
+  '---------------------------------- Logic --------------------------------------
+  ''' Check if 3 or more squares of the same color clicked '''
+  FUNCTION Check_3(x as long, y as long)
+  '----------------------------------------------
+    local lSum as long
+    local lRow, lCol as long
+    
+    CurColor = Blocks(x, y)
+    lSum = 1
+    IF CurColor = 0 THEN EXIT FUNCTION
+
+    lRow = x
+    Do   ' Down
+      Incr lRow
+      if lRow > %Max_Rows then exit do
+      If Blocks(lRow, y)      <>  CurColor Then Exit Do
+      If Blocks(lRow, y)      =   CurColor Then Incr lSum
+      if y < %Max_Cols then If Blocks(lRow, y + 1)  =   CurColor Then Incr lSum
+      if y > 1         then If Blocks(lRow, y - 1)  =   CurColor Then Incr lSum
+    Loop While lRow < %Max_Rows
+
+    lRow = x
+    Do
+      Decr lRow  'Up
+      if lRow < 1 then exit do
+      If Blocks(lRow, y)      <>  CurColor Then Exit Do
+      If Blocks(lRow, y)      =   CurColor Then Incr lSum
+      if y < %Max_Cols then If Blocks(lRow, y + 1)  =   CurColor Then Incr lSum
+      if y > 1         then If Blocks(lRow, y - 1)  =   CurColor Then Incr lSum
+    Loop While lRow > 1
+
+    lCol = y
+    Do
+      Incr lCol  ' Right
+      if lCol > %Max_Cols Then Exit Do
+      If Blocks(x, lCol)      <>  CurColor Then Exit Do
+      If Blocks(x, lCol)      =   CurColor Then Incr lSum
+      if x < %Max_Rows then If Blocks(x + 1, lCol)  =   CurColor Then Incr lSum
+      if x > 1         then If Blocks(x - 1, lCol)  =   CurColor Then Incr lSum
+    Loop While lCol < %Max_Cols
+
+    lCol = y
+    Do
+      Decr lCol   ' Left
+      if lCol < 1 Then Exit Do
+      If Blocks(x, lCol)      <>  CurColor Then Exit Do
+      If Blocks(x, lCol)      =   CurColor Then Incr lSum
+      if x < %Max_Rows then If Blocks(x + 1, lCol)  =   CurColor Then Incr lSum
+      if x > 1         then If Blocks(x - 1, lCol)  =   CurColor Then Incr lSum
+    Loop While lCol > 1
+
+    If lSum > 2 Then Blocks(x, y) = 9
+    Function = lSum
+    
+  END FUNCTION
+
+  '-----------------------------------------
+  ''' A simple way to mark all squares of CurColor for deletion
+  SUB MarkChecked(x as long, y as long)
+  '----------------------------------------------
+    local lRow, lCol as long
+    
+    For lRow = 1 To %Max_Rows
+      For lCol = 1 To %Max_Cols
+        If Blocks(lRow, lCol) = 9 Then
+          if lRow > 1 then
+            If Blocks(lRow - 1, lCol)   = CurColor Then
+              Blocks(lRow - 1, lCol) = 9
+              Incr Score
+            end if
+          end if
+          if lRow < %Max_Rows then
+            If Blocks(lRow + 1, lCol)   = CurColor Then
+              Blocks(lRow + 1, lCol) = 9
+              Incr Score
+            end if
+          end if
+          if lCol > 1 then
+            If Blocks(lRow , lCol - 1)  = CurColor Then
+              Blocks(lRow, lCol - 1) = 9
+              Incr Score
+            end if
+          end if
+          if lCol < %Max_Cols then
+            If Blocks(lRow , lCol + 1)  = CurColor Then
+              Blocks(lRow, lCol + 1) = 9
+              Incr Score
+            end if
+          end if
+        end if
+      Next
+    Next
+  
+    For lRow = %Max_Rows To 1 Step -1
+      For lCol = %Max_Cols To 1 Step -1
+        If Blocks(lRow, lCol) = 9 Then
+          
+          if lRow > 1 then            
+            If Blocks(lRow - 1, lCol)   = CurColor Then
+              Blocks(lRow - 1, lCol) = 9
+              Incr Score
+            end if
+          end if
+          
+          if lRow < %Max_Rows then            
+            If Blocks(lRow + 1, lCol)   = CurColor Then
+              Blocks(lRow + 1, lCol) = 9
+              Incr Score
+            end if
+          end if
+            
+          if lCol > 1 then            
+            If Blocks(lRow , lCol - 1)  = CurColor Then
+              Blocks(lRow, lCol - 1) = 9
+              Incr Score
+            end if
+          end if
+
+          if lCol < %Max_Cols then            
+            If Blocks(lRow , lCol + 1)  = CurColor Then
+              Blocks(lRow, lCol + 1) = 9
+              Incr Score
+            end if
+          end if
+          
+        end if
+      Next
+    Next
+
+  End Sub
+
+  '-----------------------------------------
+  ''' Delete all marked squares in Blocks() & drop down the rest
+  SUB DeleteChecked()
+  '----------------------------------------------
+    local lRow, lCol, k as long
+    local lColor as long
+    
+    For lCol = 1 To %Max_Cols
+      For lRow = 1 To %Max_Rows
+        If Blocks(lRow, lCol) = 9 Then
+          'For k = j+1 To 1 Step -1
+          For k = lRow To 2 Step -1
+            'printl lCol, lRow, k
+            Blocks(k, lCol) = Blocks(k - 1, lCol)
+          Next
+        End If
+      Next
+    Next
+
+  End Sub
+
+'  '----------------------------------------------
+'  Function Console_Print_Grid(ByVal UpperText As String, Optional ByVal StartAtCol As Long )
+'  '----------------------------------------------
+'    Local lRow    As Long
+'    Local lCol    As Long
+'    Local lColor  As Long
+'    
+'    PrintAt UpperText, StartAtCol + 1, 1, 14
+'    For lCol = 1 To %Max_Cols
+'      For lRow = 1 To %Max_Rows
+'        lColor = Choose(Blocks(lRow, lCol), 224, 192, 160, 144)
+'        If lColor = 0 Then lColor = 17
+'        PrintAt "X", StartAtCol + lCol, 2 + lRow, lColor
+'      Next
+'    Next
+'  End Function
+  
+

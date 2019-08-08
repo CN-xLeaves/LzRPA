@@ -1,0 +1,467 @@
+  Uses "UI"
+  uses "File"
+
+  'uses "console"
+  
+  #MINVERSION 1.7.0.0  
+
+  '----------------------------------------------------------------------------
+  '---TYPES
+
+  '----------------------------------------------------------------------------
+  '---Constants used by the program
+  Begin Const
+    %ID_Main_TAB                = 10
+    %ID_STATUSBAR
+    %ID_LV_ADDR
+    %ID_V_SPLIT
+   
+    %ID_TabGeneral_FirstName    = 100
+    %ID_TabGeneral_LastName
+    %ID_TabGeneral_MIddleName
+    %ID_TabGeneral_NickName
+    %ID_TabGeneral_Title
+    %ID_TabGeneral_Birthday
+
+
+    %ID_TabHome_Phone           = 200
+    %ID_TabHome_Mobile
+    %ID_TabHome_eMail
+    %ID_TabHome_Web
+
+    %ID_TabWork_Phone           = 300
+    %ID_TabWork_Mobile
+    %ID_TabWork_eMail
+    %ID_TabWork_Web
+
+    %ID_TabNotes_Notes          = 400
+
+    %ID_MNU_OPEN                = 501
+    %ID_MNU_EXIT
+    %ID_MNU_HELP
+    %ID_MNU_ABOUT
+    
+    '---Column index inside data array
+      %Data_Fld_Idx               = 1
+      %Data_Fld_FirstName
+      %Data_Fld_LastName
+      %Data_Fld_MiddleName
+      %Data_Fld_NickName
+      %Data_Fld_Title
+      %Data_Fld_BirthDay
+  
+      %Data_Fld_HomePhone
+      %Data_Fld_HomeMobile
+      %Data_Fld_HomeEmail
+      %Data_Fld_HomeWeb
+  
+      %Data_Fld_WorkPhone
+      %Data_Fld_WorkMobile
+      %Data_Fld_WorkEmail
+      %Data_Fld_WorkWeb
+  
+      %Data_Fld_NotesNotes
+    '---
+    
+  End Const
+  
+  '----------------------------------------------------------------------------
+  '---Global variables
+    dim dw, dh    as long
+    
+    dim ghTab(10)     as long
+    dim ghTabCurrent  as long
+    dim PageNo        as long
+    dim Count         as long
+  
+    '---Load data from text file
+    dim gsData() as string
+    PARSE file_load(app_sourcepath & "AddressData.txt"), gsData, $CRLF , $TAB
+
+  '----------------------------------------------------------------------------
+  ' Main application entry point
+  '----------------------------------------------------------------------------
+  function Main()
+  '----------------------------------------------------------------------------
+
+'printl time$, function_name
+
+    local hDlg      as long
+    LOCAL hMenu     AS dword
+    LOCAL hPopup1   AS dword
+    LOCAL hPopup2   AS dword
+
+    ' ** First create a top-level menu:
+    MENU NEW BAR TO hMenu
+
+    ' ** Add a top-level menu item with a popup menu:
+    MENU NEW POPUP TO hPopup1
+    MENU ADD POPUP,  hMenu, "&File", hPopup1, %MF_ENABLED
+    MENU ADD STRING, hPopup1, "&Open", %ID_MNU_OPEN, %MF_GRAYED
+    MENU ADD STRING, hPopup1, "-",      0, 0
+    MENU ADD STRING, hPopup1, "&Exit", %ID_MNU_EXIT, %MF_ENABLED
+
+
+    ' ** Finally, we'll add a second top-level menu and popup.  For this popup, we can reuse the first popup variable:
+    MENU NEW POPUP TO hPopup2
+    MENU ADD POPUP,  hMenu, "&Help", hPopup2, %MF_ENABLED
+    MENU ADD STRING, hPopup2, "&Help", %ID_MNU_HELP, %MF_ENABLED
+    MENU ADD STRING, hPopup2, "-",      0, 0
+    MENU ADD STRING, hPopup2, "&About", %ID_MNU_ABOUT, %MF_ENABLED
+
+    DIALOG NEW pixels, 0, "thinBasic Tab control demo", -1, -1, 640, 480, _
+                                          %WS_DLGFRAME          | _
+                                          %WS_CAPTION           | _
+                                          %WS_SYSMENU           | _
+                                          %WS_OVERLAPPEDWINDOW  | _
+                                          %WS_CLIPCHILDREN      | _
+                                          %WS_CLIPSIBLINGS      , _
+                                          0 _
+                                          to hDlg
+    MENU ATTACH hMenu, hDlg
+
+    dialog set minclientsize hDlg, 402, 206
+    
+    DIALOG SHOW modeless hDlg, call cb_Main
+
+    DO
+      DIALOG DOEVENTS TO Count
+    LOOP WHILE Count
+
+  end function
+
+  '----------------------------------------------------------------------------
+  callback function cb_Main()
+  '----------------------------------------------------------------------------
+    static counter, lWidth, lHeight as long
+    static lvnm                     AS NM_LISTVIEW ptr
+    static idx                      as long
+    static lvStyle                  as long
+
+'printl time$, function_name
+
+    '---Now test the message
+    SELECT CASE cbMsg
+
+      '---Message fired at the very beginning when dialog is initialized
+      case %WM_INITDIALOG
+
+        Control Add statusbar, cbhndl, %ID_STATUSBAR, "", , , , , %SBARS_SIZEGRIP | %CCS_BOTTOM | %WS_CHILD | %WS_VISIBLE
+ 
+
+        DIALOG GET CLIENT cbhndl TO dw, dh
+
+        CONTROL ADD TAB, cbhndl, %ID_Main_TAB, "", 200, 0, dw - 200, dh - control_getheight(cbhndl, %ID_STATUSBAR), _
+                                                                            0 _'%TCS_VERTICAL | %TCS_RIGHT _
+                                                                            call cb_Tab_Main
+        'control untheme cbhndl, %ID_Main_TAB
+        'control set resize cbhndl, %ID_Main_TAB, 1, 1, 1, 1
+
+        lvStyle =   %LVS_SINGLESEL | %LVS_SHOWSELALWAYS  | %WS_VISIBLE | %WS_CHILD '| %WS_BORDER 
+        CONTROL ADD listview, cbhndl, %ID_LV_ADDR , "", 0  , 0, 195     , dh - control_getheight(cbhndl, %ID_STATUSBAR), lvStyle, %LVS_EX_FULLROWSELECT | %LVS_EX_GRIDLINES',  call cvListView_Right
+
+        'control set resize cbhndl, %ID_LV_ADDR    , 1, 0, 1, 1
+              
+        listview_Setview      cbhndl, %ID_LV_ADDR, %LV_VIEW_DETAILS
+        listview_insertcolumn cbhndl, %ID_LV_ADDR, 1,  40, "ID#"        , %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_RIGHT
+        listview_insertcolumn cbhndl, %ID_LV_ADDR, 2,  80, "Name"       , %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_LEFT
+        listview_insertcolumn cbhndl, %ID_LV_ADDR, 3,  80, "Surname"    , %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_LEFT
+        
+        listview_InsertData cbhndl, %ID_LV_ADDR, gsData()
+
+        
+        TAB_PageInsert cbhndl, %ID_Main_TAB, 1, 0, "General"    call cb_Tab_1
+        TAB_PageInsert cbhndl, %ID_Main_TAB, 2, 0, "Home"       call cb_Tab_2
+        TAB_PageInsert cbhndl, %ID_Main_TAB, 3, 0, "Work"       call cb_Tab_3
+        TAB_PageInsert cbhndl, %ID_Main_TAB, 4, 0, "Notes"      call cb_Tab_4
+        TAB_PageInsert cbhndl, %ID_Main_TAB, 5, 0, "Info"       'call cb_Tab_4
+        TAB_PageInsert cbhndl, %ID_Main_TAB, 6, 0, "References" 'call cb_Tab_4
+        TAB_PageInsert cbhndl, %ID_Main_TAB, 7, 0, "Links"      'call cb_Tab_4
+        
+        TAB_SetSelected(cbhndl, %ID_Main_TAB, 1)
+
+        'DIALOG UNITS cbhndl, dw, dh TO PIXELS dw, dh
+        Splitter_Create         cbhndl, %ID_V_SPLIT, %SWS_VERTICAL, 0, 0, dw, dh - 25
+        Splitter_SetPanes       cbhndl, %ID_V_SPLIT, %ID_LV_ADDR, %ID_Main_TAB
+        Splitter_SetSplitPos    cbhndl, %ID_V_SPLIT, dw / 3
+        Splitter_SetBarSize     cbhndl, %ID_V_SPLIT, 5
+        Splitter_SetPANEMINSize cbhndl, %ID_V_SPLIT, 0
+        'Splitter_SetBackColor   cbhndl, %ID_V_SPLIT, rgb(255,0,0)  
+        control set resize cbhndl, %ID_V_SPLIT, 1, 1, 1, 1
+
+
+      CASE %WM_COMMAND
+
+        '---Test which control has been clicked 
+        SELECT CASE cbwParam
+          case %ID_MNU_EXIT
+            dialog end cbhndl
+          case %ID_MNU_OPEN
+            msgbox cbhndl, "File/Open"
+          case %ID_MNU_HELP
+            msgbox cbhndl, "Help/Help"
+          case %ID_MNU_ABOUT
+            msgbox cbhndl, "Help/About"
+             
+        end select
+      case %WM_PARENTNOTIFY
+
+      case %WM_SIZE
+        TAB_OnResize(cbhndl, %ID_Main_TAB)
+        
+      case %WM_DESTROY
+        TAB_OnDestroy(cbhndl, %ID_Main_TAB)
+          
+      case %WM_NOTIFY
+        
+        select case cbCTL
+          case %ID_Main_TAB
+            TAB_OnNotify(cbhndl, %ID_Main_TAB, cblparam)
+            
+          case %ID_LV_ADDR
+            '---lParam contains a pointer to a listview notification structure
+            '---so assign it to our lvnm pointer
+            lvnm = cblParam
+
+
+            '---Now check the notification event occurred
+            select case lvnm.hdr.code
+              case %LVN_ITEMCHANGED
+'printl cbhndl, lvnm.hdr.code, %LVN_ITEMCHANGED
+                '---When a selection change takes place, more %LVN_ITEMCHANGED are fired.
+                '---To catch only the needed notification, check .uNewState notification member to have %LVIS_SELECTED on.
+                if lvnm.uNewState and %LVIS_SELECTED then
+                  idx = ListView_GetNextItem(cbhndl, %ID_LV_ADDR, -1, %LVNI_SELECTED)
+                  Data_SetFields(cbhndl, %ID_Main_TAB, Idx)
+                end if
+
+            end select      
+        end select
+
+    END SELECT
+
+  end function
+
+  function Data_SetFields(hDlg as long, idTab as long, idx as long) as long
+    dim hDlg_General  as long value tab_pagegethandle(hDlg, idTab, 1)
+    dim hDlg_Home     as long value tab_pagegethandle(hDlg, idTab, 2)
+    dim hDlg_Work     as long value tab_pagegethandle(hDlg, idTab, 3)
+    dim hDlg_Notes    as long value tab_pagegethandle(hDlg, idTab, 4)
+
+'printl time$, function_name
+
+    '---Tab General
+      control set text hDlg_General , %ID_TabGeneral_FirstName    , gsData(idx, %Data_Fld_FirstName)
+      control set text hDlg_General , %ID_TabGeneral_LastName     , gsData(idx, %Data_Fld_LastName)
+      control set text hDlg_General , %ID_TabGeneral_MIddleName   , gsData(idx, %Data_Fld_MiddleName)
+      control set text hDlg_General , %ID_TabGeneral_NickName     , gsData(idx, %Data_Fld_NickName)
+      control set text hDlg_General , %ID_TabGeneral_Title        , gsData(idx, %Data_Fld_Title)
+      control set text hDlg_General , %ID_TabGeneral_Birthday     , gsData(idx, %Data_Fld_BirthDay)
+    
+    '---Tab Home
+      control set text hDlg_Home    , %ID_TabHome_Phone           , gsData(idx, %Data_Fld_HomePhone)
+      control set text hDlg_Home    , %ID_TabHome_Mobile          , gsData(idx, %Data_Fld_HomeMobile)
+      control set text hDlg_Home    , %ID_TabHome_eMail           , gsData(idx, %Data_Fld_HomeEmail)
+      control set text hDlg_Home    , %ID_TabHome_Web             , gsData(idx, %Data_Fld_HomeWeb)
+
+    '---Tab Work
+      control set text hDlg_Work    , %ID_TabWork_Phone           , gsData(idx, %Data_Fld_WorkPhone)
+      control set text hDlg_Work    , %ID_TabWork_Mobile          , gsData(idx, %Data_Fld_WorkMobile)
+      control set text hDlg_Work    , %ID_TabWork_eMail           , gsData(idx, %Data_Fld_WorkEmail)
+      control set text hDlg_Work    , %ID_TabWork_Web             , gsData(idx, %Data_Fld_WorkWeb)
+        
+    '---Tab Notes
+      control set text hDlg_Notes   , %ID_TabNotes_Notes          , gsData(idx, %Data_Fld_NotesNotes)
+
+    
+  end function
+
+  '----------------------------------------------------------------------------
+  callback function cb_Tab_Main()
+  '----------------------------------------------------------------------------
+'printl time$, function_name, cbMsg , cbctl, cblparam, cbwparam
+
+  end function
+  
+  '----------------------------------------------------------------------------
+  callback function cb_Tab_1()
+  '----------------------------------------------------------------------------
+    static lWidth   as long = 70
+    static lHeight  as long = 20
+    static yGap     as long = 2
+    static xPos     as long
+    static yPos     as long
+
+'printl time$, function_name
+
+    static tWidth   as long = 250
+    
+    select case cbMsg
+      case %WM_INITDIALOG
+        xPos = 10
+        yPos = 10
+        CONTROL ADD label, cbhndl, 0, "First name"    , xPos, yPos, lWidth, lHeight   : yPos += lHeight + yGap
+        CONTROL ADD label, cbhndl, 0, "Last name"     , xPos, yPos, lWidth, lHeight   : yPos += lHeight + yGap
+        CONTROL ADD label, cbhndl, 0, "Middle name"   , xPos, yPos, lWidth, lHeight   : yPos += lHeight + yGap
+        CONTROL ADD label, cbhndl, 0, "NickName"      , xPos, yPos, lWidth, lHeight   : yPos += lHeight + yGap
+        CONTROL ADD label, cbhndl, 0, "Title"         , xPos, yPos, lWidth, lHeight   : yPos += lHeight + yGap
+        CONTROL ADD label, cbhndl, 0, "Birthday"      , xPos, yPos, lWidth, lHeight   : yPos += lHeight + yGap
+        
+        xPos = 10 + lWidth + 10
+        yPos = 10
+        CONTROL ADD textbox, cbhndl, %ID_TabGeneral_FirstName  , , xPos, yPos, tWidth, lHeight, %WS_CHILD, , call cb_Text   : yPos += lHeight + yGap
+        CONTROL ADD textbox, cbhndl, %ID_TabGeneral_LastName   , , xPos, yPos, tWidth, lHeight, %WS_CHILD, , call cb_Text   : yPos += lHeight + yGap
+        CONTROL ADD textbox, cbhndl, %ID_TabGeneral_MIddleName , , xPos, yPos, tWidth, lHeight, %WS_CHILD, , call cb_Text   : yPos += lHeight + yGap
+        CONTROL ADD textbox, cbhndl, %ID_TabGeneral_NickName   , , xPos, yPos, tWidth, lHeight, %WS_CHILD, , call cb_Text   : yPos += lHeight + yGap
+        CONTROL ADD textbox, cbhndl, %ID_TabGeneral_Title      , , xPos, yPos, tWidth, lHeight, %WS_CHILD, , call cb_Text   : yPos += lHeight + yGap
+        CONTROL ADD textbox, cbhndl, %ID_TabGeneral_Birthday   , , xPos, yPos, tWidth, lHeight, %WS_CHILD, , call cb_Text   : yPos += lHeight + yGap
+
+      case %WM_SIZE
+        dialog get client cbhndl to xPos, yPos
+        for nControl as long = %ID_TabGeneral_FirstName to %ID_TabGeneral_Birthday
+          control set size cbhndl, nControl, xPos - lWidth - 25, -1
+        next
+
+      case %WM_DESTROY
+        '---Do something before the tab page window will be destroyed
+
+    end select
+
+  end function
+
+  '----------------------------------------------------------------------------
+  callback function cb_Tab_2()
+  '----------------------------------------------------------------------------
+    static lWidth   as long = 70
+    static lHeight  as long = 20
+    static yGap     as long = 2
+    static xPos     as long
+    static yPos     as long
+
+'printl time$, function_name
+
+    static tWidth   as long = 250
+    
+    select case cbMsg
+      case %WM_INITDIALOG
+        xPos = 10
+        yPos = 10
+        CONTROL ADD label, cbhndl, 0, "Phone"    , xPos, yPos, lWidth, lHeight   : yPos += lHeight + yGap
+        CONTROL ADD label, cbhndl, 0, "Mobile"   , xPos, yPos, lWidth, lHeight   : yPos += lHeight + yGap
+        CONTROL ADD label, cbhndl, 0, "eMail"    , xPos, yPos, lWidth, lHeight   : yPos += lHeight + yGap
+        CONTROL ADD label, cbhndl, 0, "Web"      , xPos, yPos, lWidth, lHeight   : yPos += lHeight + yGap
+        
+        xPos = 10 + lWidth + 10
+        yPos = 10
+
+        CONTROL ADD textbox, cbhndl, %ID_TabHome_Phone    , , xPos, yPos, tWidth, lHeight, %WS_CHILD, , call cb_Text   : yPos += lHeight + yGap
+        CONTROL ADD textbox, cbhndl, %ID_TabHome_Mobile   , , xPos, yPos, tWidth, lHeight, %WS_CHILD, , call cb_Text   : yPos += lHeight + yGap
+        CONTROL ADD textbox, cbhndl, %ID_TabHome_eMail    , , xPos, yPos, tWidth, lHeight, %WS_CHILD, , call cb_Text   : yPos += lHeight + yGap
+        CONTROL ADD textbox, cbhndl, %ID_TabHome_Web      , , xPos, yPos, tWidth, lHeight, %WS_CHILD, , call cb_Text   : yPos += lHeight + yGap
+
+      case %WM_SIZE
+        dialog get client cbhndl to xPos, yPos
+        for nControl as long = %ID_TabHome_Phone to %ID_TabHome_Web
+          control set size cbhndl, nControl, xPos - lWidth - 25, -1
+        next
+        
+    end select
+
+  end function
+
+  '----------------------------------------------------------------------------
+  callback function cb_Tab_3()
+  '----------------------------------------------------------------------------
+    static lWidth   as long = 70
+    static lHeight  as long = 20
+    static yGap     as long = 2
+    static xPos     as long
+    static yPos     as long
+
+'printl time$, function_name
+
+    static tWidth   as long = 250
+    
+    select case cbMsg
+      case %WM_INITDIALOG
+        xPos = 10
+        yPos = 10
+        CONTROL ADD label, cbhndl, 0, "Phone"    , xPos, yPos, lWidth, lHeight   : yPos += lHeight + yGap
+        CONTROL ADD label, cbhndl, 0, "Mobile"   , xPos, yPos, lWidth, lHeight   : yPos += lHeight + yGap
+        CONTROL ADD label, cbhndl, 0, "eMail"    , xPos, yPos, lWidth, lHeight   : yPos += lHeight + yGap
+        CONTROL ADD label, cbhndl, 0, "Web"      , xPos, yPos, lWidth, lHeight   : yPos += lHeight + yGap
+        
+        xPos = 10 + lWidth + 10
+        yPos = 10
+
+        CONTROL ADD textbox, cbhndl, %ID_TabWork_Phone    , , xPos, yPos, tWidth, lHeight, %WS_CHILD, , call cb_Text   : yPos += lHeight + yGap
+        CONTROL ADD textbox, cbhndl, %ID_TabWork_Mobile   , , xPos, yPos, tWidth, lHeight, %WS_CHILD, , call cb_Text   : yPos += lHeight + yGap
+        CONTROL ADD textbox, cbhndl, %ID_TabWork_eMail    , , xPos, yPos, tWidth, lHeight, %WS_CHILD, , call cb_Text   : yPos += lHeight + yGap
+        CONTROL ADD textbox, cbhndl, %ID_TabWork_Web      , , xPos, yPos, tWidth, lHeight, %WS_CHILD, , call cb_Text   : yPos += lHeight + yGap
+
+      case %WM_SIZE
+        dialog get client cbhndl to xPos, yPos
+        for nControl as long = %ID_TabWork_Phone to %ID_TabWork_Web
+          control set size cbhndl, nControl, xPos - lWidth - 25, -1
+        next
+        
+      case %WM_DESTROY
+
+    end select
+
+  end function
+
+  '----------------------------------------------------------------------------
+  callback function cb_Tab_4()
+  '----------------------------------------------------------------------------
+    static lWidth   as long = 70
+    static lHeight  as long = 60
+    static yGap     as long = 2
+    static xPos     as long
+    static yPos     as long
+
+'printl time$, function_name
+
+    static tWidth   as long = 250
+
+    select case cbMsg
+      case %WM_INITDIALOG
+        xPos = 10
+        yPos = 10
+        CONTROL ADD label, cbhndl, 0, "Notes"    , xPos, yPos, lWidth, lHeight   : yPos += lHeight + yGap
+        
+        xPos = 10 + lWidth + 10
+        yPos = 10
+
+        CONTROL ADD textbox, cbhndl, %ID_TabNotes_Notes   , "...any note..."    , xPos, yPos, tWidth, lHeight, %WS_CHILD | %WS_VSCROLL | %ES_MULTILINE | %ES_WANTRETURN, , call cb_Text
+
+      case %WM_SIZE
+        dialog get client cbhndl to xPos, yPos
+        control set size cbhndl, %ID_TabNotes_Notes, xPos - lWidth - 25, yPos - 15
+      case %WM_DESTROY
+
+    end select
+
+  end function
+
+
+  '----------------------------------------------------------------------------
+  callback function cb_Text()
+  '----------------------------------------------------------------------------
+
+'printl time$, function_name
+  
+    '---Common to all fields
+    select case CBCTLMSG
+      case %EN_SETFOCUS
+        '---When textbox get focus, change colors
+        CONTROL SET COLOR CBHNDL, CBCTL, -1, rgb(233, 244, 250)
+        return %TRUE
+      case %EN_KILLFOCUS
+        '---When the control lost its focus, change colors to standard one.
+        CONTROL SET COLOR CBHNDL, CBCTL, 0 , rgb(255, 255, 255)
+        return %TRUE
+     end select
+     
+  end function
+

@@ -1,0 +1,41 @@
+uses "Oxygen"
+ 
+type Txyzw
+  x as single
+  y as single
+  z as single
+  w as single
+end type
+ 
+dim v1, v2, resultV3 as Txyzw
+ 
+v1.x = 0
+v1.y = 0
+v1.z = 0
+v1.w = 0
+ 
+v2.x = 1
+v2.y = 1
+v2.z = 1
+v2.w = 1
+ 
+dim SSE_Demo1 as string = "
+  MOV EAX, #v1              ' Load pointers into CPU regs
+  MOV EBX, #v2
+ 
+  movups XMM0, [EAX]        ' Move unaligned vectors to SSE regs
+  movups XMM1, [EBX]
+ 
+  addps XMM0, XMM1          ' Add vector elements
+  movups [#resultV3], XMM0 ' Save the return vector
+  ret
+"
+ 
+dim mc_SSE_Demo1 as string = O2_asm(SSE_Demo1)
+if mc_SSE_Demo1 = chr$(&hc3) then
+  msgbox 0, "Assembly error"+$CRLF+O2_Error
+else  
+  MC_Exec(mc_SSE_Demo1)
+  msgbox 0, STR$(resultV3.x)+STR$(resultV3.y)+STR$(resultV3.z)
+  msgbox 0,O2_View(SSE_Demo1)
+endif

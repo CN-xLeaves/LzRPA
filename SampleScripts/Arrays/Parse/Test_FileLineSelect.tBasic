@@ -1,0 +1,46 @@
+Uses "File"   '---Load File module
+
+DIM t1, t2      AS EXT         
+DIM nLines      AS LONG
+DIM sInData     AS STRING VALUE File_Load(App_SourcePath & "Test_FileLineSelect(In).TXT")
+DIM sOutFile    AS STRING VALUE "Test_FileLineSelect(Out).TXT"
+DIM sOutput     AS STRING
+DIM sLines()    AS STRING
+DIM Count       AS LONG
+
+'---Start timer
+T1 = TIMER
+
+'---Determine the number of lines
+nLines = PARSECOUNT(sInData, $CRLF)
+'---This function will parse the input string for $CRLF delimiters
+'   filling and dimensioning sLines array
+nLines = PARSE(sInData, sLines, $CRLF) 
+
+'---Sort all lines
+ARRAY SORT sLines
+
+'---Now scan the array in order to find whatever string
+'   If string is found, corresponding line will be appended
+'   to output buffer
+FOR Count = 1 TO nLines  
+  IF LEFT$(sLines(Count), 3) = "TCC" THEN
+    sOutput += sLines(Count) + $CRLF
+  END IF
+NEXT                
+
+'---Output buffer will be saved to output file
+'   If file exists it is overwritten
+File_Save(app_sourcepath + sOutFile , sOutput)                                                 
+
+'---End timer
+T2 = TIMER        
+
+'---Show total time  
+MSGBOX(0, "Total time: " + FORMAT$(T2 - T1, "#0.0000") + " sec")
+          
+                                                
+
+
+
+

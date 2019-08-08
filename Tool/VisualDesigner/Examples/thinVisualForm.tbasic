@@ -1,0 +1,106 @@
+'------------------------------------------------------------------------------
+'thinAir Visual Designer
+'------------------------------------------------------------------------------
+' Project: Visual Designer generated code
+' File:    Your file name
+' Created: On 06-08-2012 at 18:01:40
+'------------------------------------------------------------------------------
+
+'---Needed thinBasic modules
+Uses "UI"
+
+'---Controls IDs---
+Begin ControlID
+	%IDC_COMBOBOX_1
+End ControlID
+
+
+
+'------------------------------------------------------------------------------
+' Main thinBasic function
+'------------------------------------------------------------------------------
+Function TBMain() As Long
+
+	MainWindow_Create(%HWND_DESKTOP)
+
+End Function
+
+'------------------------------------------------------------------------------
+' Create main Window
+'------------------------------------------------------------------------------
+Function MainWindow_Create(ByVal hParent As Long) As Long
+
+	Local hDlg     As Long
+	Local hFont    As Long
+	Local lStyle   As Long
+	Local lStyleEx As Long
+	lStyle = _                          
+	        %WS_DLGFRAME          | _   
+	        %WS_CAPTION           | _   
+	        %WS_SYSMENU           | _   
+	        %WS_OVERLAPPEDWINDOW  | _   
+	        %WS_CLIPCHILDREN      | _   
+	        %WS_CLIPSIBLINGS      | _   
+	        %DS_CENTER                  
+	lStyleEx = 0                        
+
+	Dialog New Pixels, hParent, "Form1", -1, -1, 468, 226, lStyle, lStyleEx, To hDlg
+
+	hFont = Font_Create("MS Sans Serif", 8)
+	Dialog Send hDlg, %WM_SETFONT, hFont, 0
+
+
+
+	Control Add COMBOBOX, hDlg, %IDC_COMBOBOX_1, , 24, 32, 168, 48, %WS_BORDER Or %WS_CHILD Or %WS_CLIPSIBLINGS Or %WS_TABSTOP Or %WS_VISIBLE Or %CBS_DROPDOWNLIST Or %CBS_NOINTEGRALHEIGHT, 0
+
+	SampleComboBox(hDlg, %IDC_COMBOBOX_1, 10)
+
+	Dialog Show Modal hDlg, Call MainWindow_Proc
+
+	Win_DeleteObject hFont
+
+End Function
+
+'------------------------------------------------------------------------------
+' Main WIndow CallBack handler
+'------------------------------------------------------------------------------
+CallBack Function MainWindow_Proc() As Long
+
+	Local pNMHDR   As NMHDR Ptr
+
+	Local PageNo   As Long     
+
+	Local hFontTab As Long     
+
+	Select Case (CBMSG)
+
+	    Case %WM_INITDIALOG
+	    Case %WM_COMMAND
+	        Select Case LOWRD(CBWPARAM)
+	            Case %IDOK
+	            Case %IDCANCEL
+	        End Select
+
+	    Case %WM_NOTIFY
+	    Case %WM_DESTROY
+	End Select
+End Function
+
+'--------------------------------------------------------------------------------
+' ** Sample code **
+'--------------------------------------------------------------------------------
+Function SampleComboBox(ByVal hDlg As Long,ByVal lID As Long,ByVal lCount As Long) As Long
+
+	Local i As Long
+
+	For i = 1 To lCount
+	    COMBOBOX Add hDlg, lID, "Item #" + Format$(i)
+	Next i
+
+	Control Send hDlg,lID,%CB_SETCURSEL,0,0
+
+End Function
+
+
+
+  

@@ -1,0 +1,8 @@
+{
+    "Keyword1": "About Ver GetBasePath GetID GetLastError SetShowErrorMsg GetDllObject Init FindWebHwnd Bind Quit ClearHistory ClearTemp ClearCookie SetProxy SetjQuery Frame_Enum Frame_Load Frame_Exit TabRunJS TabGetHwnd TabGetURL TabGetTitle TabGetHTML TabGetCharset TabGetCookie TabGetUserAgent TabGetScroll TabIsReady TabIsReadyEx TabGo TabForward TabBack TabRefresh TabStop TabNew TabGoto TabClose TabEnumEle TabScrollTo TabSetCookie TabSetUserAgent TabNoMsgbox TabZoom TabKeyLight TabPreDialog TabGetDialog TabSnapShot TabSave HtmlExists HtmlEnum HtmlFocus HtmlBlur HtmlClick HtmlInput HtmlCheck HtmlSelect HtmlGet HtmlSet HtmlScroll HtmlHover HtmlSwipe HtmlEvent HtmlInputFile HtmlImage HtmlOffset HtmlBorder HtmlEnabled HtmlVisible HtmlIsEnabled HtmlIsVisible HtmlReadCSS HtmlReadXPath HtmlReadWQM HtmlTable HtmlGetTable HtmlGetList KeyDown KeyUp KeyPress KeyGroup SendString MoveTo LeftDown LeftUp LeftClick LeftDoubleClick MouseWheel CmpColor GetPixelColor FindColor FindPic",
+    "Keyword2": null,
+    "Keyword3": null,
+    "RelyFile": ["SmWeb.dll"],
+    "PackFile": null,
+    "RelyCode": "boot.tbs"
+}

@@ -1,0 +1,31 @@
+' SmartSplash test
+
+#INCLUDE "SmartSplash.tBasicU"
+
+Function Main()
+   
+  Dim splash As SmartSplash
+  
+  Long lNumberOfSteps = 200
+  Long lStep
+   
+  splash.Create(%HWND_DESKTOP)
+  splash.SetRange(1, lNumberOfSteps)
+   
+   
+  For lStep = 1 To lNumberOfSteps
+   
+    If splash.StillAlive() Then
+      '---do something that last some time
+      Sleep 50
+      splash.AddInfo("Performing step " & lStep & "|" & Expand$("Some additional info regarding step $lStep here"))
+      splash.SetPos(lStep)
+    Else
+      MsgBox 0, "Process aborted by user"
+      Exit For 
+    End If
+                  
+  Next
+  splash.Close()
+  
+End Function

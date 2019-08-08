@@ -1,0 +1,201 @@
+uses "UI"
+
+'------------------------------------------------------------------------------
+' Equates
+'------------------------------------------------------------------------------
+$AppTitle    = "Toolbar Example"
+%ToolButtons = 11
+
+Begin ControlID
+  %ID_ToolBar  
+  
+  %ID_FILENEW  
+  %ID_FILESAVE 
+  %ID_FILEOPEN 
+  %ID_UNDO     
+  %ID_REDO     
+  %ID_PRINT    
+
+  %ID_MENU_OPEN    
+  %ID_MENU_EXIT    
+  %ID_MENU_OPTION1 
+  %ID_MENU_OPTION2 
+  %ID_MENU_HELP    
+  %ID_MENU_ABOUT   
+End ControlID
+
+LOCAL hMenu   AS dword
+LOCAL hPopup1 AS dword
+LOCAL hPopup2 AS dword
+
+' ** First create a top-level menu:
+MENU NEW BAR TO hMenu
+
+' ** Add a top-level menu item with a popup menu:
+MENU NEW POPUP TO hPopup1
+MENU ADD POPUP,  hMenu, "&File", hPopup1, %MF_ENABLED
+MENU ADD STRING, hPopup1, "&Open", %ID_MENU_OPEN, %MF_ENABLED
+MENU ADD STRING, hPopup1, "-",      0, 0
+MENU ADD STRING, hPopup1, "&Exit", %ID_MENU_EXIT, %MF_ENABLED
+
+
+' ** Finally, we'll add a second top-level menu and popup.  For this popup, we can reuse the first popup variable:
+MENU NEW POPUP TO hPopup2
+MENU ADD POPUP,  hMenu, "&Help", hPopup2, %MF_ENABLED
+MENU ADD STRING, hPopup2, "&Help", %ID_MENU_HELP, %MF_ENABLED
+MENU ADD STRING, hPopup2, "-",      0, 0
+MENU ADD STRING, hPopup2, "&About", %ID_MENU_ABOUT, %MF_ENABLED
+
+'------------------------------------------------------------------------------
+' Main entry point for the application
+'------------------------------------------------------------------------------
+FUNCTION Main () AS LONG
+
+' 
+local x       AS LONG
+local Count   as long
+LOCAL hDlg    AS DWORD
+LOCAL sTmp    AS STRING
+
+' Toolbar variables
+LOCAL Tabm    AS TBADDBITMAP
+local Tbb(%ToolButtons) AS TBBUTTON
+
+
+'--------------------------------------------------------------------------
+DIALOG NEW %HWND_DESKTOP, $AppTitle + " - thinBasic", 0, 0, _
+    250, 200, %WS_MAXIMIZEBOX OR %WS_MINIMIZEBOX OR %WS_SYSMENU OR _
+    %WS_THICKFRAME OR %WS_CLIPCHILDREN OR %WS_CLIPSIBLINGS OR %DS_CENTER _
+    TO hDlg
+
+'--------------------------------------------------------------------------
+CONTROL ADD "TOOLBARWINDOW32", hDlg, %ID_TOOLBAR, "", 0, 0, 0, 0, _
+    %WS_CHILD OR %WS_VISIBLE OR %WS_BORDER OR %CCS_TOP OR _
+    %TBSTYLE_TOOLTIPS OR %TB_AUTOSIZE OR %TBSTYLE_FLAT
+
+'--------------------------------------------------------------------------
+' Init Tbb array.
+FOR x = 1 TO %ToolButtons
+    ' Set the initial states for each button
+    Tbb(x).iBitmap = 0
+    Tbb(x).idCommand = 0
+    Tbb(x).fsState = %TBSTATE_ENABLED
+    Tbb(x).fsStyle = %TBSTYLE_BUTTON
+    Tbb(x).dwData = 0
+    Tbb(x).iString = 0
+
+    SELECT CASE x
+    CASE 1, 5, 8, 10
+        '---Separators.
+        Tbb(x).fsStyle = %TBSTYLE_SEP
+
+    CASE 2
+        Tbb(x).iBitmap = %STD_FILENEW
+        Tbb(x).idCommand = %ID_FILENEW
+        Tbb(x).iString = 0
+
+    CASE 3
+        Tbb(x).iBitmap = %STD_FILESAVE
+        Tbb(x).idCommand = %ID_FILESAVE
+        Tbb(x).iString = 1
+
+    CASE 4
+        Tbb(x).iBitmap = %STD_FILEOPEN
+        Tbb(x).idCommand = %ID_FILEOPEN
+        Tbb(x).iString = 2
+
+    CASE 6
+        Tbb(x).iBitmap = %STD_UNDO
+        Tbb(x).idCommand = %ID_UNDO
+        Tbb(x).iString = 3
+
+    CASE 7
+        Tbb(x).iBitmap = %STD_REDOW
+        Tbb(x).idCommand = %ID_REDO
+        Tbb(x).iString = 4
+
+    CASE 9
+        Tbb(x).iBitmap = %STD_PRINT
+        Tbb(x).idCommand = %ID_PRINT
+        Tbb(x).iString = 5
+
+    CASE 11
+        Tbb(x).iBitmap = %STD_DELETE
+        Tbb(x).idCommand = %IDCANCEL
+        Tbb(x).iString = 6
+
+    END SELECT
+NEXT
+
+'--------------------------------------------------------------------------
+Tabm.nID   = %IDB_STD_SMALL_COLOR ' Use the ID of the bitmap image, ie, %ID_TOOLBAR
+Tabm.hInst = %HINST_COMMCTRL      ' Use GetModuleHandle(BYVAL %NULL) if using a bitmap in a linked resource file
+
+' Set the imge list for the TB
+CONTROL SEND hDlg, %ID_TOOLBAR, %TB_ADDBITMAP, %ToolButtons, VARPTR(Tabm)
+
+' Set the buttons
+CONTROL SEND hDlg, %ID_TOOLBAR, %TB_BUTTONSTRUCTSIZE, SIZEOF(TBBUTTON), 0
+CONTROL SEND hDlg, %ID_TOOLBAR, %TB_ADDBUTTONS, %ToolButtons, VARPTR(Tbb(1))
+
+sTmp = "New"  + $NUL + "Save" + $NUL + "Open" + $NUL + "Undo" + $NUL + "Redo" + $NUL + "Print" + $NUL + "Quit" + $NUL + $NUL
+CONTROL SEND hDlg, %ID_TOOLBAR, %TB_ADDSTRING, 0, STRPTR(sTmp)
+
+
+' ** Display the dialog
+DIALOG SHOW modeless hDlg, call cbDialog
+
+Do
+  DIALOG DOEVENTS 0 To Count
+Loop While Count
+
+end function
+
+'------------------------------------------------------------------------------
+' callback function for main window
+'------------------------------------------------------------------------------
+callback function cbDialog() as long
+
+  SELECT CASE cbMsg
+    case %WM_INITDIALOG
+      '---Attach menu to dialog          
+      MENU ATTACH hMenu, cbhndl
+      
+
+    case %WM_COMMAND
+      
+      '---Test which control has been clicked
+      SELECT CASE cbctl
+
+        case %ID_FILENEW
+          msgbox cbhndl, "New toolbar button"
+        case %ID_FILESAVE
+          msgbox cbhndl, "SAVE toolbar button"
+        case %ID_FILEOPEN
+          msgbox cbhndl, "OPEN toolbar button"
+        case %ID_UNDO
+          msgbox cbhndl, "UNDO toolbar button"
+        case %ID_REDO
+          msgbox cbhndl, "REDO toolbar button"
+        case %ID_PRINT
+          msgbox cbhndl, "PRINT toolbar button"
+
+        '---Handle menu commands
+        case %ID_MENU_OPEN
+          msgbox cbhndl, "Open goes there"
+        case %ID_MENU_HELP
+          msgbox cbhndl, "Help goes there"
+        case %ID_MENU_ABOUT
+          msgbox cbhndl, "Aboutbox goes there"
+          
+        case %IDCANCEL, %ID_MENU_EXIT
+          dialog end cbhndl
+           
+      end select
+
+    case %WM_SIZE
+      CONTROL SEND cbhndl, %ID_Toolbar, %WM_SIZE, 0, 0
+
+  End Select
+
+End Function

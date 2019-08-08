@@ -1,0 +1,40 @@
+
+'-------------------
+'BOOLEAN CONDITIONAL
+'===================
+
+uses "oxygen"
+dim src as string
+ 
+src =rawtext
+  
+  '----------------
+  'True   non zero
+  'False  zero
+  '----------------
+  
+  dim a=1
+  
+  if a then
+    print `A is True`
+  else
+    print `A id False`
+  end if
+  
+  if not a then
+    print `Not A is True`
+  else
+    print `Not A is False`
+  end if
+  
+  
+
+end rawtext  
+'msgbox 0,o2_prep src 
+o2_basic src
+if len(o2_error) then
+  msgbox 0, o2_error : stop
+end if
+o2_exec
+ 
+ 

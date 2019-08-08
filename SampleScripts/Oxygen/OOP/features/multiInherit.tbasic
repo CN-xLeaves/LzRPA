@@ -1,0 +1,46 @@
+'
+'-----------------------------
+'MULTI INHERITANCE USING `HAS`
+'=============================
+
+
+uses "oxygen","file"
+dim s as string
+s="
+
+  class abase
+    method greet()
+      print `hello`
+    end method
+  end class
+
+  '-------
+  class io
+  '=======
+
+    '
+    'INHERIT 3 LOTS OF  `abase`
+    '--------------------------
+    has abase
+    has ba as abase, bb as abase   
+    private iva as long
+
+  end class
+
+  print structureof io
+
+  dim o as io
+  
+  o.greet
+  o.ba.greet
+  o.bb.greet
+
+  terminate
+
+  "
+
+'msgbox 0,o2_prep s
+'file_save ("t.txt",o2_prep s)
+o2_basic s
+if len(o2_error) then msgbox 0,o2_error
+o2_exec

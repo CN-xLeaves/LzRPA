@@ -1,0 +1,31 @@
+Uses "iComplex"
+Uses "Console"
+
+Dim z         As tComplex
+Dim a         As tComplex
+Dim b         As tComplex
+Dim Counter   As Long
+Dim MaxLoops  As Long     Value 100000
+Dim T1, T2    As Double
+
+a = iComplex_Set(-3,  4)
+b = iComplex_Set( 2, -5)
+
+PrintL "Complex a = " & iComplex_ToString(a)
+PrintL "Complex b = " & iComplex_ToString(b)
+PrintL "------------------------------------------------------------------------"
+PrintL "Performing " & MaxLoops & " z = iComplex_Add(a, b) ..."
+
+T1 = Timer
+For Counter = 1 To MaxLoops
+  z  = iComplex_Add(a, b)
+Next
+T2 = Timer
+PrintL "------------------------------------------------------------------------"
+PrintL "Complex z = " & iComplex_ToString(z)
+PrintL
+    
+PrintL "Time to perform " & MaxLoops & " iComplex_Add: " & Format$(T2 - T1, "@0.000") & " seconds"
+PrintL "------------------------------------------------------------------------"
+PrintL "Press a key to continue"
+WaitKey

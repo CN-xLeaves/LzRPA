@@ -1,0 +1,88 @@
+  '------------------------------------------------------------------
+  ' Pre-processor prerequisites
+  '------------------------------------------------------------------
+  #minversion 1.7.8.0
+  
+  '------------------------------------------------------------------
+  ' Declare needed thinBasic modules
+  '------------------------------------------------------------------
+  USES "UI"
+  USES "UIAdv"
+  
+  '------------------------------------------------------------------
+  ' Global declarations
+  '------------------------------------------------------------------
+    begin const
+      %ID_WEB1           = 200
+      %ID_OK
+      
+    end const
+
+  '------------------------------------------------------------------
+  ' Main script entry point
+  '------------------------------------------------------------------
+  function Main() as long
+    local hDlg    AS LONG
+    local Count   as long
+    
+    '---Create a new window
+    DIALOG NEW pixels, 0, "Web Browser control test", _
+                                        -1, -1, 640, 500, _
+                                        %WS_CLIPCHILDREN      or _
+                                        %WS_CLIPSIBLINGS      or _
+                                        %WS_DLGFRAME          OR _
+                                        %DS_CENTER            OR _
+                                        %WS_CAPTION           OR _
+                                        %WS_SYSMENU           OR _
+                                        %WS_OVERLAPPEDWINDOW  ,  _
+                                        0 _
+                                        TO hDlg
+
+    '---Show new window and assign it callback function
+    DIALOG SHOW MODELESS hDlg, call cbDialog_Proc
+    Do
+      DIALOG DOEVENTS 0 To Count
+    Loop While Count
+
+  end function
+
+  '------------------------------------------------------------------
+  ' Window callback handle. Use to handle message pump of main window
+  '------------------------------------------------------------------
+  callback function cbDialog_Proc() as long
+    Local sBuffer As String
+    local lValue  as long
+        
+    SELECT CASE cbMsg
+      
+      CASE %WM_INITDIALOG
+ 
+        WebBrowser_Create cbhndl, %ID_WEB1, "", 10, 10, 620, 430, %WS_CHILD Or %WS_VISIBLE, 0
+        WebBrowser_Navigate2(cbhndl, %ID_WEB1, "file://" & app_sourcepath & "test.html")
+        control set resize cbhndl, %ID_WEB1, 1, 1, 1, 1
+
+        control add button cbhndl, %ID_OK, "OK", 580, 470, 40, 20
+        control set resize cbhndl, %ID_OK, 0, 1, 0, 1
+                
+      case %WM_DESTROY
+        
+      case %WM_COMMAND
+        select case cbctl
+          Case %ID_OK
+            sBuffer = ""
+            sBuffer +=        "User Name: " & WebBRowser_Doc2_GetElementValueById(CBHNDL, %ID_WEB1, "UserName") 
+            sBuffer += $CRLF & "Customer number: " & WebBRowser_Doc2_GetElementValueById(CBHNDL, %ID_WEB1, "CustomerNumber")
+            
+            'sStr = WebBRowser_Doc2_GetElementAttributeById(cbhndl, %ID_WEB1, "WouldLike", "innerHTML")
+            'MsgBox 0, Len(sStr)
+            'sStr = WebBRowser_Doc2_GetElementInnerHtmlById(cbhndl, %ID_WEB1, "Output")
+            'MsgBox 0, sStr
+
+            sBuffer += $CRLF & "Comments: " & WebBrowser_Doc2_GetElementInnerHtmlById(CBHNDL, %ID_WEB1, "comments")
+            MsgBox 0, sBuffer
+            
+        end select
+    END SELECT
+
+  end function
+

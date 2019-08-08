@@ -1,0 +1,110 @@
+'------------------------------------------------------------------------------
+' Load needed modules
+'------------------------------------------------------------------------------
+Uses "UI", "File", "GdiP"
+
+'---Test if module was loaded. If not, abort!
+'if uses("GDIP") < 0 then
+'  msgbox 0, "GDI+ lib not found"
+'  stop
+'end if
+
+dim wWidth      as long value 425
+dim wHeight     as long value 425  
+
+function Main()
+
+  '------------------------------------------------------------------------------
+  ' Create dialog
+  '------------------------------------------------------------------------------
+  dim hDlg as dword
+  DIALOG NEW pixels, 0, "thinBasic using GDI+", -1, -1, wWidth, wHeight, _
+                        %WS_DLGFRAME          OR _
+                        %DS_CENTER            OR _
+                        %WS_CAPTION           OR _
+                        %WS_SYSMENU           OR _
+                        0 TO hDlg
+
+  '------------------------------------------------------------------------------
+  ' Show dialog
+  '------------------------------------------------------------------------------
+  DIALOG SHOW modal hDlg, call dlgCallback
+
+end function
+
+callback function dlgCallback() as long
+  Dim ImagesDir   As String = APP_SourcePath + "Images\"
+  dim JPGFileName as string = App_SourcePath + "Images\ferrari-enzo.png"
+  dim lWidth      as long
+  dim lHeight     as long
+  dim nFiles      as long
+  dim sFiles()    as string
+  dim Counter     as long
+  dim x           as long
+  dim y           as long
+  dim cWidth      as long
+  dim cHeight     as long
+  dim cForLine    as long
+  
+  dim hBitmap, hGpBitmap, pThumbnail AS long
+  
+  select case cbMsg
+    
+    case %WM_INITDIALOG
+      '------------------------------------------------------------------------------
+      ' Create controls and Load images
+      '------------------------------------------------------------------------------
+      nFiles = DIR_ListArray(sFiles, ImagesDir, "*.jpg", %FILE_NORMAL Or %FILE_ADDPATH)
+      
+      x = 5
+      y = 5
+      cForLine  = 4
+      cWidth    = (wWidth - (x * (cForLine + 2)) ) / cForLine
+      cHeight   = cWidth
+
+      for Counter = 1 to nFiles
+        
+        Control Add Label, CBHNDL, 1000 + Counter, "", x, y, cWidth, cHeight, %SS_SUNKEN Or %SS_BITMAP
+
+        '---Create an image handle
+          hGpBitmap = GDIp_CreateBitMapFromFile(sFiles(Counter))
+        '---Get image W and H
+        '  lWidth  = GDIP_GetImageWidth(hGpBitmap)
+        '  lHeight = GDIP_GetImageHeight(hGpBitmap)
+        '---Alternative way to get width and height directly from file:
+        '  GDIp_GetImageSizeFromFile(JPGFileName, lWidth, lHeight)
+
+          pThumbnail = GDIp_GetImageThumbnail(hGpBitmap, cWidth, cHeight) 
+
+
+        '---Convert to a hBitbam handle
+          hBitmap = GDIp_CreateHBitMapFromBitmap(pThumbnail, 0)
+
+'MsgBox 0, sFiles(Counter) & Str$(hGpBitmap) & Str$(pThumbnail) & Str$(hBitmap)
+        '---Release GDI image
+          GDIp_DisposeImage(hGpBitmap)
+          GDIp_DisposeImage(pThumbnail)
+
+        '---Converto to other formats
+        'GDIp_ConvertImage(sFiles(Counter), sFiles(Counter) & ".BMP", "image/bmp")
+        'GDIp_ConvertImage(sFiles(Counter), sFiles(Counter) & ".JPG", "image/jpeg")
+        'GDIp_ConvertImage(sFiles(Counter), sFiles(Counter) & ".TIFF", "image/tiff")
+        'GDIp_ConvertImage(sFiles(Counter), sFiles(Counter) & ".gif", "image/gif")
+
+        Control Send CBHNDL, 1000 + Counter, %STM_SETIMAGE, %IMAGE_BITMAP, hBitmap 
+
+        '---Release temp hBitmap
+        'Object_Delete(hBitmap)
+        'control set resize  hDlg, 1000 + Counter, 0, 1, 0, 0
+        
+        x += 5 + cWidth
+        if mod(Counter, cForLine) = 0 then
+          x = 5
+          y += 5 + cHeight
+        end if
+        
+      next
+      
+  end select
+
+end function

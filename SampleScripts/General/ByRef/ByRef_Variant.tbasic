@@ -1,0 +1,15 @@
+dim MyVariantVar as variant value "ABC123"
+
+msgbox 0, MyVariantVar & $crlf & VariantVT(MyVariantVar) & ": " & VariantVT$(MyVariantVar)
+FillIt1(MyVariantVar)
+MsgBox 0, MyVariantVar & $CRLF & VariantVT(MyVariantVar) & ": " & VariantVT$(MyVariantVar)
+
+
+Function FillIt1(ByRef v1 As Variant)
+    FillIt2(v1)
+    MsgBox 0, v1
+End Function
+
+Function FillIt2(ByRef v2 As Variant)
+    v2 = 123 As Long
+End Function

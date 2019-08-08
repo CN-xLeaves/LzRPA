@@ -1,0 +1,12 @@
+
+'SIMPLE VARIABLES
+
+uses "oxygen"
+o2_asmo "
+  basic
+  dim as long a = 1 + 2 + 3 + 4 + &h10
+  dim as string s = `Answer &h` hex a
+  print s
+ "
+o2_exec
+

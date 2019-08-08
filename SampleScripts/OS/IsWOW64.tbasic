@@ -1,0 +1,11 @@
+Uses "OS"
+
+dim sMsg as string
+
+sMsg ="32 bit process running on 32 bit Windows"
+
+IF OS_IsWOW64() then 
+    sMsg = "32 bit process running on 64 bit Windows"
+end if
+
+msgbox 0, sMsg

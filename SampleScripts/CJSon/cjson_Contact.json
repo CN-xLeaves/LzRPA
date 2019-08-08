@@ -1,0 +1,21 @@
+{
+  "firstName": "Elaine",
+  "lastName": "Cowen",
+  "age": 29,
+  "address": {
+    "streetAddress": "123 Main Street",
+    "city": "Chicago",
+    "state": "IL",
+    "postalCode": "60643"
+  },
+  "phoneNumbers": [
+    {
+      "type": "home",
+      "number": "312 555-1234"
+    },
+    {
+      "type": "mobile",
+      "number": "773 456-7890"
+    }
+  ]
+}

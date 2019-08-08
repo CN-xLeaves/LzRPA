@@ -1,0 +1,73 @@
+  '=============================================================================
+  '=                                2D Sprites                                 =
+  '=                           Sprite sheet  example                           =
+  '=                                                                           =
+  '=                          Michael Hartlef, 2009                            =
+  '=============================================================================
+
+
+Uses "TBGL", "UI"
+
+dim hWnd AS DWORD
+dim FrameRate AS DOUBLE
+
+FUNCTION Main()
+  local sprBackGround, width, height as long
+  local dirTextures       as string = "Textures\"
+  local spCount,i as long
+  local sprites() as long
+    
+  ' -- Create and show window
+  hWnd = TBGL_CreateWindowEx("TBGL 2D Sprite sample (sprite sheet) - press ESC to quit", 640, 480, 32, %TBGL_WS_WINDOWED or %TBGL_WS_CLOSEBOX)
+  TBGL_ShowWindow 
+
+  TBGL_GetWindowClient( hWnd, width, height )
+  ' -- Load the sprites form a sprite sheet
+  spCount  = TBGL_SpriteLoadSheet( APP_SOURCEPATH + dirTextures + "testanim4.bmp",64,64,sprites(), rgb(255,0,255))
+  'Set the sprites position
+  for i = 1 to spcount
+      tbgl_spritesetpos(sprites(i),width/6+64*i,height/6+64*i)
+  next
+ 
+  ' -- Set some render states
+  tbgl_uselighting %FALSE
+  tbgl_useblend %FALSE
+
+  TBGL_UseDepth %FALSE
+  tbgl_UseTexture %TRUE
+  TBGL_USEVSYNC %TRUE
+
+  tbgl_UseAlphaTest %TRUE
+  tbgl_AlphaFunc %tbGL_GREATER, 0.1
+
+  ' -- Resets status of all keys 
+  TBGL_ResetKeyState()
+  ' -- Set the TBGL color to pure white, so colors of sprites are the same like in the texture
+  tbgl_color 255,255,255
+  ' -- Set the background to a dark blue
+  tbgl_backColor 0, 0 ,80
+      
+  
+  ' -- Main loop
+  While TBGL_IsWindow(hWnd) 
+    FrameRate = TBGL_GetFrameRate
+    
+    ' -- Set the render matrix to the window clients resolution
+    TBGL_Rendermatrix2D (0,height,width,0)
+    
+    ' -- Not really important to clear a frame here as we draw a background anyway
+    TBGL_ClearFrame
+    
+    ' -- With one command you draw all active sprites, even if it is just one :-)
+    TBGL_SpritesDrawAll
+    
+    ' -- Flip the buffer so you see something on the screen
+    TBGL_DrawFrame 
+
+    ' -- ESCAPE key to exit application
+    If TBGL_GetWindowKeyState(hWnd, %VK_ESCAPE) Then Exit While 
+  Wend 
+
+  TBGL_DestroyWindow
+END FUNCTION 
+

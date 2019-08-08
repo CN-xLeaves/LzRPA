@@ -1,0 +1,10 @@
+' HEXADECIMAL
+
+uses "oxygen"
+
+o2_asmo "
+  basic
+  print "Answer &h" hex 1 + 2 + 3 + 4 + &h10
+ "
+
+o2_exec

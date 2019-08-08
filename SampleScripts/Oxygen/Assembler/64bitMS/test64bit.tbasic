@@ -1,0 +1,140 @@
+
+Uses "oxygen","console"
+Dim c,src As String
+dim v as long
+src="
+
+'-----------------------------------------
+'Independent
+'=========================================
+
+  #file "test64bit.exe" independent 64 bit
+
+  /*
+
+  '================
+  BOOTSTRAP LIBRARY
+  '================
+
+  IMPORTED PROCEDURES:       Offsets from proc_address_list (IAT):  32  64BIT
+  '-------------------------------------------------------------------------
+  data "/+4 .LoadLibrary        hw0 `LoadLibraryA` 00"             '00  00
+  data "/+4 .GetProcAddress     hw0 `GetProcAddress` 00"           '04  08
+  data "/+4 .FreeLibrary        hw0 `FreeLibrary` 00"              '08  16
+  data "/+4 .GetModuleHandle    hw0 `GetModuleHandleA` 00"         '12  24
+  data "/+4 .GetCommandLine     hw0 `GetCommandLineA` 00"          '16  32
+  data "/+4 .GetExitCodeProcess hw0 `GetExitCodeProcess` 00"       '20  40
+  data "/+4 .ExitProcess        hw0 `ExitProcess` 00"              '24  48
+                                                                   '28  56
+  data "/+4 .SysAllocStringByteLen hw0 `SysAllocStringByteLen` 00" '32  64
+  data "/+4 .SysFreeString hw0 `SysFreeString` 00"                 '36  72
+                                                                   '40  80
+  data "/+4 .MessageBox hw0 `MessageBoxA` 00"                      '44  88
+
+  */
+
+
+  def FrameSize 64
+
+  '-----------
+  'MAIN PROLOG
+  '===========
+
+  push rbx
+  sub rsp,FrameSize
+  '
+  '--------------------------------
+  'LOCATE BOOTSTRAP PROCEDURE TABLE
+  '================================
+  '
+  lea rip rbx,import_address_table
+  '
+
+  '---------------------------
+  'BUILD RUNTIME LIBRARY TABLE
+  '===========================
+  '
+  'TEST LOOP
+  '---------
+  '
+  mov r10w,0x1000
+  shl r10w,1
+  (
+    dec r10w
+    jg repeat
+  )
+
+  'XMM TESTS
+  '---------
+
+  mov [rsp+32],90
+  mov [rsp+48],80
+  movupd xmm9,[rsp+32]
+  movupd xmm1,[rsp+48]
+  movupd [rsp+64],xmm9
+  '
+  '---------------
+  'DISPLAY MESSAGE
+  '===============
+  '
+  mov r9,0              'MESSAGEBOX TYPE
+  mov rcx,0             'WINDOW HANDLE
+  mov [rsp+64],0x636261 'ABC'
+  '
+  'OPERAND WIDTH TESTS
+  '-------------------
+  '
+  mov r10,0x44434241
+  'mov [rsp+64],r10
+  'mov [rsp+64],r10d
+  'mov [rsp+64],r10w
+  mov [rsp+64],r10l
+  '
+  lea rdx,[rsp+64]      'TEXT
+  mov [rsp+48],0x666564 'DEF'
+  lea r8,[rsp+48]       'TITLE
+  call [rbx+88]         'MessageBoxA
+  '
+  '----------------------
+  'TERMINATION OF PROCESS
+  '======================
+  '
+  ._exit_process
+
+  lea rip rbx,import_address_table
+  xor rcx,rcx
+  call [rbx+24]     'GetModuleHandleA
+  mov [rsp+48],rax
+  mov rcx,rax
+  lea rdx,[rsp+56]
+  call [rbx+40]     'GetExitCodeProcess
+  mov rcx,[rsp+48]  'Module Handle
+  mov rdx,[rsp+56]  'Exit Code
+  call [rbx+48]     'ExitProcess
+   '
+
+  '-----------
+  'MAIN EPILOG
+  '===========
+
+  'add rsp,FrameSize
+  'pop rbx
+  'ret
+
+  '===========
+  'END OF CODE
+  '===========
+"
+
+printl O2_view src
+c=O2_ASM src
+'msgbox 0,len(c)
+If Len(O2_ERROR) Then
+  printl O2_ERROR
+else
+  printl "Compiled"
+end if
+printl ""
+printl "Press key to finish"
+waitkey
+

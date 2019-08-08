@@ -1,0 +1,16 @@
+uses "LAN"
+
+dim dwResult as dword
+dim sText as string
+DIM sLocal as string = "K:"
+DIM sRemote as string = "\\ServerName\ShareName\"
+
+dwResult = LAN_AddConnection(%LAN_RESOURCETYPE_DISK, sLocal, sRemote, "", "sPassword", "sUser", %LAN_CONNECT_INTERACTIVE, 0)
+
+if dwResult = 0 then
+    sText = "Remote path '" + sRemote + " successfully mapped to " + sLocal
+else
+    sText = LAN_GetLastExtendedError(dwResult)
+end if
+
+msgbox 0, sText, %MB_OK, "Result of LAN_AddConnection() call:"

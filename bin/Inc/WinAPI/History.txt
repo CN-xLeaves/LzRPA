@@ -1,0 +1,65 @@
+30 August 2011 ---------- 10.03.0100
+
+  CommCtrl.inc: TVITEMSTRUCT was using TVITEMSTRUCTW when %UNICODE was
+  not defined.
+
+25 July 2011 ------------ 10.02.0099
+
+  WinBase.inc: GetVolumeInformationW when %UNICODE had an incorrect
+  ASCIIZ parameter that should be a WSTRINGZ.    
+
+
+14 June 2011 ------------ 10.02.0099
+
+  WinBase.inc: GetDriveType when %UNICODE is defined had an incorrect
+  ASCIIZ parameter that should be a WSTRINGZ.
+
+
+03 May 2011 ------------ 10.01.0019
+
+  Win32Api.inc includes WindowsX.inc for backwards compatibility.
+
+  WindowsX.inc: Edit_LineScroll adjustment for backwards compatibility.
+
+
+
+02 May 2011 ------------ 10.01.0018
+
+  WindowsX.inc: added Edit_LineScroll as synonym for Edit_Scroll, for
+    backwards compatibility.
+
+  Restored ??? specifier to 32-bit hex equates, as the .01 compilers support
+    bitwise storage of DWORDs in LONG values.
+
+
+14 April 2011 ---------- 10.00.0017
+
+  DDT.inc: fixed %JOY_BUTTON32 equate.
+
+  ShlObj.inc: BROWSEINFO update for backwards compatibility.
+
+  Win32Api.inc: SMALL_RECT update for backwards compatibility.
+
+  WinCrypt.inc: Various ASCIIZ/WSTRINGZ string type corrections. Additional
+    definitions for Windows 7.
+
+
+07 April 2011 ---------- 10.00.0016
+
+  Removed ??? specifier from 32-bit hex equates with the high bit set for
+  better compatibility with code that stores DWORDs in LONG values.
+
+  ShellApi.inc uses Unicode strings for SHFILEINFOW.
+
+
+04 April 2011 ---------- 10.00.0015
+
+  OleAuto.inc string function declarations revised for backward compatibility.
+
+  WinInet.inc added ANSI/Unicode type-agnostic declarations for various TYPEs
+  and DECLAREs.
+
+
+30 March 2011 ---------- 10.00.0014
+
+  Win32Api.inc includes %ReadOnly and %Archive equates, WinGDI.inc.

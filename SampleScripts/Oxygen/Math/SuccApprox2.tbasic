@@ -1,0 +1,84 @@
+
+'======================================================================
+'SUCCESSIVE APPROXIMATION USING NEGATIVE FEEDBACK AND DYNAMIC COMPILING
+'======================================================================
+
+uses "oxygen"
+'
+'
+dim src as string
+
+src = "
+
+  '------------------------------------------------
+  function succapprox(byval sf as string) as double
+  '================================================
+  '
+  dim as long   i,ff
+  dim as double a,r,a1,r1,fb
+  '
+  'DYNAMIC COMPILING
+  '=================
+  '
+  ff=compile "r=" sf
+  if error() then
+    print error() : exit function
+  end if
+  '
+  '
+  'APPROXIMATION
+  '=============
+  '
+  a1=1                  'FIRST INPUT
+  a=a1 : call ff : r1=r 'INITIAL RESULT
+  a=2                   'SECOND INPUT
+  '
+  do
+    call ff 'TRY EXPRESSION
+    fb=r*(a-a1)/(r-r1) 'CALC FEEDBACK
+    a1=a
+    r1=r
+    a-=fb 'APPLY FEEDBACK
+    inc i : if i>1000 then exit do 'ITERATION LIMIT
+    if abs(a-a1)<1e-16 then exit do 'PRECISION LIMIT
+  end do
+  '
+  frees ff 'FREE MACHINE CODE STRING
+  '
+  'print str(a1) chr(13) str(i) ` iterations`
+
+  function=a
+  '
+  end function
+
+
+
+  '
+  '
+  '================
+  'NULL EXPRESSIONS
+  '================
+  '
+  d1="square root of 2" : f1 = "a*a-2"
+  d2="pi"               : f2 = "abs (sin(a/6)-0.5)"
+  d3="phi"              : f3 = "abs((1/a)-a+1)"
+  d4="semitone ratio"   : f4 = "a^12-2"
+  d5="cube root -27"    : f5 = "a^3+27"
+  d6="a^3+5*a^2=20"     : f6 = "a^3+5*a^2-20"
+
+  print `BY SUCCESSIVE APPROXIMATION:
+
+  ` d1 ` = `  str (succapprox f1)  `
+  ` d2 ` = `  str (succapprox f2)  `
+  ` d3 ` = `  str (succapprox f3)  `
+  ` d4 ` = `  str (succapprox f4)  `
+  ` d5 ` = `  str (succapprox f5)  `
+  ` d6 ` = `  str (succapprox f6)  `
+  `
+  "
+
+o2_basic src
+'msgbox 0, o2_len+$cr+o2_prep "o2h "+src
+if len(o2_error) then msgbox 0, o2_error : stop
+o2_exec
+

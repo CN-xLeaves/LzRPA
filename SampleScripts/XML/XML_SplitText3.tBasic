@@ -1,0 +1,44 @@
+' ========================================================================================
+' Same as EXXML_splitText but using the XMLDOMNodeChildNodes_get_length and
+' XMLDOMNodeText_splitText wrapper functions.
+' ========================================================================================
+
+uses "Console"
+
+#default declare Checkduplicates    %TRUE
+#default declare CheckMissing       %TRUE
+
+#INCLUDE "%APP_INCLUDEPATH%\TB_XML60.INC"
+
+' ========================================================================================
+' Main
+' ========================================================================================
+FUNCTION MAIN() as long
+
+   LOCAL pXmlDoc      AS DWORD
+   LOCAL pRootNode    AS DWORD
+   LOCAL pDOMNode     AS DWORD
+   LOCAL pNewNodeText AS DWORD
+
+   pXmlDoc = XmlCreateObject($PROGID_Msxml2DOMDocument)
+   IXMLDOMDocument_put_async pXmlDoc, %FALSE
+   IF ISTRUE IXMLDOMDocument_loadXML(pXmlDoc, "<root>Hello World!</root>") THEN
+      pRootNode = IXMLDOMDocument_get_documentElement(pXmlDoc)
+      console_writeline STR$(XMLDOMNodeChildNodes_get_length(pRootNode))
+      pDOMNode = IXMLDOMNode_get_firstChild(pRootNode)
+      pNewNodeText = XMLDOMNodeText_splitText(pDOMNode, 6)
+      console_writeline STR$(XMLDOMNodeChildNodes_get_length(pRootNode))
+   END IF
+
+   ' cleanup
+   XmlRelease pNewNodeText
+   XmlRelease pDOMNode
+   XmlRelease pRootNode
+   XmlRelease pXmlDoc
+   
+   console_writeline "--- Press any key to finish ---"
+   console_WAITKEY
+
+END FUNCTION
+
+Main

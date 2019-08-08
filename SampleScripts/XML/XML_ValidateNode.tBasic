@@ -1,0 +1,63 @@
+' ========================================================================================
+' Demonstrates the use of the validateNode method.
+' ========================================================================================
+
+uses "Console"
+
+#default declare Checkduplicates    %TRUE
+#default declare CheckMissing       %TRUE
+
+#INCLUDE "%APP_INCLUDEPATH%\TB_XML60.INC"
+
+' ========================================================================================
+' Main
+' ========================================================================================
+FUNCTION MAIN() as long
+
+   LOCAL pXmlDoc        AS DWORD
+   LOCAL pSchemaCache   AS DWORD
+   LOCAL pNodeList      AS DWORD
+   LOCAL pNode          AS DWORD
+   LOCAL pParseError    AS DWORD
+   LOCAL i              AS LONG
+
+   pXmlDoc = XmlCreateObject("Msxml2.DOMDocument.6.0")
+   pSchemaCache = XmlCreateObject("Msxml2.XMLSchemaCache.6.0")
+   IXMLDOMSchemaCollection_add(pSchemaCache, "urn:books", "validateNode.xsd")
+   IXMLDOMDocument2_putref_schemas pXmlDoc, pSchemaCache
+   IXMLDOMDocument_put_validateOnParse pXmlDoc, %FALSE
+   IXMLDOMDocument_put_async pXmlDoc, %FALSE
+
+   IXMLDOMDocument_load(pXmlDoc, "validateNode.xml")
+   IF XmlParseError_get_errorCode(pXmlDoc) <> 0 THEN
+      console_writeline "You have error " & XmlParseError_get_reason(pXmlDoc)
+   ELSE
+      pNodeList = IXMLDOMDocument_selectNodes(pXmlDoc, "//book")
+      FOR i = 0 TO IXMLDOMNodeList_get_length(pNodeList) - 1
+         console_writeline "--- Checking node " & str$(i+1) & " ---"
+         pNode = IXMLDOMNodeList_get_item(pNodeList, i)
+         pParseError = IXMLDOMDocument3_validateNode(pXmlDoc, pNode)
+         IF XmlResult = %S_FALSE THEN
+            console_writeline "Invalid node - Error &H" & HEX$(IXMLDOMParseError_get_errorCode(pParseError))
+            console_writeline IXMLDOMParseError_get_reason(pParseError)
+         ELSEIF XmlResult <> %S_OK THEN
+            console_writeline "Error &H" & HEX$(XmlResult)
+         ELSE
+            console_writeline IXMLDOMDocument_get_xml(pNode)
+         END IF
+         XmlRelease pParseError
+         XmlRelease pNode
+      NEXT
+   END IF
+
+   ' cleanup
+   XmlRelease pNodeList
+   XmlRelease pSchemaCache
+   XmlRelease pXmlDoc
+   
+   console_writeline "--- Press any key to finish ---"
+   console_WAITKEY
+
+END FUNCTION
+
+Main

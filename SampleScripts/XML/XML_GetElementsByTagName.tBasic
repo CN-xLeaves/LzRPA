@@ -1,0 +1,44 @@
+' ========================================================================================
+' Demonstrates the use of the getElementsByTagName method.
+' ========================================================================================
+
+uses "Console"
+
+#default declare Checkduplicates    %TRUE
+#default declare CheckMissing       %TRUE
+
+#INCLUDE "%APP_INCLUDEPATH%\TB_XML60.INC"
+
+' ========================================================================================
+' Main
+' ========================================================================================
+FUNCTION MAIN() as long
+
+   Local pXmlDoc    As DWord
+   Local pNodeList  As DWord
+   Local nLen       As Long
+   Local i          As Long
+   Local pItem      As DWord
+
+   pXmlDoc = XmlCreateObject("Msxml2.DOMDocument.6.0")
+   IXMLDOMDocument_put_async pXmlDoc, %FALSE
+
+   IF ISTRUE IXMLDOMDocument_load(pXmlDoc, "books.xml") THEN
+      pNodeList = IXMLDOMDocument_getElementsByTagName(pXmlDoc, "author")
+      nLen = IXMLDOMNodeList_get_length(pNodeList)
+      FOR i = 0 TO nLen - 1
+         pItem = IXMLDOMNodeList_get_item(pNodeList, i)
+         console_writeline IXMLDOMNode_get_xml(pItem)
+         XmlRelease pItem
+      NEXT
+      XmlRelease pNodeList
+   END IF
+
+   XmlRelease pXmlDoc
+   
+   console_writeline "--- Press any key to finish ---"
+   console_WAITKEY
+
+END FUNCTION
+
+Main

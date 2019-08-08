@@ -1,0 +1,10 @@
+
+'FILING
+
+uses "oxygen"
+o2_basic "
+  basic
+  putfile "t.txt", "Hello World!"
+  print getfile "t.txt"
+ "
+o2_exec

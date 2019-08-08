@@ -1,0 +1,32 @@
+' TEST
+
+uses "oxygen"
+
+dim src as string
+dim aa(10) as long
+
+src="
+
+#def vv 1+10
+mov eax,vv
+
+pushad
+
+mov ecx,4
+mov [#aa],12
+mov [#aa+4],13
+mov [ecx+#aa+2+2],14
+
+mov edx,2
+mov [ecx+edx*2+#aa+4],15
+mov [ecx+edx*4+#aa+4],16
+
+popad
+
+ret
+"
+
+o2_asmo src
+'msgbox 0,o2_view(src)
+if len(o2_error) then msgbox 0,o2_error : stop
+msgbox 0,o2_exec+$cr+aa(1)+$cr+aa(2)+$cr+aa(3)+$cr+aa(4)+$cr+aa(5)

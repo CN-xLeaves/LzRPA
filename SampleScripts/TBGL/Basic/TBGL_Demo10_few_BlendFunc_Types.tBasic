@@ -1,0 +1,137 @@
+  '=============================================================================
+  '=                 Demonstration of diverse blending styles                  =
+  '=                                                                           =
+  '=                           Petr Schreiber, 2007                            =
+  '=============================================================================
+
+  Uses "TBGL"
+
+
+  dim hWnd  as dword
+  Dim Index As single = 1
+  Dim ThisTime, LastTime, TimeDelta as dword
+  Dim BlendText(11) As String
+  Dim BlendType(11) As Long
+
+  BlendText( 1) = "%GL_ZERO", "%GL_ONE", "%GL_SRC_COLOR", "%GL_ONE_MINUS_SRC_COLOR", "%GL_SRC_ALPHA", _
+                  "%GL_ONE_MINUS_SRC_ALPHA", "%GL_DST_ALPHA", "%GL_ONE_MINUS_DST_ALPHA", "%GL_DST_COLOR", _
+                  "%GL_ONE_MINUS_DST_COLOR", "%GL_SRC_ALPHA_SATURATE"
+
+  BlendType( 1) = %GL_ZERO, %GL_ONE, %GL_SRC_COLOR, %GL_ONE_MINUS_SRC_COLOR, %GL_SRC_ALPHA, %GL_ONE_MINUS_SRC_ALPHA, _
+                  %GL_DST_ALPHA, %GL_ONE_MINUS_DST_ALPHA, %GL_DST_COLOR, %GL_ONE_MINUS_DST_COLOR, %GL_SRC_ALPHA_SATURATE
+
+  ' Creates OpenGL window, it returns handle
+  hWnd = TBGL_CreateWindowex("Various types of blending - press ESC to quit", 640, 480, 32, %TBGL_WS_WINDOWED)   
+  TBGL_ShowWindow                   ' Shows the window
+
+  TBGL_LoadTexture App_SourcePath+"Textures\test.bmp",1,%TBGL_TEX_MIPMAP     ' Loads texture as #1, with best quality
+  TBGL_UseTexturing %TRUE           ' I want to use textures
+  TBGL_BindTexture 1                ' I want to use texture #1
+
+  TBGL_LoadBMPFont App_SourcePath+"Textures\tbgl_font.bmp"    ' Loads "font" from bitmap
+
+  %CIRCLEOFBLENDING = 1
+
+  tbgl_NewList %CIRCLEOFBLENDING    ' Using display list we can boost up performance
+      CircleOfBlending()
+  tbgl_EndList 
+  dim FrameRate as double
+  TBGL_ResetKeyState()      ' Resets key status before keypress checking
+
+  while tbgl_isWindow(hWnd)
+
+    '---Script will run on different PCs so we must assure
+    '---constant speed of movement by scaling movement relative to framerate
+    FrameRate = tbgl_GetFrameRate
+    
+    TBGL_ClearFrame                 ' Prepares clear frame
+    TBGL_Camera 0,0,10,0,0,0        ' Setups camera to look from 0,0,10 to 0,0,0
+    
+    TBGL_Rotate index*(360/11),0,1,0' Rotates around y axis ( 1 enables axis, 0 disables )
+
+    tbgl_CallList %CIRCLEOFBLENDING
+
+    tbgl_ResetMatrix                ' Reseting matrix - must be done before printing
+    tbgl_Color 255,255,0            ' Lets set yellow color
+
+    index += 0.5/FrameRate 
+    if index > 11 then index = 1
+    ' Displays info about used blending function
+    TBGL_PrintBMP BlendText(index),1,22
+    TBGL_PrintBMP BlendText(12-index),1,23
+
+    TBGL_DrawFrame                ' Swaps the buffers - displays rendered image
+    
+
+    if TBGL_GetWindowKeyState( hWnd, %VK_ESCAPE) then EXIT WHILE
+    
+  wend
+
+  tbgl_KillFont
+  TBGL_DestroyWindow              ' Closes OpenGL window
+
+  Function CircleOfBlending() As long
+    Dim count As Long
+
+    tbgl_UseBlend %TRUE
+
+    For count = 1 To 11           ' We'll display 11 types of blending in circle
+      TBGL_BlendFunc BlendType( count), BlendType( 12-count)
+      tbgl_PushMatrix  
+
+      tbgl_Rotate count*32.7,0,1,0
+      tbgl_Translate 0,0,4
+
+      tbgl_ColorAlpha 255,255,255,255    ' Reset of RGBA color
+      TBGL_BeginPoly %GL_QUADS    ' Starts polygon definition based on 4 vertexes
+          TBGL_TexCoord2d 0,0
+          TBGL_Vertex -1,-1,0     ' Adds vertex
+
+          TBGL_TexCoord2d 1,0
+          TBGL_Vertex  1,-1,0
+
+          TBGL_TexCoord2d 1,1
+          TBGL_Vertex  1, 1,0
+
+          TBGL_TexCoord2d 0,1
+          TBGL_Vertex  -1, 1,0
+
+      TBGL_EndPoly                ' Ends polygon definition
+
+      TBGL_UseBlend %TRUE         ' Use blending
+
+      TBGL_Translate 0,0,1
+
+      TBGL_BeginPoly %GL_QUADS     ' Starts polygon definition based on 4 vertexes
+          TBGL_ColorAlpha 255,255,255,0       ' Sets RGBA color - with Alpha channel
+
+          TBGL_TexCoord2d 0,0
+          TBGL_Vertex -1,-1,0      ' Adds vertex
+
+          TBGL_ColorAlpha 255,255,255,0      ' Sets RGBA color - with Alpha channel
+          TBGL_TexCoord2d 1,0
+          TBGL_Vertex  1,-1,0
+
+          TBGL_ColorAlpha 0,255,0,128       
+          TBGL_TexCoord2d 1,1
+          TBGL_Vertex  1, 1,0
+
+          TBGL_ColorAlpha 0,255,0,128       
+          TBGL_TexCoord2d 0,1
+          TBGL_Vertex  -1, 1,0
+
+      TBGL_EndPoly
+
+      tbgl_UseBlend %FALSE          ' Disables blending
+
+      tbgl_PopMatrix   
+
+    Next
+
+  End Function
+
+
+
+
+
+

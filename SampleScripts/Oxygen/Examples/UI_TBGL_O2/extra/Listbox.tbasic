@@ -1,0 +1,95 @@
+  uses "UI"
+   
+  DIM tmpStr  AS STRING
+  dim tmpLong as long
+  
+  dim ID_List01 as long
+  dim MaxItems  as long
+  dim CurItem   as long
+  dim count as long  
+
+  dim MaxElements as long = 100
+  dim vList(MaxElements) AS STRING
+
+  begin const
+    %Text01 = 400
+    %List01
+    %Butt01
+  end const  
+
+  function Main()
+    DIM hDlg    AS LONG
+  
+    '---Create a new dialog
+    DIALOG NEW 0, "ListBox example", -1, -1, 275, 120, _
+                                                  %WS_DLGFRAME OR %DS_CENTER OR %WS_CAPTION OR %WS_SYSMENU, _
+                                                  0 TO hDlg
+
+
+    randomize
+    
+
+    FOR count = 1 TO MaxElements
+      vList(Count) = "Item " & FORMAT$(RND(1, 100000), "000000")
+    NEXT
+    
+    '---Show dialog in MODAL state
+    DIALOG SHOW MODAL hDlg, call dlgCallback
+  end function
+  
+  callback function dlgCallback() as long
+
+    '---Now test the message
+    SELECT CASE cbMsg
+
+      case %WM_INITDIALOG   '---Message fired at the very beginning when dialog is initialized
+                            '---This can be the right place to initialize dialog or create controls
+        CONTROL ADD listbox  , cbHndl, %List01 , vList()  ,   5,  20, 200, 100, 0, 0  
+        CONTROL ADD textbox  , cbHndl, %Text01 , ""       ,   5,   5, 200,  12    
+        control add button   , cbHndl, %Butt01 , "Set"    , 210,   5,  60,  12
+        
+      CASE %WM_COMMAND
+
+        '---Test which control has been clicked
+        SELECT CASE cbCtl
+
+          '---Something has happened with %List01
+          case %List01
+
+            select case cbCtlMsg
+              case %LBN_SELCHANGE 
+                LISTBOX GET TEXT cbHndl, %List01 TO tmpStr
+                control set text cbHndl, %Text01, tmpStr
+
+              case %LBN_DBLCLK 
+                LISTBOX GET TEXT cbHndl, %List01 TO tmpStr
+                control append text cbHndl, %Text01, "(DblClick " & tmpStr & ")"
+
+            end select
+
+          case %Butt01
+            if cbCtlMsg = %BN_CLICKED then
+              '---Get the text from a textbox and place into a string
+              control get text cbHndl, %Text01 to tmpStr
+              
+              '---Get the window unique ID of the control
+              CONTROL HANDLE cbHndl, %List01 TO ID_List01
+              
+              '---Get the number of items present into listbox
+              MaxItems = sendmessage(ID_List01, %LB_GETCOUNT, 0, 0)
+              
+              '---Get current selected item (remember it start at zero position)
+              listbox get selected cbHndl, %List01 to CurItem
+
+              '---Now delete selected item ...
+              listbox delete cbHndl, %List01, CurItem
+
+              '---...and insert new text in same position
+              sendmessage(ID_List01, %LB_INSERTSTRING, CurItem - 1, strptr(tmpStr))
+
+              listbox select cbHndl, %List01, CurItem              
+          end if          
+        end select
+    END SELECT
+  end function
+  

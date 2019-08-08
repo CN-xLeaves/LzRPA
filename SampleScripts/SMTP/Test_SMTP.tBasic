@@ -1,0 +1,105 @@
+    '=============================================================================
+    ' Author      : Eros Olmi
+    ' Date        : 01/09/2003
+    ' Version     : 01.00.00
+    ' Description : Interpreted script used by thinBasic
+    ' Purpose     : 
+  '=============================================================================
+  ' Notes:        01.00.00 01/09/2003 
+  '=============================================================================
+  ' Edit History: 01.00.00 01/09/2003 Initial coding
+  '=============================================================================
+    
+  Uses "SMTP"
+    
+  DIM RetCode       AS LONG
+  DIM LogFile       AS STRING VALUE APP_SourcePath + "smtplog.txt" 
+     
+  '---
+  'Here you SetUp your parameters
+  '---
+  DIM SMTPServer    AS STRING VALUE "" ' example: "mail.YourMailServer.com"
+  DIM SMTPMailFrom  AS STRING VALUE "" ' example: "Name Surname<YourEmail@YourDomain>"
+  DIM SMTPReplyTo   AS STRING VALUE "" ' example: "Name Surname<YourEmail@YourDomain>"
+  DIM SMTPMailTo    AS STRING VALUE "" ' example: "Name Surname<MailToEmail@HisDomain>"
+ 
+ 
+  IF SMTPServer = "" OR SMTPMailFrom = "" OR SMTPMailTo = "" THEN
+    MSGBOX 0, _
+            "In order to run this script you needs to change connection parameters."  & $crlf & _
+            "Please open source code and change the following parameters:"            & $crlf & _
+            "SMTPServer, SMTPMailFrom, SMTPReplyTo and SMTPMailTo."                   & $crlf & _
+            ""                                                                        & $crlf & _
+            "IMPORTANT:"                                                              & $crlf & _
+            "as SMTPServer specify and open relay server"                             & $crlf & _
+            "or better a server you can conenct to like a company mail server"        & $crlf & _
+            "or your provider mail server.", _
+            %MB_ICONINFORMATION, _
+            "Missing parameters"
+    stop
+  END IF
+      
+  '---
+  'Set a log file so you can see all in/out data details
+  '---
+  RetCode = SMTP_SetLogFile(LogFile)
+  IF RetCode < 0 THEN
+    MSGBOX 0, "There was an error setting the log file."      & $crlf & _
+              "Log file name: " & LogFile                     & $crlf & _
+              "Error code: " & RetCode                        & $crlf & _
+              "Error description: " & SMTP_GetError(RetCode)
+    STOP
+  END IF         
+  
+  '---
+  'Now connect to your server
+  '---
+  RetCode = SMTP_Connect(SMTPServer, SMTPMailFrom, SMTPReplyTo)
+  IF RetCode < 0 THEN
+    MSGBOX 0, SMTP_GetError(RetCode)   
+    MSGBOX 0, "There was an error connecting to mail server." & $crlf & _
+              "Server: " & SMTPServer                         & $crlf & _
+              "Mail from: " & SMTPMailFrom                    & $crlf & _
+              "Reply to:: " & SMTPReplyTo                     & $crlf & _
+              "Error code: " & RetCode                        & $crlf & _
+              "Error description: " & SMTP_GetError(RetCode)
+    STOP
+  END IF
+
+  '---
+  'Ccontrols whether messages are or are not encoded as quoted-printable
+  '---
+  RetCode = SMTP_SetOption(%SMTP_QUOTED_PRINTABLE, %SMTP_QUOTED_PLAIN)
+
+  IF RetCode < 0 THEN
+    MSGBOX 0, "There was an error setting mail options."      & $crlf & _
+              "Error code: " & RetCode                        & $crlf & _
+              "Error description: " & SMTP_GetError(RetCode)
+  ELSE
+
+    RetCode = SMTP_SendEMail( _
+                                      SMTPMailTo      , _
+                                      ""              , _     'CC
+                                      ""              , _     'BCC
+                                      "Test mail from thinBasic script"        , _
+                                      "This is the message of the mail."       , _
+                                      ""              , _     'Attachments
+                                      0                 _     'Options
+                                    )
+                                    
+    IF RetCode < 0 THEN
+      MSGBOX 0, SMTP_GetError(RetCode)
+    END IF
+  
+  END IF
+  
+  '---
+  'Now close connection
+  '---
+  RetCode = SMTP_Close
+  IF RetCode < 0 THEN
+    MSGBOX 0, "There was an error closing the connection to mail server." & $crlf & _
+              "Error code: " & RetCode                                    & $crlf & _
+              "Error description: " & SMTP_GetError(RetCode)
+  END IF
+

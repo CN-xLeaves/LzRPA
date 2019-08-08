@@ -1,0 +1,34 @@
+Uses "Console" 
+
+dim sx, sy as number
+dim cx, cy as number
+dim ta as number
+
+' Save some info
+sx = Console_GetSizeX()
+sy = Console_GetSizeY()
+cx = Console_GetCursorX()
+cy = Console_GetCursorY()
+ta = Console_GetTextAttribute()
+
+Console_SetTextAttribute(Console_ForegroundRGB(1,1,1,1)) 
+
+Console_WriteLine("  CONSOLE INFO")
+Console_WriteLine("----------------")
+
+Console_SetTextAttribute(ta) 
+
+Console_WriteLine("Title          : " + Console_GetTitle())
+
+Console_WriteLine("Size           :"  + str$(sx) + "x" + ltrim$(str$(sy)) + " (" + ltrim$(str$(sx*sy*2)) + " bytes)")
+
+Console_WriteLine("Origin in      :"  + str$(cx) + "," + ltrim$(str$(cy)))
+
+Console_WriteLine("Text attribute :"  + str$(ta))
+
+Console_SetCursorPosition(30, 23) 
+
+Console_WriteLine("Press any key to exit.")
+
+Console_WaitKey 
+  

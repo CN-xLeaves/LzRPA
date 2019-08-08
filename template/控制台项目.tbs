@@ -1,0 +1,7 @@
+
+Function Main() As Long
+    PrintL "Hello World"
+    PrintL ""
+    PrintL "按任意键继续 ..."
+    WaitKey
+End Function

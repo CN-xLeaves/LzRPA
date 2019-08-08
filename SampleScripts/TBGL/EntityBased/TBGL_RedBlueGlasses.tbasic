@@ -1,0 +1,140 @@
+'===============================================================================
+'=                             TBGL 0.2.2+ sample                              =
+'=                                                                             =
+'=                   Using entity system to setup rendering                    =
+'=                 suitable for viewing with Red-Blue glasses                  =
+'===============================================================================
+
+#MINVERSION 1.7.0.0
+
+Uses "TBGL"
+
+BEGIN CONST
+  ' -- Scene IDs
+  %sScene  = 1
+ 
+  ' -- Entity IDs 
+  %eCameraPivot = 1
+  %eCameraRed 
+  %eCameraBlue
+  %eLight  
+  %eObject  
+  
+  %lObject      = 1      
+END CONST 
+
+FUNCTION Main()
+  LOCAL hWnd As DWORD
+  LOCAL FrameRate AS DOUBLE
+  LOCAL EyeNoseDistance   AS DOUBLE = 0.025
+  
+  ' -- Create and show window
+  hWnd = TBGL_CreateWindowEx("Rendering for red-blue glasses - press ESC to quit", 640, 480, 32, %TBGL_WS_WINDOWED or %TBGL_WS_CLOSEBOX) 
+  TBGL_ShowWindow 
+
+  msgbox hwnd, "Put your red-blue glasses on the nose, and adjust the eye-nose ratio using pageUp/ pageDown", %MB_ICONINFORMATION or %MB_OK, "TBGL example"
+  ' -- Create scene
+  TBGL_SceneCreate(%sScene)
+
+  ' -- Create basic entities
+  
+  ' -- Pivot will be object we stick the "eyes" (two cameras) to
+  TBGL_EntityCreatePivot(%sScene, %eCameraPivot, 0, 0, 0, -5)
+  
+  ' -- Create cameras - with red and blue filter, at offset from Pivot
+  TBGL_EntityCreateCamera(%sScene, %eCameraRed, %eCameraPivot)
+    TBGL_EntitySetPos(%sScene, %eCameraRed, EyeNoseDistance, 0, 0)
+    TBGL_EntitySetColorMask(%sScene, %eCameraRed, %TBGL_RED)  
+    
+  TBGL_EntityCreateCamera(%sScene, %eCameraBlue, %eCameraPivot)
+    TBGL_EntitySetPos(%sScene, %eCameraBlue, -EyeNoseDistance, 0, 0)
+    TBGL_EntitySetColorMask(%sScene, %eCameraBlue, %TBGL_BLUE)  
+    
+  ' -- Create point light  
+  TBGL_EntityCreateLight(%sScene, %eLight)
+    TBGL_EntitySetPos(%sScene, %eLight, 15, 10, 5)
+
+  dim i, j, k as long
+  tbgl_newlist %lObject
+    for i = -2 to 2 
+      for j = -2 to 2 
+        for k = -2 to 2 
+          tbgl_PushMatrix
+            tbgl_Translate i, j, k
+            tbgl_Sphere 0.125', 0.5, 0.5
+          tbgl_PopMatrix
+        next  
+      next  
+    next  
+  tbgl_endlist
+  
+  ' -- Create something to look at
+  TBGL_EntityCreateDLSlot(%sScene, %eObject, 0, %lObject)
+    TBGL_EntitySetPos(%sScene, %eObject, 0, 0, 0)
+
+  ' -- Resets status of all keys 
+  TBGL_ResetKeyState() 
+  dim fov as double = 90
+  ' -- Main loop
+  While TBGL_IsWindow(hWnd) 
+    FrameRate = TBGL_GetFrameRate
+
+    ' -- Render with red mask camera first
+    TBGL_ClearFrame 
+      TBGL_EntitySetUse(%sScene, %eCameraRed, %TRUE)
+      TBGL_SceneRender(%sScene)
+      
+    ' -- Render with blue mask camera 
+    TBGL_ClearFrame(%TBGL_CLEAR_DEPTH or %TBGL_RESET_MATRIX) 
+      TBGL_EntitySetUse(%sScene, %eCameraBlue, %TRUE)
+      TBGL_SceneRender(%sScene)
+      
+    ' -- Combination of both renders will create the illusion
+    TBGL_DrawFrame 
+    
+    ' -- Turn the object
+    TBGL_EntityTurn(%sScene, %eObject, -10/FrameRate,-20/FrameRate, -30/FrameRate)    
+
+    ' -- ESCAPE key to exit application
+    If TBGL_GetWindowKeyState(hWnd, %VK_ESCAPE) Then Exit While 
+
+    ' -- Control camera
+    IF TBGL_GetWindowKeyState(hWnd, %VK_LEFT) Then
+      TBGL_EntityTurn(%sScene, %eCameraPivot, 0, 45/FrameRate, 0)
+    ELSEIF TBGL_GetWindowKeyState(hWnd, %VK_RIGHT) Then
+      TBGL_EntityTurn(%sScene, %eCameraPivot, 0,-45/FrameRate, 0)
+    END IF
+
+    IF TBGL_GetWindowKeyState(hWnd, %VK_UP) Then
+      TBGL_EntityPush(%sScene, %eCameraPivot, 0,0, 5/FrameRate)
+    ELSEIF TBGL_GetWindowKeyState(hWnd, %VK_DOWN) Then
+      TBGL_EntityPush(%sScene, %eCameraPivot, 0,0, -5/FrameRate)
+    END IF
+
+    ' -- Correct the eye-nose distance
+    IF TBGL_GetWindowKeyState(hWnd, %VK_PGUP) Then
+      EyeNoseDistance += 0.1/FrameRate
+      TBGL_EntitySetPos(%sScene, %eCameraRed, EyeNoseDistance, 0, 0)
+      TBGL_EntitySetPos(%sScene, %eCameraBlue, -EyeNoseDistance, 0, 0)
+    ELSEIF TBGL_GetWindowKeyState(hWnd, %VK_PGDN) Then
+      EyeNoseDistance -= 0.1/FrameRate      
+      TBGL_EntitySetPos(%sScene, %eCameraRed, EyeNoseDistance, 0, 0)
+      TBGL_EntitySetPos(%sScene, %eCameraBlue, -EyeNoseDistance, 0, 0)
+    END IF
+    
+    ' -- Correct the eye-nose distance
+    IF TBGL_GetWindowKeyState(hWnd, %VK_HOME) Then
+      fov += 15/FrameRate
+      TBGL_EntitySetFOV(%sScene, %eCameraRed, fov)
+      TBGL_EntitySetFOV(%sScene, %eCameraBlue, fov)
+    ELSEIF TBGL_GetWindowKeyState(hWnd, %VK_END) Then
+      fov -= 15/FrameRate      
+      TBGL_EntitySetFOV(%sScene, %eCameraRed, fov)
+      TBGL_EntitySetFOV(%sScene, %eCameraBlue, fov)
+    END IF    
+
+  Wend 
+
+  TBGL_DestroyWindow
+END FUNCTION
+  

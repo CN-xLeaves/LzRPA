@@ -1,0 +1,51 @@
+  '
+  '
+  '
+  '         ###############
+  '       ###################
+  '      ###               ###
+  '     ###    ###          ###
+  '    ###    ## ##         ###
+  '    ###   ##   ##        ###
+  '    ###  ##     ##       ###
+  '    ###  ##      ##      ###
+  '    ###  ##      ##      ###
+  '    ###   ####  ##      ###
+  '     ###    ####       ###
+  '      ###             ###
+  '       ###           ###
+  '         #############
+  '           #########
+
+Uses "oxygen"
+Dim c,src As String
+dim v as long
+src="
+
+
+  #include Voice.inc
+
+  '---------------------
+  function main() as sys
+  '=====================
+  '
+  incl VoiceMacros
+  Connect voice
+  ErrorHandler return 0
+  voice.Speak w"Hello Everyone!"
+  voice.WaitUntilDone forever
+  DisConnect voice
+  '
+  end function
+
+  main
+
+"
+'msgbox 0,O2_prep src+o2_error
+O2_asmo src
+if Len(O2_ERROR) Then
+  msgbox 0,O2_ERROR
+else
+  o2_exec
+end if
+

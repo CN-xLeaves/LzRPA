@@ -1,0 +1,40 @@
+  uses "VBREGEXP"
+
+  dim lpRegExp  as dword
+  dim strText   as string value "The quick brown fox jumped over the lazy dog."
+  dim strRetVal as string
+
+  '---Allocate a new regular expression instance
+  lpRegExp = VBREGEXP_New
+
+  '---Check if it was possible to allocate and if not stop the script
+  if isfalse lpRegExp then
+    MSGBOX 0, "Unable to create an instance of the RegExp object." & $crlf & "Script terminated"
+    stop
+  end if
+
+  '---Set case insensitivity
+  VBREGEXP_SetIgnoreCase lpRegExp, -1
+  '---Set global applicability
+  VBREGEXP_SetGlobal lpRegExp, -1
+
+
+  '---Replace example 1
+  '---Replace 'fox' with 'cat'.
+  VBREGEXP_SetPattern lpRegExp, "fox"
+  strRetVal = VbRegExp_Replace(lpRegExp, strText, "cat")
+  
+  MSGBOX 0, strRetVal
+
+  
+  '---Replace example 2
+  '---In addition, the Replace method can replace subexpressions in the pattern.
+  '---The following swaps the first pair of words in the original string:
+  VBREGEXP_SetPattern lpRegExp, "(\S+)(\s+)(\S+)"
+  strRetVal = VbRegExp_Replace(lpRegExp, strText, "$3$2$1")
+  
+  MSGBOX 0, strRetVal
+
+  '---Deallocate regular expression resource
+  IF istrue lpRegExp   THEN VBREGEXP_Release(lpRegExp)
+

@@ -1,0 +1,237 @@
+  '------------------------------------------------------------------
+  ' Pre-processor prerequisites
+  '------------------------------------------------------------------
+  #minversion 1.7.8.0
+  
+  '------------------------------------------------------------------
+  ' Declare needed thinBasic modules
+  '------------------------------------------------------------------
+  USES "UI"
+  USES "UIAdv"
+  'uses "WebBrowser"
+  uses "Ini"
+  
+  
+  '------------------------------------------------------------------
+  ' Global declarations
+  '------------------------------------------------------------------
+    begin const
+      %IDC_Web           = 200
+      %IDC_ToolBar
+      %IDC_URL
+      
+      %CMD_Back
+      %CMD_Forward
+      %CMD_GoHome
+      %CMD_Refresh
+      %CMD_Stop
+      %CMD_GetLinks
+      %CMD_Go
+      
+      %IDC_TimerIdle
+      
+    end const
+
+  $MainDialogTitle  = "[thinBasic Mini Web Browser]"
+
+  '---Ini config setup
+  $Ini_Name         = "MiniWebBrowser.ini"
+  $Ini_FullPath     = app_sourcepath & $Ini_Name
+    $Ini_Section_General  = "General"
+      $Ini_Section_General_x  = "X"
+      $Ini_Section_General_y  = "Y"
+      $Ini_Section_General_w  = "Width"
+      $Ini_Section_General_h  = "Height"
+      $Ini_Section_General_IsMaximized  = "IsMaximized"
+
+    $Ini_Section_Last     = "Last"
+      $Ini_Section_Last_url   = "url"
+
+  
+  '------------------------------------------------------------------
+  ' Main script entry point
+  '------------------------------------------------------------------
+  function Main() as long
+    local hDlg        AS LONG
+    local Count       as long
+    local x, y, w, h  as long
+
+    '---Load config values
+    x = INI_GetKey($Ini_FullPath, $Ini_Section_General, $Ini_Section_General_x, "-1")
+    y = INI_GetKey($Ini_FullPath, $Ini_Section_General, $Ini_Section_General_y, "-1")
+    w = INI_GetKey($Ini_FullPath, $Ini_Section_General, $Ini_Section_General_w, "640")
+    h = INI_GetKey($Ini_FullPath, $Ini_Section_General, $Ini_Section_General_h, "600")
+
+
+    '---Create a new window
+    DIALOG NEW pixels, 0, $MainDialogTitle, _
+                                        x, y, w, h, _
+                                        %WS_CLIPCHILDREN      or _
+                                        %WS_CLIPSIBLINGS      or _
+                                        %WS_DLGFRAME          OR _
+                                        %WS_CAPTION           OR _
+                                        %WS_SYSMENU           OR _
+                                        %WS_OVERLAPPEDWINDOW  ,  _
+                                        0 _
+                                        TO hDlg
+
+    '---Show new window and assign it callback function
+    DIALOG SHOW MODal hDlg, call cbDialog_Proc
+    'DIALOG SHOW MODELESS hDlg, call cbDialog_Proc
+    'Do
+    '  DIALOG DOEVENTS 0 To Count
+    'Loop While Count
+
+  end function
+
+  '------------------------------------------------------------------
+  ' Window callback handle. Use to handle message pump of main window
+  '------------------------------------------------------------------
+  callback function cbDialog_Proc() as long
+    local sStr        as string
+    local lValue      as long
+    local x, y, w, h  as long
+    
+    static lState     as long
+    static sLastLocationUrl as string
+    static sLocationUrl     as string
+               
+    SELECT CASE cbMsg
+      
+      CASE %WM_INITDIALOG
+
+        lState = INI_GetKey($Ini_FullPath, $Ini_Section_General, $Ini_Section_General_IsMaximized, "0")
+        if lState = 1 then
+          dialog show state cbhndl, %SW_MAXIMIZE
+        end if
+
+        dialog set minsize cbhndl, 360, 150
+        
+        dialog get client cbhndl to w, h
+
+        WebBrowser_Create cbhndl, %IDC_Web, "", 0,   80, -1, -1
+        sLocationUrl = INI_GetKey($Ini_FullPath, $Ini_Section_Last, $Ini_Section_Last_url)
+        if sLocationUrl <> "" then
+          WebBrowser_Navigate2 cbhndl, %IDC_Web, sLocationUrl
+        else
+          WebBrowser_gohome cbhndl, %IDC_Web
+        end if
+
+        control add button, cbhndl, %CMD_Back     , "<---"  ,   5,  5,  45, 22
+        control add button, cbhndl, %CMD_Forward  , "--->"  ,  55,  5,  45, 22
+        control add button, cbhndl, %CMD_GoHome   , "Home"  , 105,  5,  45, 22
+        control add button, cbhndl, %CMD_Refresh  , "Refr"  , 155,  5,  45, 22
+        control add button, cbhndl, %CMD_Stop     , "Stop"  , 200,  5,  45, 22
+
+        control add button, cbhndl, %CMD_GetLinks , "Links" , w - 85,  5,  80, 22
+        control set resize, cbhndl, %CMD_GetLinks, 0, 1, 1, 0
+
+        control add textbox, cbhndl, %IDC_URL     , ""      ,   5, 30, w - 95, 22, , , call cbTextBoxeUrl
+        control set resize, cbhndl, %IDC_URL, 1, 1, 1, 0
+
+        control add button, cbhndl, %CMD_Go       , "Go"    , w - 85, 30,  80, 22
+        control set resize, cbhndl, %CMD_Go, 0, 1, 1, 0
+
+        dialog set timer cbhndl, %IDC_TimerIdle, 1000
+
+
+      case %WM_COMMAND
+        select case cbctl
+          Case %IDOK
+            'msgbox 0, "'---<< Ok or ENTER key was pressed"
+            WebBrowser_Navigate2 cbhndl, %IDC_Web, control_gettext(cbhndl, %IDC_URL)
+
+          case %IDCANCEL
+            'msgbox 0, "'---<< Calcel or ESC key was pressed"
+            WebBrowser_stop cbhndl, %IDC_Web
+
+          case %CMD_Back
+            WebBrowser_goback cbhndl, %IDC_Web
+          case %CMD_Forward
+            WebBrowser_goforward cbhndl, %IDC_Web
+          case %CMD_GoHome
+            WebBrowser_gohome cbhndl, %IDC_Web
+          case %CMD_Refresh
+            WebBrowser_refresh cbhndl, %IDC_Web
+          case %CMD_Stop
+            WebBrowser_stop cbhndl, %IDC_Web
+          case %CMD_Go
+            WebBrowser_Navigate2 cbhndl, %IDC_Web, control_gettext(cbhndl, %IDC_URL)
+
+          case %CMD_GetLinks
+              msgbox 0, WebBrowser_Doc2_GetLinksHRef cbhndl, %IDC_Web
+        end select
+
+      case %WM_SIZE
+        dialog get client cbhndl to w, h
+        control set size cbhndl, %IDC_Web, w, h - 80
+
+      case %WM_TIMER
+        select case cbctl
+          case %IDC_TimerIdle
+            sLocationUrl = WebBrowser_Locationurl(cbhndl, %IDC_Web)
+            if sLastLocationUrl <> sLocationUrl then
+              sLastLocationUrl = sLocationUrl
+              
+              dialog set text cbhndl, WebBrowser_LocationName(cbhndl, %IDC_Web) & " - " & $MainDialogTitle
+              control set text cbhndl, %IDC_URL, sLocationUrl
+              'control set focus cbhndl, %IDC_Web
+
+            end if
+            
+        end select        
+        
+      case %WM_DESTROY
+        dialog kill timer cbhndl, %IDC_TimerIdle
+
+        WebBrowser_stop cbhndl, %IDC_Web
+
+        '---Save config values
+          '---If window is maximized, do not save position and size but just maximized flag
+          if Win_IsZoomed(cbhndl) then
+            INI_SetKey($Ini_FullPath, $Ini_Section_General, $Ini_Section_General_IsMaximized, iif(Win_IsZoomed(cbhndl), "1", "0"))
+          else
+            INI_SetKey($Ini_FullPath, $Ini_Section_General, $Ini_Section_General_IsMaximized, "0")
+            dialog get loc cbhndl to x, y
+            dialog get client cbhndl to w, h
+            INI_setKey($Ini_FullPath, $Ini_Section_General, $Ini_Section_General_x, x)
+            INI_setKey($Ini_FullPath, $Ini_Section_General, $Ini_Section_General_y, y)
+            INI_setKey($Ini_FullPath, $Ini_Section_General, $Ini_Section_General_w, w)
+            INI_setKey($Ini_FullPath, $Ini_Section_General, $Ini_Section_General_h, h)
+          end if
+
+          INI_SetKey($Ini_FullPath, $Ini_Section_Last, $Ini_Section_Last_url, sLastLocationUrl)
+
+    END SELECT
+
+  end function
+  
+
+  '------------------------------------------------------------------------
+  callback function cbTextBoxeUrl() as long
+  '------------------------------------------------------------------------
+    select case cbmsg
+      case %WM_COMMAND
+
+        select case CBCTLMSG
+          case %EN_SETFOCUS
+            '---When textbox get focus, change colors
+            CONTROL SET COLOR CBHNDL, CBCTL, rgb(255, 0, 0), rgb(255, 255, 128)
+            '---Select all the text inside. Use POST and not SEND
+            control post CBHNDL, CBCTL, %EM_SETSEL, 0, -1
+            return %TRUE
+          case %EN_KILLFOCUS
+            '---When the control lose its focus, change colors to standard one.
+            CONTROL SET COLOR CBHNDL, CBCTL, 0             , rgb(255, 255, 255)
+            return %TRUE
+
+          case %EN_CHANGE
+ 
+          case %EN_UPDATE
+ 
+         end select    
+
+    end select  
+
+  end function
+  

@@ -1,0 +1,5 @@
+Uses "OS"
+
+DWord processID = OS_ProcessGetId("thinBasic.exe")
+String s = OS_ProcessGetFullPath( processID )
+MsgBox 0, s

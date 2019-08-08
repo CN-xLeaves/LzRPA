@@ -1,0 +1,90 @@
+'===============================================================================
+'=                             TBGL 0.2.2+ sample                              =
+'=                                                                             =
+'=                  Retrieving video modes and switching them                  =
+'=                                 on the fly                                  =
+'===============================================================================
+
+Uses "TBGL" 
+
+' -- Create and show window
+Dim hWnd As Dword  = TBGL_CreateWindowEx("Windowed/Fullscreen switch, press ESC to quit", 800, 600, 32, %TBGL_WS_WINDOWED) 
+TBGL_ShowWindow 
+
+ 
+dim VideoModesString  as string = tbgl_GetFullscreenModes
+dim VideoModesNum     as long   = parsecount(VideoModesString, ",")
+msgbox (hWnd, "Press F1 to switch between following fullscreen modes:"+$CRLF+replace$(VideoModesString, ",", $CRLF), %MB_ICONINFORMATION or %MB_OK, "Just starting...")
+
+type tVideoMode
+  x as long
+  y as long
+  b as long
+end type
+
+Dim VideoMode(VideoModesNum) as tVideoMode
+dim ActualMode as long 
+dim i as long
+
+for i = 1 to VideoModesNum
+  VideoMode(i).x = val(parse$(parse$(VideoModesString, ",", i), "x", 1))
+  VideoMode(i).y = val(parse$(parse$(VideoModesString, ",", i), "x", 2))
+  VideoMode(i).b = val(parse$(parse$(VideoModesString, ",", i), "x", 3))
+next
+
+' -- Some font for fun
+TBGL_LOADBMPFONT "Textures\TBGL_FONT.BMP", 40
+
+' -- Resets status of all keys 
+TBGL_ResetKeyState()
+tbgl_UseVSync 0
+
+dim FrameRate as double
+' -- Main loop
+While TBGL_IsWindow(hWnd) 
+  FrameRate = tbgl_GetFrameRate
+  TBGL_ClearFrame 
+
+      ' -- Sets camera to look from 0,0,5 to 0,0,0
+      tbgl_Camera 0, 0, 5, _
+                  0, 0, 0
+ 
+      ' -- Creates triangle defined using 3 vertices
+      tbgl_BeginPoly %GL_TRIANGLES
+        tbgl_Color 255,   0,   0    ' -- Red color
+        tbgl_Vertex -1, -1,  0
+        
+        tbgl_Color   0, 255,   0    ' -- Green color
+        tbgl_Vertex  1, -1,  0
+                
+        tbgl_Color   0,   0, 255    ' -- Blue color
+        tbgl_Vertex  0,  1,  0        
+      tbgl_EndPoly
+
+    tbgl_Color 255, 255, 255
+    
+    ' -- Just some dummy text
+    tbgl_ResetMatrix
+    if TBGL_IsFullscreen(hWnd) THEN
+      tbgl_PrintBMP parse$(VideoModesString, ",", ActualMode)+", press F1 to try next mode", 1, 1
+    else  
+      tbgl_PrintBMP "Windowed, press F1 to go fullscreen", 1, 1    
+    end if  
+            
+  TBGL_DrawFrame 
+
+  ' -- ESCAPE key to exit application
+  If TBGL_GetWindowKeyonce(hWnd, %VK_F1) Then
+      incr ActualMode
+      
+      ' -- Once we have seen all video modes, better to get lost      
+      if ActualMode > VideoModesNum then exit while            
+      TBGL_SetFullscreen(hWnd, VideoMode(ActualMode).x, VideoMode(ActualMode).y, VideoMode(ActualMode).b)       
+  endif    
+  
+  If TBGL_GetWindowKeyState(hWnd, %VK_ESCAPE) Then Exit While 
+
+Wend 
+
+TBGL_DestroyWindow
+ 

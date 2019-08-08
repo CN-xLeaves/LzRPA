@@ -1,0 +1,49 @@
+' ========================================================================================
+' Demonstrates the use of the insertBefore method.
+' The following example creates a new IXMLDOMNode object and inserts it as the second
+' child of the top-level node.
+' ========================================================================================
+
+uses "Console"
+
+#default declare Checkduplicates    %TRUE
+#default declare CheckMissing       %TRUE
+
+#INCLUDE "%APP_INCLUDEPATH%\TB_XML60.INC"
+
+' ========================================================================================
+' Main
+' ========================================================================================
+FUNCTION MAIN() as long
+
+   LOCAL pXmlDoc AS DWORD
+   LOCAL pRootNode AS DWORD
+   LOCAL pNewNode AS DWORD
+   LOCAL pCurrNode AS DWORD
+   LOCAL pNodeList AS DWORD
+   LOCAL pItem AS DWORD
+
+   pXmlDoc = XmlCreateObject("Msxml2.DOMDocument.6.0")
+   IXMLDOMDocument_loadXML pXmlDoc, "<root><child1/></root>"
+   pRootNode = IXMLDOMDocument_get_documentElement(pXmlDoc)
+   console_writeline IXMLDOMElement_get_xml(pRootNode)
+   pNewNode = IXMLDOMDocument_createNode(pXmlDoc, %NODE_ELEMENT, "CHILD2", "")
+   pNodeList = IXMLDOMElement_get_childNodes(pRootNode)
+   pItem = IXMLDOMNodeList_get_item(pNodeList, 0)
+   pCurrNode = IXMLDOMElement_insertBefore(pRootNode, pNewNode, pItem)
+   console_writeline IXMLDOMElement_get_xml(pRootNode)
+
+   ' Cleanup
+   XmlRelease pItem
+   XmlRelease pCurrNode
+   XmlRelease pNewNode
+   XmlRelease pNodeList
+   XmlRelease pRootNode
+   XmlRelease pXmlDoc
+   
+   console_writeline "--- Press any key to finish ---"
+   console_WAITKEY
+
+END FUNCTION
+
+Main

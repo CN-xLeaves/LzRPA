@@ -1,0 +1,63 @@
+'
+'----------------------------------
+'OOP AND POINTERS
+'==================================
+ 
+Uses "oxygen"
+Dim src As String
+
+src="
+ 
+  basic
+
+  cr=chr(13) chr(10)
+  results="Oxygen OOP Tests:" cr cr
+
+  'FOR FIXED OBJECTS:
+  '------------------
+
+  'def create %1 %2 : %2.init
+  'def destroy %h27 %1
+
+  'FOR DYNAMIC OBJECTS:
+ 
+  def create %1 *%2 : &%2=news sizeof %1 : %2.init
+  def destroy frees &%1
+   
+
+  class Test
+  {
+    private
+      int id
+
+    public
+      method init(int id) { this.id=id }
+      method foo          { results+= "foo ID " id cr }
+      method bar          { results+= "bar ID " id cr }
+  }
+
+
+  create test t1 1
+  create test t2 2
+
+  t1.foo
+  t2.foo
+  t1.bar
+  t2.bar
+
+  call &test.foo &t1 'USING POINTER TECHNIQUE
+
+  destroy t1
+  destroy t2
+
+  print results
+
+  "
+
+'MsgBox 0,O2_PREP src ': Stop
+O2_ASMO src
+If Len(O2_ERROR) Then
+  MsgBox 0, "Error: "+O2_ERROR
+Else
+ O2_EXEC
+End If

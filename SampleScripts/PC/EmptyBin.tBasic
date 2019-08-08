@@ -1,0 +1,10 @@
+Uses "PC"
+
+Function Main () As Long  
+
+	PC_EmptyBin(%PC_EB_NORMAL)                                                                      	
+	' PC_EmptyBin(%PC_EB_NOCONFIRMATION or %PC_EB_NOSOUND)  ' -- Silent version without confirmation  
+
+End Function
+
+

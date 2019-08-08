@@ -1,0 +1,117 @@
+'----------------------------------------------------------------------------
+' Recursively scan thinBasic executable directory and subdir, search for any
+' file, collect size and file version info and save data into a
+' Biff file, an Excel Compatible file
+'----------------------------------------------------------------------------
+
+USES "FILE"         '---Load File module
+Uses "BIFF"         '---Load Biff module
+uses "console"      '---Load Console module
+
+'----------------------------------------------------------------------------
+' Start Main Program
+'----------------------------------------------------------------------------
+DIM vCol          AS LONG VALUE 2
+DIM vRow          AS LONG VALUE 2
+DIM OutFileName   AS STRING 
+DIM StartingDir   AS STRING
+DIM T1, T2        AS DOUBLE
+
+'---Start timer
+T1 = TIMER
+
+'---Excel file where to store results  
+OutFileName = App_sourcepath + App_sourcename + ".xls"
+
+'---Directory where to start scan
+StartingDir = APP_PATH
+
+'---Delete result file, set out buffer, create result file
+File_Kill(OutFileName)
+BIFF_SetBuffer(1024 * 1024)
+BIFF_CreateFile(OutFileName)
+
+BIFF_WriteText    ("DirSize(Bytes)", vRow - 1, vCol - 1)
+BIFF_WriteText    ("DirName", vRow - 1, vCol)
+
+BIFF_WriteText    (StartingDir, vRow, vCol)
+BIFF_WriteNumber  (TotalFileSize(StartingDir), vRow, vCol - 1)
+
+INCR vRow
+
+ListDir(StartingDir)
+
+INCR vRow
+
+'---End timer
+T2 = TIMER
+BIFF_WriteText ("TOTAL TIME (Secs): " & FORMAT$(T2 - T1, "#0.0000"), vRow, vCol)
+
+BIFF_CloseFile
+
+PrintL
+PrintL "Check " + OutFileName + " for results..."
+PrintL "Press any key to continue..."
+WaitKey
+'----------------------------------------------------------------------------
+' End main program
+'----------------------------------------------------------------------------
+
+
+'----------------------------------------------------------------------------
+FUNCTION TotalFileSize(lDir AS STRING) AS QUAD
+'----------------------------------------------------------------------------
+  LOCAL Count     AS LONG
+  LOCAL FileName  AS STRING                 
+  Local nItems    As Long
+  LOCAL TotSize   AS QUAD
+  Local fSize     As Quad
+  Local Files()   As String
+  
+  nItems = DIR_ListArray(Files, lDir, "*.*", %FILE_NORMAL Or %FILE_HIDDEN Or %FILE_SYSTEM Or %FILE_ADDPATH)
+    
+  IF nItems > 0 THEN
+    FOR Count = 1 TO nItems     
+      INCR vRow
+
+      FileName = Files(Count)
+      
+      fSize = FILE_SIZE(FileName)
+      TotSize = TotSize + fSize
+      BIFF_WriteNumber  (fSize, vRow, vCol + 2)
+      BIFF_WriteText    (FileName, vRow, vCol + 1)
+      BIFF_WriteText    (FILE_GetVersionSTring(FileName), vRow, vCol + 3)
+      console_writeLine(FileName & " Version: " & FILE_GetVersionString(FileName))
+
+    NEXT
+  END IF
+  
+  FUNCTION = TotSize
+  
+END FUNCTION
+ 
+'----------------------------------------------------------------------------
+FUNCTION ListDir(lDir AS STRING) AS LONG
+'----------------------------------------------------------------------------
+
+  LOCAL Count   AS LONG
+  LOCAL Item    AS STRING                 
+  Local nItems  As Long 
+  Local CurrentRow  As Long  
+  Local Directories() As String
+  
+  nItems = DIR_ListArray(Directories, lDir, "*.*", %FILE_SUBDIR Or %FILE_HIDDEN Or %FILE_ADDPATH)
+  
+  IF nItems > 0 THEN
+    FOR Count = 1 TO nItems
+      Item = Directories(Count)
+      CurrentRow = vRow
+      BIFF_WriteText    (Item, CurrentRow, vCol)
+      BIFF_WriteNumber  (TotalFileSize(Item), CurrentRow, vCol - 1)
+      INCR vRow
+      ListDir(Item)
+    NEXT
+  END IF
+ 
+END FUNCTION
+

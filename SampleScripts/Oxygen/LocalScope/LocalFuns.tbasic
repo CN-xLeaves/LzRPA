@@ -1,0 +1,55 @@
+
+'----------------------------------------
+'INNER FUNCTIONS
+'========================================
+
+
+uses "oxygen","file"
+dim src as string
+ 
+src = "
+
+  '----------------------------
+  function ParentFun(p) as long
+  '============================
+    
+    local  a=p
+    local  c=20000
+    static b=4
+    ;----------------------
+    'INNER FUNCTIONs --->>>
+    
+    function f(v) as long = v*20
+    print str f a
+    
+    function f(v) as long (function=10+v*10)
+    print str f a
+    
+    function f(byval v as long) as long (local c=13 : function=v*3+b+c )
+    print str f a
+
+    function f(v) as long
+    (
+     local c=17
+     function=c+v*3
+    )
+    
+    print str f a
+
+    function=0    
+  end function
+  
+  ParentFun 1
+
+
+  "
+  
+'file_save ( "t.txt", o2_prep src )
+'msgbox 0, o2_prep src
+
+o2_basic src
+if len(o2_error) then
+  msgbox 0, o2_error : stop
+end if
+o2_exec
+ 

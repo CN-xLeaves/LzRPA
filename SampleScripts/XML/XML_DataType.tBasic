@@ -1,0 +1,38 @@
+' ========================================================================================
+' Demonstrates the use of the dataType property.
+' ========================================================================================
+
+uses "Console"
+
+#default declare Checkduplicates    %TRUE
+#default declare CheckMissing       %TRUE
+
+#INCLUDE "%APP_INCLUDEPATH%\TB_XML60.INC"
+
+' ========================================================================================
+' Main
+' ========================================================================================
+FUNCTION MAIN() as long
+
+   LOCAL pXmlDoc AS DWORD
+   LOCAL pRoot AS DWORD
+
+   pXmlDoc = XmlCreateObject("Msxml2.DOMDocument.6.0")
+   IXMLDOMDocument_put_async pXmlDoc, %FALSE
+
+   IF ISTRUE IXMLDOMDocument_loadXML(pXmlDoc, "<root/>") THEN
+      pRoot = IXMLDOMDocument_get_documentElement(pXmlDoc)
+      IXMLDOMNode_put_dataType pRoot, "int"
+      IXMLDOMNode_put_nodeTypedValue pRoot, 5
+      console_writeline IXMLDOMDocument_get_xml(pXmlDoc)
+      XmlRelease pRoot
+   END IF
+
+   XmlRelease pXmlDoc
+   
+   console_writeline "--- Press any key to finish ---"
+   console_WAITKEY
+
+END FUNCTION
+
+Main

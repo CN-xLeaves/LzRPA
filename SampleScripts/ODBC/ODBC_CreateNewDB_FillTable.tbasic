@@ -1,0 +1,141 @@
+  '----------------------------------------------------------------------------
+  '----------------------------------------------------------------------------
+  ' This script will demonstrate how to:
+  ' - create a new ODBC environment
+  ' - connect to a DB
+  ' - perform SQL queries
+  ' - retrieve data fetching records
+  ' - bind script variables to data fields
+  '----------------------------------------------------------------------------
+  ' Thanks to Jose Roca for his hard work on ODBC wrapper
+  '----------------------------------------------------------------------------
+
+  '---Use console module to show output
+  uses "console"
+  uses "File"
+    
+  '---IMPORTANT: include this file in order to use ODBC functionalities
+  '              inside your scripts
+  #include "%APP_INCLUDEPATH%\ODBC352.INC"
+
+
+  dim DBName  as string
+  DBName = app_sourcepath & "new.mdb"
+  
+  if file_exists(DBName) = %FALSE then
+    printl "Script aborted."
+    printl "DB " & DBName & " does not exists."
+    printl "---Press a key to finish---"
+    waitkey
+    stop
+  end if
+  
+  '---Declare needed variables
+  dim hEnv    AS DWORD      '---Environment handle
+  dim hDbc    AS DWORD      '---Connection handle
+  dim hStmt   AS DWORD      '---Statement handle
+  
+  dim ConStr  AS STRING     '---Connection string
+
+  '---Allocates an environment handle
+  hEnv = OdbcAllocEnv
+  IF OdbcError THEN
+    console_writeline("Script aborted. It was not possible to create an environment handle.")
+    Terminate
+  end if
+
+  '---Allocates the connection handle
+  hDbc = OdbcAllocConnect(hEnv)
+  IF ISFALSE hDbc THEN
+    console_writeline("Script aborted. It was not possible to allocate the connection handle.")
+    Terminate
+  end if
+
+  '---Connects with the ODBC driver
+  ConStr = "DRIVER={Microsoft Access Driver (*.mdb)};DBQ=New.mdb;UID=;PWD=;"
+  OdbcOpenConnection(hDbc, ConStr)
+  IF OdbcError THEN
+     console_writeline(OdbcGetConnectionErrorInfo(hDbc))
+     Terminate
+  END IF
+
+  '---Allocates a statement handle
+  hStmt = OdbcAllocStmt(hDbc)
+
+  '---Binds the columns ...
+  '---First declare some variable able to receive binded DB colums ...
+  dim cbSID       AS LONG
+  dim cbTitle     AS LONG
+  dim cbAuthor    AS LONG
+
+  dim lSID        AS LONG
+  dim szTitle     AS ASCIIZ * 256
+  dim szAuthor    AS ASCIIZ * 256
+
+  '---than use OdbcBindCol giving column number, type, ... 
+  OdbcBindCol(hStmt, 1, %SQL_C_LONG   , VARPTR(lSID     ) , 0               , cbSID)
+  OdbcBindCol(hStmt, 2, %SQL_C_CHAR   , VARPTR(szTitle  ) , SIZEOF(szTitle ), cbTitle)
+  OdbcBindCol(hStmt, 3, %SQL_C_CHAR   , VARPTR(szAuthor ) , SIZEOF(szAuthor), cbAuthor)
+
+  '---Set cursor type
+  OdbcSetKeysetDrivenCursor hStmt
+  '---Set optimistic concurrency
+  OdbcSetOptimisticConcurrency hStmt
+
+  '---Generates a result set
+  OdbcExecDirect hStmt, "SELECT * FROM MyDisks ORDER BY SID"
+  IF OdbcError THEN
+    console_writeline(OdbcGetStatementErrorInfo(hStmt))
+    Terminate
+  END IF
+
+  dim MaxRows as long = 10000
+  dim T1, T2  as double
+  dim Counter as long
+  
+  T1 = timer
+  for Counter = 1 to MaxRows
+    ' Fill the values of the bounded application variables and its sizes
+    lSID      = Counter                 : cbSID     = SIZEOF(lSID)
+    szTitle  = "Disk title " & Counter  : cbTitle   = LEN(szTitle)
+    szAuthor = "Disk author" & Counter  : cbAuthor  = LEN(szTitle)
+    ' Adds the record
+    OdbcAddRecord hStmt
+  next 
+  T2 = timer
+  printl "Time to add " & MaxRows & " rows: " & format$(T2 - T1, "#0.000") & " seconds"
+
+  '---Parse the result set.
+  '---Automatically binded variables will be filled with relevant data
+  
+  T1 = timer
+  OdbcExecDirect hStmt, "SELECT * FROM MyDisks ORDER BY SID DESC"
+  DO
+    OdbcFetch hStmt
+    IF ISTRUE(OdbcError) THEN EXIT DO
+    'print     ( using$("#### ", lSID) )
+    'print     ( using$("\                         \ ", szTitle ) )
+    'printL    ( using$("\                         \ ", szAuthor) )
+  LOOP
+  T2 = timer
+  printl "Time to read " & MaxRows & " rows ordered by SID DESC: " & format$(T2 - T1, "#0.000") & " seconds"
+  printl "---Press a key to finish---"
+  
+  waitkey
+
+  Terminate
+
+
+  '----------------------------------------------------------------------------
+  function Terminate()
+  '----------------------------------------------------------------------------
+
+    IF hStmt  THEN OdbcCloseCursor hStmt      '---Closes the cursor
+    IF hStmt  THEN OdbcCloseStmt hStmt        '---Closes the statement handle
+    IF hDbc   THEN OdbcCloseConnection hDbc   '---Closes the connection
+    IF hEnv   THEN OdbcFreeEnv hEnv           '---Frees the environment handle
+
+    'stop
+
+  end function
+

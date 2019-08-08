@@ -1,0 +1,104 @@
+{
+    "Caption": "RedisServer",
+    "Remark": "Redis服务器",
+    "ModuleName": "RedisServer",
+    "Icon": "公文包",
+    "Visible": true,
+    "Templet": "index.html",
+    "Help": {
+        "Caption": ""
+    },
+    "Child": [
+        {
+            "Caption": "单文件使用扩展库",
+            "Icon": "信息",
+            "Visible": true,
+            "Templet": "document.html",
+            "Help": {
+                "Caption": "扩展库使用帮助",
+                "Document": "在项目中使用扩展库功能会自动将扩展库引入项目，项目编译或运行时，自动加入扩展库依赖代码和文件。<br><br>如果您在单文件中希望使用本扩展库，则必须编写扩展库依赖代码才能调用扩展库中的函数，否则会报错，LzRPA 建议使用工程方式编写程序，但仍保留单文件使用扩展库的方法。<br><br>扩展库依赖代码：<br>&nbsp;&nbsp;#Include &quot;%APP_PATH%\\\\..\\\\Modules\\\\RedisServer\\\\boot.tbs&quot;<br><br>建议将引用扩展库代码统一添加到全局代码块，也就是代码的最上面。<br><br>使用 RedisServer 扩展库除了要引用扩展库文件外，还需要将 redis_server.exe 和 redis.conf 文件复制到生成的 exe 或脚本文件同一目录下，这两个文件保存在软件安装目录下的 Modules\\\\RedisServer 子目录内。"
+            }
+        },
+        {
+            "Caption": "RedisServer_Run",
+            "Remark": "启动服务器",
+            "Visible": true,
+            "Function": true,
+            "InsCode": "RedisServer_Run()",
+            "Templet": "command.html",
+            "Help": {
+                "Caption": "RedisServer_Run",
+                "Define": "iRet = RedisServer_Run(sExePath, sOptPath, iShow)",
+                "Describe": "启动本地 Redis 服务器",
+                "RetType": "Integer",
+                "Return": "成功返回 Redis 服务器进程PID，失败返回 0",
+                "Param": [
+                    {
+                        "Caption": "sExePath",
+                        "DataType": "String",
+                        "Describe": "Redis 服务器程序文件路径，默认使用脚本目录下的 redis_server.exe",
+                        "Optional": true
+                    },
+                    {
+                        "Caption": "sOptPath",
+                        "DataType": "String",
+                        "Describe": "Redis 服务器配置文件路径，默认使用脚本目录下的 redis.conf",
+                        "Optional": true
+                    },
+                    {
+                        "Caption": "iShow",
+                        "DataType": "Integer",
+                        "Describe": "Redis 服务器窗口的显示状态，默认为隐藏",
+                        "Optional": true
+                    }
+                ]
+            }
+        },
+        {
+            "Caption": "RedisServer_ForceClose",
+            "Remark": "强制关闭服务器",
+            "Visible": true,
+            "Function": true,
+            "InsCode": "RedisServer_ForceClose(PID)",
+            "Templet": "command.html",
+            "Help": {
+                "Caption": "RedisServer_ForceClose",
+                "Define": "iRet = RedisServer_ForceClose(PID)",
+                "Describe": "强制关闭 Redis 服务器，这可能导致数据没有保存到文件中，建议使用客户端发消息关闭 Redis 服务器",
+                "RetType": "Null",
+                "Return": "无",
+                "Param": [
+                    {
+                        "Caption": "PID",
+                        "DataType": "Integer",
+                        "Describe": "Redis 服务器进程PID",
+                        "Optional": true
+                    }
+                ]
+            }
+        },
+        {
+            "Caption": "RedisServer_IsRun",
+            "Remark": "检查服务器是否在运行",
+            "Visible": true,
+            "Function": true,
+            "InsCode": "RedisServer_IsRun(PID)",
+            "Templet": "command.html",
+            "Help": {
+                "Caption": "RedisServer_IsRun",
+                "Define": "iRet = RedisServer_IsRun(PID)",
+                "Describe": "检查 Redis 服务器是否仍在运行",
+                "RetType": "Boolean",
+                "Return": "仍在运行返回 true，否则返回 false",
+                "Param": [
+                    {
+                        "Caption": "PID",
+                        "DataType": "Integer",
+                        "Describe": "Redis 服务器进程PID",
+                        "Optional": true
+                    }
+                ]
+            }
+        }
+    ]
+}

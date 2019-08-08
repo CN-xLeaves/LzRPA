@@ -1,0 +1,34 @@
+  uses "UI"
+  uses "Console"
+  
+  
+  dim nWin        as long           '---Number of windows found
+  dim Counter     as long           '---Looper
+  dim wHwnd()     as long           '---Array that will contain win handler
+
+  Dim OnlyVisible as long = %true
+  
+  '---Returns number of windows found that have the requested properties
+  '---Param 1: array that will be re-dimensioned and filled with data
+  '---Param 2: command type (for the moment only %WIN_GET_ID
+  '---Param 3: (optional) is a text regular expression that will be match with window title. More info will follow.
+  '            For syntax, see: http://www.powerbasic.com/support/help/pbwin/html/REGEXPR_statement.htm
+  '---Param 4: (optional) if %TRUE only windows that are visible will be returned regardless their title
+
+    nWin = Win_Get(wHwnd, %WIN_GET_HWND, "", OnlyVisible)
+  
+  '---
+  console_writeline "Number of windows found: " & nWin
+
+  '---Loop for every window found and print some info
+  for Counter = 1 to nWin
+    console_writeline format$(Counter, "0000") & " handle: " & wHwnd(Counter)
+    console_writeline "      title: " & Win_GetTitle(wHwnd(Counter))
+    console_writeline "      class: " & Win_Getclass(wHwnd(Counter))
+    console_writeline "   IsIconic: " & Win_isiconic(wHwnd(Counter))
+    console_writeline "   IsZoomed: " & Win_iszoomed(wHwnd(Counter))
+    console_writeline "---------------------------------------------------------"
+  next
+    
+  console_waitkey
+  

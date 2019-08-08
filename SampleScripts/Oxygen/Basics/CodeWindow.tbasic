@@ -1,0 +1,38 @@
+
+'-----------
+'CODE WINDOW
+'-----------
+'
+'#VIEW .. #ENDV or
+'### .. ###
+
+uses "oxygen","file"
+dim src as string
+src = "
+  #basic
+  dim i,j=1 as long
+  dim s,t,cr as string
+  s=space 500
+  cr=chr(13) chr(10)
+  for i=1 to 10
+###    
+    't=str(i) chr(13) chr(10)
+    t=str(i) cr
+###
+    mid (s,j)=t
+    j+=len t
+  next
+  dec j
+  s= mid s,1,j
+  print s
+  terminate
+  "
+o2_basic src
+
+msgbox 0, o2_prep src
+
+if len(o2_error) then
+  msgbox 0, o2_error : stop
+end if
+o2_exec
+

@@ -1,0 +1,101 @@
+Uses "UI" 
+ 
+Dim i,j,colrR,colrG,colrB As Long
+Dim x, y, x2, y2, dots As Long
+Dim turn,num,points_per_edge,edgecycle As Long  
+Dim hWin As DWord = Canvas_Window("primes spiral - press any key to Exit", 1, 1, 800, 600 )
+Canvas_Attach(hWin, 0, %TRUE) ' <- double buffer
+ 
+Dim t1, t2 As Quad
+
+  TimeBeginPeriod(2)
+ 
+Canvas_Clear(%BLACK)
+ 
+x=400
+y=300    
+turn=0
+num=1
+points_per_edge = 1
+edgecycle = 0 
+ 
+'ploting point number 1 :
+Canvas_Ellipse(x-4, y-4, x+4, y+4, Rgb(255, 255, 0),Rgb(255, 255, 0)) 
+Canvas_Redraw
+ 
+For i = 1 To 53
+ 
+  Plotting()
+ 
+Next   
+
+  TimeEndPeriod(2)
+ 
+Canvas_WaitKey
+Canvas_Window End
+ 
+ 
+Sub Plotting()
+ 
+  turn = turn + 1
+  If turn = 5 Then turn = 1
+  edgecycle = edgecycle + 1
+ 
+  If edgecycle = 3 Then
+    edgecycle = 1
+    points_per_edge = points_per_edge + 1
+  End If
+ 
+  For j = 1 To points_per_edge
+ 
+    num = num + 1
+ 
+    If IsPrime(num)=%TRUE Then
+      colrR = 0 : colrG = 255 : colrB = 0
+    Else
+      colrR = 255 : colrG = 0 : colrB = 0
+    End If
+ 
+    Select Case turn
+      Case 1
+        x = x + 20
+      Case 2
+        y = y - 20
+      Case 3
+        x = x - 20
+      Case 4
+        y = y + 20
+    End Select
+ 
+    Canvas_Ellipse(x-10, y-10, x+10, y+10, Rgb(colrR, colrG, colrB),Rgb(colrR, colrG, colrB)) 
+    x2 = x-6: y2 = y-7
+    dots = dots + 1 
+ 
+    Canvas_Font("Arial CE" , 8, %CANVAS_FONTSTYLE_NORMAL)
+ 
+    ' -- Empiric alignment fix according to number length
+    Select Case Len(Format$(num))
+      Case 1                  
+        x2 += 2
+ 
+      Case 2   
+        x2 -= 4
+ 
+      Case 3
+        x2 -= 7  
+ 
+    End Select  
+ 
+    Canvas_SetPos(x2, y2)    
+    Canvas_Color(Rgb(0, 0, 0),-2) 
+    Canvas_Print Str$(num)
+ 
+    Canvas_SetPos(x2+1, y2+1)    
+    Canvas_Color(Rgb(255, 255, 255),-2) 
+    Canvas_Print Str$(num)
+ 
+    Canvas_Redraw
+  Next
+ 
+End Sub
+ 

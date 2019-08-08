@@ -1,0 +1,91 @@
+  '------------------------------------------------------------------------------
+  ' Background gradient in dialog windows
+  '------------------------------------------------------------------------------
+  
+  uses "UI"
+
+  Begin ControlID
+    %ID_GRADV_1 
+    %ID_GRADV_2 
+    %ID_GRADV_3 
+
+    %ID_GRADH_1 
+    %ID_GRADH_2 
+    %ID_GRADH_3 
+    
+    %ID_GRAD_NONE
+  End ControlID
+  
+  '------------------------------------------------------------------------------
+  ' Program start point
+  '------------------------------------------------------------------------------
+  '----------------------------------------------------------------------------
+  FUNCTION Main() as long
+  '----------------------------------------------------------------------------
+    LOCAL hDlg    AS DWORD    '---Used to store window handle
+    
+    '---Create a new dialog
+    Dialog New 0, "thinBasic test background Gradient fill", -1, -1, 410, 330, _
+                    %WS_DLGFRAME Or %DS_CENTER Or %WS_CAPTION Or %WS_SYSMENU Or %WS_OVERLAPPEDWINDOW, 0 To hDlg
+    '---Set window minimum size
+      DIALOG SET MINSIZE hDlg, 80, 80
+    
+    '---Add controls
+    control add button, hDlg, %ID_GRADV_1, "Grad Vert 1"    , 200, 270, 65, 14, %WS_CHILD or %WS_VISIBLE or %WS_TABSTOP or %BS_FLAT
+    control add button, hDlg, %ID_GRADV_2, "Grad Vert 2"    , 270, 270, 65, 14, %WS_CHILD or %WS_VISIBLE or %WS_TABSTOP or %BS_FLAT
+    control add button, hDlg, %ID_GRADV_3, "Grad Vert 3"    , 340, 270, 65, 14, %WS_CHILD or %WS_VISIBLE or %WS_TABSTOP or %BS_FLAT
+
+    control add button, hDlg, %ID_GRADH_1, "Grad Hor 1"     , 200, 300, 65, 14, %WS_CHILD or %WS_VISIBLE or %WS_TABSTOP or %BS_FLAT
+    control add button, hDlg, %ID_GRADH_2, "Grad Hor 2"     , 270, 300, 65, 14, %WS_CHILD or %WS_VISIBLE or %WS_TABSTOP or %BS_FLAT
+    control add button, hDlg, %ID_GRADH_3, "Grad Hor 3"     , 340, 300, 65, 14, %WS_CHILD or %WS_VISIBLE or %WS_TABSTOP or %BS_FLAT
+
+    Control ADD BUTTON, hDlg, %ID_GRAD_NONE, "Grad None"      , 100, 285, 65, 14, %WS_CHILD Or %WS_VISIBLE Or %WS_TABSTOP Or %BS_FLAT
+
+    '---Set resize properties
+    control set resize  hDlg, %ID_GRADV_1 , 0, 1, 0, 1    
+    control set resize  hDlg, %ID_GRADV_2 , 0, 1, 0, 1    
+    control set resize  hDlg, %ID_GRADV_3 , 0, 1, 0, 1    
+
+    control set resize  hDlg, %ID_GRADH_1 , 0, 1, 0, 1    
+    control set resize  hDlg, %ID_GRADH_2 , 0, 1, 0, 1    
+    Control SET RESIZE  hDlg, %ID_GRADH_3 , 0, 1, 0, 1    
+
+    Control SET RESIZE  hDlg, %ID_GRAD_NONE , 0, 1, 0, 1    
+
+    '---Show dialog
+    DIALOG SHOW MODAL hDlg, call dlgCallback
+    
+  END FUNCTION
+
+  '------------------------------------------------------------------------------
+  ' Callback procedure for main window
+  CALLBACK FUNCTION dlgCallback() as long
+  '------------------------------------------------------------------------------
+
+    '---Now test the message 
+    SELECT CASE cbMsg
+
+      case %WM_COMMAND
+        select case cbCtl
+          case %ID_GRADV_1
+            dialog set gradient cbHndl, %GRADIENT_FILL_V, rgb(222, 222, 222), rgb(0, 0, 0)
+          case %ID_GRADV_2
+            dialog set gradient cbHndl, %GRADIENT_FILL_V, rgb(0, 0, 0), rgb(222, 222, 222)
+          case %ID_GRADV_3
+            dialog set gradient cbHndl, %GRADIENT_FILL_V, rgb(180, 180, 180), rgb(240, 240, 240)
+
+          case %ID_GRADH_1
+            dialog set gradient cbHndl, %GRADIENT_FILL_H, rgb(222, 222, 222), rgb(0, 0, 0)
+          case %ID_GRADH_2
+            dialog set gradient cbHndl, %GRADIENT_FILL_H, rgb(0, 0, 0), rgb(222, 222, 222)
+          case %ID_GRADH_3
+            dialog set gradient cbHndl, %GRADIENT_FILL_H, rgb(180, 180, 180), rgb(240, 240, 240)
+
+          Case %ID_GRAD_NONE
+            Dialog SET GRADIENT CBHNDL, %GRADIENT_FILL_NONE
+        End Select
+        
+    END SELECT
+      
+  END FUNCTION
+        

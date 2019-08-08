@@ -1,0 +1,65 @@
+'
+'-----------------------------------
+'TRACING EXECUTION OF ASSEMBLY CODE
+'INSPECT REGISTERS AFTER INSTRUCTION
+'===================================
+ 
+ 
+Uses "oxygen"
+Dim src As String
+
+src="
+  #basic
+  
+  '----------------
+  'DIAGNOSTIC MACROS
+  '================
+    
+  def SHOW pushad : mov a,%1 : print `%1: ` hex a : popad
+  def MSG pushad : print %1 : popad
+  def FLAGS pushad : pushf : pushf : pop eax : mov a,eax : print `Flag Register: ` hex a : popf : popad
+  def x : pushad : pushf : call showregs : popf : popad :
+  dim a
+  
+  
+  sub showregs()
+    dim as long v(9) at [ebp+8]
+    dim as string tab=chr 9
+    print `
+    Registers:
+    
+    EAX:    ` tab hex (v(9)) `
+    ECX:    ` tab hex (v(8)) `
+    EDX:    ` tab hex (v(7)) `
+    EBX:    ` tab hex (v(6)) `
+    ESP:    ` tab hex (v(5)) `
+    EBP:    ` tab hex (v(4)) `
+    ESI:    ` tab hex (v(3)) `
+    EDI:    ` tab hex (v(2)) `
+    EFLAGS: ` tab hex (v(1)) `
+    `
+  end sub
+  
+  '--------  
+  'ASM TEST
+  '========
+
+'PLACE `x` AT ANY INSTRUCTION TO SEE THE REGISTER CONTENTS
+  
+  mov ecx,0
+  x mov eax,1 X
+  cmp eax,0 X
+  'FLAGS
+  jz nif
+    'MSG `condition Not met`
+    mov ecx,1
+  nif:
+  'SHOW ecx
+  "
+
+'MsgBox 0,O2_PREP src
+O2_BASIC src
+If Len(O2_ERROR) Then MsgBox 0,O2_ERROR : Stop
+O2_EXEC
+ 
+ 

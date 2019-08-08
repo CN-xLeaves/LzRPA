@@ -1,0 +1,93 @@
+'=============================================================================
+' Author      : Eros Olmi
+' Date        : 28/06/2003
+' Version     : 01.00.00
+' Description : Check Internet Connection
+'=============================================================================
+' Notes       :          
+'=============================================================================
+' History     : hh.mm.ss dd/mm/yyyy Text
+'=============================================================================
+         
+  Uses "INet"   '---Load INet module
+  Uses "RAS"    '---Load RAS module
+
+  '--------------------------------------------------------------------------
+  'Check if connection to internet is active
+  'If not active standard connection dialog box is started
+  '--------------------------------------------------------------------------
+    FUNCTION RunConnectToInternet() AS LONG
+  '--------------------------------------------------------------------------
+    DIM IConnected AS LONG   
+    DIM Message    AS STRING
+
+    FUNCTION = TRUE
+
+    '--- Check current connection status
+    IConnected = INET_GETSTATE
+    
+    '---                                       
+    'If already connected then use current connection
+    'otherwise try to make a connection
+    '---
+    IF IConnected = FALSE THEN  
+      '-If not connected, try to run AutoDialing windows functionality
+      RAS_OPENDIALUPDIALOG
+      '-Check again connection
+      IConnected = INET_GETSTATE
+      '-If not connect again, error message
+      IF IConnected = FALSE THEN
+        Message = "It was not possible to connect to Internet.\n\n"
+        MSGBOX(0, Message,"OKONLY EXCLAMATION","Error During Internet Connection.")
+        FUNCTION = FALSE
+      END IF
+    END IF                       
+
+    END FUNCTION
+  
+  FUNCTION DecodeConnectionMode(iMode AS LONG) AS STRING 
+    DIM sMode AS STRING
+    
+    IF iMode AND %INTERNET_CONNECTION_MODEM       THEN sMode += "Modem"                  & $CRLF
+    IF iMode AND %INTERNET_CONNECTION_LAN         THEN sMode += "Lan"                    & $CRLF
+    IF iMode AND %INTERNET_CONNECTION_PROXY       THEN sMode += "Proxy"                  & $CRLF
+    IF iMode AND %INTERNET_CONNECTION_MODEM_BUSY  THEN sMode += "ModemBusy"              & $CRLF
+    IF iMode AND %INTERNET_RAS_INSTALLED          THEN sMode += "RasInstalled"           & $CRLF
+    IF iMode AND %INTERNET_CONNECTION_OFFLINE     THEN sMode += "ConnectionOffLine"      & $CRLF
+    IF iMode AND %INTERNET_CONNECTION_CONFIGURED  THEN sMode += "ConnectionConfigured"   & $CRLF 
+
+    FUNCTION = sMode
+    
+  END FUNCTION
+  
+    '----------------------------------------------------------------------
+    'Main program
+    '----------------------------------------------------------------------
+  DIM Msg     AS STRING
+  DIM IPCount AS LONG
+  DIM iMode   AS LONG
+  
+  IF RunConnectToInternet() = TRUE THEN             
+    iMode = INET_GetConnectionMode
+      Msg = "You are connected to Internet." + $CRLF + _
+            "Your currect connection mode is: " + iMode + $CRLF + _
+            "Mode " & iMode & " means: " & $crlf & DecodeConnectionMode(iMOde) & $CRLF
+  ELSE
+      Msg = "You are NOT connected to Internet." + $CRLF
+  END IF
+
+  Msg += "You have " + INET_GETIP(0) + " IPs on your box." + $CRLF
+  
+  IF INET_GETIP(0) > 1 THEN
+    Msg += "They are:" + $CRLF
+  ELSE
+    Msg += "It is:" + $CRLF
+  END IF
+    
+  FOR IPCount = 1 TO INET_GETIP(0)
+    Msg += INET_GETIP(IPCount) + $CRLF
+  NEXT
+  MSGBOX(0, Msg)
+      
+    
+

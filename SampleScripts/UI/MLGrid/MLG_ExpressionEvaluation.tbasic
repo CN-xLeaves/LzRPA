@@ -1,0 +1,250 @@
+﻿  '------------------------------------------------------------------------------
+  ' MLGrid Example
+  ' Petr Schreiber & Eros Olmi, 2009
+  '------------------------------------------------------------------------------
+  
+  #MINVERSION 1.8.9.0
+  
+  uses "UI"
+  uses "Console"
+  uses "Eval"
+
+  begin const
+    
+    %IDC_MLGRID
+    %cHelp
+    
+  end const
+  
+  %maxRows = 5
+  %maxCols = 5
+
+  type tFormula
+    row     as long
+    col     as long
+    formula as string
+  end type
+  
+  
+  
+  global Formulas(1) as tFormula
+  global FormulasCount as long
+
+  global hGrid    as long
+  
+  '----------------------------------------------------------------------------
+  FUNCTION Main() as long
+  '----------------------------------------------------------------------------
+    LOCAL hDlg AS LONG    
+    '---Create a new dialog
+    Dialog New Pixels, 0, "Excel ... not yet :) ", -1, -1, 570, 350,
+                                                  %WS_DLGFRAME      |
+                                                  %DS_CENTER        |
+                                                  %WS_CAPTION       |
+                                                  %WS_SYSMENU       |                                                 
+                                                  %WS_CLIPCHILDREN,
+                                                  0 TO hDlg
+    '---Set window minimum size
+    DIALOG SET MINSIZE hDlg, 200, 200
+
+    '---Show dialog
+    DIALOG SHOW modal hDlg, call cbDialog_Proc
+
+  END FUNCTION
+
+
+  '------------------------------------------------------------------------------
+  ' Callback procedure for main window
+  '------------------------------------------------------------------------------
+  callback FUNCTION cbDialog_Proc() as long
+  '------------------------------------------------------------------------------
+
+    select case cbmsg
+
+     case %WM_INITDIALOG
+       ' -- Add controls
+        hGrid = control add MLGRID, cbhndl, %IDC_MLGRID, "", _
+                                        5, 5, 560, 150, %WS_VISIBLE Or %WS_CHILD, Call cbGrid
+
+        mlgrid_redim hGrid, %maxRows, %maxCols, %maxRows, %maxCols
+        
+        MLGRID_SetHeaderColor hGrid, rgb(32,64,128)
+
+        MLGRID_SetGridColors hGrid, rgb(240, 240, 250), rgb(220,220,220), rgb(255, 255, 255)
+        
+        mlgrid_put(hGrid, 1, 1, "Distance")
+          mlgrid_put(hGrid, 1, 2, "10")
+          
+        mlgrid_put(hGrid, 2, 1, "Time")        
+          mlgrid_put(hGrid, 2, 2, "4")
+          
+        mlgrid_put(hGrid, 3, 1, "Avg. speed:") 
+          mlgrid_put(hGrid, 3, 2, "=B1/B2") 
+        
+        ' -- Evaluate calculation  
+        Formula_DetectFromGrid(hGrid, %maxRows, %maxCols)    
+        Formula_EvalFromGrid(hGrid, %maxRows, %maxCols)           
+                
+        control add canvas, cbhndl, %cHelp, "", 5, 160, 560, 170
+        canvas_attach(cbhndl, %cHelp, %TRUE)        
+          canvas_box(0, 0, 560, 170, 10, rgb(0, 128, 0), rgb(255, 255, 128), %Canvas_FillStyle_Solid)
+          
+          canvas_color rgb(128, 0, 0), rgb(255, 255, 128)
+          canvas_setpos(10, 10)
+          canvas_font("Arial", 16, %Canvas_FontStyle_Normal)
+          canvas_print "Read this first"
+          canvas_setpos(10, 40)
+          canvas_font("Arial", 12, %Canvas_FontStyle_Normal)
+          canvas_print "This demonstrates expression evaluation of grid formulas."
+          canvas_setpos(10, 60)
+          canvas_print "To detect ""evaluable"" cell, program checks whether cell"
+          canvas_setpos(10, 80)
+          canvas_print "contains ""="" as first character."
+          canvas_setpos(10, 100)
+          canvas_print "If yes, EVAL takes place and program *appends* result after the formula"
+          canvas_font("Arial", 12, %Canvas_FontStyle_Bold)          
+          canvas_setpos(10, 120)
+          canvas_print "So before you start experimenting, make column B wider than it is"
+          canvas_color rgb(255, 0, 0), rgb(255, 255, 128)
+          canvas_setpos(10, 140)
+          canvas_print "Only cells containing just numbers can be used for calculations"
+          
+        canvas_redraw
+             
+        
+        '---Set resize properties
+        control set resize  cbhndl, %IDC_MLGRID     , 1, 1, 1, 1    
+
+     CASE %WM_NOTIFY
+      
+      case %WM_DESTROY
+        '---Do whatever needed just before dialog is destroyed.
+
+    end select  
+
+  END FUNCTION
+
+callback function cbGrid() as long
+  LOCAL  MLGN     AS NM_MLGRID PTR
+  LOCAL myRow, myCol as long
+  local s as string 
+  
+  select case cbmsg
+    case %WM_NOTIFY
+      MLGN = CBNMHDR
+
+      IF MLGN.hdr.idFrom = %IDC_MLGRID THEN
+        SELECT CASE MLGN.hdr.code
+
+          CASE %MLGN_RETURN
+            myrow=MLGN.Param1 'current row
+            mycol=MLGN.Param2 'current col
+            
+            ' -- Evaluate formulas
+            Formula_DetectFromGrid(hGrid, %maxRows, %maxCols)    
+            Formula_EvalFromGrid(hGrid, %maxRows, %maxCols)
+
+          CASE %MLGN_RCLICKMENU
+             myitem=MLGN.Param3  ' Menu Item
+             mycol=MLGN.Param2   ' Column of Mouse
+             myrow=MLGN.Param1   ' Row of Mouse
+
+             hMenu=SendMessage(hGrid1, %MLG_GETMENUHANDLE, 0, 0)
+             IF myitem=1 AND hMenu > 0 THEN
+               MENU GET STATE hMenu, 1 TO I
+               IF I= %MF_CHECKED THEN
+                 MENU SET STATE hMenu, 1, %MF_UNCHECKED
+                ELSE
+                 MENU SET STATE hMenu, 1, %MF_CHECKED
+               END IF
+             END IF
+         END SELECT
+      END IF
+  end select 
+end function
+
+' --
+' -- FORMULA SPECIFIC PROCEDURES
+' --
+
+' -- Adds formula to our formula registry
+function Formula_IsThere( row as long, col as long ) as long
+  local i, found as long
+  for i = 1 to FormulasCount
+    if row = Formulas(i).row and col = Formulas(i).col then
+      return i
+    end if  
+  next     
+  return 0
+end function
+
+' -- Retrieves formula at given location
+function Formula_Get( row as long, col as long ) as long
+  dim found as long = Formula_IsThere(row, col)
+  if found then return = Formulas(found).formula
+end function
+
+' -- Adds formula
+sub Formula_Add( row as long, col as long, formula as string )
+  local found as long = Formula_IsThere(row, col)
+  
+  if found then
+    Formulas(found).formula = formula 
+  else
+    incr FormulasCount
+    if FormulasCount > ubound(Formulas) then redim preserve Formulas(FormulasCount)
+    Formulas(FormulasCount).row     = row
+    Formulas(FormulasCount).col     = col
+    Formulas(FormulasCount).formula = formula 
+  end if    
+  
+end sub
+
+' -- AutoDetect formulas from the grid
+sub Formula_DetectFromGrid( hGrid as dword, maxRow as long, maxCol as long )
+  dim i, j as long
+  dim contents as string
+  printl "Detecting formulas"  
+  for i = 1 to maxRow
+    for j = 1 to maxCol
+      contents = mlgrid_get(hGrid, i, j)
+      if left$(contents, 1) = "=" then 
+        Formula_Add(i, j, contents)
+        printl "Found",i,j,contents
+      end if  
+    next  
+  next  
+  
+end sub
+
+' -- Evaluate formulas in the grid
+sub Formula_EvalFromGrid( hGrid as dword, maxRow as long, maxCol as long )
+  dim i, j as long
+  dim formula, contents as string
+  dim result as number
+
+  printl "Updating variables"
+  ' -- Refill "variables"
+  for i = 1 to maxRow
+    for j = 1 to maxCol
+      printl i, j, mid$(CHR$(ASC("A") TO ASC("Z")), j, 1) + FORMAT$(i), mlgrid_get(hGrid, i, j)
+      eval_setNumber( mid$(CHR$(ASC("A") TO ASC("Z")), j, 1) + FORMAT$(i), mlgrid_get(hGrid, i, j))
+    next
+  next  
+
+  printl "Evaluating "+FORMAT$(FormulasCount)+" formula"+IIF$(FormulasCount>1, "s", "")  
+  ' -- Evaluate    
+  for i = 1 to FormulasCount
+    formula = PARSE$(Formulas(i).formula, "#", 1)
+    result = eval_string(ltrim$(formula, "="))
+    mlgrid_put(hGrid, Formulas(i).row, Formulas(i).col, trim$(formula)+IIF$(Eval_ErrorClear, "#ERR AT TOKEN "+Eval_ErrorGetToken, " #RES: "+FORMAT$(result, "0.000")))
+  sendmessage hGrid, %MLG_REFRESH, 0, 0       
+    printl "Result " + formula + " as " + result
+  next  
+  
+end sub  
+
+
+
+
+ 

@@ -1,0 +1,97 @@
+Uses "UI"
+ 
+' -- ID numbers of controls
+Begin ControlID
+  %bClose
+  %canv
+  %canv2
+  %txtbox
+  %txtbox2
+  %LABEL1
+End ControlID
+
+Global hDlg, hDC_canvas, colrVal As Long
+ 
+' -- Create dialog here
+Function Main()
+  Local sImageBackground As String = APP_SourcePath + "Image_Background\ColorGradient.bmp"
+  Local nWidth, nHeight As Long
+   
+  Canvas_BitmapGetFileInfo(sImageBackground, nWidth, nHeight)
+   
+  'Local hDlg As DWord
+  Dialog New Pixels,0,"Mouse Click Pos + Pixel color",-1,-1,600,400,%WS_SYSMENU Or %WS_MINIMIZEBOX Or %WS_CAPTION To hDlg
+  ' -- Place controls here
+  Control Add Canvas, hDlg, %canv, "", 0, 0, nWidth, nHeight
+  Control Add Canvas, hDlg, %canv2, "", 450, 30, 50, 50
+  Control Add Button, hDlg, %bClose, "Click to close", 500, 340, 80, 30, Call bCloseProc
+  Control Add Textbox , hDlg, %txtbox, " " ,535 ,30 ,60 ,30 , _
+                                        %WS_BORDER      Or _                  
+                                        %WS_TABSTOP     Or _
+                                        %ES_WANTRETURN
+  
+  Control Add Textbox , hDlg, %txtbox2, " " ,535 ,110 ,60 ,30 , _
+                                        %WS_BORDER      Or _                  
+                                        %WS_TABSTOP     Or _
+                                        %ES_WANTRETURN  
+  Control Add Label , hDlg, %LABEL1, "RGB"      ,  535,80, 60, 30, %WS_CHILD Or %WS_VISIBLE Or %WS_BORDER Or %SS_CENTERIMAGE Or %SS_CENTER                                        
+    Canvas_Attach(hDlg, %canv, TRUE)
+    ' -- Make sure coordinate system is per pixel
+    Canvas_Scale Pixels
+    ' -- Render image
+    Canvas_BitmapRender(sImageBackground)
+    Canvas_Redraw     
+     
+    hDC_canvas = Canvas_GetDC()
+ 
+    Canvas_Circle(200,200,10,Rgb(0, 0, 0),Rgb(255, 0, 0))
+    Canvas_Circle(250,200,10,Rgb(0, 0, 0),Rgb(0, 255, 0))
+    Canvas_Circle(320,200,10,Rgb(0, 0, 0),Rgb(0, 0, 255))
+  Dialog Show Modal hDlg, Call dlgProc
+  
+End Function
+  
+' -- Callback for dialog
+CallBack Function dlgProc()
+  Dim mousePosition As POINTAPI
+  Dim locX, locY As Long 
+   
+  ' -- Test for messages
+  Select Case CBMSG
+    Case %WM_INITDIALOG
+      ' -- Put code to be executed after dialog creation here
+      Canvas_Attach(CBHNDL, %canv, %FALSE)
+      Canvas_Scale Pixels
+    Case %WM_LBUTTONDOWN  'when clicking left mouse button
+         ' -- Get mouse position, convert it to canvas local coordinates
+        Control Get Loc CBHNDL, %canv To locX, locY
+        Win_GetCursorPos(mousePosition)
+        Win_ScreenToClient(CBHNDL, mousePosition)
+        mousePosition.x -= locX
+        mousePosition.y -= locY
+        Control Set Text CBHNDL, %txtbox, Str$(mousePosition.x)+", "+Str$(mousePosition.y)
+        colrVal = Win_GetPixel(hDC_canvas, mousePosition.x, mousePosition.y) 
+        Control Set Text CBHNDL, %txtbox2, StrReverse$(Hex$(colrVal, 6))
+        Canvas_Attach(CBHNDL, %canv2, %FALSE)
+        Canvas_Clear(colrVal)    
+        'Canvas_Scale Pixels
+        'Circle(25,25,20,Rgb(0, 0, 0),colrVal)
+           
+    Case %WM_CLOSE
+    ' -- Put code to be executed before dialog end here
+  
+  End Select
+  
+End Function
+  
+' -- Callback for close button
+CallBack Function bCloseProc()
+  
+  If CBMSG = %WM_COMMAND Then
+    If CBCTLMSG = %BN_CLICKED Then
+      ' -- Closes the dialog 
+      Dialog End CBHNDL
+    End If
+  End If
+  
+End Function

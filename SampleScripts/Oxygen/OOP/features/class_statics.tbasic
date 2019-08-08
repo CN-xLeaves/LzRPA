@@ -1,0 +1,39 @@
+
+uses "oxygen","file"
+dim src as string
+
+'-------------
+'CLASS STATICS
+'=============
+
+src = "
+  
+  class cls
+    static aa as long  ' SHARED CLASS ELEMENT
+    static bb as long  ' SHARED CLASS ELEMENT
+           cc as long  ' OBJECT ELEMENT
+  end class
+  
+  dim as cls a,b
+  a.bb=42
+  a.aa=22
+  b.cc=84
+  b.aa-=1
+  a.cc-=1
+  string cr=chr(13)+chr(10)
+  print str(b.aa) ` '21` cr+
+        str(b.bb) ` '42` cr+
+        str(b.cc) ` '84`
+
+  "
+
+
+
+o2_basic src
+
+
+if len(o2_error) then
+  msgbox 0, o2_error : stop
+end if
+
+o2_exec

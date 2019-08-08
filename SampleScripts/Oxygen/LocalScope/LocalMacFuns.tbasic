@@ -1,0 +1,46 @@
+
+'------------------------------
+'INNER MACRO USED AS A FUNCTION
+'==============================
+
+
+uses "oxygen","file"
+dim src as string
+ 
+src = "
+  
+  '---------------------
+  function fun() as long
+  '=====================
+  
+  dim a=1,b
+
+    macro f(v) ( (98+(v*3)) )  'single line format
+
+    'multiline format (still producing single liner)
+    
+    macro mf(v)
+    (
+     (98+(v*3)) _
+    )
+    
+###  
+    b = 1000+mf(a)+10
+    'b=(98+(a*3))+10
+###
+    function=b
+
+  end function
+  
+  print `Result: `  str fun
+
+
+
+  "
+'msgbox 0,o2_prep src
+o2_asmo src
+if len(o2_error) then
+  msgbox 0, o2_error : stop
+end if
+o2_exec
+ 

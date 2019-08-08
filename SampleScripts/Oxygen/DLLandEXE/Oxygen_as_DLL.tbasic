@@ -1,0 +1,43 @@
+
+'-----------------------------------------
+'using thinbasic_OXYGEN AS A GENERAL DLL
+'instead of using it as a thinBasic Module
+'=========================================
+
+
+  'SELECTED API
+  '------------
+  '
+  declare sub      o2_asmo  lib "thinbasic_oxygen.dll" alias "o2_asmo"  (byval s as string)
+  declare sub      o2_basic lib "thinbasic_oxygen.dll" alias "o2_basic" (byval s as string)
+  declare function o2_buf   lib "thinbasic_oxygen.dll" alias "o2_buf"   (byval n as long) as long
+  declare function o2_error lib "thinbasic_oxygen.dll" alias "o2_error" () as string
+  declare function o2_exec  lib "thinbasic_oxygen.dll" alias "o2_exec"  (optional byval p as long) as long
+  declare function o2_get   lib "thinbasic_oxygen.dll" alias "o2_buf"   () as string
+  declare function o2_len   lib "thinbasic_oxygen.dll" alias "o2_len"   () as long
+  declare function o2_prep  lib "thinbasic_oxygen.dll" alias "o2_prep"  (byval srcBSTR as string) as string
+  declare sub      o2_put   lib "thinbasic_oxygen.dll" alias "o2_buf"   (byval c as string)
+  declare function o2_view  lib "thinbasic_oxygen.dll" alias "o2_view"  (byval srcBSTR as string) as string
+
+  dim src as string
+
+src = "
+  BASIC
+  print `ok: thinBasic_Oxygen is being used as a normal generic DLL`
+  "
+
+
+  'msgbox 0, o2_prep src
+  'msgbox 0, o2_view src
+
+  o2_basic src
+  
+  'msgbox 0,o2_len
+  'msgbox 0,o2_buf 0
+
+
+  if len(o2_error) then
+    msgbox 0, o2_error() : stop
+  end if
+
+  o2_exec

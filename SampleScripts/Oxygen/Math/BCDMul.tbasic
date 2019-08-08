@@ -1,0 +1,248 @@
+'
+'================================
+'MONSTROUS INTEGER MULTIPLICATION
+'================================
+ 
+Uses "oxygen"
+Dim src As String
+src="
+
+basic
+
+'------------------------------------------------------
+function multiply(ia as string, ib as string) as string
+'======================================================
+
+dim as string a,b,c,d
+dim as long pa,pb,pc,pd,la,lb,lc,ld
+dim as long nd,sh,qa
+
+a=ia
+b=ib
+la=len a
+lb=len b
+lc=la+lb'+10
+ld=lc'+20
+c=nuls lc 'LINE ACCUMULATOR
+d=nuls ld 'BLOCK ACCUMULATOR
+pa=*a
+pb=*b
+pc=*c
+pd=*d
+
+
+pushad
+
+
+
+'SETUP POINTERS
+'==============
+
+mov esi,pa : add esi,la
+mov edi,pb : add edi,lb
+mov edx,pc : add edx,lc
+mov ebx,pa
+
+
+mov qa,esi 'RIGHT START POSITION FOR NUMBER A
+mov nd,edi 'SETUP NEXT DIGIT POINTER (B NUMBER)
+mov sh,edx 'SETUP POSITION SHIFT POINTER
+
+
+
+'CONVERT FROM ASCII TO BINARY CODED DECIMAL
+'==========================================
+
+
+mov edi,pa
+mov ecx,la
+(
+ dec ecx 
+ jl exit
+ sub byte [edi],48
+ inc edi
+ repeat
+)
+mov edi,pb
+mov ecx,lb
+(
+ dec ecx : jl exit
+ sub byte [edi],48
+ inc edi
+ repeat
+)
+
+
+
+nextline:
+'========
+
+'MULTIPLY BY ONE DIGIT
+'WORKING FROM RIGHT TO LEFT
+
+dec edi
+mov cl,[edi]
+mov ch,0
+(
+  dec esi
+  cmp esi,ebx : jl exit
+  mov al,[esi]
+  mov ah,0
+  mul cl
+  add al,ch 'ADD CARRY VALUE
+  mov ch,0  'CLEAR CARRY VALUE
+  (
+    cmp al,10
+    jl exit   'NO CARRY
+    mov ch,10 'DIVISOR
+    div ch    '
+    mov ch,al 'CARRY VAL IN CH
+    mov al,ah 'REMAINDER NOW IN AL
+  )
+  dec edx
+  mov [edx],al
+  repeat
+)
+'FINAL CARRY
+(
+  cmp ch,0
+  jz exit
+  dec edx
+  mov [edx],ch
+)
+
+'ADD TO BLOCK ACCUMULATOR
+'========================
+
+mov esi,pc : add esi,lc
+mov edi,pd : add edi,ld
+mov ah,0
+mov ebx,pc
+
+
+'BCD ADDITION
+'
+'WORKING FROM RIGHT TO LEFT
+
+(
+  dec esi
+  cmp esi,ebx : jl exit
+  dec edi
+  mov al,0
+  xchg al,[esi] 'LOAD AND THEN CLEAR LINE DIGIT
+  mov cl,[edi]
+  add al,ah 'PREVIOUS CARRY
+  add al,cl 'OPERAND
+  (
+   mov ah,0
+   cmp al,10 : jl exit
+   sub al,10
+   inc ah
+  )
+  mov [edi],al
+  repeat
+)
+
+
+mov ebx,pa
+
+mov esi,qa  'START POSITION FOR NUMBER A
+
+mov edi,nd 'NEXT DIGIT IN NUMBER B
+dec edi
+mov nd,edi
+
+cmp edi,pb : jle fwd done
+
+'SHIFT OUTPUT TO LINE ACCUM
+
+mov edx,sh
+dec edx
+mov sh,edx
+
+
+jmp long nextline
+
+
+
+done:
+
+
+
+'CONVERT FROM BCD TO ASCII
+'=========================
+
+
+mov edi,pd
+mov ecx,ld
+add ecx,edi
+(
+ cmp edi,ecx : jge exit
+ add byte [edi],48 : inc edi
+ repeat
+)
+
+
+
+'TRIM LEADING ZEROS
+'==================
+
+
+mov edi,pd
+mov ecx,ld
+add ecx,edi
+(
+ cmp edi,ecx : jge exit
+ mov al,[edi]
+ inc edi
+ cmp al,48 : jg exit
+ repeat
+)
+sub edi,pd
+mov nd,edi
+
+
+popad
+
+function=mid(d,nd,ld)
+
+end function
+
+
+'----
+'MAIN
+'====
+
+dim as string a,b,ans
+
+a="4225678345671239269412376809064563457830987094214727890460503258124429509352125309123467889090967803"
+b="9034098905607687535809534264324877930963452357175890408065643678402109067842097453251206046098340056"
+
+ans="38175196118078646234796018047078508876075927016257021775208337789644882612626336290568135391711676360295755214293161291134825045621348587392814424177752560047244220841334894056033458232344500841216968"
+
+print "HUGE INTEGER MULTIPLICATION:
+
+" a "
+*
+" b "
+
+RESULT:
+" multiply(a,b) "
+
+CHECK WITH:
+" ans
+
+
+
+"
+
+'MsgBox 0,O2_PREP src ': Stop
+O2_ASMO src
+If Len(O2_ERROR) Then
+  MsgBox 0, O2_ERROR
+Else
+  O2_EXEC
+End If
+
+ 
+ 

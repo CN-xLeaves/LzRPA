@@ -1,0 +1,48 @@
+'---Load all modules in order to get all keywords
+Uses "ADO"
+Uses "BIFF", "BUNDLE"
+Uses "CGI", "COM", "COMM", "Console", "Crypto"
+Uses "Dictionary", "DT"
+Uses "Eval", "EXE"
+Uses "File", "FileLine", "FTP"
+Uses "GDIp"
+Uses "iComplex", "INet", "INI"
+Uses "LAN", "LL"
+Uses "MATH"
+Uses "OnlineScores", "OS", "Oxygen"
+Uses "PC"
+Uses "RAS", "Registry"
+Uses "SAPI", "SMTP", "Stat"
+Uses "TBAI", "TBASS", "TBDI", "TBEM", "TBGL", "TCPUDP", "TImage", "Tokenizer"', "Trace"
+Uses "UI", "UIAdv"
+Uses "VBRegExp"
+Uses "WMI"
+Uses "XPRINT"
+Uses "ZLib"
+
+DIM sKeys     AS STRING
+DIM aKeys()   AS STRING
+DIM nKeys     AS LONG
+DIM Count     AS LONG
+DIM sOut      AS STRING
+
+'---Get a string with keywords separated by $TAB
+sKeys = APP_ListKeywords
+
+'---Parse string into an array
+PARSE sKeys, aKeys, $TAB
+
+'---Creates output buffer
+nKeys = UBOUND(aKeys(1))
+FOR Count = 1 TO nKeys
+  IF aKeys(Count) = "REM" THEN
+     sOut = sOut & "' DATA " & aKeys(Count) & $CRLF
+  ELSE
+     sOut = sOut & "DATA " & aKeys(Count) & $CRLF
+  END IF
+NEXT
+
+'---Save buffer into .INC file
+FILE_Save(APP_SourcePath & "KeyWords.inc", sOut)
+MsgBox(0, Str$(UBound(aKeys(1))) & " Keywords written.", %MB_ICONINFORMATION Or %MB_OK, "Info")  
+

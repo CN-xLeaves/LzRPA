@@ -1,0 +1,98 @@
+  '=============================================================================
+  '=                            TBGL Sample Script                             =
+  '=                               Moving in 3D                                =
+  '=                                                                           =
+  '=                           Petr Schreiber, 2007                            =
+  '=============================================================================
+
+  '---Load needed modules
+  Uses "TBGL"
+
+  Dim hWnd As Dword
+  
+  '---Creates OpenGL window and returns handle
+  hWnd = TBGL_CreateWindowex("Moving in 3D, entity optimized - press ESC to quit", 640, 480, 32, %TBGL_WS_WINDOWED )
+  '---Shows TBGL window
+  TBGL_ShowWindow
+
+  ' -- First we will create world as place to contain entities
+  %MY_WORLD = 1
+  tbgl_SceneCreate(%MY_WORLD) 
+  
+  ' -- Our world will have two entities 
+  %ENT_CAMERA   = 1
+  %ENT_GRIDLIST_1 = 2
+  %ENT_GRIDLIST_2 = 3
+  
+  ' .. Camera
+  tbgl_EntityCreateCamera( %MY_WORLD, %ENT_CAMERA)
+  tbgl_EntitySetPos      ( %MY_WORLD, %ENT_CAMERA, 0.0, 0.1, 0.0 )
+  
+  ' .. Grid below
+  tbgl_EntityCreateDLSlot( %MY_WORLD, %ENT_GRIDLIST_1, 0, CreateGridAsDList(1, -2, 20) )
+  ' .. Grid above
+  tbgl_EntityCreateDLSlot( %MY_WORLD, %ENT_GRIDLIST_2, 0, CreateGridAsDList(2, 2, 20) )
+
+  dim FrameRate as double
+  dim Sheeps as long
+  
+  '---Resets key status before checking
+  TBGL_ResetKeyState()
+
+  '---Main script loop
+  WHILE TBGL_IsWindow(hWnd)
+  
+    '---Script will run on different PCs so we must assure
+    '---constant speed of movement by scaling movements relative to frame rate
+    FrameRate = TBGL_getFrameRate
+    
+    '---Prepares clear frame
+    TBGL_ClearFrame
+
+      tbgl_SceneRender(%MY_WORLD)
+
+    TBGL_DrawFrame                    ' Swaps the buffers - displays rendered image
+
+    if TBGL_GetwindowKeyState( hWnd, %VK_UP)     then tbgl_EntityPush(%MY_WORLD, %ENT_CAMERA, 0, 0,  5/FrameRate)     ' 5 meters/second
+    if TBGL_GetwindowKeyState( hWnd, %VK_DOWN)   then tbgl_EntityPush(%MY_WORLD, %ENT_CAMERA, 0, 0, -5/FrameRate)
+
+    if TBGL_GetwindowKeyState( hWnd, %VK_PGUP)   then tbgl_EntityPush(%MY_WORLD, %ENT_CAMERA, 0,  5/FrameRate, 0 )
+    if TBGL_GetwindowKeyState( hWnd, %VK_PGDN)   then tbgl_EntityPush(%MY_WORLD, %ENT_CAMERA, 0, -5/FrameRate, 0 )
+
+    if TBGL_GetwindowKeyState( hWnd, %VK_LEFT)   then tbgl_EntityTurn(%MY_WORLD, %ENT_CAMERA, 0,  60/FrameRate, 0)
+    if TBGL_GetwindowKeyState( hWnd, %VK_RIGHT)  then tbgl_EntityTurn(%MY_WORLD, %ENT_CAMERA, 0, -60/FrameRate, 0)    ' 60°/second
+
+    if TBGL_GetwindowKeyState( hWnd, %VK_ESCAPE) then EXIT WHILE
+    doevents
+    
+  WEND
+
+  '---Closes OpenGL window
+  TBGL_DestroyWindow
+
+  function CreateGridAsDList(optional lList as long, lPos as long, lSize as long) as long  ' Returns to which display list we save
+    local i, j as long
+    
+    if lList = 0 then lList = 1
+    tbgl_NewList lList
+      '---Let's build a grid
+      TBGL_BeginPoly %GL_LINES          ' Starts polygon definition based on 2 vertex lines
+        TBGL_Color 0,255,0              ' Defines color
+
+        For i = -lSize To lSize
+          For j = -lSize To lSize
+            TBGL_Vertex -lSize, lPos,   j     ' Adds vertex
+            TBGL_Vertex  lSize, lPos,   j     ' Adds vertex
+
+            TBGL_Vertex  i,  lPos, -lSize     ' Adds vertex
+            TBGL_Vertex  i,  lPos,  lSize     ' Adds vertex
+
+          Next
+        Next
+
+      TBGL_EndPoly   
+    tbgl_EndList 
+    
+    function = lList
+  end sub
+  

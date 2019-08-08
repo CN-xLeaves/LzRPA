@@ -1,0 +1,8 @@
+{
+    "Keyword1": "RedisConnect RedisConnectWithTimeout RedisFree RedisCommand RedisLastError Connect Command Ping GetVal SetVal AppendVal IncrVal Incrby DecrVal Decrby Exists Del Rename DataType Keys Info Shutdown",
+    "Keyword2": "Redis",
+    "Keyword3": "REDIS_REPLY_STRING REDIS_REPLY_ARRAY REDIS_REPLY_INTEGER REDIS_REPLY_NIL REDIS_REPLY_STATUS REDIS_REPLY_ERROR",
+    "RelyFile": ["hiredis.dll"],
+    "PackFile": null,
+    "RelyCode": "boot.tbs"
+}

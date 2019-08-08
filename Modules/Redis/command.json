@@ -1,0 +1,606 @@
+{
+    "Caption": "Redis",
+    "Remark": "键值对数据库",
+    "ModuleName": "Redis",
+    "Icon": "公文包",
+    "Visible": true,
+    "Templet": "index.html",
+    "Help": {
+        "Caption": ""
+    },
+    "Child": [
+        {
+            "Caption": "单文件使用扩展库",
+            "Icon": "信息",
+            "Visible": true,
+            "Templet": "document.html",
+            "Help": {
+                "Caption": "扩展库使用帮助",
+                "Document": "在项目中使用扩展库功能会自动将扩展库引入项目，项目编译或运行时，自动加入扩展库依赖代码和文件。<br><br>如果您在单文件中希望使用本扩展库，则必须编写扩展库依赖代码才能调用扩展库中的函数，否则会报错，LzRPA 建议使用工程方式编写程序，但仍保留单文件使用扩展库的方法。<br><br>扩展库依赖代码：<br>&nbsp;&nbsp;#Include &quot;%APP_PATH%\\\\..\\\\Modules\\\\Redis\\\\boot.tbs&quot;<br><br>建议将引用扩展库代码统一添加到全局代码块，也就是代码的最上面。<br><br>使用 Redis 扩展库除了要引用扩展库文件外，还需要将 hiredis.dll 文件复制到生成的 exe 或脚本文件同一目录下，hiredis.dll 文件保存在软件安装目录下的 Modules\\\\Redis 子目录内。"
+            }
+        },
+        {
+            "Caption": "RedisConnect",
+            "Remark": "连接服务器",
+            "Visible": true,
+            "Function": true,
+            "InsCode": "RedisConnect(\"127.0.0.1\", 6379)",
+            "Templet": "command.html",
+            "Help": {
+                "Caption": "RedisConnect",
+                "Define": "iRet = RedisConnect(ip, port)",
+                "Describe": "连接到 Redis 服务器",
+                "RetType": "Integer",
+                "Return": "成功返回 redisContext，失败返回 0",
+                "Param": [
+                    {
+                        "Caption": "ip",
+                        "DataType": "String",
+                        "Describe": "Redis服务器IP地址",
+                        "Optional": false
+                    },
+                    {
+                        "Caption": "port",
+                        "DataType": "Integer",
+                        "Describe": "Redis服务器端口",
+                        "Optional": false
+                    }
+                ]
+            }
+        },
+        {
+            "Caption": "RedisConnectWithTimeout",
+            "Remark": "连接服务器[超时]",
+            "Visible": true,
+            "Function": true,
+            "InsCode": "RedisConnectWithTimeout(\"127.0.0.1\", 6379, 3000)",
+            "Templet": "command.html",
+            "Help": {
+                "Caption": "RedisConnectWithTimeout",
+                "Define": "iRet = RedisConnectWithTimeout(ip, port, ms)",
+                "Describe": "连接到 Redis 服务器，可以指定超时时间，连接超过这个时间会返回失败",
+                "RetType": "Integer",
+                "Return": "成功返回 redisContext，失败返回 0",
+                "Param": [
+                    {
+                        "Caption": "ip",
+                        "DataType": "String",
+                        "Describe": "Redis服务器IP地址",
+                        "Optional": false
+                    },
+                    {
+                        "Caption": "port",
+                        "DataType": "Integer",
+                        "Describe": "Redis服务器端口",
+                        "Optional": false
+                    },
+                    {
+                        "Caption": "ms",
+                        "DataType": "Integer",
+                        "Describe": "超时时间 [毫秒]",
+                        "Optional": false
+                    }
+                ]
+            }
+        },
+        {
+            "Caption": "RedisFree",
+            "Remark": "断开连接",
+            "Visible": true,
+            "Function": true,
+            "InsCode": "RedisFree(redisContext)",
+            "Templet": "command.html",
+            "Help": {
+                "Caption": "RedisFree",
+                "Define": "RedisFree(redisContext)",
+                "Describe": "释放 redisContext 对象（断开连接）",
+                "RetType": "Null",
+                "Return": "无",
+                "Param": [
+                    {
+                        "Caption": "redisContext",
+                        "DataType": "String",
+                        "Describe": "redisContext 对象，使用 RedisConnect 或 RedisConnectWithTimeout 命令创建的",
+                        "Optional": false
+                    }
+                ]
+            }
+        },
+        {
+            "Caption": "RedisCommand",
+            "Remark": "执行命令",
+            "Visible": true,
+            "Function": true,
+            "InsCode": "RedisCommand(redisContext, \"Ping test\")",
+            "Templet": "command.html",
+            "Help": {
+                "Caption": "RedisCommand",
+                "Define": "sRet = RedisCommand(redisContext, sCommand)",
+                "Describe": "执行 Redis 命令",
+                "RetType": "String",
+                "Return": "返回命令的执行结果",
+                "Param": [
+                    {
+                        "Caption": "redisContext",
+                        "DataType": "String",
+                        "Describe": "redisContext 对象，使用 RedisConnect 或 RedisConnectWithTimeout 命令创建的",
+                        "Optional": false
+                    },
+                    {
+                        "Caption": "sCommand",
+                        "DataType": "String",
+                        "Describe": "要执行的命令文本",
+                        "Optional": false
+                    }
+                ]
+            }
+        },
+        {
+            "Caption": "RedisLastError",
+            "Remark": "获取错误描述",
+            "Visible": true,
+            "Function": true,
+            "InsCode": "RedisLastError()",
+            "Templet": "command.html",
+            "Help": {
+                "Caption": "RedisLastError",
+                "Define": "sRet = RedisLastError()",
+                "Describe": "获取 Redis 最后一次出错的错误描述",
+                "RetType": "String",
+                "Return": "返回错误描述",
+                "Param": [
+                ]
+            }
+        },
+        {
+            "Caption": "创建 Redis 对象",
+            "Icon": "文件",
+            "Visible": true,
+            "InsCode": "Dim r As Redis",
+            "Templet": "document.html",
+            "Help": {
+                "Caption": "创建 Redis 对象",
+                "Document": "双击这条命令将创建 Redis 对象的代码添加到编辑器。<br><br>Dim r As Redis"
+            }
+        },
+        {
+            "Caption": "Redis",
+            "Remark": "数据库对象",
+            "Icon": "类",
+            "Visible": true,
+            "Templet": "index.html",
+            "Help": {
+                "Caption": ""
+            },
+            "Child": [
+                {
+                    "Caption": "Connect",
+                    "Remark": "连接服务器",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Connect(\"127.0.0.1\", 6379, 3000)",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "Connect",
+                        "Define": "iRet = Connect(ip, port[, ms])",
+                        "Describe": "连接到 Redis 服务器，可以指定超时时间，连接超过这个时间会返回失败",
+                        "RetType": "Integer",
+                        "Return": "成功返回 redisContext，失败返回 0",
+                        "Param": [
+                            {
+                                "Caption": "ip",
+                                "DataType": "String",
+                                "Describe": "Redis服务器IP地址",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "port",
+                                "DataType": "Integer",
+                                "Describe": "Redis服务器端口",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "ms",
+                                "DataType": "Integer",
+                                "Describe": "超时时间 [毫秒]",
+                                "Optional": true
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Command",
+                    "Remark": "执行命令",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Command(\"Ping test\")",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "Command",
+                        "Define": "sRet = Command(sCommand)",
+                        "Describe": "执行 Redis 命令",
+                        "RetType": "String",
+                        "Return": "返回命令的执行结果",
+                        "Param": [
+                            {
+                                "Caption": "sCommand",
+                                "DataType": "String",
+                                "Describe": "要执行的命令文本",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Ping",
+                    "Remark": "测试服务器连接",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Ping(\"test\")",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "Ping",
+                        "Define": "sRet = Ping(sText)",
+                        "Describe": "测试与服务器是否能连通",
+                        "RetType": "String",
+                        "Return": "能够连通服务器时会返回 sText 参数的文本",
+                        "Param": [
+                            {
+                                "Caption": "sText",
+                                "DataType": "String",
+                                "Describe": "发送个服务器的文本",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "GetVal",
+                    "Remark": "读字符串",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "GetVal(\"key\")",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "GetVal",
+                        "Define": "sRet = GetVal(sKey)",
+                        "Describe": "读取一个字符串键值",
+                        "RetType": "String",
+                        "Return": "返回键值",
+                        "Param": [
+                            {
+                                "Caption": "sKey",
+                                "DataType": "String",
+                                "Describe": "要读取的键",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "SetVal",
+                    "Remark": "写字符串",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "SetVal(\"key\", \"Value\")",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "SetVal",
+                        "Define": "sRet = SetVal(sKey, sValue)",
+                        "Describe": "写入一个字符串键值，如果键不存在，则会创建。",
+                        "RetType": "String",
+                        "Return": "写入成功返回字符串 OK",
+                        "Param": [
+                            {
+                                "Caption": "sKey",
+                                "DataType": "String",
+                                "Describe": "要写的键",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "sValue",
+                                "DataType": "String",
+                                "Describe": "要写的值",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "AppendVal",
+                    "Remark": "追加写字符串",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "AppendVal(\"key\", \"Value\")",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "AppendVal",
+                        "Define": "sRet = AppendVal(sKey, sValue)",
+                        "Describe": "追加写入一个字符串键值，如果键不存在，则会创建。",
+                        "RetType": "String",
+                        "Return": "写入成功返回字符串 OK",
+                        "Param": [
+                            {
+                                "Caption": "sKey",
+                                "DataType": "String",
+                                "Describe": "要写的键",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "sValue",
+                                "DataType": "String",
+                                "Describe": "要写的值",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "IncrVal",
+                    "Remark": "原子累加",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "IncrVal(\"key\")",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "IncrVal",
+                        "Define": "sRet = IncrVal(sKey)",
+                        "Describe": "将一个包含数值的键值累加 1，这个操作是原子性的，多个客户端同时操作一个值不会出现混乱。",
+                        "RetType": "String",
+                        "Return": "累加成功返回字符串 OK",
+                        "Param": [
+                            {
+                                "Caption": "sKey",
+                                "DataType": "String",
+                                "Describe": "要累加的键",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Incrby",
+                    "Remark": "原子累加数值",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Incrby(\"key\", 10)",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "Incrby",
+                        "Define": "sRet = Incrby(sKey, iNumber)",
+                        "Describe": "将一个包含数值的键值累加特定数值，这个操作是原子性的，多个客户端同时操作一个值不会出现混乱。",
+                        "RetType": "String",
+                        "Return": "累加成功返回字符串 OK",
+                        "Param": [
+                            {
+                                "Caption": "sKey",
+                                "DataType": "String",
+                                "Describe": "要累加的键",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "iNumber",
+                                "DataType": "Integer",
+                                "Describe": "要累加的值",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "DecrVal",
+                    "Remark": "原子累减",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "DecrVal(\"key\")",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "DecrVal",
+                        "Define": "sRet = DecrVal(sKey)",
+                        "Describe": "将一个包含数值的键值累减 1，这个操作是原子性的，多个客户端同时操作一个值不会出现混乱。",
+                        "RetType": "String",
+                        "Return": "累减成功返回字符串 OK",
+                        "Param": [
+                            {
+                                "Caption": "sKey",
+                                "DataType": "String",
+                                "Describe": "要累减的键",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Decrby",
+                    "Remark": "原子累减数值",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Decrby(\"key\", 10)",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "Decrby",
+                        "Define": "sRet = Decrby(sKey, iNumber)",
+                        "Describe": "将一个包含数值的键值累减特定数值，这个操作是原子性的，多个客户端同时操作一个值不会出现混乱。",
+                        "RetType": "String",
+                        "Return": "累减成功返回字符串 OK",
+                        "Param": [
+                            {
+                                "Caption": "sKey",
+                                "DataType": "String",
+                                "Describe": "要累减的键",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "iNumber",
+                                "DataType": "Integer",
+                                "Describe": "要累减的值",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Exists",
+                    "Remark": "检查键是否存在",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Exists(\"key\")",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "Exists",
+                        "Define": "sRet = Exists(sKey)",
+                        "Describe": "检查某个键是否存在。",
+                        "RetType": "String",
+                        "Return": "键存在返回字符串 1，否则返回字符串 0",
+                        "Param": [
+                            {
+                                "Caption": "sKey",
+                                "DataType": "String",
+                                "Describe": "要检查的键",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Del",
+                    "Remark": "删除键值",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Del(\"key\")",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "Del",
+                        "Define": "sRet = Del(sKey)",
+                        "Describe": "删除某个键值。",
+                        "RetType": "String",
+                        "Return": "操作成功返回字符串 OK",
+                        "Param": [
+                            {
+                                "Caption": "sKey",
+                                "DataType": "String",
+                                "Describe": "要删除的键",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Rename",
+                    "Remark": "重命名键",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Rename(\"skeyName\", \"sNewName\")",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "Rename",
+                        "Define": "sRet = Rename(sKey)",
+                        "Describe": "重命名某个键。",
+                        "RetType": "String",
+                        "Return": "操作成功返回字符串 OK",
+                        "Param": [
+                            {
+                                "Caption": "skeyName",
+                                "DataType": "String",
+                                "Describe": "要重命名的键",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "skeyName",
+                                "DataType": "String",
+                                "Describe": "新的键名",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "DataType",
+                    "Remark": "获取键值的数据类型",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "DataType(\"key\")",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "DataType",
+                        "Define": "sRet = DataType(sKey)",
+                        "Describe": "获取某个键值的数据类型。",
+                        "RetType": "String",
+                        "Return": "返回键值的数据类型",
+                        "Param": [
+                            {
+                                "Caption": "sKey",
+                                "DataType": "String",
+                                "Describe": "要操作的键",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Keys",
+                    "Remark": "获取键列表",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Keys(\"*\")",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "Keys",
+                        "Define": "sRet = Keys(sFilter)",
+                        "Describe": "获取 Redis 服务器中所有的键列表",
+                        "RetType": "String",
+                        "Return": "返回键列表，使用 $crlf 分割",
+                        "Param": [
+                            {
+                                "Caption": "sFilter",
+                                "DataType": "String",
+                                "Describe": "过滤规则，可以使用通配符， * 表示获取所有键",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Info",
+                    "Remark": "获取服务器信息",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Info(\"all\")",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "Info",
+                        "Define": "sRet = Info(sPart)",
+                        "Describe": "获取 Redis 服务器的信息和配置",
+                        "RetType": "String",
+                        "Return": "返回服务器信息",
+                        "Param": [
+                            {
+                                "Caption": "sPart",
+                                "DataType": "String",
+                                "Describe": "要获取哪一项服务器信息，使用字符串 all 可以获取全部信息",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Shutdown",
+                    "Remark": "关闭服务器",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Shutdown()",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "Shutdown",
+                        "Define": "sRet = Shutdown()",
+                        "Describe": "关闭服务器",
+                        "RetType": "String",
+                        "Return": "操作成功返回字符串 OK",
+                        "Param": [
+                        ]
+                    }
+                }
+            ]
+        }
+    ]
+}

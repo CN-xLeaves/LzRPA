@@ -1,0 +1,111 @@
+TYPE FILETIME
+  dwLowDateTime       AS DWORD
+  dwHighDateTime      AS DWORD
+END TYPE
+
+TYPE WIN32_FIND_DATA
+  dwFileAttributes    AS DWORD
+  ftCreationTime      AS FILETIME
+  ftLastAccessTime    AS FILETIME
+  ftLastWriteTime     AS FILETIME
+  nFileSizeHigh       AS DWORD
+  nFileSizeLow        AS DWORD
+  dwReserved0         AS DWORD
+  dwReserved1         AS DWORD
+  cFileName           AS ASCIIZ * %MAX_PATH
+  cAlternateFileName  AS ASCIIZ * 14
+END TYPE
+
+TYPE COORD
+  x                   AS INTEGER
+  y                   AS INTEGER
+END TYPE
+
+TYPE SMALL_RECT
+  xLeft               AS INTEGER
+  xTop                AS INTEGER
+  xRight              AS INTEGER
+  xBottom             AS INTEGER
+END TYPE
+
+TYPE CONSOLE_SCREEN_BUFFER_INFO
+  dwSize              AS COORD
+  dwCursorPosition    AS COORD
+  wAttributes         AS WORD
+  srWindow            AS SMALL_RECT
+  dwMaximumWindowSize AS COORD
+END TYPE
+
+
+type AMoreComplicatedOne
+  xByte as byte
+  xQuad as quad
+  xLong as long
+  CSBI                as CONSOLE_SCREEN_BUFFER_INFO
+  xSingle   as single
+  xDouble   as double
+  xCurrency as cur
+  xExtended as ext
+  W32FD               as WIN32_FIND_DATA
+end type
+
+
+uses "console"
+alias console_writeline as WL
+
+dim sFormat as string = "#####"
+ 
+'POKE$(varptr(TestUDT), repeat$(sizeof(TestUDT), chr$(0)))
+
+wl repeat$(70, "-")
+wl "This script is used to test how thinBasic is able to handle simple and"
+wl "complex UDT (User Defined Types)."
+wl "Press a key to continue"
+wl repeat$(70, "-")
+console_waitkey
+
+dim TestUDT         as CONSOLE_SCREEN_BUFFER_INFO
+dim TestCOmplexUDT  as AMoreComplicatedOne
+
+wl "Some basic data size"
+wl repeat$(70, "-")
+wl using$("Size of BYTE                           is: " & sFormat, sizeof(BYTE)         )
+wl using$("Size of INTEGER                        is: " & sFormat, sizeof(INTEGER)      )
+wl using$("Size of WORD                           is: " & sFormat, sizeof(WORD)         )
+wl using$("Size of DWORD                          is: " & sFormat, sizeof(DWORD)        )
+wl using$("Size of LONG                           is: " & sFormat, sizeof(LONG)         )
+wl using$("Size of QUAD                           is: " & sFormat, sizeof(QUAD)         )
+wl using$("Size of SINGLE                         is: " & sFormat, sizeof(SINGLE)       )
+wl using$("Size of DOUBLE                         is: " & sFormat, sizeof(DOUBLE)       )
+wl using$("Size of EXT                            is: " & sFormat, sizeof(EXT)          )
+wl using$("Size of CURRENCY                       is: " & sFormat, sizeof(CURRENCY)     )
+wl using$("Size of STRING (strings are pointers)  is: " & sFormat, sizeof(STRING)       )
+dim MyString as string
+wl using$("Size of MyString (empty variable)      is: " & sFormat, sizeof(MySTRING)     )
+MyString = "ABCDEF"
+wl using$("Size of MyString (filled with ABCDEF)  is: " & sFormat, sizeof(MySTRING)     )
+
+wl repeat$(70, "-")
+wl "Some simple and complex UDT structures has been created."
+wl "Now we will examine their info"
+wl repeat$(70, "-")
+wl using$("Size of CONSOLE SCREEN BUFFER INFO udt is: " & sFormat, sizeof(CONSOLE_SCREEN_BUFFER_INFO) )
+wl using$("Size of TestUDT                    var is: " & sFormat, sizeof(TestUDT)                    )
+wl using$("Size of TestCOmplexUDT             var is: " & sFormat, sizeof(TestComplexUDT)             )
+wl repeat$(70, "-")
+
+wl "Value of TestUDT.dwSize.x               udt element is: " & TestUDT.dwSize.x
+'wl "Value of TestUDT.dwSize.y               udt element is: " & TestUDT.dwSize.y
+'wl "Value of TestUDT.dwCursorPosition.x     udt element is: " & TestUDT.dwCursorPosition.x
+'wl "Value of TestUDT.dwCursorPosition.y     udt element is: " & TestUDT.dwCursorPosition.y
+'wl "Value of TestUDT.wAttributes            udt element is: " & TestUDT.wAttributes
+'wl "Value of TestUDT.srWindow.xLeft         udt element is: " & TestUDT.srWindow.xLeft
+'wl "Value of TestUDT.srWindow.xTop          udt element is: " & TestUDT.srWindow.xTop
+'wl "Value of TestUDT.srWindow.xRight        udt element is: " & TestUDT.srWindow.xRight
+'wl "Value of TestUDT.srWindow.xBottom       udt element is: " & TestUDT.srWindow.xBottom
+'wl "Value of TestUDT.dwMaximumWindowSize.x  udt element is: " & TestUDT.dwMaximumWindowSize.x
+'wl "Value of TestUDT.dwMaximumWindowSize.y  udt element is: " & TestUDT.dwMaximumWindowSize.y
+
+wl repeat$(70, "-")
+wl "Press any key to finish"
+console_waitkey

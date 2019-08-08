@@ -1,0 +1,26 @@
+  USES "UI"
+  USES "File"
+
+  DIM sFile   AS STRING
+  DIM sFilter AS STRING
+
+  sFilter  = "thinBasic Files (*.tBasic, *.tBasicc)|*.tBasic;*.tBasicc|"
+  sFilter += "Basic Files (*.BAS, *.INC)|*.BAS;*.INC|"
+  sFilter += "Resource Files (*.RC)|*.RC|"
+  sFilter += "Help files (*.HLP)|*.HLP|"
+  sFilter += "Text Files (*.TXT)|*.TXT|"
+  sFilter += "Word processing (*.RTF)|*.RTF|"
+  sFilter += "All Files (*.*)|*.*"
+
+  sFile = Dialog_SaveFile(0, _
+                            "Save file as ...", _
+                            DIR_GetCurrent, _
+                            sFilter, _
+                            "tBasic", _
+                            %OFN_FILEMUSTEXIST OR %OFN_HIDEREADONLY or %OFN_ENABLESIZING)
+
+  if sFile = "" then
+    msgbox 0, "No file selected.", %MB_ICONEXCLAMATION, "File confirmation"
+  else
+    msgbox 0, "File selected:" & $crlf & sFile, %MB_ICONINFORMATION, "File confirmation"
+  end if

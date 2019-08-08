@@ -1,0 +1,214 @@
+'
+'ProgBase
+'
+'
+'----------------------------------
+'LOCATE PROGRAM IN DATABASE
+'THEN COMPILE AND RUN IT
+'==================================
+
+
+uses "oxygen"
+
+type ProgBaseRecord
+  descript as string
+  keywords as string
+  program as string
+  input as string
+end type
+
+
+'CREATE DATABASE WITH SOME SAMPLE RECORDS
+
+dim rec(100) as ProgBaseRecord
+dim n as long
+
+'RECORD 1
+
+n+=1
+rec(n).descript="Hello Program"
+rec(n).keywords=" hello, helo hi, hola, bonjour, bore da,"
+rec(n).input="What is your name?"
+rec(n).program="
+  dim as bstr a at #ans
+  a=`Hello #input#!`
+"
+
+'RECORD 2
+
+n+=1
+rec(n).descript="Calculator"
+rec(n).keywords=" calculat, express, evaluate,"
+rec(n).input="Enter Expression"
+rec(n).program="
+  dim as bstr a at #ans
+  a=str #input#
+"
+
+'RECORD 3
+
+n+=1
+rec(n).descript="Triangle Measurements"
+rec(n).keywords=" sides, triangle,"
+rec(n).input="Enter Lengths: Left Side,  Rigt Side,  Base: "
+rec(n).program="
+  dim double s(9)=>(#input#)
+  dim double a,b,c,d,h,r,a1,a2,a3
+  dim bstr ans at #ans
+  dim string tab=chr(9)
+  a=s(1) : b=s(2) : c=s(3)
+  if (a+b<c) or (a+c<b) or (b+c<a) then
+    ans="(not a triangle)"
+  else
+    d=(a*a-b*b+c*c)*.5/c
+    h=sqr(a*a-d*d)
+    a1=acos(d/a)
+    a2=acos((c-d)/b)
+    a3=pi-a1-a2
+    ans=`
+    Height:` tab h `
+    Angle Left:` tab deg(a1) `
+    Angle Right:` tab deg(a2) `
+    Angle Top:` tab deg(a3) `
+    `
+  end if
+"
+
+'RECORD 4
+
+n+=1
+rec(n).descript="Statistics"
+rec(n).keywords=" stats, total, mean, average, deviation,"
+rec(n).input="Enter count, value1, values ..."
+rec(n).program="
+  dim as double s(100)=>(#input#)
+  dim as double count,total,mean, sdev,devt,v
+  dim as bstr ans at #ans
+  dim as string tab=chr(9)
+  count=s(1)
+  if count<1 then
+    ans=`(No Data Count)`
+  elseif count<2 then
+    ans=`(Only 1 value given)` 
+  else
+    dim as long i,n
+    n=count+1
+    for i=2 to n
+      v=s(i)
+      total+=v
+      devt+=v*v
+    next
+    mean=total/count
+    sdev=sqrt(devt/count-mean*mean)
+    ans=`
+    count`   tab count `
+    total`   tab total `
+    mean`    tab mean `
+    std dev` tab sdev `
+    `
+  end if
+"
+
+
+'RECORD 5
+
+n+=1
+rec(n).descript="PseudoRandom Numbers"
+rec(n).keywords=" random, randomise, pseudorandom, "
+rec(n).input="Enter seed integer: "
+rec(n).program="
+
+  ' RANDOMISER
+  '-----------
+  '
+  dim as bstr ans at #ans
+  dim seed As Long=0x#input#
+  Function Rnd() As Single
+    static As single f, d=1/0x7fffffff
+    mov eax,seed
+    rol eax,7
+    imul eax,eax,13
+    mov seed,eax
+    push eax
+    fild dword [esp]
+    add esp,4
+    fmul dWord d
+    fstp dWord f
+    function=f
+  End Function
+  '
+  tab=chr(9)
+  crlf=chr(13)+chr(10)
+  s=""
+
+  for i=1 to 5
+    s+=str(rnd)+crlf
+  next
+  ans=s
+  "
+
+'RECORD 6
+
+n+=1
+rec(n).descript=""
+rec(n).keywords=""
+rec(n).input=""
+rec(n).program=""
+
+
+dim keyw,src,qes,ans as string
+dim as long sb,ind
+
+
+do 
+  '
+  'ENTER KEYWORDS TO IDENTIFY PROGRAM
+  '
+  keyw=inputbox$ "Enter keyword to locate program: ","PROGRAM DATABASE",keyw
+  if keyw="" then exit do
+  keyw=lcase$(keyw) : ind=1 : sb=0
+  '
+  '
+  'LOCATE PROGRAM BY KEYWORDS
+  '
+  do
+    if ind>100 then exit do
+    sb=instr(rec(ind).keywords, keyw)
+    if sb>0 then exit do
+    ind+=1
+  loop
+  '
+  if sb=0 then iterate do 'TRY ANOTHER KEYWORD
+  '
+  'RUN PROGRAM SESSIONS
+  '
+  do
+    src=rec(ind).program
+    qes=inputbox$ rec(ind).input+$crlf+$crlf+$crlf+$crlf+"Result:"+$crlf+ans,rec(ind).descript,qes
+    if qes="" then exit do
+    '
+    'INSERT INPUTS
+    '
+    sb=instr(src,"#input#")
+    if sb then src=left$(src,sb-1)+qes+mid$(src,sb+7)
+    '
+    'COMPILE SOURCE STRING
+    '
+    'msgbox 0,o2_prep src
+    o2_basic src
+    if len(o2_error) then
+      '
+      'REPORT COMPILE ERROR
+      '
+      msgbox 0,o2_error
+      ans="(ERROR)"
+      '
+    else
+      '
+      'EXECUTE
+      '
+      o2_exec
+    end if
+  loop
+loop
+ 

@@ -1,0 +1,25 @@
+  DIM MaxCount  AS LONG value 1000000
+
+  double T1, T2
+
+  DIM Message   AS STRING
+  Message = "This program execute " & MaxCount & " times SIN and COS functions.\n"
+  Message += "Please press Yes to go on, NO to Stop\n"
+  DIM lResult AS LONG = MSGBOX(0, Message, %MB_YESNO, "Continue?")
+  IF lResult <> %IDYES THEN
+    STOP
+  END IF
+
+  '---Speed up operations a bit  
+  T1 = timer
+  Counter
+  T2 = timer
+  MSGBOX(0, "Seconds:" & $tab & FORMAT$(T2 - T1, "#0.000"))
+
+  function Counter() as long
+    double i, j
+    For i = 1 To MaxCount
+      j = sin(i)
+      j = cos(i)
+    Next
+  end function

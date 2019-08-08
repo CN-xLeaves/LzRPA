@@ -1,0 +1,42 @@
+' ========================================================================================
+' Demonstrates the use of fistChild property.
+' The following example sets pCurrNode to the first child node of the top-level node.
+' ========================================================================================
+
+uses "Console"
+
+#default declare Checkduplicates    %TRUE
+#default declare CheckMissing       %TRUE
+
+#INCLUDE "%APP_INCLUDEPATH%\TB_XML60.INC"
+
+' ========================================================================================
+' Main
+' ========================================================================================
+FUNCTION MAIN() as long
+
+   LOCAL pXmlDoc AS DWORD
+   LOCAL pRootNode AS DWORD
+   LOCAL pCurrNode AS DWORD
+
+   pXmlDoc = XmlCreateObject($PROGID_Msxml2DOMDocument)
+   IXMLDOMDocument_put_async pXmlDoc, %FALSE
+   IF ISTRUE IXMLDOMDocument_load(pXmlDoc, "books.xml") THEN
+      pRootNode = IXMLDOMDocument_get_documentElement(pXmlDoc)
+      pCurrNode = IXMLDOMNode_get_firstChild(pRootNode)
+
+      console_writeline IXMLDOMNode_get_xml(pCurrNode)
+   else
+      msgbox 0, "Some error"
+   END IF
+
+   XmlRelease pCurrNode
+   XmlRelease pRootNode
+   XmlRelease pXmlDoc
+
+   console_writeline "--- Press any key to finish ---"
+   console_WAITKEY
+
+END FUNCTION
+
+Main

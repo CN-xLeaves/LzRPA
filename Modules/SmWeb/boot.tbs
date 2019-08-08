@@ -1,0 +1,47 @@
+Declare Function GetFileAttributes Lib "kernel32" Alias "GetFileAttributesA" (ByVal lpFileName As String) As Long
+
+Dim SmWeb As Object
+Dim 运行状态 As Variant
+
+'判断 SmWeb.dll 插件是否存在
+If IsFileExit(APP_ScriptPath & "SmWeb.dll") Then
+    '注册神梦填表插件到系统
+    RegCom(APP_ScriptPath & "SmWeb.dll")
+    SmWeb = CreateObject("QMPlugin.SmWeb")
+    If IsObject(SmWeb) Then
+        TracePrint "插件版本号：" & SmWeb.Ver()
+    Else
+        MsgBox "出错，请先将 SmWeb.dll 注册到系统！", 16 + 4096, "SmWeb.inc"
+        Stop
+    End If
+Else
+    MsgBox "出错，请先将 SmWeb.dll 放到程序根目录！", 16 + 4096, "SmWeb.inc"
+    Stop
+End If
+
+
+
+'--------------------【子程序模块】--------------------
+Function CreaTray(标题 As Variant, Optional 窗口句柄 As Long = -1)
+	SmWeb.Get_Plugin_Interpret_Template("CreaTray", 窗口句柄, 标题)
+End Function
+Function UnTray()
+	SmWeb.Get_Plugin_Interpret_Template("UnTray")
+End Function
+Function Tips(提示内容 As Variant)
+	运行状态 = 提示内容
+    SmWeb.Get_Plugin_Interpret_Template("TipsTray", 提示内容)
+End Function
+'判断一个文件是否存在(目标文件)[返回操作结果，1表示文件存在，0表示文件不存在]
+Function IsFileExit(lpszSourceFile As String)
+    Dim dwFileAttr as long
+    Const FILE_ATTRIBUTE_DIRECTORY = &H00000010
+    dwFileAttr = GetFileAttributes(lpszSourceFile)
+    If dwFileAttr < 0 Then '出错或者没有找到
+        return False
+    ElseIf dwFileAttr And FILE_ATTRIBUTE_DIRECTORY Then '是文件夹
+        return False
+    Else '是文件
+        return True
+    End If 
+End Function

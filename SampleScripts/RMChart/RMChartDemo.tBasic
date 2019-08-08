@@ -1,0 +1,875 @@
+'=================================================================================
+' Author          : Eros Olmi
+' Date            : 2006.03.30
+' Description     : thinBasic script example to demonstrate external DLL interface
+'                   This script uses RMChart.inc declaration file in order to
+'                   interact with RMChart.dll library.
+'                   RMChart is a simple to use and really lightweight developer
+'                   tool to create a various range of modern looking business 
+'                   charts. RMChart is freeware by Rainer Morgen.
+'                   To get more info about RMChart visit: http://www.rmchart.com/
+' Script Version  : 01.00.00
+' RMChart.dll Ver : 03.01.01
+'---------------------------------------------------------------------------------
+' Notes:        01.00.00 2006.03.30 
+'---------------------------------------------------------------------------------
+' Edit History: 01.00.00 2006.03.30 Initial coding
+'=================================================================================
+
+'---------------------------------------------------------------------------------
+'---Declare needed thinBasic modules  
+'---------------------------------------------------------------------------------
+uses "UI"
+
+'---------------------------------------------------------------------------------
+'---Include needed files
+'---------------------------------------------------------------------------------
+#include "%APP_INCLUDEPATH%\RMChart.inc"
+
+
+'---------------------------------------------------------------------------------
+'---Constant declaration
+'---------------------------------------------------------------------------------
+Begin ControlID
+  %ID_RMC1       
+  %ID_EXPORT    
+  %ID_PRINT     
+  %ID_CLOSE    
+  %ID_GB1       
+  %ID_GB2        
+  %ID_GB3         
+  %ID_GB4         
+  %ID_GB5         
+  %ID_GB6         
+  %ID_GB7         
+  %ID_GB8         
+  %ID_GB9         
+  %ID_GB10        
+  %ID_NGB1        
+  %ID_NGB2        
+  %ID_XY1         
+  %ID_XY2         
+  %ID_MSC1        
+  %ID_MSC2        
+  %ID_MSC3        
+  %ID_MSC4        
+  %ID_MSC5        
+  %ID_MSC6        
+  %ID_SCROLL      
+  %IDC_GRAPHIC1   
+  %ID_RMC2        
+  %ID_CB_COLOR    
+  %ID_CB_COLOROBJ 
+  %ID_OPT_H       
+  %ID_OPT_V       
+  %ID_OPT_FH      
+  %ID_OPT_SH      
+  %ID_CB_S1STYLE  
+  %ID_CB_S2STYLE  
+  %ID_CHK_S1HIDE  
+  %ID_CHK_S2HIDE  
+  %ID_CHK_S1VLABEL
+  %ID_CHK_S2VLABEL
+  %ID_CHK_LUCENT  
+  %ID_CB_LSTYLE   
+  %ID_CB_SYMBOLS  
+  %ID_LBL_LSTYLE  
+  %ID_LBL_SYMBOLS 
+  %ID_CHK_CLONE   
+  %ID_OPT_JPG     
+  %ID_OPT_EMF     
+  %ID_CMD_PRINT   
+  %ID_CMD_SAVE    
+  %ID_CMD_COPY    
+  %ID_INFO        
+  %ID_RMC3        
+End ControlID
+
+'---------------------------------------------------------------------------------
+'---Global variables
+'---------------------------------------------------------------------------------
+GLOBAL lScrH        AS LONG
+GLOBAL nChangeData  AS LONG   '---for RMC_SetData() demonstration in the first line chart
+
+
+FUNCTION Main()
+
+  LOCAL hDlg            AS DWORD
+  LOCAL hMenu, hPopUp1, hPopUp2, hPopUp3, hPopUp4 AS DWORD
+  LOCAL nDlgH, nDlgW    AS LONG
+  nDlgW = 650
+  nDlgH = 400
+
+  DIALOG NEW 0, "RMChart Demo - use menu to browse possibilities", -1, -1, nDlgW, nDlgH, _
+             %DS_CENTER OR %WS_SYSMENU OR %WS_MINIMIZEBOX OR %WS_MAXIMIZEBOX OR %WS_CAPTION OR %WS_THICKFRAME, _
+             %WS_EX_CONTROLPARENT TO hDlg
+  CONTROL ADD BUTTON, hDlg, %ID_EXPORT  , "&Save bitmap"  , (nDlgW/2) - 85, nDlgH-40, 50, 15
+  CONTROL ADD BUTTON, hDlg, %ID_PRINT   , "&Print"        , (nDlgW/2) - 25, nDlgH-40, 50, 15
+  CONTROL ADD BUTTON, hDlg, %ID_CLOSE   , "&End"          , (nDlgW/2) + 35, nDlgH-40, 50, 15
+
+  CONTROL set resize hDlg, %ID_EXPORT  , 0,0,0,1
+  CONTROL set resize hDlg, %ID_PRINT   , 0,0,0,1
+  CONTROL set resize hDlg, %ID_CLOSE   , 0,0,0,1
+  
+
+  'CONTROL ADD SCROLLBAR, hDlg,%ID_SCROLL,"",440,6,12,308,%SBS_VERT OR %WS_TABSTOP
+  'CONTROL SET COLOR hDlg,%ID_SCROLL, %BLACK, %WHITE
+  
+  CONTROL DISABLE hDlg, %ID_PRINT
+  CONTROL DISABLE hDlg, %ID_EXPORT
+  'CONTROL SHOW STATE hDlg, %ID_SCROLL,%SW_HIDE  
+
+  MENU NEW BAR TO hMenu
+  MENU NEW POPUP TO hPopup1
+  MENU NEW POPUP TO hPopup2
+  MENU NEW POPUP TO hPopup3
+  MENU NEW POPUP TO hPopup4
+  MENU ADD POPUP,  hMenu, "&Grid-based", hPopup1, %MF_ENABLED
+  MENU ADD STRING, hPopup1, "Bars", %ID_GB1, %MF_ENABLED
+  MENU ADD STRING, hPopup1, "Grouped bars", %ID_GB2, %MF_ENABLED
+  MENU ADD STRING, hPopup1, "Stacked bars", %ID_GB3, %MF_ENABLED
+  MENU ADD STRING, hPopup1, "Floating bars", %ID_GB10, %MF_ENABLED    
+  MENU ADD STRING, hPopup1, "Bars with diff. colors and BgImage", %ID_GB8, %MF_ENABLED    
+  MENU ADD STRING, hPopup1, "-" , 0, 0
+  MENU ADD STRING, hPopup1, "Line", %ID_GB4, %MF_ENABLED
+  MENU ADD STRING, hPopup1, "-" , 0, 0
+  MENU ADD STRING, hPopup1, "Bars and line", %ID_GB6, %MF_ENABLED
+  
+  MENU ADD POPUP,  hMenu, "&Non-grid based", hPopup2, %MF_ENABLED
+  MENU ADD STRING, hPopup2, "Pie", %ID_NGB1, %MF_ENABLED
+  MENU ADD STRING, hPopup2, "Donut with image", %ID_NGB2, %MF_ENABLED
+  
+  MENU ADD POPUP,  hMenu, "&XY scatter", hPopup3, %MF_ENABLED    
+  MENU ADD STRING, hPopup3, "Simple XY", %ID_XY2, %MF_ENABLED
+  MENU ADD STRING, hPopup3, "XY with 2 series", %ID_XY1, %MF_ENABLED
+
+  MENU ATTACH hMenu, hDlg
+
+  DIALOG SHOW modal hDlg, call dlgCallback
+end function
+
+callback function dlgCallback() as long    
+  LOCAL nError          AS LONG
+  LOCAL nDlgH, nDlgW    AS LONG  
+  
+    '---Now test the message
+    SELECT CASE cbMsg
+
+      case %WM_INITDIALOG
+        '---To work, RMChart.dll needs GDIPlus library
+        '---During window initialize we check if such a library exists
+        '---A special function (Libray_Exists) permits to check if a library exists
+        if library_exists("gdiplus.dll") then
+          msgbox 0, "This demo script needs Microsoft GDIPlus.dll library" & $crlf & _
+                    "Please go to http://www.microsoft.com/downloads/details.aspx?FamilyId=6A63AB9C-DF12-4D41-933C-BE590FEAA05A&displaylang=en"
+        end if          
+        
+      CASE %WM_COMMAND
+        SELECT CASE cbctl
+          CASE %ID_GB1
+            'CONTROL SHOW STATE CBHNDL, %ID_SCROLL,%SW_HIDE  
+            'nChangeData = %FALSE ' disallow changing the data with a mouseclick
+            nError = Show_Bars(cbHndl) 
+            IF nError THEN MSGBOX 0, "Error " + STR$(nError), %MB_OK OR %MB_ICONERROR,"RMChart Demo" 
+          CASE %ID_GB2
+            'CONTROL SHOW STATE CBHNDL, %ID_SCROLL,%SW_HIDE  
+            'nChangeData = %FALSE ' disallow changing the data with a mouseclick
+            nError = Show_GroupedBars(cbHndl) 
+            IF nError THEN MSGBOX 0, "Error " + STR$(nError), %MB_OK OR %MB_ICONERROR,"RMChart Demo"                     
+          CASE %ID_GB3
+            'CONTROL SHOW STATE CBHNDL, %ID_SCROLL,%SW_HIDE  
+            'nChangeData = %FALSE ' disallow changing the data with a mouseclick
+            nError = Show_StackedBars(cbHndl) 
+            IF nError THEN MSGBOX 0, "Error " + STR$(nError), %MB_OK OR %MB_ICONERROR,"RMChart Demo" 
+          CASE %ID_GB4
+            'CONTROL SHOW STATE CBHNDL, %ID_SCROLL,%SW_HIDE  
+            'nChangeData = %TRUE ' allow changing the data with a mouseclick                    
+            nError = Show_Line(cbHndl) 
+            IF nError THEN MSGBOX 0, "Error " + STR$(nError), %MB_OK OR %MB_ICONERROR,"RMChart Demo"
+
+          CASE %ID_GB5
+            'CONTROL SHOW STATE CBHNDL, %ID_SCROLL,%SW_HIDE  
+            'nChangeData = %FALSE ' disallow changing the data with a mouseclick                    
+            nError = Show_3Lines(cbHndl)
+            IF nError THEN MSGBOX 0, "Error " + STR$(nError), %MB_OK OR %MB_ICONERROR,"RMChart Demo"
+
+          CASE %ID_GB6
+            'CONTROL SHOW STATE CBHNDL, %ID_SCROLL,%SW_HIDE  
+            'nChangeData = %FALSE ' disallow changing the data with a mouseclick                    
+            nError = Show_BarsAndLine(cbHndl) 
+            IF nError THEN MSGBOX 0, "Error " + STR$(nError), %MB_OK OR %MB_ICONERROR,"RMChart Demo"
+
+          CASE %ID_GB8
+            'CONTROL SHOW STATE CBHNDL, %ID_SCROLL,%SW_HIDE  
+            'nChangeData = %FALSE ' disallow changing the data with a mouseclick                    
+            nError = Show_BarsImage(cbHndl) 
+            IF nError THEN MSGBOX 0, "Error " + STR$(nError), %MB_OK OR %MB_ICONERROR,"RMChart Demo"                     
+
+          CASE %ID_GB10
+            'CONTROL SHOW STATE CBHNDL, %ID_SCROLL,%SW_HIDE  
+            'nChangeData = %FALSE ' disallow changing the data with a mouseclick                    
+            nError = Show_FloatingBars(cbHndl) 
+            IF nError THEN MSGBOX 0, "Error " + STR$(nError), %MB_OK OR %MB_ICONERROR,"RMChart Demo"                                         
+
+          CASE %ID_NGB1
+            'CONTROL SHOW STATE CBHNDL, %ID_SCROLL,%SW_HIDE  
+            'nChangeData = %FALSE ' disallow changing the data with a mouseclick                    
+            nError = Show_Pie(cbHndl) 
+            IF nError THEN MSGBOX 0, "Error " + STR$(nError), %MB_OK OR %MB_ICONERROR,"RMChart Demo"
+          CASE %ID_NGB2
+            'CONTROL SHOW STATE CBHNDL, %ID_SCROLL,%SW_HIDE  
+            'nChangeData = %FALSE ' disallow changing the data with a mouseclick                    
+            nError = Show_Donut(cbHndl) 
+            IF nError THEN MSGBOX 0, "Error " + STR$(nError), %MB_OK OR %MB_ICONERROR,"RMChart Demo"
+
+          CASE %ID_XY1
+            'CONTROL SHOW STATE CBHNDL, %ID_SCROLL,%SW_HIDE  
+            'nChangeData = %FALSE ' disallow changing the data with a mouseclick                    
+            nError = Show_XY2Series(cbHndl) 
+            IF nError THEN MSGBOX 0, "Error " + STR$(nError), %MB_OK OR %MB_ICONERROR,"RMChart Demo"
+
+          CASE %ID_XY2
+            'CONTROL SHOW STATE CBHNDL, %ID_SCROLL,%SW_HIDE  
+            'nChangeData = %FALSE ' disallow changing the data with a mouseclick                    
+            nError = Show_SimpleXY(cbHndl) 
+            IF nError THEN MSGBOX 0, "Error " + STR$(nError), %MB_OK OR %MB_ICONERROR,"RMChart Demo"
+
+
+          case %ID_CLOSE
+            dialog end
+            
+        END SELECT 
+
+      CASE %WM_SIZE
+        dialog get client cbhndl to nDlgW, nDlgH
+        RMC_SetCtrlSize( %ID_RMC1, nDlgW, nDlgH)
+      
+    END SELECT
+
+END FUNCTION
+
+
+'---------------------------------------------------------------------------------
+' Grid base bars graph
+'---------------------------------------------------------------------------------
+FUNCTION Show_Bars(BYVAL hParentDlg AS DWORD) AS LONG
+  dim nC as long value 5
+  LOCAL nRetval AS LONG
+  LOCAL sTemp AS STRING
+  DIM aData() AS DOUBLE
+
+
+  ' This example uses the short notation style (no UDTs) and omits
+  ' all default properties, so the code is quite small
+  nRetVal = RMC_CreateChart(hParentDlg, %ID_RMC1, 10, 10, 600, 450)        ' create the chart control
+  nRetVal = RMC_AddRegion(%ID_RMC1)                                   ' add a Region to the chart
+  nRetval = RMC_AddCaption(%ID_RMC1, 1, "This is the chart's caption", %ColorBlue, %ColorYellow, 11, %TRUE)  ' add a Caption to region 1
+  nRetval = RMC_AddGrid(%ID_RMC1, 1, %ColorBeige, 0, 0, 0, 0, 0, %RMC_BICOLOR_LABELAXIS) ' add a Grid to region 1
+  nRetval = RMC_AddDataAxis(%ID_RMC1, 1, %RMC_DATAAXISLEFT, 0, 100, 11) ' add a Data axis to region 1
+  nRetval = RMC_AddLabelAxis(%ID_RMC1, 1, "Label 1*Label 2*Label 3*Label 4*Label 5", 1)' add a Label axis to region 1
+            RMC_SetLAXLineStyle %ID_RMC1, 1, %RMC_LINESTYLENONE ' No lines for the label axis
+  sTemp = "50,70,40,60,30"
+  nC = parse(sTemp, aData, ",")
+
+  nRetval = RMC_AddBarSeries(%ID_RMC1, 1, aData, nC, %RMC_BARSINGLE, %RMC_BAR_FLAT_GRADIENT1) ' add a Bar series to region 1
+  '                                                                    ' all bars have as default the same color, but:
+  nRetval = RMC_SetSeriesColor(%ID_RMC1, 1, 1, %ColorRed, 3)              ' bar #3 gets Red
+  
+  FUNCTION = nRetVal
+  IF nRetVal < 0 THEN EXIT FUNCTION                                   ' Error?
+
+  RMC_Draw %ID_RMC1                                                   ' Draw the chart 
+END FUNCTION
+
+'---------------------------------------------------------------------------------
+'
+'---------------------------------------------------------------------------------
+FUNCTION Show_BarsImage(BYVAL hParentDlg AS DWORD) AS LONG
+  LOCAL i AS LONG
+  LOCAL nC AS LONG
+  LOCAL nRetval AS LONG
+  LOCAL sTemp AS STRING
+  DIM asTemp() AS STRING
+  DIM aData() AS DOUBLE
+  
+  nChangeData = %FALSE  ' disallow data change when left mousebutton is clicked
+
+  '************** Create the chart ********************** 
+  nRetVal = RMC_CreateChart(hParentDlg,%ID_RMC1,10,10,600,450,%ColorTransparent,%RMC_CTRLSTYLEIMAGE, %FALSE, APP_SOURCEPATH + "seasky.jpg") 
+  '************** Add Region 1 ***************************** 
+  nRetVal = RMC_AddRegion(%ID_RMC1,5,5,-5,-5,"",%FALSE) 
+  '************** Add grid to region 1 ***************************** 
+  nRetval = RMC_AddGrid(%ID_RMC1,1,%ColorTransparent,%FALSE,0,0,0,0) 
+  '************** Add data axis to region 1 ***************************** 
+  nRetval = RMC_AddDataAxis(%ID_RMC1,1,%RMC_DATAAXISLEFT,0,100,11,8,%ColorChalk,%ColorChalk,%RMC_LINESTYLEDOT,%TRUE,"","") 
+  '************** Add label axis to region 1 ***************************** 
+  nRetval = RMC_AddLabelAxis(%ID_RMC1,1, "Label 1*Label 2*Label 3*Label 4*Label 5",1,5, _
+                             %RMC_LABELAXISBOTTOM,8,%ColorYellow,%RMC_TEXTCENTER,%ColorChalk,%RMC_LINESTYLENONE,"") 
+  '************** Add Series 1 to region 1 ******************************* 
+  '****** Read data values ******
+  sTemp = "50,70,40,60,30"
+  nC = parse(sTemp, aData, ",")
+  nRetval = RMC_AddBarSeries(%ID_RMC1,1, aData, nC, %RMC_BARSINGLE,%RMC_BAR_FLAT_GRADIENT2, _
+                             %TRUE,%ColorTransparent,%FALSE,1,%FALSE,1,%RMC_HATCHBRUSH_OFF) 
+  
+
+  RMC_SetWaterMark $RMC_USERWM,%RMC_USERWMCOLOR,%RMC_USERWMLUCENT,%RMC_USERWMALIGN,%RMC_USERFONTSIZE 
+  
+  FUNCTION = nRetVal
+  IF nRetVal < 0 THEN EXIT FUNCTION                                   ' Error?    
+  RMC_Draw %ID_RMC1
+
+END FUNCTION
+
+'---------------------------------------------------------------------------------
+'
+'---------------------------------------------------------------------------------
+FUNCTION Show_GroupedBars(BYVAL hParentDlg AS DWORD) AS LONG
+  'LOCAL i AS LONG
+  LOCAL nC AS LONG
+  LOCAL nRetval AS LONG
+  LOCAL sTemp AS STRING
+  LOCAL szTemp AS ASCIIZ * 500
+  'DIM asTemp() AS STRING
+  DIM aData() AS DOUBLE
+  LOCAL tChart AS tRMC_CHART
+  LOCAL tRegion AS tRMC_REGION
+  LOCAL tCaption AS tRMC_CAPTION
+  LOCAL tLegend AS tRMC_LEGEND
+  LOCAL tGrid AS tRMC_GRID
+  LOCAL tDataAxis AS tRMC_DATAAXIS
+  LOCAL tLabelAxis AS tRMC_LABELAXIS
+  LOCAL tBarSeries AS tRMC_BARSERIES
+
+  ' This example uses the alternative long notation style (with UDTs) and omits
+  ' no property: the code is bigger, but it's easier to change
+  ' properties for testing purposes
+
+  '************** Create the chart ********************** 
+  tChart.nLeft        = 10  
+  tChart.nTop         = 10  
+  tChart.nWidth       = 600
+  tChart.nHeight      = 450
+  tChart.nBackColor   = %ColorDefault
+  tChart.nCtrlStyle   = %RMC_CTRLSTYLEFLAT
+  nRetVal = RMC_CreateChartI(hParentDlg, %ID_RMC1, tChart)
+  '************** Add Region 1 ***************************** 
+  tRegion.nLeft       = 5
+  tRegion.nTop        = 5
+  tRegion.nWidth      = -5
+  tRegion.nHeight     = -5
+  tRegion.sFooter     = ""
+  tRegion.nShowBorder = %FALSE
+  nRetval = RMC_AddRegionI(%ID_RMC1, tRegion) 
+  '************** Add grid to region 1 ***************************** 
+  tGrid.nGridBackColor = %ColorDefault
+  tGrid.nAsGradient    = %FALSE
+  tGrid.nLeft      = 0
+  tGrid.nTop       = 0
+  tGrid.nWidth     = 0
+  tGrid.nHeight    = 0
+  nRetval = RMC_AddGridI(%ID_RMC1, 1, tGrid)
+  '************** Add data axis to region 1 ***************************** 
+  tDataAxis.nAlignment      = %RMC_DATAAXISLEFT
+  tDataAxis.nMinValue       = 0
+  tDataAxis.nMaxValue       = 100
+  tDataAxis.nTickCount      = 11
+  tDataAxis.nFontsize       = 8
+  tDataAxis.nTextColor      = %ColorDefault
+  tDataAxis.nLineColor      = %ColorDefault
+  tDataAxis.nLineStyle      = %RMC_LINESTYLESOLID
+  tDataAxis.nDecimalDigits  = 0
+  tDataAxis.sUnit           = ""
+  tDataAxis.sText           = ""
+  nRetval = RMC_AddDataAxisI(%ID_RMC1, 1, tDataAxis)
+  '************** Add label axis to region 1 ***************************** 
+  tLabelAxis.nCount         = 1
+  tLabelAxis.nTickCount     = 5
+  tLabelAxis.nAlignment     = %RMC_LABELAXISBOTTOM
+  tLabelAxis.nFontsize      = 8
+  tLabelAxis.nTextColor     = %ColorDefault
+  tLabelAxis.nTextAlignment = %RMC_TEXTCENTER
+  tLabelAxis.nLineColor     = %ColorDefault
+  tLabelAxis.nLineStyle     = %RMC_LINESTYLESOLID
+  'szTemp = "2000*2001*2002*2003*2004"
+  nRetval = RMC_AddLabelAxisI(%ID_RMC1, 1, "2000*2001*2002*2003*2004", tLabelAxis)
+  '************** Add legend to region 1 ******************************* 
+  tLegend.nLegendAlign    = %RMC_LEGEND_TOP
+  tLegend.nLegendBackColor= %ColorDefault
+  tLegend.nLegendStyle    = %RMC_LEGENDRECT
+  tLegend.nLegendTextColor= %ColorDefault
+  tLegend.nLegendFontSize = 8
+  tLegend.nLegendIsBold   = %FALSE
+  'szTemp = "First quarter*Second quarter*Third quarter*Fourth quarter"
+  nRetval = RMC_AddLegendI(%ID_RMC1, 1, "First quarter*Second quarter*Third quarter*Fourth quarter", tLegend)    
+  '************** Add Series 1 to region 1 ******************************* 
+  tBarSeries.nType             = %RMC_BARGROUP
+  tBarSeries.nStyle            = %RMC_BAR_HOVER
+  tBarSeries.nIsLucent         = %FALSE
+  tBarSeries.nColor            = %ColorDefault
+  tBarSeries.nIsHorizontal     = %FALSE
+  tBarSeries.nWhichDataAxis    = 1
+  tBarSeries.nValueLabelOn     = %FALSE
+  tBarSeries.nPointsPerColumn  = 1
+  tBarSeries.nHatchMode        = %RMC_HATCHBRUSH_OFF
+  '****** Read data values ******
+'    sTemp = "30*20*40*60*10"
+'    nC = RMC_Split2Double(sTemp, aData())
+  'nc = 5
+  'redim aData(nc)
+  'array assign aData = 30, 20, 40, 60, 10
+  sTemp = "30,20,40,60,10"
+  nC = parse(sTemp, aData, ",")
+  nRetval = RMC_AddBarSeriesI(%ID_RMC1, 1, aData, nC, tBarSeries)
+  '************** Add Series 2 to region 1 ******************************* 
+  tBarSeries.nType             = %RMC_BARGROUP
+  tBarSeries.nStyle            = %RMC_BAR_HOVER
+  tBarSeries.nIsLucent         = %FALSE
+  tBarSeries.nColor            = %ColorDefault
+  tBarSeries.nIsHorizontal     = %FALSE
+  tBarSeries.nWhichDataAxis    = 1
+  tBarSeries.nValueLabelOn     = %FALSE
+  tBarSeries.nPointsPerColumn  = 1
+  tBarSeries.nHatchMode        = %RMC_HATCHBRUSH_OFF
+  '****** Read data values ******
+  'sTemp = "30*20*50*70*60"
+  'array assign aData = 30, 20, 50, 70, 60
+  'nC = RMC_Split2Double(sTemp, aData())
+  sTemp = "30,20,50,70,60"
+  nC = parse(sTemp, aData, ",")
+  nRetval = RMC_AddBarSeriesI(%ID_RMC1, 1, aData, nC, tBarSeries)
+  '************** Add Series 3 to region 1 ******************************* 
+  tBarSeries.nType             = %RMC_BARGROUP
+  tBarSeries.nStyle            = %RMC_BAR_HOVER
+  tBarSeries.nIsLucent         = %FALSE
+  tBarSeries.nColor            = %ColorDefault
+  tBarSeries.nIsHorizontal     = %FALSE
+  tBarSeries.nWhichDataAxis    = 1
+  tBarSeries.nValueLabelOn     = %FALSE
+  tBarSeries.nPointsPerColumn  = 1
+  tBarSeries.nHatchMode        = %RMC_HATCHBRUSH_OFF
+  '****** Read data values ******
+  'sTemp = "40*10*30*20*80"
+  'nC = RMC_Split2Double(sTemp, aData())
+  'array assign aData = 40, 10, 30, 20, 80
+  sTemp = "40,10,30,20,80"
+  nC = parse(sTemp, aData, ",")
+  nRetval = RMC_AddBarSeriesI(%ID_RMC1, 1, aData, nC, tBarSeries)
+  '************** Add Series 4 to region 1 ******************************* 
+  tBarSeries.nType             = %RMC_BARGROUP
+  tBarSeries.nStyle            = %RMC_BAR_HOVER
+  tBarSeries.nIsLucent         = %FALSE
+  tBarSeries.nColor            = %ColorDefault
+  tBarSeries.nIsHorizontal     = %FALSE
+  tBarSeries.nWhichDataAxis    = 1
+  tBarSeries.nValueLabelOn     = %FALSE
+  tBarSeries.nPointsPerColumn  = 1
+  tBarSeries.nHatchMode        = %RMC_HATCHBRUSH_OFF
+  '****** Read data values ******
+  'sTemp = "70*50*80*40*30"
+  'nC = RMC_Split2Double(sTemp, aData())
+  'array assign aData = 70, 50, 80, 40, 30
+  sTemp = "70,50,80,40,30"
+  nC = parse(sTemp, aData, ",")
+  nRetval = RMC_AddBarSeriesI(%ID_RMC1, 1, aData, nC, tBarSeries)
+
+  FUNCTION = nRetVal
+  IF nRetVal < 0 THEN EXIT FUNCTION                                   ' Error?
+
+  RMC_Draw %ID_RMC1                                                   ' Draw the chart 
+END FUNCTION
+
+'---------------------------------------------------------------------------------
+'
+'---------------------------------------------------------------------------------
+FUNCTION Show_StackedBars(BYVAL hParentDlg AS DWORD) AS LONG
+  'LOCAL i AS LONG
+  LOCAL nC AS LONG
+  LOCAL nRetval AS LONG
+  LOCAL sTemp AS STRING
+  LOCAL sTemp2 AS STRING
+  'DIM asTemp() AS STRING
+  DIM aData() AS DOUBLE
+
+  '************** Create the chart ********************** 
+  nRetVal = RMC_CreateChart(hParentDlg, %ID_RMC1, 10, 10, 600, 450, %ColorBisque, %RMC_CTRLSTYLE3DLIGHT) 
+  '************** Add Region 1 ***************************** 
+  'sTemp = "this is the footer"
+  nRetVal = RMC_AddRegion(%ID_RMC1, 5, 10, -5, -5, "this is the footer", %FALSE) 
+  '************** Add caption to region 1 *******************
+  'sTemp = "Example of stacked bars"
+  nRetval = RMC_AddCaption(%ID_RMC1, 1, "Example of stacked bars", %ColorBisque, %ColorBlack, 11, %TRUE) 
+  '************** Add grid to region 1 ***************************** 
+  nRetval = RMC_AddGrid(%ID_RMC1,1,%ColorCornsilk,%FALSE,0,0,0,0) 
+  '************** Add data axis to region 1 ***************************** 
+  'sTemp = "$ "
+  'sTemp2 = "This is an optional axis text" 
+  nRetval = RMC_AddDataAxis(%ID_RMC1, 1, %RMC_DATAAXISBOTTOM, 0, 50000, 11, 8, %ColorBlack, %ColorBlack, %RMC_LINESTYLESOLID, %TRUE, "$ ", "This is an optional axis text") 
+  '************** Add label axis to region 1 ***************************** 
+  'sTemp = "Label Nr. 1*Label Nr. 2*Label Nr. 3*Label Nr. 4*Label Nr. 5*Label Nr. 6"
+  nRetval = RMC_AddLabelAxis(%ID_RMC1, 1, "Label Nr. 1*Label Nr. 2*Label Nr. 3*Label Nr. 4*Label Nr. 5*Label Nr. 6", 1, 6)
+  '************** Add legend to region 1 ******************************* 
+  'sTemp = "Apples*Pears*Cherries*Strawberries"
+  nRetval = RMC_AddLegend(%ID_RMC1, 1, "Apples*Pears*Cherries*Strawberries", %RMC_LEGEND_CUSTOM_UR, %ColorLightYellow, %RMC_LEGENDRECT, %ColorBlue)
+  '************** Add Series 1 to region 1 ******************************* 
+  '****** Read data values ******
+  'nc = 6
+  'redim aData(nc)
+  'array assign aData = 10000, 10000, 16000, 12000, 20000, 10000
+  'nC = RMC_Split2Double("10000*10000*16000*12000*20000*10000", aData())
+  sTemp = "10000, 10000, 16000, 12000, 20000, 10000"
+  nC = parse(sTemp, aData, ",")
+  nRetval = RMC_AddBarSeries(%ID_RMC1,1, aData, nC, %RMC_BARSTACKED, %RMC_COLUMN_FLAT, %FALSE, %ColorDarkBlue, %TRUE)
+  '************** Add Series 2 to region 1 ******************************* 
+  '****** Read data values ******
+  'array assign aData = 5000, 7000, 4000, 15000, 10000, 10000
+  sTemp = "5000, 7000, 4000, 15000, 10000, 10000"
+  nC = parse(sTemp, aData, ",")
+  'nC = RMC_Split2Double("5000*7000*4000*15000*10000*10000", aData())
+   nRetval = RMC_AddBarSeries(%ID_RMC1, 1, aData, nC, %RMC_BARSTACKED, %RMC_COLUMN_FLAT, %FALSE, %ColorDarkGreen, %TRUE)
+  '************** Add Series 3 to region 1 ******************************* 
+  '****** Read data values ******
+  'array assign aData = 10000, 3000, 12000, 10000, 5000, 20000
+  sTemp = "10000, 3000, 12000, 10000, 5000, 20000"
+  nC = parse(sTemp, aData, ",")
+  'nC = RMC_Split2Double("10000*3000*12000*10000*5000*20000", aData())
+   nRetval = RMC_AddBarSeries(%ID_RMC1, 1, aData, nC, %RMC_BARSTACKED, %RMC_COLUMN_FLAT, %FALSE, %ColorMaroon, %TRUE)
+  '************** Add Series 4 to region 1 ******************************* 
+  '****** Read data values ******
+  'array assign aData = 5000, 9000, 12000, 6000, 10000, 5000
+  sTemp = "5000, 9000, 12000, 6000, 10000, 5000"
+  nC = parse(sTemp, aData, ",")
+  'nC = RMC_Split2Double("5000*9000*12000*6000*10000*5000", aData())
+  nRetval = RMC_AddBarSeries(%ID_RMC1, 1, aData, nC, %RMC_BARSTACKED, %RMC_COLUMN_FLAT, %FALSE, %ColorDarkGoldenrod, %TRUE)
+
+  FUNCTION = nRetVal
+  IF nRetVal < 0 THEN EXIT FUNCTION                                   ' Error?
+
+  RMC_Draw %ID_RMC1                                                   ' Draw the chart     
+END FUNCTION
+
+'---------------------------------------------------------------------------------
+'
+'---------------------------------------------------------------------------------
+FUNCTION Show_FloatingBars(BYVAL hParentDlg AS DWORD) AS LONG
+  LOCAL i AS LONG
+  LOCAL nC AS LONG
+  LOCAL nRetVal AS LONG
+  local sTemp as string
+  LOCAL szTemp AS ASCIIZ * 2000
+  DIM aData() AS DOUBLE
+
+
+  nRetVal = RMC_CreateChart(hParentDlg,%ID_RMC1,10,10,550,300,%ColorLightGray,%RMC_CTRLSTYLE3DLIGHT,%FALSE,"","Tahoma")
+  nRetVal = RMC_AddRegion(%ID_RMC1,5,5,-5,-5,"",%FALSE) 
+  nRetVal = RMC_AddCaption(%ID_RMC1,1,"Birth of a Killer App",%ColorDefault,%ColorBlack,11,%TRUE) 
+  nRetVal = RMC_AddGrid(%ID_RMC1,1,%ColorPaleGoldenrod,%TRUE,0,0,0,0,%RMC_BICOLOR_NONE) 
+  ' the string labels for the data axis:
+  szTemp = "04/01*04/02*04/03*04/04*04/05*04/06*04/07*04/08*04/09*04/10*04/11*04/12*05/01"
+  nRetVal = RMC_AddDataAxis(%ID_RMC1,1,%RMC_DATAAXISBOTTOM,1,13,13,8,%ColorBlack,%ColorBlack,%RMC_LINESTYLESOLID,0,"","",szTemp, ByVal %RMC_TEXTCENTER) 
+  ' the labels for the label axis:
+  szTemp = "Design*Development*Testing*Bug Fixing*Documentation*Marketing"
+  nRetVal = RMC_AddLabelAxis(%ID_RMC1,1, szTemp,1,6,%RMC_LABELAXISLEFT,8,%ColorBlack,%RMC_TEXTCENTER,%ColorBlack,%RMC_LINESTYLESOLID,"") 
+  ' the legend:
+  szTemp = "Schedule*Reality"
+  nRetVal = RMC_AddLegend(%ID_RMC1,1,szTemp,%RMC_LEGEND_CUSTOM_UR,%ColorLightBlue,%RMC_LEGENDRECT,%ColorMediumBlue,8,%FALSE) 
+  ' data for the first series, each bar has two data points, the start value and the lenbth value:
+
+  sTemp = "1,3,4,6,6,4,7,4,9,3,10,3"
+  nC = parse(sTemp, aData, ",")
+  nRetVal = RMC_AddBarSeries(%ID_RMC1, 1, aData, nC,%RMC_FLOATINGBARGROUP,%RMC_BAR_HOVER,%FALSE,%ColorPaleGreen,%TRUE,1,%RMC_VLABEL_NONE,1,%RMC_HATCHBRUSH_OFF) 
+
+  ' data for the second series, each bar has two data points, the start value and the lenbth value:
+
+  sTemp = "1,0.5,1.5,10.5,12,1,12,1,12.5,0.5,2,11"
+  nC = parse(sTemp, aData, ",")
+  nRetVal = RMC_AddBarSeries(%ID_RMC1, 1, aData, nC, %RMC_FLOATINGBARGROUP,%RMC_BAR_HOVER,%FALSE,%ColorOrangeRed,%TRUE,1,%RMC_VLABEL_NONE,2,%RMC_HATCHBRUSH_OFF) 
+  nRetVal = RMC_Draw(%ID_RMC1)
+
+  EXIT FUNCTION
+
+END FUNCTION
+
+'---------------------------------------------------------------------------------
+'
+'---------------------------------------------------------------------------------
+FUNCTION Show_Line(BYVAL hParentDlg AS DWORD) AS LONG
+  LOCAL i AS LONG
+  LOCAL nC AS LONG
+  LOCAL nRetval AS LONG
+  LOCAL sTemp AS STRING
+  DIM asTemp() AS STRING
+  DIM aData() AS DOUBLE
+  DIM aPPC() AS LONG
+
+  '************** Create the chart ********************** 
+  nRetVal = RMC_CreateChart(hParentDlg,%ID_RMC1,10,10,600,450,0,0,0,"","Comic Sans MS") 
+  '************** Add Region 1 ***************************** 
+  nRetVal = RMC_AddRegion(%ID_RMC1,5,5,-5,-5,"Click with the left mousebutton into the grid!\C11") 
+  '************** Add caption to region 1 ******************* 
+  nRetval = RMC_AddCaption(%ID_RMC1,1,"Simple line",%ColorAquamarine,%ColorBlack,10,%TRUE) 
+  '************** Add grid to region 1 ***************************** 
+  nRetval = RMC_AddGrid(%ID_RMC1,1,%ColorBeige) 
+  '************** Add data axis to region 1 ***************************** 
+  nRetval = RMC_AddDataAxis(%ID_RMC1,1,%RMC_DATAAXISLEFT,0,100,11) 
+  '************** Add label axis to region 1 ***************************** 
+  nRetval = RMC_AddLabelAxis(%ID_RMC1,1, "",1,20) 
+  '************** Add Series 1 to region 1 ******************************* 
+  '****** Read data values ******
+  sTemp = "15, 25, 30, 22, 75, 45, 65, 75, 40, 35, 20, 45, 80, 90, 70, 65, 25, 10, 30, 25"
+  nC = parse(sTemp, aData, ",")
+  nRetval = RMC_AddLineSeries(%ID_RMC1,1, aData, nC, ByVal 0, 0,%RMC_LINE,%RMC_LINE_FLAT,%RMC_LSTYLE_LINE_AREA,%FALSE, %ColorDefault,%RMC_SYMBOL_POINT,1,%TRUE, %RMC_HATCHBRUSH_OFF) 
+  FUNCTION = nRetVal
+  IF nRetVal < 0 THEN EXIT FUNCTION                                   ' Error?
+
+  RMC_Draw %ID_RMC1                                                   ' Draw the chart     
+END FUNCTION   
+
+'---------------------------------------------------------------------------------
+'
+'---------------------------------------------------------------------------------
+FUNCTION Show_3Lines(BYVAL hParentDlg AS DWORD) AS LONG
+  LOCAL i AS LONG
+  LOCAL nC AS LONG
+  LOCAL nRetval AS LONG
+  LOCAL sTemp AS STRING
+  DIM asTemp() AS STRING
+  DIM aData() AS DOUBLE
+  DIM aPPC() AS LONG
+
+  ' This one reads the data from *.csv-files:
+
+  '************** Create the chart ********************** 
+  nRetVal = RMC_CreateChart(hParentDlg,%ID_RMC1,10,10,600,450,%ColorPaleGreen,%RMC_CTRLSTYLEFLATSHADOW) 
+  '************** Add Region 1 ***************************** 
+  nRetVal = RMC_AddRegion(%ID_RMC1,5,10,-5,-5,"data on a weekly basis. source: www.yahoo.com",%FALSE) 
+  '************** Add caption to region 1 ******************* 
+  nRetval = RMC_AddCaption(%ID_RMC1,1,"Performance of DOW JONES, DAX and NASDAQ from January 2000 to end of June 2004",%ColorPaleGreen,%ColorDarkBlue,9,%TRUE) 
+  '************** Add grid to region 1 ***************************** 
+  nRetval = RMC_AddGrid(%ID_RMC1,1,%ColorLightBlue,%TRUE,0,0,0,0) 
+  '************** Add data axis to region 1 ***************************** 
+  nRetval = RMC_AddDataAxis(%ID_RMC1,1,%RMC_DATAAXISLEFT,0,0,11,8,%ColorDarkBlue,%ColorDarkSlateGray,%RMC_LINESTYLEDOT,%TRUE," %","2nd January 2000 = 100%") 
+  '************** Add label axis to region 1 ***************************** 
+  nRetval = RMC_AddLabelAxis(%ID_RMC1,1, "2000*2001*2002*2003*2004",1,5,%RMC_LABELAXISBOTTOM,8,%ColorDarkBlue,%RMC_TEXTCENTER,%ColorDarkSlateGray,%RMC_LINESTYLEDOT) 
+  '************** Add legend to region 1 ******************************* 
+  nRetval = RMC_AddLegend(%ID_RMC1,1,"DOW JONES*DAX*NASDAQ",%RMC_LEGEND_CUSTOM_UR,%ColorPaleTurquoise,%RMC_LEGENDRECT,%ColorDarkBlue,8,%FALSE) 
+
+
+END FUNCTION    
+
+'---------------------------------------------------------------------------------
+'
+'---------------------------------------------------------------------------------
+FUNCTION Show_BarsAndLine(BYVAL hParentDlg AS DWORD) AS LONG
+  LOCAL i AS LONG
+  LOCAL nC AS LONG
+  LOCAL nRetval AS LONG
+  LOCAL sTemp AS STRING
+  LOCAL szTemp AS ASCIIZ * 500
+  dim asTemp() AS STRING
+  dim aData() AS DOUBLE
+  DIM aPPC() AS LONG
+
+  '************** Create the chart ********************** 
+  nRetVal = RMC_CreateChart(hParentDlg,%ID_RMC1,10,10,670,450,%ColorCornflowerBlue,%RMC_CTRLSTYLEFLATSHADOW) 
+  '************** Add Region 1 ***************************** 
+  nRetVal = RMC_AddRegion(%ID_RMC1,5,5,-5,-5,"data source: F.A.Z",%FALSE) 
+  '************** Add caption to region 1 ******************* 
+  nRetval = RMC_AddCaption(%ID_RMC1,1,"The world's 10 biggest industrial companies 2003",%ColorCoral,%ColorFloralWhite,12,%TRUE) 
+  '************** Add grid to region 1 ***************************** 
+  nRetval = RMC_AddGrid(%ID_RMC1,1,%ColorAzure,%TRUE,0,0,0,0) 
+  '************** Add data axis to region 1 ***************************** 
+  nRetval = RMC_AddDataAxis(%ID_RMC1,1,%RMC_DATAAXISLEFT,100000,250000,11,9,%ColorCornsilk,%ColorBlack,%RMC_LINESTYLESOLID,%TRUE,"$ ","Total turnover in Mill. Dollar") 
+  '************** Add second data axis to region 1 ***************************** 
+  nRetval = RMC_AddDataAxis(%ID_RMC1,1,%RMC_DATAAXISRIGHT,0,0,0,0,0,0,0,2," %","Net operating margin")     
+  '************** Add label axis to region 1 ***************************** 
+  szTemp =         "Exxon Mobil*Royal Dutch / Shell*BP*General Motors*Daimler Chrysler*Ford Motor*Toyota Motor*General E"
+  szTemp = szTemp + "lectric*TOTAL*Chevron Texaco"
+  nRetval = RMC_AddLabelAxis(%ID_RMC1,1, szTemp,1,10,%RMC_LABELAXISBOTTOM,8,%ColorCornsilk,%RMC_TEXTCENTER,%ColorBlack,%RMC_LINESTYLESOLID) 
+  '************** Add Series 1 to region 1 ******************************* 
+  '****** Read data values ******
+  sTemp = "242365, 235598, 232571, 185524, 170457, 164196, 149321, 132797, 130067, 119703"
+  nC = parse(sTemp, aData, ",")
+  nRetval = RMC_AddBarSeries(%ID_RMC1,1, aData,nC,%RMC_BARSINGLE,%RMC_BAR_FLAT_GRADIENT2,%FALSE,%ColorGold,%FALSE,1,%FALSE,1,%RMC_HATCHBRUSH_OFF) 
+  '************** Add Series 2 to region 1 ******************************* 
+  '****** Read data values ******
+  sTemp = "8.9, 4.1, 4.4, 2.1, 0.3, 0.3, 5.9, 11.3, 6.7, 6"
+  nC = parse(sTemp, aData, ",")
+  nRetval = RMC_AddLineSeries(%ID_RMC1,1, aData, nC, ByVal 0,0,%RMC_LINE,%RMC_LINE_CABLE,%RMC_LSTYLE_LINE,%FALSE, %ColorGreen,%RMC_SYMBOL_BULLET,2,%TRUE,%RMC_HATCHBRUSH_OFF) 
+
+
+  FUNCTION = nRetVal
+  IF nRetVal < 0 THEN EXIT FUNCTION                                   ' Error?
+
+  RMC_Draw %ID_RMC1                                                   ' Draw the chart     
+END FUNCTION
+
+
+'---------------------------------------------------------------------------------
+' Non grid graph: pie
+'---------------------------------------------------------------------------------
+''''''' None-Grid based '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' 
+FUNCTION Show_Pie(BYVAL hParentDlg AS DWORD) AS LONG 
+  LOCAL i AS LONG
+  LOCAL nC AS LONG
+  LOCAL nRetval AS LONG
+  LOCAL sTemp AS STRING
+  DIM asTemp() AS STRING
+  DIM aData() AS DOUBLE
+  DIM aColor() AS LONG
+
+  '************** Create the chart ********************** 
+  nRetVal = RMC_CreateChart(hParentDlg,%ID_RMC1,10,10,600,450,%ColorAliceBlue,%RMC_CTRLSTYLE3D) 
+  '************** Add Region 1 ***************************** 
+  nRetVal = RMC_AddRegion(%ID_RMC1,5,5,-5,-5,"",%FALSE) 
+  '************** Add Series 1 to region 1 ******************************* 
+  '****** Read color values ******
+  
+  ' Individual color values are defined for this chart: 
+  REDIM aColor(4)
+  aColor(1) = %ColorFirebrick
+  aColor(2) = %ColorLightSteelBlue
+  aColor(3) = %ColorDarkGreen
+  aColor(4) = %ColorLightCoral
+  '****** Read data values ******
+
+  sTemp = "10,20,30,40"
+  nC = parse(sTemp, aData, ",")
+  nRetval = RMC_AddGridlessSeries(%ID_RMC1,1,aData,nC, aColor,4,%RMC_PIE_3D,%RMC_FULL,0,%TRUE,%TRUE,%RMC_HATCHBRUSH_OFF) 
+
+  FUNCTION = nRetVal
+  IF nRetVal < 0 THEN EXIT FUNCTION                                   ' Error?
+
+  RMC_Draw %ID_RMC1                                                   ' Draw the chart     
+END FUNCTION
+
+'---------------------------------------------------------------------------------
+'
+'---------------------------------------------------------------------------------
+FUNCTION Show_Donut(BYVAL hParentDlg AS DWORD) AS LONG  
+  LOCAL i AS LONG
+  LOCAL nC AS LONG
+  LOCAL nRetval AS LONG
+  LOCAL sTemp AS STRING
+  DIM asTemp() AS STRING
+  DIM aData() AS DOUBLE
+  DIM aColor() AS LONG
+  
+  ' No individual color values are defined, so the internal colors are used in this one: 
+
+  '************** Create the chart ********************** 
+  nRetVal = RMC_CreateChart(hParentDlg,%ID_RMC1,10,10,600,450,%ColorTransparent,%RMC_CTRLSTYLEIMAGETILED,%FALSE,"paper.jpg") 
+  '************** Add Region 1 ***************************** 
+  nRetVal = RMC_AddRegion(%ID_RMC1,5,5,-5,-5,"",%FALSE) 
+  '************** Add legend to region 1 ******************************* 
+  nRetval = RMC_AddLegend(%ID_RMC1,1,"Apples*Citrons*Bananas*Cherries",%RMC_LEGEND_ONVLABELS, _
+                          %ColorGainsboro,%RMC_LEGENDNORECT,%ColorBlue,8,%TRUE) 
+  '************** Add Series 1 to region 1 ******************************* 
+  '****** Read data values ******
+ 
+  sTemp = "40,30,60,20"
+  nC = parse(sTemp, aData, ",")
+  nRetval = RMC_AddGridlessSeries(%ID_RMC1,1,aData, nC, byval 0, 0,%RMC_DONUT_GRADIENT,%RMC_FULL,0,%FALSE,%RMC_VLABEL_TWIN,%RMC_HATCHBRUSH_OFF) 
+
+  FUNCTION = nRetVal
+  IF nRetVal < 0 THEN EXIT FUNCTION                                   ' Error?
+
+  RMC_Draw %ID_RMC1                                                   ' Draw the chart     
+END FUNCTION
+
+'---------------------------------------------------------------------------------
+'
+'---------------------------------------------------------------------------------
+FUNCTION Show_XY2Series(BYVAL hParentDlg AS DWORD) AS LONG  
+  LOCAL i AS LONG
+  
+  LOCAL nCX AS LONG
+  LOCAL nCY AS LONG
+  LOCAL nRetval AS LONG
+  LOCAL sTemp AS STRING
+  DIM asTemp() AS STRING
+  DIM aData() AS DOUBLE
+  DIM aData2() AS DOUBLE
+
+  '************** Create the chart ********************** 
+  nRetVal = RMC_CreateChart(hParentDlg,%ID_RMC1,10,10,600,450,%ColorAliceBlue,%RMC_CTRLSTYLEFLATSHADOW) 
+  '************** Add Region 1 ***************************** 
+  nRetVal = RMC_AddRegion(%ID_RMC1,5,5,-5,-5,"",%FALSE) 
+  '************** Add caption to region 1 ******************* 
+  nRetval = RMC_AddCaption(%ID_RMC1,1,"Two XY series aligned to 2 different XY-axes pairs",%ColorBlue,%ColorAntiqueWhite,10,%TRUE) 
+  '************** Add grid to region 1 ***************************** 
+  nRetval = RMC_AddGrid(%ID_RMC1,1,%ColorBeige,%FALSE,0,0,0,0) 
+  '************** Add first X axis to region 1 ***************************** 
+  nRetval = RMC_AddXAxis(%ID_RMC1,1,%RMC_XAXISBOTTOM,0,100,11,8,%ColorBlue,%ColorBlue,%RMC_LINESTYLEDOT,0,"","First X axis") 
+  '************** Add first Y axis to region 1 ***************************** 
+  nRetval = RMC_AddYAxis(%ID_RMC1,1,%RMC_YAXISLEFT,0,100,11,8,%ColorBlue,%ColorBlue,%RMC_LINESTYLEDOT,0,"","First Y axis") 
+  '************** Add second X axis to region 1 ***************************** 
+  nRetval = RMC_AddXAxis(%ID_RMC1,1,%RMC_XAXISTOP,0,10,5,8,%ColorCoral,%ColorCoral,%RMC_LINESTYLEDASH,2,"","Second X axis") 
+  '************** Add second Y axis to region 1 ***************************** 
+  nRetval = RMC_AddYAxis(%ID_RMC1,1,%RMC_YAXISRIGHT,0,10,5,8,%ColorCoral,%ColorCoral,%RMC_LINESTYLEDASH,2,"","Second Y axis") 
+  '************** Add Series 1 to region 1 ******************************* 
+  '****** Read X-data values ******
+  sTemp = "20, 30, 60, 70, 90"
+  nCX = parse(sTemp, aData, ",")
+  '****** Read Y-data values ******
+  sTemp = "40, 20, 70, 10, 60"
+  nCY = parse(sTemp, aData2, ",")
+
+  nRetval = RMC_AddXYSeries(%ID_RMC1,1,aData, nCX, aData2, nCY,%ColorDefault,%RMC_XY_SYMBOL,0,%RMC_SYMBOL_BULLET,%RMC_XAXISBOTTOM,%RMC_YAXISLEFT)
+  '************** Add Series 2 to region 1 ******************************* 
+  '****** Read X-data values ******
+  sTemp = "2.5, 4.5, 5.5, 7.5, 1"
+  nCX = parse(sTemp, aData, ",")
+  '****** Read Y-data values ******
+  sTemp = "7.5, 5.5, 5.5, 2.5, 5.0"
+  nCY = parse(sTemp, aData2, ",")
+  nRetval = RMC_AddXYSeries(%ID_RMC1,1,aData, nCX, aData2, nCY,%ColorCoral,%RMC_XY_SYMBOL,0,%RMC_SYMBOL_DIAMOND,%RMC_XAXISTOP,%RMC_YAXISRIGHT,%RMC_VLABEL_DEFAULT)
+  
+  
+  FUNCTION = nRetVal
+  IF nRetVal < 0 THEN EXIT FUNCTION                                   ' Error?
+
+  RMC_Draw %ID_RMC1                                                   ' Draw the chart     
+END FUNCTION
+
+'---------------------------------------------------------------------------------
+' XY
+'---------------------------------------------------------------------------------
+FUNCTION Show_SimpleXY(BYVAL hParentDlg AS DWORD) AS LONG  
+  local nC1 as long
+  local nC2 as long
+  LOCAL nRetVal   AS LONG
+  LOCAL sTemp     AS STRING
+  DIM   aData()   AS DOUBLE
+  DIM   aData2()  AS DOUBLE
+
+  '************** Create the chart ********************** 
+  nRetVal = RMC_CreateChart(hParentDlg,%ID_RMC1,10,10,600,450,%ColorSteelBlue,%RMC_CTRLSTYLEFLAT,%FALSE,"") 
+  '************** Add Region 1 ***************************** 
+  nRetVal = RMC_AddRegion(%ID_RMC1,5,5,-5,-5,"",%FALSE) 
+  '************** Add caption to region 1 ******************* 
+  nRetVal = RMC_AddCaption(%ID_RMC1,1,"Simple XY chart",%ColorAliceBlue,%ColorBlack,10,%TRUE) 
+  '************** Add grid to region 1 ***************************** 
+   nRetVal = RMC_AddGrid(%ID_RMC1,1,%ColorDarkBlue,%FALSE,0,0,0,0) 
+  '************** Add first X axis to region 1 ***************************** 
+  nRetVal = RMC_AddXAxis(%ID_RMC1,1,%RMC_XAXISBOTTOM,0,100,11,8,%ColorBlanchedAlmond,%ColorWhite,%RMC_LINESTYLENONE,0,"","X Axis") 
+  '************** Add first Y axis to region 1 ***************************** 
+  nRetVal = RMC_AddYAxis(%ID_RMC1,1,%RMC_YAXISLEFT,0,100,11,8,%ColorBlanchedAlmond,%ColorBlack,%RMC_LINESTYLENONE,0,"","Y Axis")     
+  '************** Add Series 1 to region 1 ******************************* 
+  '****** Read X-data values ******
+  sTemp = "10,20,30,40,50,60,70,80,90,100"
+  nC1 = parse(sTemp, aData, ",")
+  '****** Read Y-data values ******
+  sTemp = "10,30,50,70,90,70,50,30,10,10"
+  nC2 = parse(sTemp, aData2, ",")
+  nRetVal = RMC_AddXYSeries(%ID_RMC1,1, aData, nC1, aData2, nC2, %ColorWhiteSmoke,%RMC_XY_LINE,%RMC_LSTYLE_LINE,%RMC_SYMBOL_STAR,%RMC_XAXISBOTTOM,%RMC_YAXISLEFT, %RMC_VLABEL_NONE)
+
+  nRetVal = RMC_SetWatermark($RMC_USERWM,%RMC_USERWMCOLOR,%RMC_USERWMLUCENT,%RMC_USERWMALIGN,%RMC_USERFONTSIZE )
+  
+  FUNCTION = nRetVal
+  IF nRetVal < 0 THEN EXIT FUNCTION                                   ' Error?
+
+  RMC_Draw %ID_RMC1                                                   ' Draw the chart     
+   
+End Function
+

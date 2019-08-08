@@ -1,0 +1,164 @@
+  uses "UI"
+  
+  Begin ControlID
+    %ID_BUTTON_OK       
+    %ID_BUTTON_CANCEL
+    
+    %ID_PROGRESS_1      
+    %ID_PROGRESS_2
+    %ID_PROGRESS_3
+
+    %ID_STATUSBAR       
+  End ControlID
+    
+  '-------------------------------------------------------------
+  ' Automatic thinBasic Main function
+  '-------------------------------------------------------------
+  function Main() as long
+  '-------------------------------------------------------------
+    local hDlg as long
+    
+    DIALOG NEW 0, "thinBasic Progress bar demo", -1, -1, 300, 160, _
+                                          %WS_DLGFRAME          |  _
+                                          %ds_center            |  _
+                                          %WS_CAPTION           |  _
+                                          %WS_SYSMENU           |  _
+                                          %WS_OVERLAPPEDWINDOW  ,   _
+                                          0 TO hDlg
+
+
+    DIALOG SHOW modal hDlg call cbMain
+
+  end function
+  
+  '-------------------------------------------------------------
+  ' Whill manage window events
+  '-------------------------------------------------------------
+  callback function cbMain() as long
+  '-------------------------------------------------------------
+
+    '---Now test the message
+    SELECT CASE cbMsg
+
+      case %WM_INITDIALOG  '---Message fired at the very beginning when dialog is initialized
+
+        '---Status Bar
+        Control Add statusbar, cbhndl, %ID_STATUSBAR, "", , , , , %SBARS_SIZEGRIP | %WS_CHILD | %WS_VISIBLE
+          '---Define parts
+          StatusBar_SetParts cbhndl, %ID_STATUSBAR, 100, 200, -1
+          '---Set icons in each part
+          statusbar_SetIcon  cbhndl, %ID_STATUSBAR, 1, app_sourcepath & "bt_down.ico", 0
+          statusbar_SetIcon  cbhndl, %ID_STATUSBAR, 2, app_sourcepath & "bt_play.ico", 0
+          statusbar_SetIcon  cbhndl, %ID_STATUSBAR, 3, app_sourcepath & "bt_Up.ico", 0
+
+        '---Add a standard window progress bar and ...
+        CONTROL ADD progressbar, cbhndl, %ID_PROGRESS_1, "", 5,  5, 290, 12, %WS_CHILD | %WS_VISIBLE | %PBS_SMOOTH | %PBS_MARQUEE
+        CONTROL ADD progressbar, cbhndl, %ID_PROGRESS_2, "", 5, 20, 290, 12, %WS_CHILD | %WS_VISIBLE 
+        CONTROL ADD progressbar, cbhndl, %ID_PROGRESS_3, "", 5, 35,  12, 60, %WS_CHILD | %WS_VISIBLE | %PBS_VERTICAL | %PBS_SMOOTH 
+        
+        ProgressBar_SetMarquee cbhndl, %ID_PROGRESS_1, %TRUE, rnd(50, 150)
+        
+        control set resize cbhndl, %ID_PROGRESS_1, 1, 1, 0, 0
+        control set resize cbhndl, %ID_PROGRESS_2, 1, 1, 0, 0
+        control set resize cbhndl, %ID_PROGRESS_3, 1, 0, 1, 1
+         
+        CONTROL ADD BUTTON, cbhndl, %ID_BUTTON_OK,     "&Start",  40, 110, 50, 14, %BS_DEFAULT, call cbButton_OK
+        CONTROL ADD BUTTON, cbhndl, %ID_BUTTON_CANCEL, "&Close", 110, 110, 50, 14             , call cbButton_Cancel
+
+        control set resize cbhndl, %ID_BUTTON_OK    , 0, 0, 0, 1
+        control set resize cbhndl, %ID_BUTTON_CANCEL, 0, 0, 0, 1
+        
+      CASE %WM_DESTROY
+        '---Do something just before window is destroyed
+              
+    END SELECT
+    
+  end function
+  
+  '-------------------------------------------------------------
+  ' Will manage events fired by OK button
+  '-------------------------------------------------------------
+  callback function cbButton_OK() as long
+  '-------------------------------------------------------------
+
+    static Counter as quad
+    static MaxSteps as long
+
+    If CBMSG = %WM_COMMAND Then
+      '---Check control specific message
+      Select Case CBCTLMSG
+        Case %BN_CLICKED
+          '---Check the control ID
+          Select Case CBCTL
+            Case %ID_Button_OK
+              control disable cbhndl, %ID_BUTTON_OK
+              control disable cbhndl, %ID_BUTTON_CANCEL
+              
+              randomize
+              MaxSteps = rnd(500, 5000)                                '---Set max range
+              
+              '---SetUp progress bar 2
+              ProgressBar_SetRange    cbhndl, %ID_PROGRESS_2, 0, MaxSteps           '---Set PB min and max values
+              ProgressBar_SetStep     cbhndl, %ID_PROGRESS_2, 1                     '---Set automatic step increment
+              ProgressBar_SetPos      cbhndl, %ID_PROGRESS_3, 0                     '---Set current bar position
+              
+              '---SetUp progress bar 3
+              ProgressBar_SetRange    cbhndl, %ID_PROGRESS_3, 0, MaxSteps           '---Set PB min and max values
+              ProgressBar_SetStep     cbhndl, %ID_PROGRESS_3, 1                     '---Set automatic step increment
+              ProgressBar_SetPos      cbhndl, %ID_PROGRESS_3, 0                     '---Set current bar position
+
+              StatusBar_Settext cbhndl, %ID_STATUSBAR, "Min: 0", 1
+              StatusBar_Settext cbhndl, %ID_STATUSBAR, "Current 0", 2
+              StatusBar_Settext cbhndl, %ID_STATUSBAR, "Max: " & MaxSteps, 3
+
+              '---Progress values in ascending order
+              for Counter = 1 to MaxSteps
+                ProgressBar_Stepit cbhndl, %ID_PROGRESS_2
+                ProgressBar_Stepit cbhndl, %ID_PROGRESS_3
+                StatusBar_Settext cbhndl, %ID_STATUSBAR, "Current " & ProgressBar_GetPos (cbhndl, %ID_PROGRESS_2), 2
+                doevents
+              next    
+
+              '---Invert the auto increment step from 1 to -1
+              ProgressBar_SetStep     cbhndl, %ID_PROGRESS_2, -1                     '---Set automatic step increment
+              ProgressBar_SetStep     cbhndl, %ID_PROGRESS_3, -1                     '---Set automatic step increment
+
+              '---Progress values in descending order
+              for Counter = 1 to MaxSteps
+                ProgressBar_Stepit cbhndl, %ID_PROGRESS_2
+                ProgressBar_Stepit cbhndl, %ID_PROGRESS_3
+                StatusBar_Settext cbhndl, %ID_STATUSBAR, "Current " & ProgressBar_GetPos (cbhndl, %ID_PROGRESS_2), 2 
+                doevents
+              next    
+
+              '---Clear status bar text parts in one go using -1 in part number            
+              StatusBar_Settext cbhndl, %ID_STATUSBAR, "", -1
+
+              control enable cbhndl, %ID_BUTTON_OK
+              control enable cbhndl, %ID_BUTTON_CANCEL
+
+          end select
+      end select
+    end if
+
+  end function
+  
+  '-------------------------------------------------------------
+  ' Will manage events fired by CANCEL button
+  '-------------------------------------------------------------
+  callback function cbButton_Cancel() as long
+  '-------------------------------------------------------------
+    If CBMSG = %WM_COMMAND Then
+      '---Check control specific message
+      Select Case CBCTLMSG
+        Case %BN_CLICKED
+          '---Check the control ID
+          Select Case CBCTL
+            Case %ID_Button_Cancel
+              dialog end cbhndl
+          end select
+      end select
+    end if
+    
+  end function
+  

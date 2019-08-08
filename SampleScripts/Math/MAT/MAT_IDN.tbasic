@@ -1,0 +1,35 @@
+uses "console"
+uses "math"
+
+#include "MAT_UtilityFunctions.inc"
+
+%MaxLoops = 10000
+
+randomize
+
+dim i           as long
+dim T1, T2      as double
+
+dim MyMat1(4, 4) as ext
+
+' -- Use of square brackets forces row assignment
+MyMat1() = [  1,  2,  3,  4,
+              5,  6,  7,  8,
+              9, 10, 11, 12,
+             13, 14, 15, 16 ]
+
+MyMat_Print(MyMat1, "Before")
+
+'--------------------------------------------
+T1 = timer
+  for i = 1 to %MaxLoops
+    mat MyMat1() = IDn
+  next
+T2 = timer
+MyMat_Print(MyMat1, "After IDN", %MaxLoops, T2 - T1)
+
+'--------------------------------------------
+'---Program finished
+printl "--- Press a key to finish ---"
+waitkey
+'--------------------------------------------

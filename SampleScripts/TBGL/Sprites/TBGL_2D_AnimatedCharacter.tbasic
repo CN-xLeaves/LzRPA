@@ -1,0 +1,131 @@
+'
+' One of the possible implementations of multi-animation character
+' Petr Schreiber, 2009
+' 
+
+#MINVERSION 1.7.10.0
+
+Uses "TBGL"      
+
+Begin Const
+
+  %animWalk = 1
+  %animHide
+  
+End Const
+                 
+Global sprRobot As Long       
+Global width, height As Long
+       
+Function Main()    
+  Local hWnd As DWord
+  Local dirTextures As String = APP_SourcePath+"Textures\"   
+
+  ' -- Create and show window
+  hWnd = TBGL_CreateWindowEx("TBGL Sprite character animation, use arrow keys", 640, 480, 32, %TBGL_WS_WINDOWED Or %TBGL_WS_CLOSEBOX )
+  TBGL_ShowWindow 
+
+  TBGL_GetWindowClient(hWnd, Width, Height)  
+  
+  ' -- Some state initialization
+  TBGL_UseTexture %TRUE
+  TBGL_UseVSync %TRUE
+  TBGL_UseAlphaTest %TRUE
+  TBGL_AlphaFunc %TBGL_GREATER, 0.5
+  
+  ' -- Set the TBGL color to pure white, so colors of sprites are the same like in the texture
+  TBGL_Color 255,255,255
+  TBGL_BackColor 0, 128 ,255  
+
+  ' -- Load the sprite 
+  sprRobot = TBGL_SpriteLoadAnim(dirTextures + "robot.bmp", 32, 32, RGB(255,0,255))
+  
+  ' -- Frames 1 to 5 are walk cycle
+  TBGL_SpriteSetAnim ( sprRobot, 1, 5, %animWalk )
+  ' -- Frames 9 to 12 are hiding animation
+  TBGL_SpriteSetAnim ( sprRobot, 9, 12,  %animHide )
+  
+  ' -- 25 frames per second, please
+  TBGL_SpriteSetAnimSpeed ( sprRobot, 25, %animWalk )
+  TBGL_SpriteSetAnimSpeed ( sprRobot, 25,  %animHide )
+
+  ' -- Now set the sprites position in the middle of the screen
+  TBGL_SpriteSetPos(sprRobot,width/2,height/2)
+  
+  ' -- Resets status of all keys 
+  TBGL_ResetKeyState()
+  
+  ' -- Bind periodic function at 40 ms
+  TBGL_BindPeriodicFunction(hWnd, "GameLoop", 40)
+  
+  ' -- Call it each 40 ms
+  TBGL_ProcessPeriodicFunction(hWnd)
+  
+  ' -- Now let's clean up the memory
+  TBGL_SpritesDeleteAll
+  
+  TBGL_DestroyWindow
+End Function 
+
+Sub GameLoop()
+  Local frameRate As Double  
+  Static hWnd As Long = TBGL_CallingWindow
+  
+  FrameRate = TBGL_GetFrameRate
+
+  ' -- Clear the background
+  TBGL_ClearFrame       
+
+    ' -- Set the render matrix to the window clients resolution
+    TBGL_RenderMatrix2D (0, height, width, 0)    
+    ' -- With one command you draw all active sprites
+    TBGL_SpritesDrawAll
+  
+  ' -- Flip the buffer so you see something on the screen
+  TBGL_DrawFrame 
+
+  ' -- ESCAPE key to exit application
+  If TBGL_GetWindowKeyState(hWnd, %VK_ESCAPE) Then
+    TBGL_UnBindPeriodicFunction(hWnd)
+    Exit Sub
+  End If  
+                     
+  ' -- Here are all the character controls
+  If TBGL_GetWindowKeyState(hWnd, %VK_DOWN) Then 
+    ' -- Hide animation
+    TBGL_SpriteSetAnimGroup(sprRobot,  %animHide)
+                       
+    ' -- Stay at frame 12                       
+    If TBGL_SpriteGetAnimTime(sprRobot, %animHide) < 12 Then
+      TBGL_SpriteAnimate(sprRobot, 1.0/framerate) 
+    End If
+  ElseIf TBGL_GetWindowKeyState(hWnd, %VK_LEFT) Then 
+    ' -- Go left
+    TBGL_SpriteSetAnimGroup(sprRobot,  %animWalk)
+    TBGL_SpriteSlide(sprRobot, 0,-60/FrameRate) 
+    TBGL_SpriteAnimate(sprRobot, 1.0/framerate)
+  ElseIf TBGL_GetWindowKeyState(hWnd, %VK_RIGHT) Then 
+    ' -- Go Right    
+    TBGL_SpriteSetAnimGroup(sprRobot,  %animWalk)    
+    TBGL_SpriteSlide(sprRobot, 0, 60/FrameRate) 
+    TBGL_SpriteAnimate(sprRobot, 1.0/framerate)
+  Else       
+    ' -- Nothing pressed? Then...
+    
+    ' -- ... according to animation we choose what to do    
+    Select Case TBGL_SpriteGetAnimGroup(sprRobot)
+      Case %animWalk
+        ' -- Set first idle animation frame
+        TBGL_SpriteSetAnimTime(sprRobot, 1)        
+        
+      Case %animHide
+        ' -- Play animation backwards to frame 10
+        If TBGL_SpriteGetAnimTime(sprRobot, %animHide) > 10 Then
+          TBGL_SpriteAnimate(sprRobot, -1.0/framerate) 
+        End If        
+      
+    End Select             
+    
+  End If
+
+End Sub

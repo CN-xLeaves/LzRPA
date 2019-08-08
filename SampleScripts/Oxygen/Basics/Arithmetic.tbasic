@@ -1,0 +1,5 @@
+' ARITHMETIC
+
+uses "oxygen"
+o2_basic " print str 1+2+3+4"
+o2_exec

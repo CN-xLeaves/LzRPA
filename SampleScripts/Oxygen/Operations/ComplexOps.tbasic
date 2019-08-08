@@ -1,0 +1,188 @@
+'--------------------------
+'TYPES OPERATORS OPERATIONS
+'==========================
+
+'COMPLEX OPERATOR SET
+'--------------------
+
+'Example Supporting + - * / ^ = += -=
+'Revised 23 Mar 2009
+'Charles Pegge
+
+
+
+uses "oxygen","File"
+
+dim d as double
+dim src as string
+
+src="
+
+operator fuz 4
+operator nuz 4
+
+'------------------------------------
+'DEFINE STRUCTURE FOR COMPLEX NUMBERS
+'====================================
+
+  type complex
+    r as double
+    i as double
+  end type
+  '
+  '
+  '------------------------------------------------------
+  'CREATE GLOBAL STACK FOR COMPLEX ACCUMULATOR / OPERANDS
+  '======================================================
+  '
+  'use var instead of dim (avoids recursive initialisation)
+  '
+  var complex complexa(64)            ' 64 LEVELS
+  var long complexi,complexj,complexo ' STACK POINTERS
+  complexi=&complexa                  ' SET POINTER TO BASE
+
+
+
+
+'-------------------------------------------------
+'DEFINE THE OPERATOR SET AS A SERIES OF PROCEDURES
+'=================================================
+
+'itr unary operations
+'itr conversions
+
+
+operations of complex
+
+  def getoperand
+  (
+    complexj=&v
+    if complexo then complexj=complexi : complexi-=16 : complexo=0
+    var complex c at complexi, d at complexj
+  )
+
+
+  '-------------------
+  'INVISIBLE OPERATORS
+  '-------------------
+
+  operation load(v as complex)
+    if not complexo then complexi+=16 : copyn complexi, &v, 16
+    complexo=0
+  end operation
+  
+  '-----------------
+  'VISIBLE OPERATORS
+  '-----------------
+
+  operation = (v as complex)
+    copyn &v, complexi, 16
+    complexi -= 16
+    complexo=0
+  end operation
+  
+  operation + (v as complex)
+    getoperand
+    c.r += d.r
+    c.i += d.i
+  end operation
+  
+  operation - (v as complex)
+    getoperand
+    c.r -= d.r
+    c.i -= d.i
+  end operation
+  
+  operation `+=` (v as complex)
+    getoperand
+    d.r += c.r
+    d.i += c.i
+  end operation
+  
+  operation `-=` (v as complex)
+    getoperand
+    d.r -= c.r
+    d.i -= c.i
+  end operation
+
+  operation * (v as complex)
+    getoperand
+    dim as double dp
+    dp=c.r
+    c.r = c.r * d.r - c.i * d.i
+    c.i = c.i * d.r + dp  * d.i
+  end operation
+
+  operation / (v as complex)
+    ' 
+    ' (a*c+b*d) / (c*c+d*d) real
+    ' (b*c-a*d) / (c*c+d*d) imaginary
+    '
+    getoperand
+    dim as complex t
+    dim as double dp
+    dp=v.r * v.r + v.i * v.i
+    t.r=c.r : t.i=c.i
+    c.r = ( t.r * d.r + t.i * d.i ) / dp
+    c.i = ( t.i * d.r - t.r * d.i ) / dp
+  end operation
+  
+  operation ^ (v as complex)
+    '
+    'de Moivre
+    '
+    getoperand
+    dim as double rd,mg
+    rd   =  0.5 * d.r * pi
+    mg    =  hypot(c.r,c.i) ^ d.r
+    '
+    c.r  =  mg  * cos rd
+    c.i  =  mg  * sin rd
+    '
+  end operation
+
+end operations
+
+
+
+
+;//////////////////////////////////////
+
+
+  dim z1,z2,z3,z4 as complex
+  dim d=42.5 as double
+
+  z1 => 0, 0
+  z2 => 2, 1
+  z3 => 2, 3
+  z4 => d,0
+
+
+  z1 =  z2 * z3
+
+  'z1=z1+z4
+ 
+  print `Complex Number Result:
+  
+  `+
+  str(z1.r)+`  Real
+  `+
+  str(z1.i)+`  Imaginary
+  `
+
+
+;//////////////////////////////////////
+
+
+"
+
+'msgbox 0,o2_error()+o2_prep ("O2H "+src)
+'file_save ("t.txt",o2_error()+o2_prep ("O2H "+src))
+o2_basic src
+if len(o2_error) then
+  msgbox 0," : "+o2_error() '+o2_prep ("O2H "+src)
+  stop
+else
+ o2_exec
+end if
+

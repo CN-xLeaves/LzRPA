@@ -1,0 +1,9 @@
+' ARRAYS
+
+uses "oxygen"
+o2_basic "
+  dim as long a(10)=>(2,4,6,8,10,12)
+  aa=a(1)+a(4)
+  print aa
+ "
+o2_exec

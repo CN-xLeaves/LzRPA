@@ -1,0 +1,106 @@
+'---
+'---Loads needed modules
+'---
+uses "File"
+uses "Console"
+uses "Tokenizer"
+
+'---
+'---Declare needed variables
+'---
+dim MyBuffer        as string     '---Will contains string buffer to be parsed
+dim CurrentPosition as long       '---Current buffer pointer position
+dim TokenMainType   as long       '---Will contains current token main type
+dim Token           as string     '---Will contains current string token
+dim TokenSubType    as long       '---Will contains current token sub type
+
+dim T0, T1          as quad       '---Performance timing
+dim nTokens         as quad       '---In order to count number of tokens found
+dim Counter         as long
+
+'---Create a new keywords group. Assign a value >= 100
+dim MyDictionary    as long value 100
+
+'---Add keywords to the group
+tokenizer_KeyAdd("DIM"                  , MyDictionary, 1)
+Tokenizer_KeyAdd("AS"                   , MyDictionary, 2)
+Tokenizer_KeyAdd("PRINL"                , MyDictionary, 3)
+Tokenizer_KeyAdd("USES"                 , MyDictionary, 4)
+
+'...
+'---Add as many keywords you need
+'...
+
+'---Now change some default behave in char parsing
+Tokenizer_Default_Char("$", %TOKENIZER_DEFAULT_Alpha)
+Tokenizer_Default_Char("%", %TOKENIZER_DEFAULT_Alpha)
+Tokenizer_Default_Char(":", %TOKENIZER_DEFAULT_newline)
+
+'---Those two lines are equivalent
+Tokenizer_Default_Char(";", %TOKENIZER_DEFAULT_newline)
+Tokenizer_Default_code(37 , %TOKENIZER_DEFAULT_newline)
+
+'---A set of chars can be indicated in one go using
+Tokenizer_Default_Set("$%", %TOKENIZER_DEFAULT_Alpha)
+Tokenizer_Default_Set(":;", %TOKENIZER_DEFAULT_newline)
+
+'---
+'---Script start
+'---
+printl "This script will load itself as a string buffer."
+printl "Than will parse token by token giving back token type info"
+printl "Press a key to start"
+printl repeat$(70, "-")
+waitkey
+
+'---Start timer
+T0 = gettickcount
+
+'---Load this script into a string buffer
+MyBuffer = file_load(app_sourcename)
+
+'---Try to comment out below line ...
+'MyBuffer = repeat$(200, MyBuffer)
+'---
+
+'---Init current buffer position. THIS IS IMPORTANT
+CurrentPosition = 1
+
+'---Loops until token is end of buffer
+while TokenMainType <> %TOKENIZER_FINISHED
+
+  '---Here we are. Most important point here is that all passed parameters
+  '   must be a single variable and not an expression. This is necessary because
+  '   parameters are passed by reference in order to return information about token
+  '---
+  '   MyBuffer        must contains the string you want to parse
+  '   CurrentPosition must be initialized to 1. After execution this parameter will contains
+  '                   current position just after current token
+  '   TokenMainType   on exit, it will contain the main type of the token found
+  '   Token           on exit, it will contain the string representation of the token found
+  '   TokenSubType    on exit, it will contain the sub type of the token found (if relevant)
+  '---
+  Tokenizer_GetNextToken(MyBuffer, CurrentPosition, TokenMainType, Token, TokenSubType)
+
+  incr Counter
+  '---Write some info
+  printl format$(Counter, "0000") & " Token found: " & Token & " (Main type: " & TokenMainType & ")(Sub type: " & TokenSubType & ")"
+
+  if TokenMainType = %TOKENIZER_DELIMITER and Token = "'" then
+    Tokenizer_MoveToEol(MyBuffer, CurrentPosition)
+  end if
+  
+  '---In order to count number of tokens found
+  incr nTokens
+wend
+  
+'---ENd timer
+T1 = gettickcount
+
+'---Give results
+printl repeat$(70, "-")
+printl "Operation performed in " & format$(T1 - T0) & " mSec"
+printl "Number of Tokens found: " & nTokens
+
+waitkey
+

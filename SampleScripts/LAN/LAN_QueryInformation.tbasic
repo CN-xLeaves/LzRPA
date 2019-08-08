@@ -1,0 +1,15 @@
+uses "LAN"
+
+Dim sServer    as string = "" 'If empty use local server, otherwise specify the remote server name like "\\MYSERVER"
+
+msgbox 0, LAN_GetUserInformation(sServer, $CRLF), %MB_OK, "User information " + iif$(len(sServer), "for server " + sServer, "local server")
+
+msgbox 0, LAN_GetMachineInformation(sServer, $CRLF), %MB_OK, "Machine information " + iif$(len(sServer), "for server " + sServer, "local server")
+
+msgbox 0, LAN_GetGroupInformation(sServer, $CRLF), %MB_OK, "Group information on server " + iif$(len(sServer), "for server " + sServer, "local server")
+
+msgbox 0, LAN_GetUserInformation(sServer, $CRLF, %LAN_INFO_ALL), %MB_OK, "All User information " + iif$(len(sServer), "for server " + sServer, "local server")
+
+msgbox 0, LAN_GetMachineInformation(sServer, $CRLF, %LAN_INFO_ALL), %MB_OK, "All Machine information " + iif$(len(sServer), "for server " + sServer, "local server")
+
+msgbox 0, LAN_GetGroupInformation(sServer, $CRLF, %LAN_INFO_ALL), %MB_OK, "All Group information on server " + iif$(len(sServer), "for server " + sServer, "local server")

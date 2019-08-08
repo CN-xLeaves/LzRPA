@@ -1,0 +1,41 @@
+' ========================================================================================
+' Demonstrates the use of the context property.
+' The following example shows what is contained in the context of a selection after a
+' query is executed. It also shows that the selection is reset when this property is
+' changed.
+' ========================================================================================
+
+uses "Console"
+
+#default declare Checkduplicates    %TRUE
+#default declare CheckMissing       %TRUE
+
+#INCLUDE "%APP_INCLUDEPATH%\TB_XML60.INC"
+
+' ========================================================================================
+' Main
+' ========================================================================================
+FUNCTION MAIN() as long
+
+   LOCAL pXmlDoc AS DWORD
+   LOCAL pSelection AS DWORD
+   LOCAL pContext AS DWORD
+
+   pXmlDoc = XmlCreateObject("Msxml2.DOMDocument.6.0")
+   IF ISTRUE IXMLDOMDocument_loadXML(pXmlDoc, "<Customer>Microsoft</Customer>") THEN
+      IXMLDOMDocument2_setProperty pXmlDoc, "SelectionLanguage", "XPath"
+      pSelection = IXMLDOMDocument_selectNodes(pXmlDoc, "//Customer")
+      pContext = IXMLDOMSelection_get_context(pSelection)
+      XmlRelease pSelection
+      console_writeline IXMLDOMNode_get_xml(pContext)
+      XmlRelease pContext
+   END IF
+   XmlRelease pXmlDoc
+
+   
+   console_writeline "--- Press any key to finish ---"
+   console_WAITKEY
+
+END FUNCTION
+
+Main

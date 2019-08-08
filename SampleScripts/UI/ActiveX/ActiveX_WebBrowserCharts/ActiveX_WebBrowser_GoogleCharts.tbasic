@@ -1,0 +1,499 @@
+﻿USES "UI"
+uses "Registry"
+
+#BUNDLE File "", ".\Charts\GoogleChart_Dynamic_ComboChart.html"       , ".\Charts\"    , ReplaceExisting=1, DeleteOnClose=0, CreateFullPath=1
+#BUNDLE File "", ".\Charts\GoogleChart_Dynamic_Gauge.html"            , ".\Charts\"    , ReplaceExisting=1, DeleteOnClose=0, CreateFullPath=1
+#BUNDLE File "", ".\Charts\GoogleChart_Dynamic_LineCurveChart.html"   , ".\Charts\"    , ReplaceExisting=1, DeleteOnClose=0, CreateFullPath=1
+#BUNDLE File "", ".\Charts\GoogleChart_Dynamic_MaterialBarChart.html" , ".\Charts\"    , ReplaceExisting=1, DeleteOnClose=0, CreateFullPath=1
+#BUNDLE File "", ".\Charts\GoogleChart_Dynamic_Pie3DChart.html"       , ".\Charts\"    , ReplaceExisting=1, DeleteOnClose=0, CreateFullPath=1
+#BUNDLE File "", ".\Charts\GoogleChart_Dynamic_SankeyDiagram.html"    , ".\Charts\"    , ReplaceExisting=1, DeleteOnClose=0, CreateFullPath=1
+#BUNDLE File "", ".\Charts\GoogleChart_Dynamic_TreeMap.html"          , ".\Charts\"    , ReplaceExisting=1, DeleteOnClose=0, CreateFullPath=1
+#BUNDLE File "", ".\Charts\GoogleChart_Dynamic_WordTreeImplicit.html" , ".\Charts\"    , ReplaceExisting=1, DeleteOnClose=0, CreateFullPath=1
+#BUNDLE File "", ".\Charts\GoogleChart_Dynamic_Marker_GeoCharts.html" , ".\Charts\"    , ReplaceExisting=1, DeleteOnClose=0, CreateFullPath=1
+
+'----------------------------------------------------
+'----------------------------------------------------
+'---Set IE11 usage inside Web control
+'---See: https://forum.powerbasic.com/forum/jose-s-corner/discussion/61044-trouble-with-chart-js-in-embedded-browser
+'---     https://www.codeproject.com/Articles/793687/Configuring-the-emulation-mode-of-an-Internet-Expl
+'--- Set 9999 Windows Internet Explorer 9. Webpages are displayed in IE9 Standards mode, regardless of the !DOCTYPE directive.
+  Registry_SetDWord("HKEYCU", "Software\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_BROWSER_EMULATION", APP_Name, 11001)
+
+'---This disable the sound clik when navigating
+'   https://msdn.microsoft.com/en-us/library/ee330734(v=vs.85).aspx#navigation_sound
+  $FeatureBaseKey = "Software\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_DISABLE_NAVIGATION_SOUNDS"
+  Registry_SetDWord("HKEYCU", $FeatureBaseKey, APP_Name, 0)
+
+
+'---Define a button ID
+Begin ControlID
+  %ButtonClose
+  %ButtonGO
+  %lblFind
+  %txtFind
+  %lblReplace
+  %txtReplace
+  %wBroser
+  %ID_ActiveX
+  %IDC_MenuTREE
+End ControlID
+
+'---Used to interact with Web Browser
+Global iWebBrowser As iDispatch
+
+'---Treeview menu nodes
+long htGoogleCharts
+  long htGauge
+  long htCombo
+  long htLineCurve
+  long htPie3DChart
+  long htMaterialBarChart
+  long htSankeyDiagram
+  long htTreeMap
+  long htWordTreeImplicit
+  long htMarketGeoCharts
+
+'------------------------------------------------
+' MAIN function
+'------------------------------------------------
+' Create main window and show The rest will be handled by functions events
+'------------------------------------------------
+Function Main() as Long
+'------------------------------------------------
+
+  DIALOG New Pixels, Name frmMain, 0, ""
+  
+  DIALOG SHOW Modeless frmMain.handle
+  Do
+    Dialog DoEvents 0
+  Loop While iswindow(frmMain.handle)
+
+End Function
+
+'------------------------------------------------
+callback function activexWB_OnCallBack() as Long
+'------------------------------------------------
+
+  msgbox Function_Name
+  '---Sooner or later thinBasic will be able to capture events from ActiveX
+
+end Function
+
+'------------------------------------------------
+' Callback function used to handle dialog events 
+' not handled by specific event functions
+'------------------------------------------------
+CallBack Function frmMain_OnCallBack() As Long
+'------------------------------------------------
+
+End Function
+
+'------------------------------------------------
+CallBack Function frmMain_OnInit() As Long
+'------------------------------------------------
+  long dW, dH
+  
+  '---Get desktop size
+  DESKTOP GET SIZE TO dW, dH
+
+  '---Set client size
+  frmMain.cw = 1024
+  frmMain.ch =  768
+  
+  '---Center window
+  frmMain.x  = (dW - frmMain.cw)/ 2
+  frmMain.y  = (dH - frmMain.ch)/ 2
+  
+  '---Set window style
+  frmMain.Style = %WS_DLGFRAME | %WS_CAPTION | %WS_SYSMENU | %WS_OVERLAPPEDWINDOW
+  
+  '---Limits window minimum size
+  frmMain.MinClientSize = 550, 220
+  
+  '---Set window title
+  frmMain.Title = "Testing ActiveX control using WebBrowser and Google Charts"
+
+  '---Create ActiveX container
+  CONTROL ADD ActiveX   Name activexWB  , frmMain.Handle, %ID_ActiveX   , "Shell.Explorer"
+  Control Add TreeView  Name MainTree   , frmMain.Handle, %IDC_MenuTREE , ""
+  CONTROL ADD BUTTON    Name btnCloseMe , frmMain.Handle, %ButtonClose  , "Close"
+  
+  '---Now Capture iDispatch object from Activex control and use it to interact with web page later
+  iWebBrowser = activexWB.ActiveXObj
+  if IsComObject(iWebBrowser) Then
+    '---Initial WebControl setup
+    iWebBrowser.Silent = TRUE
+    '---Reference: https://msdn.microsoft.com/en-us/library/aa752043(v=vs.85).aspx
+    
+  Else
+    msgbox "It was not possible to get Dispatch interface from ActiveX Web Control"
+  end If
+
+        MainTree.ItemHeight   = 26
+        MainTree.indent       = 20
+        MainTree.BackColor    = rgb(214, 223, 247)
+        
+        MainTree.TextColor    = rgb(0, 0, 0)
+        MainTree.LineColor    = rgb(0, 0, 0)
+
+        htGoogleCharts         = MainTree.InsertItem "Google Charts"      , 0, %TVI_FIRST
+          htGauge              = MainTree.InsertItem "Gauge Chart"        , htGoogleCharts, %TVI_LAST
+          htCombo              = MainTree.InsertItem "Combo Chart"        , htGoogleCharts, %TVI_LAST
+          htLineCurve          = MainTree.InsertItem "Line Curve"         , htGoogleCharts, %TVI_LAST
+          htPie3DChart         = MainTree.InsertItem "Pie 3D Chart"       , htGoogleCharts, %TVI_LAST
+          htMaterialBarChart   = MainTree.InsertItem "Material Bar Chart" , htGoogleCharts, %TVI_LAST
+          htSankeyDiagram      = MainTree.InsertItem "Sankey Diagram"     , htGoogleCharts, %TVI_LAST
+          htTreeMap            = MainTree.InsertItem "Tree Map"           , htGoogleCharts, %TVI_LAST
+          htWordTreeImplicit   = MainTree.InsertItem "Word tree implicit" , htGoogleCharts, %TVI_LAST
+          htMarketGeoCharts    = MainTree.InsertItem "Marker GeoCharts"   , htGoogleCharts, %TVI_LAST
+
+    MainTree.Expand(htGoogleCharts) = %TRUE
+    MainTree.Select = htGauge
+
+End Function
+
+'------------------------------------------------
+CallBack Function frmMain_OnSize() As Long
+'------------------------------------------------
+
+  MainTree.w = 200
+  MainTree.h = frmMain.ch
+
+  btnCloseMe.x = frmMain.cw - 130
+  btnCloseMe.y = 10
+  btnCloseMe.w = 120
+  btnCloseMe.h = 25
+
+  activexWB.x = 201
+  activexWB.y = 100
+  activexWB.cw = frmMain.cw - 201
+  activexWB.ch = frmMain.ch-100
+  
+  '---Proportionally set treeview item height to window client height
+  if MainTree.Count > 0 Then
+    MainTree.ItemHeight   = (frmMain.ch - 10) / MainTree.Count
+  end If
+  
+End Function
+
+
+
+'------------------------------------------------
+CallBack Function frmMain_OnDestroy() As Long
+'------------------------------------------------
+
+End Function
+
+
+
+'------------------------------------------------------------------------------
+' Button EVENT
+'------------------------------------------------------------------------------
+'------------------------------------------------
+  CallBack Function btnCloseMe_OnClick() As Long
+  '------------------------------------------------
+
+    frmMain.End
+
+  End Function
+
+
+'------------------------------------------------------------------------------
+' TreeView EVENTs
+'------------------------------------------------------------------------------
+  CallBack Function MainTree_OnSelChanged() As Long 
+  '----------------------------------------------------------------------------
+    local sChartTemplate  as String
+    local sDynamic        as String
+    local sDataMarker     as String
+    local sUrl            as String
+    local NavigateTo      as Long
+    local UpdateChart     as Long
+
+    'if VARIABLE_Exist(htGoogleCharts) = %false then exit Function
+    if IsComObject(iWebBrowser) = %FALSE Then exit Function
+   
+    sDataMarker = "%thinbasicdata"
+    
+    select case MainTree.Selected
+      
+      case htGoogleCharts
+        sUrl = "https://developers.google.com/chart/"
+        NavigateTo = TRUE
+ 
+       
+      case htGauge
+        sChartTemplate = app_sourcepath & "Charts\GoogleChart_Dynamic_Gauge.html"
+        sDynamic = "
+                      ['Label', 'Value'],
+                      ['Memory', {1}],
+                      ['CPU', {2}],
+                      ['Network', {3}]
+                  "
+        sDynamic = StrFormat$(sDynamic, rnd(10, 100), rnd(10, 100), rnd(10, 100))
+
+        UpdateChart = TRUE
+
+      case htLineCurve
+        sChartTemplate = app_sourcepath & "Charts\GoogleChart_Dynamic_LineCurveChart.html"
+        sDynamic = "
+                      ['Year', 'Sales', 'Expenses'],
+                      ['2004',  1000,      400],
+                      ['2005',  1170,      460],
+                      ['2006',  660,       1120],
+                      ['2007',  1030,      540]
+                  "
+        UpdateChart = TRUE
+      
+      case htCombo
+        sChartTemplate = app_sourcepath & "Charts\GoogleChart_Dynamic_ComboChart.html"
+        sDynamic = "
+                      ['Month', 'Bolivia', 'Ecuador', 'Madagascar', 'Papua New Guinea', 'Rwanda', 'Average'],
+                      ['2004/05',  165,       938,         522,              998,          450,      614.6],
+                      ['2005/06',  135,      1120,         599,             1268,          288,      682  ],
+                      ['2006/07',  157,      1167,         587,              807,          397,      623  ],
+                      ['2007/08',  139,      1110,         615,              968,          215,      609.4],
+                      ['2008/09',  136,       691,         629,             1026,          366,      569.6]
+                  "
+        UpdateChart = TRUE
+
+      case htMaterialBarChart
+        sChartTemplate = app_sourcepath & "Charts\GoogleChart_Dynamic_MaterialBarChart.html"
+        sDynamic = "
+                      ['Year', 'Sales', 'Expenses', 'Profit'],
+                      ['2014', 1000, 400, 200],
+                      ['2015', 1170, 460, 250],
+                      ['2016', 660, 1120, 300],
+                      ['2017', 1030, 540, 350]
+                  "
+        UpdateChart = TRUE
+      
+      case htPie3DChart
+        sChartTemplate = app_sourcepath & "Charts\GoogleChart_Dynamic_Pie3DChart.html"
+        sDynamic = "
+                      ['Task', 'Hours per Day'],
+                      ['Work',     11],
+                      ['Eat',      2],
+                      ['Commute',  2],
+                      ['Watch TV', 2],
+                      ['Sleep',    7]
+                  "
+        UpdateChart = TRUE
+      
+      case htSankeyDiagram
+        sChartTemplate = app_sourcepath & "Charts\GoogleChart_Dynamic_SankeyDiagram.html"
+        sDynamic = "
+                       [ 'Brazil', 'Portugal', 5 ],
+                       [ 'Brazil', 'France', 1 ],
+                       [ 'Brazil', 'Spain', 1 ],
+                       [ 'Brazil', 'England', 1 ],
+                       [ 'Canada', 'Portugal', 1 ],
+                       [ 'Canada', 'France', 5 ],
+                       [ 'Canada', 'England', 1 ],
+                       [ 'Mexico', 'Portugal', 1 ],
+                       [ 'Mexico', 'France', 1 ],
+                       [ 'Mexico', 'Spain', 5 ],
+                       [ 'Mexico', 'England', 1 ],
+                       [ 'USA', 'Portugal', 1 ],
+                       [ 'USA', 'France', 1 ],
+                       [ 'USA', 'Spain', 1 ],
+                       [ 'USA', 'England', 5 ],
+                       [ 'Portugal', 'Angola', 2 ],
+                       [ 'Portugal', 'Senegal', 1 ],
+                       [ 'Portugal', 'Morocco', 1 ],
+                       [ 'Portugal', 'South Africa', 3 ],
+                       [ 'France', 'Angola', 1 ],
+                       [ 'France', 'Senegal', 3 ],
+                       [ 'France', 'Mali', 3 ],
+                       [ 'France', 'Morocco', 3 ],
+                       [ 'France', 'South Africa', 1 ],
+                       [ 'Spain', 'Senegal', 1 ],
+                       [ 'Spain', 'Morocco', 3 ],
+                       [ 'Spain', 'South Africa', 1 ],
+                       [ 'England', 'Angola', 1 ],
+                       [ 'England', 'Senegal', 1 ],
+                       [ 'England', 'Morocco', 2 ],
+                       [ 'England', 'South Africa', 7 ],
+                       [ 'South Africa', 'China', 5 ],
+                       [ 'South Africa', 'India', 1 ],
+                       [ 'South Africa', 'Japan', 3 ],
+                       [ 'Angola', 'China', 5 ],
+                       [ 'Angola', 'India', 1 ],
+                       [ 'Angola', 'Japan', 3 ],
+                       [ 'Senegal', 'China', 5 ],
+                       [ 'Senegal', 'India', 1 ],
+                       [ 'Senegal', 'Japan', 3 ],
+                       [ 'Mali', 'China', 5 ],
+                       [ 'Mali', 'India', 1 ],
+                       [ 'Mali', 'Japan', 3 ],
+                       [ 'Morocco', 'China', 5 ],
+                       [ 'Morocco', 'India', 1 ],
+                       [ 'Morocco', 'Japan', 3 ]
+                  "
+        UpdateChart = TRUE
+
+      case htTreeMap
+        sChartTemplate = app_sourcepath & "Charts\GoogleChart_Dynamic_TreeMap.html"
+        sDynamic = "
+                      ['Location', 'Parent', 'Market trade volume (size)', 'Market increase/decrease (color)'],
+                      ['Global',    null,                 0,                               0],
+                      ['America',   'Global',             0,                               0],
+                      ['Europe',    'Global',             0,                               0],
+                      ['Asia',      'Global',             0,                               0],
+                      ['Australia', 'Global',             0,                               0],
+                      ['Africa',    'Global',             0,                               0],
+                      ['Brazil',    'America',            11,                              10],
+                      ['USA',       'America',            52,                              31],
+                      ['Mexico',    'America',            24,                              12],
+                      ['Canada',    'America',            16,                              -23],
+                      ['France',    'Europe',             42,                              -11],
+                      ['Germany',   'Europe',             31,                              -2],
+                      ['Sweden',    'Europe',             22,                              -13],
+                      ['Italy',     'Europe',             17,                              4],
+                      ['UK',        'Europe',             21,                              -5],
+                      ['China',     'Asia',               36,                              4],
+                      ['Japan',     'Asia',               20,                              -12],
+                      ['India',     'Asia',               40,                              63],
+                      ['Laos',      'Asia',               4,                               34],
+                      ['Mongolia',  'Asia',               1,                               -5],
+                      ['Israel',    'Asia',               12,                              24],
+                      ['Iran',      'Asia',               18,                              13],
+                      ['Pakistan',  'Asia',               11,                              -52],
+                      ['Egypt',     'Africa',             21,                              0],
+                      ['S. Africa', 'Africa',             30,                              43],
+                      ['Sudan',     'Africa',             12,                              2],
+                      ['Congo',     'Africa',             10,                              12],
+                      ['Zaire',     'Africa',             8,                               10]
+                  "
+        UpdateChart = TRUE
+
+      case htWordTreeImplicit
+        sChartTemplate = app_sourcepath & "Charts\GoogleChart_Dynamic_WordTreeImplicit.html"
+        sDynamic = "
+                      [ ['Phrases'],
+                        ['cats are better than dogs'],
+                        ['cats eat kibble'],
+                        ['cats are better than hamsters'],
+                        ['cats are awesome'],
+                        ['cats are people too'],
+                        ['cats eat mice'],
+                        ['cats meowing'],
+                        ['cats in the cradle'],
+                        ['cats eat mice'],
+                        ['cats in the cradle lyrics'],
+                        ['cats eat kibble'],
+                        ['cats for adoption'],
+                        ['cats are family'],
+                        ['cats eat mice'],
+                        ['cats are better than kittens'],
+                        ['cats are evil'],
+                        ['cats are weird'],
+                        ['cats eat mice'],
+                      ]
+          "
+        UpdateChart = TRUE
+      
+      case htMarketGeoCharts
+        sChartTemplate = app_sourcepath & "Charts\GoogleChart_Dynamic_Marker_GeoCharts.html"
+        sDynamic = "
+                    ['City',   'Population', 'Area'],
+                    ['Rome',      2761477,    1285.31],
+                    ['Milan',     1324110,    181.76],
+                    ['Naples',    959574,     117.27],
+                    ['Turin',     907563,     130.17],
+                    ['Palermo',   655875,     158.9],
+                    ['Genoa',     607906,     243.60],
+                    ['Bologna',   380181,     140.7],
+                    ['Florence',  371282,     102.41],
+                    ['Fiumicino', 67370,      213.44],
+                    ['Anzio',     52192,      43.43],
+                    ['Ciampino',  38262,      11]
+          "
+        UpdateChart = TRUE
+      
+    end Select
+
+    if IsComObject(iWebBrowser) Then
+
+      if UpdateChart Then
+
+        ShowChart(sChartTemplate, sDataMarker, sDynamic)
+    
+      elseif NavigateTo Then
+      
+        GoToUrl(sUrl)
+
+      end If
+    
+    end If
+    
+  end Function
+
+  '--------------------------------------------------------
+  ' Dynamic Script function added to activexWB control
+  '--------------------------------------------------------
+  function ShowChart(byval sChartTemplateFile as string, byval sDataMarker as String, byval sData as String) as Long
+    local sTemplate       as String
+    Local HtmlDocument    as iDispatch
+
+    '---Stop any current navigation
+    iWebBrowser.Stop
+    
+    '---Load Graph template file from disk
+    sTemplate = load_file(sChartTemplateFile)
+
+    '---If template was loaded ...
+    if len(sTemplate) Then
+
+      '---Replace data placeholder with data
+      sTemplate = replace$(sTemplate, sDataMarker, sData)
+
+      '---Now we need to load HTML directly into DOMCodument of the browser
+      
+      '---Get WebBrowser DOMDocument dispatch interface
+      HtmlDocument = iWebBrowser.Document
+      '---If OK, change it using dynamic text loaded from chart template
+      if IsComObject(HtmlDocument) then
+        HtmlDocument.OpenNew = FALSE
+        HtmlDocument.open("text/html", "replace")
+        HtmlDocument.Write(sTemplate)
+        HtmlDocument.Close
+        
+        iWebBrowser.Refresh
+        HtmlDocument = Nothing
+      end If
+
+    end If
+
+  end Function
+  
+    '--------------------------------------------------------
+  ' Dynamic Script function added to activexWB control
+  '--------------------------------------------------------
+  function GoToUrl(byval sNewUrl as string) as Long
+    local sTemplate       as String
+    Local HtmlDocument    as iDispatch
+
+    '---Stop any current navigation
+    iWebBrowser.Stop
+
+    '---Now we need to load clear DOMCodument of the browser
+    
+    '---Get WebBrowser DOMDocument dispatch interface
+    HtmlDocument = iWebBrowser.Document
+    '---If OK, change it using dynamic text loaded from chart template
+    if IsComObject(HtmlDocument) then
+      HtmlDocument.OpenNew = false
+      HtmlDocument.open("text/html", "replace")
+      HtmlDocument.Write("")
+      HtmlDocument.Close
+      HtmlDocument = Nothing
+      
+    end If
+
+    '---Load URL
+    iWebBrowser.Navigate(sNewUrl)
+    iWebBrowser.Refresh
+
+  end Function
+   

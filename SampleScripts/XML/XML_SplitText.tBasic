@@ -1,0 +1,59 @@
+' ========================================================================================
+' Demonstrates the use of spliText method
+' ========================================================================================
+
+uses "Console"
+
+#default declare Checkduplicates    %TRUE
+#default declare CheckMissing       %TRUE
+
+#INCLUDE "%APP_INCLUDEPATH%\TB_XML60.INC"
+
+' ========================================================================================
+' Main
+' ========================================================================================
+FUNCTION MAIN() as long
+
+   LOCAL pXmlDoc          AS DWORD
+   LOCAL pRootNode        AS DWORD
+   LOCAL pDOMNode         AS DWORD
+   LOCAL pNodeText        AS DWORD
+   LOCAL pNewNodeText     AS DWORD
+   LOCAL pNodeList        AS DWORD
+   LOCAL IID_IXMLDOMText  AS GUID
+
+   pXmlDoc = XmlCreateObject($PROGID_Msxml2DOMDocument)
+   IXMLDOMDocument_put_async pXmlDoc, %FALSE
+   IF ISTRUE IXMLDOMDocument_loadXML(pXmlDoc, "<root>Hello World!</root>") THEN
+      ' Get a reference to the root node
+      pRootNode = IXMLDOMDocument_get_documentElement(pXmlDoc)
+      ' Get a reference to the list of child nodes
+      pNodeList = IXMLDOMNode_get_childNodes(pRootNode)
+      ' Show how many nodes are in the list
+      console_writeline STR$(IXMLDOMNodeList_get_length(pNodeList))
+      ' Get a reference to the first child node
+      pDOMNode = IXMLDOMNode_get_firstChild(pRootNode)
+      ' We can't call IXMLDOMText_splitText using an IXMLDOMNode reference,
+      ' so we have to use XmlQueryInterface to retrieve a reference to IXMLDOMText.
+      IID_IXMLDOMText = $IID_IXMLDOMText
+      pNodeText = XmlQueryInterface(pDOMNode, IID_IXMLDOMText)
+      ' Split the text
+      pNewNodeText = IXMLDOMText_splitText(pNodeText, 6)
+      ' Show how many nodes are in the list
+      console_writeline STR$(IXMLDOMNodeList_get_length(pNodeList))
+   END IF
+
+   ' cleanup
+   XmlRelease pNewNodeText
+   XmlRelease pNodeText
+   XmlRelease pDOMNode
+   XmlRelease pNodeList
+   XmlRelease pRootNode
+   XmlRelease pXmlDoc
+   
+   console_writeline "--- Press any key to finish ---"
+   console_WAITKEY
+
+END FUNCTION
+
+Main

@@ -1,0 +1,247 @@
+uses "console"
+
+'------------------------------------------------------------------------
+'---SetUp console screen
+'------------------------------------------------------------------------
+  dim MaxCols as long value 100
+  dim MaxRows as long value 600
+  dim MaxSpaceForResult as long value 45
+
+  Console_SetScreenBufferSize(MaxCols, MaxRows)                   '---80 columns, 60 rown
+  Console_ShowWindow(%Console_SW_MAXIMIZE)              '---Maximize window
+
+'------------------------------------------------------------------------
+'---SetUp Initial params
+'------------------------------------------------------------------------
+  alias console_writeline as WL                         '---Alias to short script
+  alias console_write     as W                          '---Alias to short script
+  dim sFormat as string = "#####"                       '---
+ 
+'------------------------------------------------------------------------
+'---Start
+'------------------------------------------------------------------------
+  wl "This script is used to test how thinBasic is able to handle simple and"
+  wl "complex UDT (User Defined Types)."
+  wl "Press a key to continue or wait 5 seconds to go automatically"
+  WaitKey(5)
+
+TYPE COORD
+  x AS INTEGER
+  y AS INTEGER
+END TYPE
+
+type MainUDT
+  x as long
+  c as coord
+end type
+
+dim mt as MainUDT
+dim p  as long = varptr(mt)
+
+
+wStartSection  "Simple 1 level nested UDT"
+  wInfoResult "Type name", "MainUDT"
+  wInfoResult "Variable name", "mt"
+  wInfoResult "Size of MT var is", sizeof(mt)
+    mt.x    = 1234
+    mt.c.x  = 10
+    mt.c.y  = 20
+  wInfoResult "Assignment", "OK, done"
+
+  wInfoResult "Value of MT.x"   , mt.x
+  wInfoResult "Value of MT.c.x" , mt.c.x
+  wInfoResult "Value of MT.c.y" , mt.c.y
+
+
+
+wStartSection  "A more complex UDT with up to 3 nested level"
+'----------------------------------------------------------------------------------
+'---A more complex UDT
+type tmt
+  mt          as MainUDT
+  ee(10)      as ext
+  mtt         as MainUDT
+  sn          as string * 10
+  ss(20)      as string * 90
+  vv          as variant
+  vArray(8)   as variant
+end type
+
+'---Define a variable of TMT type
+dim mx as tmt
+
+  wInfoResult "Type name", "TMT"
+  wInfoResult "Variable name", "mx"
+  wInfoResult "Size of mx var is", sizeof(mx)
+
+  '------------------------------------------------------------------------
+  '---Fill variable. Still not avaiable all types of nested UDT assignment
+  mx.mt.x       = 4321
+  mx.mt.c.x     = 11
+  mx.mt.c.y     = 21
+  mx.ee(1)      = 9876.54321
+  mx.ee(10)     = -12345.6789
+  mx.mtt.x      = 12345
+  mx.mtt.c.x    = -27
+  mx.mtt.c.y    = -250
+  mx.ss(1)      = "[ABCDEFGHIJ]"
+  mx.ss(10)     = "[1234567890]"
+  wInfoResult "Assignment", "OK, done"
+  '------------------------------------------------------------------------
+
+  wInfoResult "Structure of mx variable", "see below"
+  wInfo       "TYPE TMT"
+  wInfo       "  mt         as MainUDT"
+  wInfo       "   |-->        x AS LONG"
+  wInfo       "   |-->        c AS COORD"
+  wInfo       "               |-->   x  AS INTEGER"
+  wInfo       "               |-->   y  AS INTEGER"
+  wInfo       "  ee(10)     AS EXT"
+  wInfo       "  mtt        AS MainUDT"
+  wInfo       "   |-->        x AS LONG"
+  wInfo       "   |-->        c AS COORD"
+  wInfo       "               |-->   x  AS INTEGER"
+  wInfo       "               |-->   y  AS INTEGER"
+  wInfo       "  sn         AS STRING * 10"
+  wInfo       "  ss(20)     AS STRING * 90"
+  wInfo       "  vv         AS VARIANT"
+  wInfo       "  vArray(8)  AS VARIANT"
+  wInfo       "END TYPE"
+
+'[breakpoint] <Any note here. Breakpoint will be set to line following this statement>
+  '---OK, ready to test data reading
+  wInfoResult "SizeOf Mx"         , SizeOf(mx)
+  wInfoResult "SizeOf Mx.mt"      , SizeOf(mx.mt)  
+  wInfoResult "SizeOf Mx.mt.x"    , SizeOf(mx.mt.x)
+  wInfoResult "SizeOf Mx.mt.c"    , SizeOf(mx.mt.c)
+  wInfoResult "SizeOf Mx.mt.c.x"  , SizeOf(mx.mt.c.x)
+  wInfoResult "SizeOf Mx.mt.c.y"  , SizeOf(mx.mt.c.y)
+  wInfoResult "SizeOf Mx.ee"      , SizeOf(mx.ee)
+  wInfoResult "SizeOf Mx.ee(1)"   , SizeOf(mx.ee(1))
+  wInfoResult "SizeOf Mx.ee(2)"   , SizeOf(mx.ee(2))
+  wInfoResult "SizeOf Mx.ee(10)"  , SizeOf(mx.ee(10))
+  wInfoResult "SizeOf Mx.mtt "    , SizeOf(mx.mtt)
+  wInfoResult "SizeOf sn"         , SizeOf(mx.sn)
+  wInfoResult "SizeOf ss"         , SizeOf(mx.ss)
+  wInfoResult "SizeOf ss(1)"      , SizeOf(mx.ss(1))
+  wInfoResult "SizeOf ss(20)"     , SizeOf(mx.ss(20))
+  wInfoResult "SizeOf vv"         , SizeOf(mx.vv) 
+  wInfoResult "SizeOf vArray"     , SizeOf(mx.vArray) 
+  wInfoResult "SizeOf vArray(5)"  , SizeOf(mx.vArray(5)) 
+
+
+'------------------------------------------------------------------------
+'------------------------------------------------------------------------
+wHLine
+wl "Press any key to finish"
+wHLine
+console_waitkey
+
+
+'------------------------------------------------------------------------
+'------------------------------------------------------------------------
+'------------------------------------------------------------------------
+'------------------------------------------------------------------------
+'------------------------------------------------------------------------
+' Write an horizontal line
+'------------------------------------------------------------------------
+function wHLine()
+  dim OldColor as long = Console_GetTextAttribute
+  dim NewColor as long = 14
+  
+  Console_SetTextAttribute(NewColor) 
+    console_writeline repeat$(MaxCols - console_getcursorx - 1, "-")
+  Console_SetTextAttribute(OldColor)
+
+end function
+
+'------------------------------------------------------------------------
+' Write a result output
+'------------------------------------------------------------------------
+function wInfoResult(byval sDescrition as string, byval vResult as variant)
+  dim OldColor as long = Console_GetTextAttribute
+  dim DescriptionColor  as long = 2
+  dim DotColor          as long = 8
+  dim ResultColor       as long = 10
+  
+
+  Console_SetTextAttribute(DotColor) 
+    console_write " - "
+  Console_SetTextAttribute(DescriptionColor) 
+    console_write sDescrition & " "
+  Console_SetTextAttribute(DotColor) 
+    console_write repeat$(MaxCols - Console_GetCursorX - MaxSpaceForResult, ".") & ": "
+  Console_SetTextAttribute(ResultColor) 
+    console_Writeline vResult
+  Console_SetTextAttribute(OldColor)
+
+end function
+
+'------------------------------------------------------------------------
+' Write a result output
+'------------------------------------------------------------------------
+function wInfo(byval sDescrition as string)
+  dim OldColor as long = Console_GetTextAttribute
+  dim DescriptionColor  as long = 3
+  dim DotColor          as long = 8
+  
+  Console_SetTextAttribute(DotColor) 
+    console_write "   > "
+  Console_SetTextAttribute(DescriptionColor) 
+    console_writeline sDescrition & " "
+  Console_SetTextAttribute(OldColor)
+
+end function
+
+'------------------------------------------------------------------------
+' Start a new Section
+'------------------------------------------------------------------------
+function wStartSection(optional byval sTitle as string, byval lAlign as long)
+  dim OldColor as long = Console_GetTextAttribute
+  dim TitleColor as long = 12
+
+  if sTitle = "" then
+    wHLine
+    console_writeline
+  else
+    sTitle = "[" & sTitle & "] "
+    Console_SetTextAttribute(TitleColor) 
+      select case lAlign
+        case 0 '---Align left
+          console_write sTitle
+        case 1 '---Align center
+          console_write string$((MaxCols - len(sTitle))/2, " " ) & sTitle
+        case 2 '---Align right
+          console_write string$(MaxCols - 1 - len(sTitle), " " ) & sTitle
+      end select
+    Console_SetTextAttribute(OldColor)
+    wHLine
+  end if
+  
+end function
+
+'------------------------------------------------------------------------
+' End a Section
+'------------------------------------------------------------------------
+function wEndSection(optional byval sTitle as string, byval lAlign as long)
+  dim OldColor as long = Console_GetTextAttribute
+  dim NewColor as long = 12
+
+  if sTitle = "" then
+    wHLine
+    console_writeline
+  else
+    Console_SetTextAttribute(NewColor) 
+      select case lAlign
+        case 0 '---Align left
+          console_writeline sTitle
+        case 1 '---Align center
+          console_writeline string$((MaxCols - len(sTitle))/2, " " ) & sTitle
+        case 2 '---Align right
+          console_writeline string$(MaxCols - 1 - len(sTitle), " " ) & sTitle
+      end select
+    Console_SetTextAttribute(OldColor)
+    wHLine
+  end if
+  
+end function

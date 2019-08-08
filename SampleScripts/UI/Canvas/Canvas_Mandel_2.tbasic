@@ -1,0 +1,70 @@
+Uses "UI"
+
+%WIDTH  = 320 * 2
+%HEIGHT = 240 * 2
+
+Long hWnd = Canvas_Window "Simple Windows Mandelbrot Set", -1, -1, %WIDTH, %HEIGHT
+
+Ext lx, ly, x, y, a, b, c, x2, y2, a2, b2, z, t1, t2
+
+TimeBeginPeriod(1)
+
+t1 = Timer
+  Canvas_Width(1)
+   
+  lx = 3 / %WIDTH
+  ly = 2 / %HEIGHT
+  
+  For x = 1 To %WIDTH
+    For y = 1 To %HEIGHT
+      a = 0
+      b = 0
+      c = 0
+      x2 = lx * x - 2
+      y2 = ly * y - 1
+      While c < 50
+        a2 = a * a - b * b
+        b2 = 2 * a * b
+        a = a2 + x2
+        b = b2 + y2
+        z = a * a + b * b
+        If z >= 4 Then Exit While
+        c += 1
+      Wend
+  
+'      If c = 50 Then
+'        Canvas_SetPixel x, y, Rgb(0, 0, 0)
+'      ElseIf c < 17 Then
+'        Canvas_SetPixel x, y, Rgb(245-((17 - c) * 3), 0, 0)
+'      ElseIf c < 33 Then
+'        Canvas_SetPixel x, y, Rgb(245, ((c - 16) * 16) - 16, 0)
+'      Else
+'        Canvas_SetPixel x, y, Rgb(641-(c * 12), 245, ((c - 32) * 15))
+'      End If
+
+      Select Case c
+        Case 50
+          Canvas_SetPixel x, y, Rgb(0, 0, 0)
+        Case < 17
+          Canvas_SetPixel x, y, Rgb(245-((17 - c) * 3), 0, 0)
+        Case < 33
+          Canvas_SetPixel x, y, Rgb(245, ((c - 16) * 16) - 16, 0)
+        Case Else
+          Canvas_SetPixel x, y, Rgb(641-(c * 12), 245, ((c - 32) * 15))
+      End Select
+      
+    Next
+  Next
+  
+t2 = Timer
+
+Canvas_Font("Courier New", 12, %CANVAS_FONTSTYLE_NORMAL) 
+Canvas_Color Rgb(248, 215, 215), -2
+Canvas_SetPos 0, 0 
+Canvas_Printl "Time taken: " & Format$(t2 - t1, "#0.000") & " secs"
+Canvas_Printl "Press a key to exit"
+
+TimeEndPeriod(1)
+
+Canvas_WaitKey
+Canvas_Window End hWnd

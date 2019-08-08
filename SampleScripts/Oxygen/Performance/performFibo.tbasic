@@ -1,0 +1,75 @@
+
+'-----------------------------------
+'MEASURING EXECUTION TIME: FIBONACCI
+'===================================
+ 
+ 
+uses "oxygen"
+ 
+dim src as string  
+ 
+src = "
+
+  '#file "p.exe"
+
+  DECLARE FUNCTION QueryPerformanceCounter LIB `KERNEL32.DLL` ALIAS `QueryPerformanceCounter` (lpPerformanceCount AS QUAD) AS LONG
+  DECLARE FUNCTION QueryPerformanceFrequency LIB `KERNEL32.DLL` ALIAS `QueryPerformanceFrequency` (lpFrequency AS QUAD) AS LONG
+
+  dim as quad t1,t2,fr
+
+  QueryPerformanceCounter t1
+  
+  long n=40
+
+
+'BASIC
+'=====
+  function fibo(long n) as long
+    if n<2 then return 1
+    return fibo(n-2)+fibo(n-1)
+  end function
+
+'ASSEMBLER
+'=========
+
+jmp fwd main
+
+  fiba: 'PASSING PARAMETER IN ECX
+    (
+      cmp ecx,2 : jge exit
+      mov eax,1 : ret
+    )
+    dec ecx
+    push ecx
+    dec ecx
+    call fiba
+    xchg eax,[esp]
+    mov ecx,eax
+    call fiba
+    pop ecx
+    add eax,ecx
+  ret
+
+main:
+'====
+
+  fibo(n) 'BASIC
+
+  'mov ecx,n : call fiba 'ASSEMBER
+
+  QueryPerformanceCounter t2
+  QueryPerformanceFrequency fr
+  
+  print ` Exec time: ` str((t2-t1)/fr)
+  
+  
+" 
+'msgbox 0,o2_prep src 
+o2_basic src
+if len(o2_error) then
+  msgbox 0, o2_error : stop
+end if
+o2_exec
+ 
+ 
+ 

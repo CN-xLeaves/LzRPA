@@ -1,0 +1,32 @@
+'---Load SAPI module
+uses "SAPI"
+
+if sapi_moduleloaded = %FALSE then
+  msgbox 0, "SAPI module not loaded. Script execution stopped."
+  stop
+end if
+
+msgbox 0, _
+            "This script will speak some text with the following parameters:" & $crlf & _
+            "current volume: " & SAPI_GetVolume   & $crlf & _
+            "current rate:   " & SAPI_GetRate     & $crlf & _
+            "---"                                 & $crlf & _
+            "You can use SAPI_SetVolume and/or SAPI_SetRate to change speak" & $CRLF 
+
+'---
+sapi_speak("Hi everybody.")
+sapi_speak("I'm Microsoft Speech Object Library.")
+SAPI_Speak("I'm talkin from inside a Thin Basic script.")
+
+
+Dim i As Long
+
+' -- Expreriments with speed - i sets how many times faster it can talk
+For i = 1 To 5
+  SAPI_SetRate(i)                                         
+  SAPI_Speak("I can speek faster")
+Next  
+
+SAPI_SetRate(1)                                         
+SAPI_Speak("That's all for now, thanks for listening!")
+

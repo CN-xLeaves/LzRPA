@@ -1,0 +1,42 @@
+'
+'---------------------------------
+'A SIMPLER WAY OF CREATING CLASSES
+'=================================
+
+'The methods are defined inside the class block.
+'
+'
+uses "oxygen","file"
+dim s as string
+s="
+
+  '-------
+  class io
+  '=======
+    
+  private iva as long
+  
+  
+  'these are overloaded function (same name different params)
+  
+  method getv() as long
+    method=iva
+  end method
+  
+  method setv(v as long)
+    iva=v
+  end method 
+
+  end class
+
+
+  dim o as io
+  
+  o.setv 42
+  print `Answer: ` str o.getv
+
+"
+
+o2_basic s
+if len(o2_error) then msgbox 0,o2_error : stop
+o2_exec

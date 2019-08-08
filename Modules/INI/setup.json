@@ -1,0 +1,8 @@
+{
+    "Keyword1": "INI_GetKey INI_SetKey INI_GetSectionsList INI_GetSectionKeyList FileName GetKey SetKey Sections Count List GetKeys",
+    "Keyword2": "cIniFile",
+    "Keyword3": null,
+    "RelyFile": null,
+    "PackFile": null,
+    "RelyCode": "boot.tbs"
+}

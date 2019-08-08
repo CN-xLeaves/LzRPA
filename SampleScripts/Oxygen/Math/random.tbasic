@@ -1,0 +1,61 @@
+
+uses "oxygen","file"
+dim src as string
+
+'-------------
+'RANDOM
+'=============
+
+
+src = "
+  
+  dim as string  tab=chr 9
+
+  dim as long    rndstate
+
+
+  '
+  'RETURNS RANDOM NUMBER BETWEEN -1 AND 1
+  '
+  function rnd() as single
+    static as single f, d=1/0x7fffffff
+    mov eax,rndstate
+    rol eax,7 : xor eax,0x5a935a72
+    mov rndstate,eax
+    f=rndstate*d
+    function=f
+  end function
+
+  
+  dim as single  n1,n2,n3,n4
+  '
+  n1=rnd : n2=rnd : n3=rnd : n4=rnd
+  '
+  print `PSEUDORANDOM NUMBERS:
+  
+  state: `   tab str(rndstate) `
+  
+  N1 `       tab str(n1)   `
+  N2 `       tab str(n2)   `
+  N3 `       tab str(n3)   `
+  N4 `       tab str(n4)   `
+  `
+  "
+
+
+
+
+
+
+
+
+'msgbox 0, o2_prep src
+
+o2_basic src
+
+
+if len(o2_error) then
+  msgbox 0, o2_error : stop
+end if
+
+o2_exec

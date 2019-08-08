@@ -1,0 +1,65 @@
+  '---The following code illustrates how to obtain a SubMatches collection from a regular 
+  '---expression search and how to access its individual members.
+
+  uses "VBREGEXP"
+  
+  dim lpRegExp  as dword
+  dim lpMatches as dword
+  dim lpMatch   as dword
+  dim strValue  as string
+
+
+  '---Allocate a new regular expression instance
+  lpRegExp = VBREGEXP_New
+
+  '---Check if it was possible to allocate and if not stop the script
+  if isfalse lpRegExp then
+    MSGBOX 0, "Unable to create an instance of the RegExp object." & $crlf & "Script terminated"
+    stop
+  end if
+  
+  '---Set pattern
+  VBREGEXP_SetPattern lpRegExp, "is."
+  '---Set case insensitivity
+  VBREGEXP_SetIgnoreCase lpRegExp, -1
+  '---Set global applicability
+  VBREGEXP_SetGlobal lpRegExp, -1
+
+  '---Execute search
+  lpMatches = VBREGEXP_Execute(lpRegExp, "IS1 is2 IS3 is4")
+  IF ISFALSE lpMatches THEN
+    MSGBOX 0, "1. No match found"
+  else
+    
+    dim nCount as long value VBMatchCollection_GetCount(lpMatches)
+    IF nCount = 0 THEN
+      MSGBOX 0, "2. No match found"
+    else
+
+      '---Iterate the Matches collection
+      dim I as long
+
+      strValue += "Total matches found:  " & nCount & $CRLF & string$(50, "-") & $crlf
+      FOR i = 1 TO nCount
+
+        lpMatch = VBMatchCollection_GetItem(lpMatches, i)
+
+        IF ISFALSE lpMatch THEN EXIT FOR
+        
+        strValue += "Match number " & i & " found at position: " & VBMatch_GetFirstIndex(lpMatch) & " length: " & VBMatch_Getlength(lpMatch) & $CRLF
+        strValue += "Value is: " & VBMatch_GetValue(lpMatch) & $CRLF
+        strValue += "--------------" & $CRLF
+        
+        VBREGEXP_Release lpMatch
+        
+      NEXT
+      
+      MSGBOX 0, strValue
+
+    END IF
+    
+  END IF
+  
+  IF istrue lpMatches  THEN VBREGEXP_Release(lpMatches)
+  IF istrue lpRegExp   THEN VBREGEXP_Release(lpRegExp)
+  

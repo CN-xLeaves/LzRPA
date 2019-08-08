@@ -1,0 +1,160 @@
+USES "UI"
+ 
+#MINVERSION    1.7.0.0
+
+#SCRIPTVERSION 1.0.0.1
+
+'----------------------------------------------------------------
+'
+'----------------------------------------------------------------
+Begin ControlID
+  %MDIFrame_MDI               
+  %MDIFrame_NewForm
+  %MDIFrame_SEPARATOR_510
+  %MDIFrame_EXIT
+
+  %MDIFrame_Window_Cascade
+  %MDIFrame_Window_TileHor
+  %MDIFrame_Window_TileVer  
+  
+  %MDICHILD_BUTTON1           = 100
+  %MDICHILD_BUTTON2           = 105
+  %MDICHILD_TEXT1             = 110
+End ControlID
+ 
+GLOBAL hMDIFrame        AS LONG    ' Main MDI Dialog handle
+ 
+Global hMDIFrame_Menu         As Long
+Global hMDIFrame_Menu_File    As Long
+Global hMDIFrame_Menu_Window  As Long
+Global hMDIFrame_Menu_Help    As Long
+
+GLOBAL MDI_ClientHandle AS LONG
+ 
+'----------------------------------------------------------------
+'               First MDI Child Dialog
+'----------------------------------------------------------------
+
+GLOBAL hMDIChild            AS LONG
+ 
+GLOBAL Style   AS LONG
+GLOBAL ExStyle AS LONG
+ 
+'----------------------------------------------------------------
+'               Main Dialog (called a MDI Frame)
+'----------------------------------------------------------------
+SUB Main() AS LONG
+ 
+    Style = _
+            %WS_OVERLAPPEDWINDOW  | _
+            %WS_CLIPCHILDREN      | _
+            %WS_CLIPSIBLINGS      | _
+            %DS_CENTER
+    ExStyle = 0
+ 
+    DIALOG NEW 0, "MDI using UI", 0, 0,  450,  320, Style, ExStyle To hMDIFrame
+    
+    Menu New Bar To hMDIFrame_Menu
+      Menu New PopUp To hMDIFrame_Menu_File
+      Menu Add PopUp, hMDIFrame_Menu ,"&File", hMDIFrame_Menu_File, %MF_ENABLED
+        Menu Add String, hMDIFrame_Menu_File, "&New form"         , %MDIFrame_NewForm, %MF_ENABLED
+        Menu Add String, hMDIFrame_Menu_File, "-"                 ,  %MDIFrame_SEPARATOR_510, %MF_ENABLED
+        Menu Add String, hMDIFrame_Menu_File, "E&xit"             ,  %MDIFrame_EXIT, %MF_ENABLED
+
+      Menu New PopUp To hMDIFrame_Menu_Window
+      Menu Add PopUp, hMDIFrame_Menu ,"&Window", hMDIFrame_Menu_Window, %MF_ENABLED
+        Menu Add String, hMDIFrame_Menu_Window, "Cascade"         , %MDIFrame_Window_Cascade, %MF_ENABLED
+        Menu Add String, hMDIFrame_Menu_Window, "Tile Horizontal" , %MDIFrame_Window_TileHor, %MF_ENABLED
+        Menu Add String, hMDIFrame_Menu_Window, "Tile Vertical"   , %MDIFrame_Window_TileVer, %MF_ENABLED
+
+    MENU ATTACH hMDIFrame_Menu, hMDIFrame
+    
+    '---Must be MODELESS dialog without a message loop
+    '---Message loop will be governed by MDI_MessageLoop function
+    '---To be executed after this line
+    DIALOG SHOW MODELESS hMDIFrame , CALL MDIFrame_DLGPROC
+ 
+    ' ----------------------
+      MDI_ClientHandle = MDI_CreateClient(hMDIFrame)
+        ' ----------------------
+        ' IMPORTANT
+          MDI_SubClassDialog hMDIFrame
+        ' ----------------------
+    ' IMPORTANT: MDI_MessageLoop must be invoked after MDI_CreateClient calling
+      MDI_MessageLoop MDI_ClientHandle
+    '-----------------------
+ 
+END SUB
+ 
+'----------------------------------------------------------------
+CALLBACK FUNCTION MDIFrame_DLGPROC() AS LONG
+'----------------------------------------------------------------
+  SELECT CASE CBMSG
+    CASE %WM_INITDIALOG
+    CASE %WM_COMMAND
+      SELECT CASE CBCTL
+        CASE  %MDIFrame_NewForm
+          MDIFrame_CHILD_NewForm(MDI_ClientHandle)
+        CASE  %MDIFrame_EXIT
+          DIALOG END CBHNDL
+        case %MDIFrame_Window_Cascade
+          SendMessage(MDI_ClientHandle, %WM_MDICASCADE, 0, 0)
+        case %MDIFrame_Window_TileHor
+          SendMessage(MDI_ClientHandle, %WM_MDITILE, 1, 0)
+        case %MDIFrame_Window_TileVer
+          SendMessage(MDI_ClientHandle, %WM_MDITILE, 0, 0)
+      END SELECT
+    CASE %WM_DESTROY
+        '--------------------
+        ' Important otherwise process remain active
+        MDI_PostQuitMessage
+        '--------------------
+
+  END SELECT
+END FUNCTION
+ 
+ 
+'----------------------------------------------------------------
+'               First MDI Child Dialog
+'----------------------------------------------------------------
+SUB MDIFrame_CHILD_NewForm(ByVal hParent AS LONG)
+  static LastX   as long
+  static LastY   as long
+
+    Style = _
+            %WS_CHILD             | _
+            %WS_OVERLAPPEDWINDOW  | _
+            %WS_CLIPCHILDREN      | _
+            %WS_CLIPSIBLINGS
+ 
+    ExStyle = %WS_EX_MDICHILD | %WS_EX_CONTROLPARENT
+ 
+    LastX += 10
+    If LastX > 300 then LastX = 10
+    LastY += 10
+    If LastY > 300 then LastY = 10
+ 
+    DIALOG NEW PIXELS, hParent, "BLANK", LastX, LastY, 300, 100, Style, ExStyle To hMDIChild
+    DIALOG SHOW MODELESS hMDIChild, Call MDIChild_DLGPROC
+    
+    MDI_SendMessage %WM_MDIACTIVATE, hMDIChild, 0
+END SUB
+ 
+'----------------------------------------------------------------
+CALLBACK FUNCTION MDIChild_DLGPROC() AS LONG
+    SELECT CASE CBMSG
+    CASE %WM_CREATE
+        RETURN(0) ' This call expects a "0" upon success.
+    CASE %WM_INITDIALOG        
+        DIALOG SET TEXT CBHNDL, "Child: " & CBHNDL
+        MDI_SubClassDialog CBHNDL
+
+    CASE %WM_DESTROY
+    CASE %WM_SETCURSOR
+    CASE %WM_COMMAND
+    END SELECT
+END FUNCTION
+
+
+
+ 

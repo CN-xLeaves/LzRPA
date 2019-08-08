@@ -1,0 +1,54 @@
+uses "file"
+uses "console"
+
+dim FileToLoad  as string value app_sourcepath & "CSV_SampleData.csv"
+dim MyMatrix()  as string
+dim nLines      as long
+dim nCols       as long
+dim T0, T1      as quad
+
+console_writeline "This script demonstrate the use of PARSE function for loading, parsing and filling a string array with the content of a CSV file. All with only one line of code."
+console_writeline "Input file: " & FileToLoad
+console_writeline "File size : " & file_size(FileToLoad) & " bytes"
+console_writeline "Press any key to start."
+console_writeline repeat$(79, "-")
+console_waitkey
+
+'---
+'---Starting to load and parse input file
+'------
+HiResTimer_Init
+
+T0 = hirestimer_get
+  '---
+  '---Just one line do the job of loading file data, parsing text lines, dimensioning and filling the matrix.
+  '------
+  PARSE(FILE_Load(FileToLoad), MyMatrix(), $crlf , ",")
+
+  '--Now get the number of lines and max number of columns parsed
+  nLines = ubound(MyMatrix(1))
+  nCols  = ubound(MyMatrix(2))
+  
+T1 = hirestimer_get
+
+'---Write some info
+console_writeline "Total loading and parsing time: " & format$(T1 - T0, "#0") & " microseconds"
+console_writeline "Total number of lines : " & nLines
+console_writeline "Total number of colums: " & nCols
+console_writeline "Press any key to show result on screen"
+console_writeline repeat$(79, "-")
+console_waitkey
+
+dim CountLine   as long
+dim CountCol    as long
+
+for CountLine = 1 to nLines
+  for CountCol = 1 to nCols
+    console_write(MyMatrix(CountLine, CountCol) & " ")
+  next
+  console_writeline("")
+next
+
+console_writeline repeat$(79, "-")
+console_writeline "Program terminated. Press any key to close."
+console_waitkey

@@ -1,0 +1,82 @@
+
+uses "oxygen"
+
+'OXYGENBASIC SECTION
+'===================
+
+dim as string src
+dim as long pGetVarPtr
+dim as long pFinish
+
+src="
+
+  'From ThinCore header
+  ! thinBasic_VariableGetInfoEX lib "thinCore.dll"  (string SearchKey, sys *pMainType,*pSubType,*pIsArray,*pDataPtr,*pnElements,WhichLevel) as sys
+
+  '---Equates for variable Main Type
+    %MainType_IsNumber        = 20&
+    %MainType_String          = 30&
+    %MainType_IsString        = %MainType_String
+    %MainType_Variant        = 50&
+    %MainType_IsVariant      = %MainType_Variant
+    %MainType_UDT            = 60&
+    %MainType_IsUDT          = %MainType_UDT
+  '---Equates for variable Sub Type
+    %SubType_Byte            =  1&
+    %SubType_Integer          =  2&
+    %SubType_Word            =  3&
+    %SubType_DWord            =  4&
+    %SubType_Long            =  5&
+    %SubType_Quad            =  6&
+    %SubType_Single          =  7&
+    %SubType_Double          =  8&
+    %SubType_Currency        =  9&
+    %SubType_Ext             = 10&
+    %SubType_AsciiZ          = 25& 
+
+
+  function GetVarPtr(bstring varname, optional sys n) as sys, link #pGetVarPtr
+  ============================================================================
+  '
+  sys MainType, SubType, IsArray, DataPtr, nElements, WhichLevel
+  thinBasic_VariableGetInfoEX Varname, MainType, SubType, IsArray,    DataPtr, nElements, WhichLevel
+  'print " MainType  " MainType +
+  '      " SubType   " SubType  +
+  '      " IsArray   " IsArray  +
+  '      " DataPtr   " DataPtr  +
+  '      " nElements " nElements
+  if n=0 then n=1
+  if MainType=30 and n<=nElements then
+    bstring array at (DataPtr) 'thinBasic uses bstrings
+    return strptr array[n]
+  end if
+  end function
+
+
+  sub finish() link #pFinish
+  ==========================
+  terminate
+  end sub
+"
+
+
+o2_basic src
+if o2_error then
+  msgbox 0,o2_error
+  stop
+else
+  o2_exec
+end if
+
+declare function GetVarPtr(byval v as string, optional byval n as dword ) as dword at pGetVarPtr
+declare sub Finish() at pFinish
+
+'MAIN THINBASIC SECTION
+'======================
+
+string a(3)
+a(1)="Apples"
+a(2)="Bananas"
+dword p=GetVarPtr("a",2)              'pointer to Bananas
+if p then msgbox 0,hex$(peek(byte,p)) '42
+Finish

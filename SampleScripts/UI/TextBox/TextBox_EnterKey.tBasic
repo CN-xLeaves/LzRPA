@@ -1,0 +1,99 @@
+  USES "UI", "Console"
+  
+  global wx        as long         '---Used to get client width
+  global hy        as long         '---Used to get client height
+
+  %ID_MAGICBUTTON = %IDOK
+  Begin ControlID
+    '---Control IDs           
+    %ID_TXTBUFFER             '---Output field
+    %ID_LBLENTER              '---Input field label
+    %ID_TXTENTER              '---Input field  
+  End ControlID
+  function Main()    
+    DIM hDlg      AS LONG         '---Dialog handle
+    
+    '---Set starting width and height of the window
+    wx = 250
+    hy = 250
+    
+    '---Create main dialog
+    DIALOG NEW 0, "Sample using Enter key from input field", -1, -1, wx, hy, _
+                                                  %WS_DLGFRAME          OR _
+                                                  %DS_CENTER            OR _
+                                                  %WS_CAPTION           OR _
+                                                  %WS_SYSMENU           OR _
+                                                  %WS_OVERLAPPEDWINDOW  , _
+                                                  0 TO hDlg
+
+    '---Show dialog
+    DIALOG SHOW MODAL hDlg, call dlgCallback
+  end function
+  
+  callback function dlgCallback() as long    
+    printl cbmsg, cbwparam, cblparam
+    
+    '---Test the returned message
+    SELECT CASE cbMsg
+
+      '---Message fired at the very beginning when dialog is initialized
+      '---We use it to add necessary controls
+      case %WM_INITDIALOG
+        
+        CONTROL ADD TEXTBOX , cbHndl, %ID_TXTBUFFER, "" , 2,  2, wx - 5, hy - 50, _
+                                                                %WS_TABSTOP     OR _
+                                                                %ES_WANTRETURN  OR _
+                                                                %ES_MULTILINE   OR _
+                                                                %ES_AUTOHSCROLL OR _
+                                                                %ES_AUTOVSCROLL OR _
+                                                                %WS_VSCROLL     OR _
+                                                                %WS_HSCROLL
+
+        CONTROL ADD label   , cbHndl, %ID_LBLENTER, "Type some text and press <ENTER> key", 2, hy - 40, wx - 5, 12
+        CONTROL ADD TEXTBOX , cbHndl, %ID_TXTENTER, ""  , 2,  hy - 20, wx - 5, 12, %WS_TABSTOP
+        CONTROL ADD BUTTON , cbHndl, %ID_MAGICBUTTON, ""  , 1000,1000, 1, 1
+
+        '---Configure the controls to automatically resize as needed
+        CONTROL SET RESIZE cbHndl, %ID_TXTBUFFER, 1, 1, 1, 1   '---This control must resize every side
+        CONTROL SET RESIZE cbHndl, %ID_LBLENTER , 1, 1, 0, 1   '---This control must have top size movable
+        CONTROL SET RESIZE cbHndl, %ID_TXTENTER , 1, 1, 0, 1   '---This control must have top size movable
+        
+        control set focus cbHndl, %ID_TXTENTER
+        
+      '---In case of keyboard pressed ...
+      CASE %wm_command
+        
+        '---Check which key using wParam
+        SELECT CASE cbCtl
+          '---In case of <ENTER> key ...
+          case %ID_MAGICBUTTON
+            if cbCtlMsg = %BN_CLICKED then
+              DoTheJob(cbHndl, %ID_TXTENTER, %ID_TXTBUFFER, "")
+            end if
+ 
+        end select
+      
+
+      case %WM_NOTIFY
+        printl "notify"
+     
+    END SELECT
+      
+  end function
+
+  
+  function DoTheJob(hDlg as dword, byval ID_In as long, byval ID_Out as long, AdditionalText as string) as long
+    DIM sInput    AS string       '---Used to get input from field
+    static counter as long
+    control get text hDlg, ID_In to sInput
+    if trim$(sInput) = "" then
+      sInput = "<<<- Please type some text ->>>"
+    end if
+    Counter += 1
+    sInput = AdditionalText & format$(Counter, "000000") & " " & sInput
+    
+    control appendtotop text hDlg, ID_Out, sInput & $crlf 
+    control set text hDlg, ID_In, ""
+    CONTROL set focus hDlg, ID_In
+
+  end function

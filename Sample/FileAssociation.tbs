@@ -1,0 +1,26 @@
+
+
+
+Uses "Registry"
+
+
+
+Dim sBasePath As String = RTrim(APP_Path, "bin\")
+
+// ThinBasic脚本文件类型
+Registry_SetDWord("HKEYCR", "lzbot_ThinBasic_Script", "EditFlags", 65536)
+Registry_SetDWord("HKEYCR", "lzbot_ThinBasic_Script", "BrowserFlags", 8)
+Registry_SetValue("HKEYCR", "lzbot_ThinBasic_Script", "", "")
+Registry_SetValue("HKEYCR", "lzbot_ThinBasic_Script\DefaultIcon", "", sBasePath & "setup\file.ico")
+Registry_SetValue("HKEYCR", "lzbot_ThinBasic_Script\shell", "", "编辑")
+Registry_SetValue("HKEYCR", "lzbot_ThinBasic_Script\shell\编辑\command", "", """" & sBasePath & "LzBot.exe"" -open ""%1""")
+
+Registry_SetValue("HKEYCR", ".tb", "", "lzbot_ThinBasic_Script")
+Registry_SetValue("HKEYCR", ".tbs", "", "lzbot_ThinBasic_Script")
+Registry_SetValue("HKEYCR", ".tbasic", "", "lzbot_ThinBasic_Script")
+Registry_SetValue("HKEYCR", ".lzw", "", "lzbot_ThinBasic_Script")
+Registry_SetValue("HKEYCR", ".lzp", "", "lzbot_ThinBasic_Script")
+
+MsgBox("文件关联完毕，现在双击 lzw、lzp、tbs、tb、tbasic 文件即可使用灵智机器人编辑！", , "灵智机器人")
+
+

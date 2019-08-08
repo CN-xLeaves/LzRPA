@@ -1,0 +1,39 @@
+
+
+'EQUATES
+'
+
+uses "oxygen"
+dim src as string
+
+src = "
+
+  basic
+
+  def     a 1
+  
+  #define b 2
+  
+  %c      3
+  % c     3
+  %c    = 3
+
+  
+  $d      4     
+  $d      `four`
+  %d      `four`
+  
+  
+  
+  print `value `  %c ` ` %d  ` ` d
+       
+  "
+o2_basic src
+
+'msgbox 0, o2_view "o2h "+src
+
+if len(o2_error) then
+  msgbox 0, o2_error : stop
+end if
+
+o2_exec

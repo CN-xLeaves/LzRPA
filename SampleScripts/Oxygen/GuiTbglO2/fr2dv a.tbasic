@@ -1,0 +1,130 @@
+ 
+Uses "UI"   , "oxygen"
+
+Dim pix As String * (4*500*500) 
+Dim oxy As String 
+Dim As Double delta  
+Dim As Double exact
+ 
+ 
+ 
+oxy =
+ "  
+  dim as byte pix at #pix  
+  dim as double exact at #exact
+  dim as double delta at #delta
+  dim as long i  
+  dim as double pi2 = pi + pi 
+  dim as double x , y , n , m 
+  dim as double vala = sqrt(333)+0.004
+  
+  sub plot (x as long, y as long)
+    pix(4*(x+500*y)+2)=190
+  end sub
+  
+   sub unplot (x as long, y as long)
+    pix(x+400*y+2)=0
+  end sub
+  
+   macro theta()
+     n=mod(n+pi2*exact,pi2)
+   end macro
+ 
+macro phi ()
+   m = Mod(n+m,pi2)
+   x=x+Cos(m)
+   y=y+Sin(m)
+End macro 
+
+sub comp() 
+x=0 : y=0 : z=0 : n=0  : m=0 
+For i=1 To 100000 
+     exact=delta+vala
+     theta()
+     phi() 
+     if (x > -250) and (x < 250) and (y > - 250) and (y < 250) then
+        plot(250+x,250+y)
+     end if   
+Next 
+end sub 
+
+comp()
+  
+"
+ 
+    O2_Basic oxy
+  If Len(O2_Error) Then
+    MsgBox 0,O2_Error 
+  End If  
+  
+  
+  
+' -- ID numbers of controls
+Begin ControlID
+  %bStart  
+  %cv
+  %bExit
+  %lab 
+  %mytimer
+End ControlID    
+
+Begin Const
+  %MAIN_WIDTH   = 540
+  %MAIN_HEIGHT  = 600
+End Const
+
+' -- Create dialog here
+Function Main()
+  Global hDlg As DWord
+
+  Dialog New Pixels, 0, "Fresnel 2D",-1,-1, %MAIN_WIDTH, %MAIN_HEIGHT, _
+                %WS_POPUP Or %WS_VISIBLE Or %WS_CAPTION Or %WS_SYSMENU Or %WS_MINIMIZEBOX To hDlg
+  
+  ' -- Place controls here
+  Control Add Button, hDlg, %bStart, "Click to start", %MAIN_WIDTH-105, %MAIN_HEIGHT-30, 100, 25, 0
+  Control Add Canvas, hDlg, %cv, "" , 20,24,500,500
+  Control Add Button, hDlg, %bExit, "Please Stop",%MAIN_WIDTH-215, %MAIN_HEIGHT-30, 100, 25, 0  
+  Control Add Label, hDlg, %lab, "info", 15,  %MAIN_HEIGHT-30, 250,20,%WS_CHILD Or %WS_CLIPSIBLINGS Or %WS_VISIBLE Or %SS_CENTER Or %SS_NOTIFY, 0
+  Canvas_Attach (hDlg,%cv) 
+  Control Set Color hDlg,%lab,%RGB_RED,%RGB_YELLOWGREEN
+  Dialog Show Modal hDlg, Call cbDialog
+
+End Function
+
+ 
+CallBack Function cbDialog()
+
+  
+  Select Case CBMSG
+
+    Case %WM_TIMER
+       compute()
+
+    Case %WM_COMMAND
+    If CBCTL =  %bStart And CBCTLMSG=%BN_CLICKED Then    
+       Dialog Set Timer hDlg,%mytimer,10
+    End If 
+    
+    If CBCTL =  %bExit And CBCTLMSG=%BN_CLICKED Then    
+       Dialog Kill Timer hDlg,%mytimer
+    End If
+
+    Case %WM_CLOSE
+       Dialog Kill Timer hDlg,%mytimer
+       
+       
+  End Select
+
+End Function
+ 
+ 
+Sub compute() 
+
+           Reset pix 
+     delta+=0.000000000015
+     O2_Exec
+     Canvas_BitmapSet(pix, 500, 500)
+     
+     Control Set Text hDlg,%lab,"Value : " & Str$(exact)
+End Sub
+ 

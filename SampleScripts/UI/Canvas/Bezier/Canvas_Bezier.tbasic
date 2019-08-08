@@ -1,0 +1,446 @@
+﻿'----------------------------------------------------------------------------------------
+'Merit of source code goes to Jordi Vallès 
+'a PB user that published the original example at
+'http://www.powerbasic.com/support/pbforums/showthread.php?t=45509&highlight=bezier
+'----------------------------------------------------------------------------------------
+
+
+Uses "UI"
+
+'----------------------------------------------------------------------------------------
+Begin ControlID
+  %ID_CLEAR           'button
+  %ID_POSIT     
+  %ID_PUNTS     
+  %ID_VERTEX    
+  %ID_ROUND           'trackbar
+  %ID_ROUNDN    
+  %ID_RMETHD    
+  %ID_MODE      
+  
+  %ID_POLYG1          'triangle
+  %ID_POLYG2          'quadrilater
+  %ID_POLYG3          'pentagon
+  %ID_POLYG4          'star
+  %ID_POLYG5          'car sketch
+  
+  %ID_THIN            '1 pixel width
+  %ID_THICK           '3 pixels width
+  
+  %ID_METHOD1         'roundness in percent (%)
+  %ID_METHOD2         'roundness in pixels  (P)
+  
+  %ID_GRAPHIC         'graphic canvas
+End ControlID
+
+%JLINES       = Rgb(236,236,236) 'canvas grid lines
+
+$TITLE        = "RoundPolygon Test"    'title on caption
+
+'----------------------------------------------------------------------------------------
+%MAXPOLYPOINT = 256   '256 vertices looks reasonable
+
+Type POLYARRAY
+   cnt  As Long
+   xy(%MAXPOLYPOINT) As POLYPOINT
+End Type
+
+'----------------------------------------------------------------------------------------
+Global hDlg, hDC           As DWord       'dialog and canvas context handlers
+'Global oldGraphicProc      As DWord       'saved proc address
+Global grW, grH            As Long        'canvas size
+Global hBmpF               As DWord       'bmp to save time on process
+Global nRound              As Long        'roundness amount
+Global showVertex          As Long        'draw vertices and projections
+Global nPolyg              As Long        'figure type
+Global tLine               As Long        'thick or thin line
+Global canDrag             As Long        'drag flag
+Global nPunts              As Long        'num of vertices
+Global iStyle              As Long        'percentage or pixels
+Global Punts               As POLYARRAY   'global array to store vertices
+
+
+'----------------------------------------------------------------------------------------
+  Function Main () As Long
+   Local j, hFontI As DWord
+
+   '--- create dialog window ---
+   hFontI = Font_Create "Arial", 8, 2 
+   Dialog Font "Arial", 8
+   Dialog New Pixels, Name "MainWindow", 0, $TITLE, -1, -1, 550, 420, %WS_CAPTION Or %WS_SYSMENU To hDlg
+   Dialog Set Icon       hDlg, "#111"                      'see resource file
+
+   Control Add Canvas, hDlg, %ID_GRAPHIC,"", 0, 0, 403, 403, %WS_BORDER' Or %SS_NOTIFY, , Call GraphicProc
+   Control Get Client hDlg, %ID_GRAPHIC To grW, grH        'get client (canvas) size
+   Canvas_Scale (0, 0, grW, grH)                       'scale to pixel coordinate system
+   Canvas_Attach hDlg, %ID_GRAPHIC, Redraw
+   Canvas_Color %BLUE, %RGB_IVORY                         'canvas colors
+   Canvas_Clear
+
+   Control Add Button,   hDlg, %ID_CLEAR,  "Clear",                    432, 388, 100,  22
+   Control Add Label,    hDlg, -1,         "cursor",                   420, 323,  38,  16
+   Control Add Label,    hDlg, %ID_POSIT,  "  ",                       460, 322,  70,  16, %SS_SUNKEN Or %SS_CENTER
+   Control Add Label,    hDlg, -2,         "n vertex",                 436, 345,  50,  16
+   Control Add Label,    hDlg, %ID_PUNTS,  " 0",                       488, 344,  24,  16, %SS_SUNKEN Or %SS_CENTER
+   Control Add Label,    hDlg, -3,         "mode",                     436, 367,  44,  16
+   Control Add Label,    hDlg, %ID_MODE,   "show",                     476, 366,  44,  16, %SS_SUNKEN Or %SS_CENTER
+
+   Control Add Checkbox, hDlg, %ID_VERTEX, "show projections",         430, 236, 115,  16
+   showVertex = 1
+   Control Set Check hDlg, %ID_VERTEX, showVertex
+
+   Control Add Frame,    hDlg, -4,         " Polygon samples ",        418,   6, 125, 100
+   Control Add Option,   hDlg, %ID_POLYG1, "Triangle",                 430,  22, 110,  16, %WS_GROUP
+   Control Add Option,   hDlg, %ID_POLYG2, "Quadrilater",              430,  38, 110,  16
+   Control Add Option,   hDlg, %ID_POLYG3, "Pentagon",                 430,  54, 110,  16
+   Control Add Option,   hDlg, %ID_POLYG4, "Star",                     430,  70, 110,  16
+   Control Add Option,   hDlg, %ID_POLYG5, "Figure",                   430,  86, 110,  16
+   Control Set Option    hDlg, %ID_POLYG1, %ID_POLYG1, %ID_POLYG5
+   nPolyg = 1                                                          'default polygon is trianle  <=============
+
+   Control Add Frame,    hDlg, -5,         " Line width ",             418, 114, 125,  52
+   Control Add Option,   hDlg, %ID_THIN,   "Thin (1 pixel)",           430, 130, 110,  16, %WS_GROUP
+   Control Add Option,   hDlg, %ID_THICK,  "Thick (3 pixels)",         430, 146, 110,  16
+   Control Set Option    hDlg, %ID_THIN, %ID_THIN, %ID_THICK
+   tLine = 1
+
+   Control Add Frame,    hDlg, -6,         " Distance method ",        418, 174, 125,  52
+   Control Add Option,   hDlg, %ID_METHOD1,"Percentage (%)",           430, 190, 110,  16, %WS_GROUP
+   Control Add Option,   hDlg, %ID_METHOD2,"Pixels (P)",               430, 206, 110,  16
+   Control Set Option    hDlg, %ID_METHOD1, %ID_METHOD1, %ID_METHOD2
+   iStyle = 0
+
+   Control Add Label,    hDlg, %ID_RMETHD, "roundness (%)",            420, 260, 120,  16, %SS_CENTER
+   Control Add "msctls_trackbar32", hDlg, %ID_ROUND, "",               414, 274, 130,  18, _
+                         %WS_CHILD Or %WS_VISIBLE Or %TBS_BOTTOM Or %WS_TABSTOP Or %TBS_AUTOTICKS
+   Control Send          hDlg, %ID_ROUND, %TBM_SETRANGE, %TRUE, MAKLNG(0, 50)
+   Control Send          hDlg, %ID_ROUND, %TBM_SETPOS, %TRUE, 25
+   Control Send          hDlg, %ID_ROUND, %TBM_SETTICFREQ, 5, 5
+   Control Add Textbox,  hDlg, %ID_ROUNDN, "25",                       465, 298,  34,  18, _
+                         %ES_READONLY Or %ES_CENTER, %WS_EX_CLIENTEDGE
+   nRound = 25                                                         'initial value
+
+   Dialog Show Modal hDlg 'Call DialogProc
+  End Function
+
+'----------------------------------------------------------------------------------------
+  CallBack Function MainWindow_OnCallBack() As Long
+    Static hGraphic       As DWord
+    Static hWndSaveFocus  As DWord
+    Local j               As Long
+    Local pX, pY          As Long
+    Local MousePosition   As POINTAPI
+
+    Select Case CBMSG
+
+      Case %WM_INITDIALOG
+         '--- starts creating fixed and permament objects on canvas
+         hBmpF = Canvas_BitmapNew grW, grH                  '''''creates Bmp
+         '[breakpoint] <Any note here. Breakpoint will be set to line following this statement>
+         Canvas_Attach hBmpF, 0                                  '
+         Canvas_Color %RED, %RGB_IVORY                           'canvas colors
+         Canvas_Clear                                            '
+         For j = 1 To 19                                          'paint lattice
+            Canvas_Line ((j*20, 00), (j*20, 400), %JLINES )       '
+            Canvas_Line ((00, j*20), (400, j*20), %JLINES )       '
+         Next                                                     '
+         'this bmp will be used in CanvasCleaner sub          '''''
+
+         '--- and finally return control to main graphic ---
+         Canvas_Attach CbHndl, %ID_GRAPHIC, Redraw
+
+         Control Handle CBHNDL, %ID_GRAPHIC To hGraphic
+			    hdc = Canvas_GetDC
+
+         SampleDispatcher CbHndl
+
+      Case %WM_SETCURSOR                                       'if the cursor is outside the graph area
+         If CbwParam <> hGraphic Then Control Set Text CBHNDL, %ID_POSIT, " "
+
+      Case %WM_HSCROLL
+         Select Case CblParam
+            Case Win_GetDlgItem(CBHNDL, %ID_ROUND)
+               Control Send CbHndl, %ID_ROUND, %TBM_GETPOS, 0, 0 To nRound
+               Control Set Text CbHndl, %ID_ROUNDN, Format$(nRound)
+         End Select
+         CanvasCleaner %FALSE
+         RoundPolygon hDC, nRound, %BLUE, tLine, Punts, iStyle, showVertex
+
+         Function = %TRUE
+
+      Case %WM_COMMAND
+         Select Case CBCTL
+
+            Case %ID_CLEAR                                     'erase all graphic area and values
+               If CbCtlMsg = %BN_CLICKED Then
+                  canDrag = %FALSE
+                  nPunts  = 0
+                  Control Set Text CbHndl, %ID_PUNTS, "0"
+                  Control Set Text CbHndl, %ID_MODE, "show"
+                  CanvasCleaner %TRUE
+					    End If
+
+            Case %IDCANCEL                                     'Escape key
+               'If jMsgBox(Cb.Hndl, "    Are you sure you want to quit the application?", _
+               '               %MB_YESNO Or %MB_DEFBUTTON2 Or %MB_TASKMODAL) = %IDYES Then
+               '   Dialog End Cb.Hndl, 0
+               'End If
+
+            Case %ID_VERTEX                                     'show vertex and projections
+               Control Get Check CBHNDL, CBCTL To showVertex
+               CanvasCleaner %FALSE
+               RoundPolygon hDC, nRound, %BLUE, tLine, Punts, iStyle, showVertex
+
+            Case %ID_METHOD1 To %ID_METHOD2
+               iStyle = CbCtl - %ID_METHOD1
+               If iStyle Then
+                  Control Set Text CbHndl, %ID_RMETHD, "roundness (P)"
+                  Control Send CbHndl, %ID_ROUND, %TBM_SETRANGE, %TRUE, MAKLNG(0, 100)
+                  Control Send CbHndl, %ID_ROUND, %TBM_SETPOS, %TRUE, 50
+                  nRound = 50
+               Else
+                  Control Set Text CbHndl, %ID_RMETHD, "roundness (%)"
+                  Control Send CbHndl, %ID_ROUND, %TBM_SETRANGE, %TRUE, MAKLNG(0, 50)
+                  Control Send CbHndl, %ID_ROUND, %TBM_SETPOS, %TRUE, 25
+                  nRound = 25
+               End If
+               Control Set Text CBHNDL, %ID_ROUNDN, Str$(nRound)
+               CanvasCleaner %FALSE
+               RoundPolygon hDC, nRound, %BLUE, tLine, Punts, iStyle, showVertex
+
+            Case %ID_THIN To %ID_THICK
+               tLine = CBCTL - %ID_THIN + 1
+               CanvasCleaner %FALSE
+               RoundPolygon hDC, nRound, %BLUE, tLine, Punts, iStyle, showVertex
+
+            Case %ID_POLYG1 To %ID_POLYG5
+               nPolyg = CBCTL - %ID_POLYG1 + 1
+               SampleDispatcher CBHNDL
+
+         End Select
+
+      Case %WM_NCACTIVATE
+         If IsFalse CBWPARAM Then
+            hWndSaveFocus = Win_GetFocus()
+         ElseIf hWndSaveFocus Then
+            Win_SetFocus(hWndSaveFocus)
+            hWndSaveFocus = 0
+         End If
+
+      Case %WM_SYSCOMMAND
+         If CBWPARAM = %SC_CLOSE Then
+            'If jMsgBox(0, "    Are you sure you want to quit the application?", _
+            '           %MB_YESNO Or %MB_DEFBUTTON2 Or %MB_TASKMODAL Or %MB_ICONEXCLAMATION) = %IDNO Then
+            '   Function = 1 : Exit Function
+            'End If
+         End If
+
+      Case %WM_LBUTTONDOWN, %WM_LBUTTONUP, %WM_MOUSEMOVE 
+        GraphicProc(hGraphic, CBMSG, CBWPARAM, CBLPARAM)
+        'canvas_GetView pX, pY
+        'MousePosition.x = LOINT(CBLPARAM) + pX
+        'MousePosition.y = HIINT(CBLPARAM) + pY
+        'PrintL "Case %WM_LBUTTONDOWN", MousePosition.x, MousePosition.y
+      Case %WM_DESTROY
+         'If oldGraphicProc Then SetWindowLong hGraphic, %GWL_WNDPROC, oldGraphicProc
+
+    End Select
+  End Function
+
+'----------------------------------------------------------------------------------------
+' Subclass procedure
+'----------------------------------------------------------------------------------------
+Function GraphicProc(ByVal hWnd As DWord, ByVal wMsg As Long, ByVal wParam As DWord, ByVal lParam As Long) As Long
+
+   Select Case wMsg
+
+      Case %WM_MOUSEMOVE
+        MouseMove(hWnd, wParam, lParam)
+      Case %WM_LBUTTONDOWN
+        LButtonDown(hWnd, wParam, lParam)
+      Case %WM_LBUTTONUP
+        LButtonUp(hWnd, wParam, lParam)
+
+   End Select
+   'Function = CallWindowProc(oldGraphicProc, hWnd, wMsg, wParam, lParam)
+End Function
+
+'----------------------------------------------------------------------------------------
+' WM_MOUSEMOVE handler for subclass procedure
+'----------------------------------------------------------------------------------------
+Sub MouseMove(ByVal hWnd As DWord, ByVal wParam As DWord, ByVal lParam As Long)
+   Local j As Long
+   Local X2, Y2  As Single
+
+   X2 = LO(Integer, lParam)
+   Y2 = HI(Integer, lParam)
+   
+'!!!!win limit mouse over Canvas area
+
+   Control Set Text Win_GetParent(hWnd), %ID_POSIT, X2 + "-" + Y2
+
+    If x2 <= 400 And Y2 <= 400 Then
+     If canDrag And (wParam And %MK_LBUTTON) Then           'if in drag state then.....
+        For j = 1 To nPunts
+           If Dist(X2, Y2, Punts.xy(j).x, Punts.xy(j).y) <= 15.0 Then
+              Punts.xy(j).x = X2  :  Punts.xy(j).y = Y2
+              CanvasCleaner %FALSE
+              RoundPolygon hDC, nRound, %BLUE, tLine, Punts, iStyle, showVertex
+              Exit For
+           End If
+        Next
+     End If
+    Canvas_Redraw
+  End If
+End Sub
+
+'----------------------------------------------------------------------------------------
+' WM_LBUTTONUP handler for subclass procedure
+'----------------------------------------------------------------------------------------
+Sub LButtonUp(ByVal hWnd As DWord, ByVal wParam As DWord, ByVal lParam As Long)
+   canDrag = %FALSE
+   Control Set Text Win_GetParent(hWnd), %ID_MODE, "show"
+End Sub
+
+'----------------------------------------------------------------------------------------
+' WM_LBUTTONDOWN handler for subclass procedure
+'----------------------------------------------------------------------------------------
+Sub LButtonDown(ByVal hWnd As DWord, ByVal wParam As DWord, ByVal lParam As Long)
+   If nPunts Then
+      canDrag = %TRUE
+      Control Set Text Win_GetParent(hWnd), %ID_MODE, "drag"
+   End If
+End Sub
+
+'----------------------------------------------------------------------------------------
+'
+'----------------------------------------------------------------------------------------
+Sub SampleDispatcher(ByVal hWnd As DWord)
+   Local j As Long, i As Long
+   Local rslt As Long
+
+   'Dim Ptmp(0 To 50) As Long           'enlarge if needed
+   Dim Ptmp(50) As Long           'enlarge if needed
+
+   CanvasCleaner %FALSE
+   Select Case nPolyg
+      Case 1                           'generates a triangle equilater
+         Array Assign Ptmp() = 3, 40,330, 360,330, 200,53
+      Case 2                           'generates a quadrilater
+         Array Assign Ptmp() = 4, 60,60, 360,100, 300,340, 120,280
+      Case 3                           'generates a pentagon, another?
+         Array Assign Ptmp() = 5, 200,40, 360,160, 300,320, 120,320, 40,160
+      Case 4                           'generates an star
+         Array Assign Ptmp() = 10, 200,20,240,160, 380,180,260,240, 300,360,200,280, 80,380,140,240, 20,160,160,160
+      Case 5                           'generates a car sketch
+         Array Assign Ptmp() = 16, 185,120, 260,120, 310,155, 330,160, 330,185, 300,185, 290,200, 270,200, _
+                                   260,185, 140,185, 130,200, 110,200, 100,185,  60,185,  70,160, 160,155
+   End Select
+
+   Punts.cnt = Ptmp(1)
+   nPunts = Ptmp(1)
+   'i = 1
+   For j = 2 To Ptmp(1) * 2 Step 2
+      Incr i
+      Punts.xy(i).x = Ptmp(j)
+      Punts.xy(i).y = Ptmp(j+1)
+   Next
+   Control Set Text hWnd, %ID_PUNTS, Str$(nPunts)
+
+   rslt = RoundPolygon(hDC, nRound, %BLUE, tLine, Punts, iStyle, showVertex)
+End Sub
+
+'----------------------------------------------------------------------------------------
+' RoundPolygon function
+'----------------------------------------------------------------------------------------
+Function RoundPolygon(ByVal hDCr As DWord, _             'Canvas device context
+                      ByVal iRoundness As Long, _        'percentage or num of pixels
+                      ByVal iColor As Long, _            'outlined color
+                      ByVal iWidth As Long, _            'line width
+                      ByRef Pts As POLYARRAY, _          'array with each vertex position
+                      ByVal iType As Long, _             'FALSE for percentage, TRUE for pixels
+                      ByVal showV As Long) As Long   'if TRUE show projections and vertices
+   Local j As Long
+   Local hPen As DWord
+   Local numP, p As Long
+   Local amount, distance, segmleng As Single
+   
+   Dim appt(4) As POINTAPI                    'PolyBezier needs 4 points
+   Dim Mts As POLYARRAY, Nts As POLYARRAY
+
+   numP = Pts.cnt                                  'get number of vertices
+
+   '--- show projections and vertices --- optional
+   If showV Then
+      Canvas_Style 2
+      Canvas_Width 1
+      Canvas_Polygon Pts, %RED
+      Canvas_Style 0
+      For j = 1 To numP                            'red circle on each vertex
+         Canvas_Ellipse Pts.xy(j).x-2, Pts.xy(j).y-2, Pts.xy(j).x+2, Pts.xy(j).y+2, %RED
+      Next
+   End If
+
+   '--- prepare polygon sides according roundness amount ---
+   'if distance method chosen is percentage the value calculated is valid for all
+   'segments, while if the method chosen is the distance in pixels the value must
+   'be calculated for each segment separately
+   amount = (100 - (iRoundness)) / 100             'roundness percentage as default
+  'p=1
+   For j = 1 To numP
+      If j+1 > numP Then
+        p = 1
+      Else
+        p = j+1
+      End If
+      '[breakpoint] <Any note here. Breakpoint will be set to line following this statement>
+      If iType Then                                'if distance in pixels is selected then ...
+         distance = iRoundness
+         segmleng = Dist(Pts.xy(p).x, Pts.xy(p).y, Pts.xy(j).x, Pts.xy(j).y)
+         If distance > (segmleng / 2) Then distance = (segmleng / 2)
+         amount = (segmleng - distance) / segmleng
+      End If
+      '[breakpoint] <Any note here. Breakpoint will be set to line following this statement>
+      Mts.xy(j).x = Pts.xy(j).x + (amount * (Pts.xy(p).x - Pts.xy(j).x))
+      Mts.xy(j).y = Pts.xy(j).y + (amount * (Pts.xy(p).y - Pts.xy(j).y))
+      Nts.xy(j).x = Pts.xy(p).x + (amount * (Pts.xy(j).x - Pts.xy(p).x))
+      Nts.xy(j).y = Pts.xy(p).y + (amount * (Pts.xy(j).y - Pts.xy(p).y))
+   Next
+
+   '--- draw sides and curves ---
+   Canvas_Width iwidth
+   Canvas_Style 0
+   'pen for Bezier curve
+   hPen = Win_SelectObject(hDCr, Win_CreatePen(%PS_SOLID, iWidth, iColor))
+   For j = 1 To numP
+      'draw polygon right portion sides
+      Canvas_Line ( (Mts.xy(j).x, Mts.xy(j).y), (Nts.xy(j).x, Nts.xy(j).y), iColor)
+      'fill array for Bezier curve
+      If j = 1 Then
+        p = numP
+      Else
+        p = j-1
+      End If
+      appt(1).x = Nts.xy(j).x  :  appt(1).y = Nts.xy(j).y
+      appt(2).x = Pts.xy(j).x  :  appt(2).y = Pts.xy(j).y
+      appt(3).x = Pts.xy(j).x  :  appt(3).y = Pts.xy(j).y
+      appt(4).x = Mts.xy(p).x  :  appt(4).y = Mts.xy(p).y
+      'uses GDI Bezier API
+      win_PolyBezier hDCr, appt(1), 4
+   Next
+   'delete pen used to draw the Bezier curve
+   Win_DeleteObject hPen
+
+   '--- finally display all ---
+   Canvas_Redraw
+End Function
+
+'----------------------------------------------------------------------------------------
+' general cleanup
+'----------------------------------------------------------------------------------------
+Sub CanvasCleaner(ByVal wantRedraw As Long)
+   Canvas_BitmapCopy1 hBmpF, 0               'clear and put a new grid
+   If wantRedraw Then Canvas_Redraw   'redraw requested ?
+End Sub
+
+ 

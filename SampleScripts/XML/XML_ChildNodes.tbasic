@@ -1,0 +1,66 @@
+' ========================================================================================
+' Demonstrates the use of the childNodes property.
+' The following example uses the childNodes property (collection) to return an
+' IXMLDOMNodeList, and then iterates through the collection, displaying the value of each
+' item's xml property.
+' ========================================================================================
+
+  Uses "Console"
+
+  '#default declare Checkduplicates    %TRUE
+  '#default declare CheckMissing       %TRUE
+
+  #INCLUDE "%APP_INCLUDEPATH%\TB_XML60.INC"
+
+  ' ========================================================================================
+  ' Main
+  ' ========================================================================================
+  Function Main() As Long
+
+    Local pXmlDoc    As DWord
+    Local pRootNode  As DWord
+    Local pNodeList  As DWord
+    Local pNodeSubList  As DWord
+    Local pCurrNode  As DWord
+    Local i, si      As Long
+
+    pXmlDoc = XmlCreateObject($PROGID_Msxml2DOMDocument)
+    IXMLDOMDocument_put_async pXmlDoc, %FALSE
+
+    IXMLDOMDocument_load pXmlDoc, "books.xml"
+    If XmlParseError_get_errorCode(pXmlDoc) <> 0 Then
+      PrintL "You have error " & XmlParseError_get_reason(pXmlDoc)
+    Else
+      pRootNode = IXMLDOMDocument_get_documentElement(pXmlDoc)
+      pNodeList = IXMLDOMNode_get_childNodes(pRootNode)
+      FOR i = 0 TO IXMLDOMNodeList_get_length(pNodeList) - 1
+ 
+        pCurrNode = IXMLDOMNodeList_get_item(pNodeList, i)
+        PrintL "Node name is: " & IXMLDOMNode_get_nodeName(pCurrNode)
+        PrintL "XML node code is:"
+        PrintL IXMLDOMNode_get_xml(pCurrNode)
+
+        pNodeSubList = IXMLDOMNode_get_childNodes(pCurrNode)
+        XmlRelease pCurrNode
+        For si = 0 To IXMLDOMNodeList_get_length(pNodeSubList) - 1
+          pCurrNode = IXMLDOMNodeList_get_item(pNodeSubList, si)
+          PrintL "Node name: " & IXMLDOMNode_get_nodeName(pCurrNode) & "  Node Value: " & IXMLDOMNode_get_text(pCurrNode)
+          XmlRelease pCurrNode
+        Next
+         
+        PrintL "--- Press any key for next child node ------------------------"
+        'WaitKey
+      Next
+    End If
+
+    ' Cleanup
+    XmlRelease pRootNode
+    XmlRelease pNodeList
+    XmlRelease pXmlDoc
+
+    PrintL "--- Press any key to finish ---"
+    WaitKey
+
+  End Function
+
+'@Note: test

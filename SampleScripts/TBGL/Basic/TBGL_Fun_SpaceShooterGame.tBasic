@@ -1,0 +1,290 @@
+  '=============================================================================
+  '=         Simple space shooter, one of the first thinBASIC games :)         =
+  '=                                                                           =
+  '=                           Petr Schreiber, 2007                            =
+  '=============================================================================
+
+  #DEFAULT BOUNDCHECK OFF     ' -- For maximum speed
+
+  Uses "TBGL"
+
+  Dim i As Long
+
+  Dim hWnd as dword
+
+  ' Lasers
+  type tLasers
+    X     as double
+    Y     as double
+    Z     as double
+    S     as double
+  end type
+  %NUMLASERS = 10
+  Dim Laser(%NUMLASERS) As tLasers
+  dim LaserIndex as long
+
+  ' Obstacles to shoot
+  type tObstacles
+    X     as double
+    Y     as double
+    Z     as double
+    S     as double  
+  end type
+  %NUMOBSTACLES = 5
+  Dim Obstacle(%NUMOBSTACLES) As tObstacles
+
+  ' Player
+  Dim PlayerX, PlayerY As Single
+  Dim FlameSize as single
+
+  ' Speed control
+  Dim FrameRate as double
+
+  ' Game statistics
+  Dim Score As Long, Life As Long, GameOver As Long
+  Life = 100
+
+  %PLAYERSHIP = 1
+  %WORMHOLE   = 2
+
+  MsgBox hWnd, "Welcome to the Space Shooter game"+$CRLF+$CRLF+"You have to control the small space ship inside terrible wormhole"+$CRLF+"You have too shoot obstacles as well" _
+               +$CRLF+"Use ARROWS and SPACEBAR to move and shoot, to quit game push ESC", %MB_OK or %MB_ICONINFORMATION, "Space Shooter"
+
+
+  hWnd = TBGL_CreateWindowex("Space Shooter - press ESC to quit", 640, 480, 32, %TBGL_WS_WINDOWED)   ' Let's create window
+  TBGL_ShowWindow                     ' Shows the window
+
+  TBGL_LoadBMPFont APP_SourcePath+"Textures\TBGL_Font.bmp", 30        ' This loads font
+
+  TBGL_NewList %PLAYERSHIP            ' Using display lists we can get better performance
+    RenderShip
+  TBGL_EndList
+
+  TBGL_NewList %WORMHOLE
+    TBGL_Color 0,0,64
+    For i = 1 to 20                   ' The wormhole effect is quite complex, so "precaching" it using display list is wise
+
+      TBGL_PushMatrix
+        TBGL_Translate sin(timer+i),cos(timer+i),-i*2
+        TBGL_Rotate 90,1,0,0
+
+        TBGL_Torus 0.8,5
+      TBGL_PopMatrix
+    Next
+  TBGL_EndList
+
+  For i = 1 To %NUMOBSTACLES
+    initObstacle(i) 
+  Next
+
+  TBGL_LineWidth 3
+
+  ' We declare the use of 2 lights
+  TBGL_UseLightSource %GL_LIGHT0, %TRUE
+  TBGL_UseLightSource %GL_LIGHT1, %TRUE
+  TBGL_UseLighting %TRUE
+
+
+  TBGL_ResetKeyState()        ' Resets key status before keypress checking
+
+  while tbgl_IsWindow(hWnd)
+      TBGL_PolygonLook iif(tbgl_GetWindowKeyState(hWnd, %VK_tab), %GL_LINE, %GL_FILL)
+
+    '---Script will run on different PCs so we must assure
+    '---constant speed of movement by scaling movement relative to framerate
+    FrameRate = tbgl_GetFrameRate
+
+   TBGL_ClearFrame             ' Prepares clear frame
+   TBGL_Camera 0,0,5,0,0,0     ' Setups camera
+
+    TBGL_PushMatrix              ' The wormhole is rotating...
+      TBGL_Rotate GetTickCount/10,0,0,1
+      TBGL_CallList %WORMHOLE
+    TBGL_PopMatrix
+
+    RenderLasers
+
+    TBGL_PushMatrix
+      TBGL_Translate PlayerX, PlayerY, 0
+      TBGL_Rotate GetTickCount/20,0,0,-1
+
+      TBGL_CallList %PLAYERSHIP 
+      TBGL_Color rnd*255,rnd*128,0
+      FlameSize = rnd
+
+      TBGL_UseBlend %TRUE
+
+      TBGL_Translate 0,0,FlameSize/2
+      drawElipsoid 0.05+rnd*0.05,0.05+rnd*0.05,FlameSize
+      TBGL_UseBlend %FALSE
+
+    TBGL_PopMatrix
+
+    RenderObstacles
+
+    TBGL_SetupLightSource %GL_LIGHT1, Laser(LaserIndex).x, Laser(LaserIndex).y, Laser(LaserIndex).z, 128, 0, 0, 255
+    TBGL_SetupLightSource %GL_LIGHT0, PlayerX+5, PlayerY+5, 0, 128, 128, 128, 255
+
+    TBGL_ResetMatrix
+    TBGL_UseBlend %TRUE
+    TBGL_Color 255,255,0
+    TBGL_PrintBMP "Score:"+FORMAT$(Score),0,0, %TBGL_ALIGN_LEFT_UP
+    TBGL_PrintBMP "Life :"+FORMAT$(Life)+"%",0,1,%TBGL_ALIGN_LEFT_UP
+
+    TBGL_UseBlend %FALSE
+    
+    TBGL_DrawFrame                ' Swaps the buffers - displays rendered image
+
+    ' Controls test
+    if tbgl_GetWindowKeyState( hWnd, %VK_UP) then
+      PlayerY = PlayerY + 2/FrameRate
+      If PlayerY > 1.8 Then PlayerY = 1.8
+    elseif tbgl_GetWindowKeyState( hWnd, %VK_DOWN) then
+      PlayerY = PlayerY - 2/FrameRate
+      If PlayerY < -1.8 Then PlayerY = -1.8
+    end if
+    
+    if tbgl_GetWindowKeyState( hWnd, %VK_RIGHT) then
+      PlayerX = PlayerX + 2/FrameRate
+      If PlayerX > 2 Then PlayerX = 2
+    elseif tbgl_GetWindowKeyState( hWnd, %VK_LEFT) then
+      PlayerX = PlayerX - 2/FrameRate
+      If PlayerX < -2 Then PlayerX = -2
+    end if
+
+    if tbgl_GetWindowKeyOnce( hWnd, %VK_SPACE) then Shoot()
+
+    if tbgl_GetWindowKeyState( hWnd, %VK_ESCAPE) OR GameOver = 1 then EXIT WHILE
+      
+  WEND
+
+  TBGL_DestroyWindow                 ' Closes OpenGL window
+
+
+
+  Function drawElipsoid( x as single, y as single, z as single ) as long
+
+    TBGL_PushMatrix
+      TBGL_Scale x, y, z
+      TBGL_Sphere 1
+    TBGL_PopMatrix
+
+  End Function
+
+  'Player
+  Function RenderShip() As Long
+    TBGL_PushMatrix
+
+      TBGL_Color 128,128,128
+      drawElipsoid 0.25, 0.3, 1
+
+      TBGL_Translate 0,0,0.5
+
+      TBGL_Color 128,0,0
+      drawElipsoid 0.05,0.75,0.25
+      TBGL_Rotate 90,0,0,1
+      drawElipsoid 0.05,0.75,0.25
+
+      TBGL_PushMatrix
+        TBGL_Translate 0,0,0.45
+        TBGL_Rotate 90,1,0,0
+        TBGL_Torus 0.02,0.1
+      TBGL_PopMatrix 
+
+    TBGL_PopMatrix
+  End Function
+
+  ' Lasers
+  Function Shoot() As Long
+    INCR LaserIndex
+    IF LaserIndex > %NUMLASERS THEN LaserIndex = 1
+
+    Laser(LaserIndex).x = PlayerX
+    Laser(LaserIndex).y = PlayerY
+    Laser(LaserIndex).z = -1
+    Laser(LaserIndex).s = 15
+
+  End Function
+
+
+  Function RenderLasers() As Long
+
+    Local i, j As Long
+
+    TBGL_Color 0,255,0
+
+    For i = 1 TO %NUMLASERS
+      If Laser(i).s = 0 Then Exit For
+
+      Laser(i).z =Laser(i).z - Laser(i).s / FrameRate
+      TBGL_PushMatrix
+        TBGL_Translate Laser(i).x, Laser(i).y, Laser(i).z
+        
+        TBGL_BeginPoly %GL_LINES
+          TBGL_Vertex 0,0,0
+          TBGL_Vertex 0,0,-1
+        TBGL_EndPoly
+
+      TBGL_PopMatrix
+
+      ' Very simple collison detection with the boxes
+      For j = 1 to %NUMOBSTACLES
+        If Laser(i).x < Obstacle(j).x+1 And Laser(i).x > Obstacle(j).x-1 AND _
+           Laser(i).z < Obstacle(j).z+1 And Laser(i).z > Obstacle(j).z-1 AND _
+           Laser(i).y < Obstacle(j).y+1 And Laser(i).y > Obstacle(j).y-1 THEN
+             initObstacle(j)
+             Score = Score + 100
+        End If
+      Next 
+
+    Next  
+
+  End Function
+
+  'Obstacles
+  Function InitObstacle( index As Long ) As Long
+    
+      Obstacle(index).x = rnd(-2,2)
+      Obstacle(index).y = rnd(-2,2)
+      Obstacle(index).z = rnd(-90,-100)
+      Obstacle(index).s = rnd(5,7)
+
+  End Function
+
+  Function RenderObstacles() As Long
+
+    Local i As Long
+
+    TBGL_Color 128,0,0  
+
+    For i = 1 To %NUMOBSTACLES
+      Obstacle(i).z = Obstacle(i).z + Obstacle(i).s / FrameRate
+
+      If Obstacle(i).z > 0 Then initObstacle(i)
+
+      ' Very simple collison detection with the player
+      If Obstacle(i).x < PlayerX+1 And Obstacle(i).x > PlayerX-1 AND _
+         Obstacle(i).y < PlayerY+1 And Obstacle(i).y > PlayerY-1 AND _
+         Obstacle(i).z > -2 THEN
+          
+           initObstacle(i)
+           Life = Life - 10
+           IF Life <= 0 Then GameOver = 1
+      End If
+
+      TBGL_PushMatrix
+       
+        TBGL_Translate Obstacle(i).x, Obstacle(i).y, Obstacle(i).z
+        TBGL_Rotate timer*100,1,1,1
+
+        TBGL_Box 1,1,1
+      TBGL_PopMatrix
+    Next 
+    
+  End Function
+
+
+
+
+
+

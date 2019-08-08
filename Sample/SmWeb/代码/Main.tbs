@@ -1,0 +1,538 @@
+/*==================================
+【神梦填表插件 SmWeb.dll】
+
+支持 IE、谷歌浏览器
+
+支持跨域跨框架穿透填表
+
+【作者】：神梦无痕
+【ＱＱ】：1042207232
+【Ｑ群】：624655641
+
+'【====神梦抓抓工具====】：https://pan.baidu.com/s/1dESHf8X
+'
+'【挂机宝/无极vpn/变机宝】：http://smwh.54nb.com
+====================================*/
+
+
+
+Dim 绑定句柄数组() As String
+Dim 绑定类型数组() As Long
+Dim iw as Long
+Dim 返回值 As String
+
+
+Dim 保存句柄 AS String
+Dim 查找句柄 AS String
+dim 枚举数量 as Long
+dim 匹配数量 as Long
+
+
+'创建托盘
+CreaTray("灵智机器人")
+
+
+TracePrint "**********************【神梦填表插件 SmWeb.dll 演示灵能机器人例子】**********************"
+'获取插件版本号
+TracePrint "插件版本号：" + SmWeb.Ver()
+
+
+'生成插件帮助文档
+TracePrint "生成插件文档成功！文档路径：" + SmWeb.About()
+
+
+'初始化插件
+SmWeb.Init()
+Delay (1500)
+
+ReDim 绑定句柄数组(2)
+ReDim 绑定类型数组(2)
+绑定句柄数组(1) = "IE.exe"
+绑定句柄数组(2) = "Chrome.exe"
+绑定类型数组(1) = 0
+绑定类型数组(2) = 16
+For iw = 1 To UBound(绑定句柄数组)
+	'绑定浏览器
+	Tips ("正在绑定浏览器：" & 绑定句柄数组(iw)): TracePrint (运行状态)
+	If SmWeb.Bind(绑定句柄数组(iw)) = False Then
+		MsgBox "出错，绑定浏览器失败！"
+		End for
+	End If
+ 
+	
+	'网页跳转
+	Tips ("打开 SmWeb 测试页面"): TracePrint (运行状态)
+	SmWeb.TabGo("http://127.0.0.1:8008/SmWeb.html")
+	SmWeb.TabIsReady(30)  '判断网页是否加载完毕
+	Delay (2000)
+
+	'清除历史记录
+	SmWeb.TabGo("#ClearHistory"): Delay (1000)
+	Tips ("正在清除历史记录。。。"): TracePrint (运行状态)
+	SmWeb.ClearHistory()
+	Delay (2000)
+	
+	
+	'清除临时文件
+	SmWeb.TabGo("#ClearTemp"): Delay (1000)
+	Tips ("正在清除临时文件。。。"): TracePrint (运行状态)
+	SmWeb.ClearTemp()
+	Delay (2000)
+	
+	
+	'清除Cookie
+	SmWeb.TabGo("#ClearCookie"): Delay (1000)
+	Tips ("正在清除Cookie。。。"): TracePrint (运行状态)
+	SmWeb.ClearCookie()
+	Delay (2000)
+    
+	'设置浏览器代理IP
+	SmWeb.TabGo("#SetProxy"): Delay (1000)
+	Tips ("正在设置浏览器代理IP。。。"): TracePrint (运行状态)
+	SmWeb.SetProxy("127.0.0.1:80")
+	Delay (1000)
+	Tips ("正在取消浏览器代理IP。。。"): TracePrint (运行状态)
+	SmWeb.SetProxy()
+	Delay (2000)
+	
+	
+	'设置引用jQuery
+	SmWeb.TabGo("#SetjQuery"): Delay (1000)
+	Tips ("正在设置jQuery引用地址。。。"): TracePrint (运行状态)
+	SmWeb.SetjQuery("//libs.baidu.com/jquery/1.11.3/jquery.min.js")
+	Delay (1000)
+	Tips ("正在取消jQuery引用地址。。。"): TracePrint (运行状态)
+	SmWeb.SetjQuery()
+	Delay (2000)
+    
+    
+	'执行网页JS
+	SmWeb.TabGo("#TabRunJS"): Delay (1000)
+	Tips ("【无返回值执行JS代码】：var SMWH='神梦无痕';"): TracePrint (运行状态)
+	SmWeb.TabRunJS(0, "SMWH='神梦无痕';")
+	Delay (1000)
+	Tips ("【有返回值执行JS代码】：return SMWH;"): TracePrint (运行状态)
+	返回值 = SmWeb.TabRunJS(1, "return SMWH;")
+	Tips ("【JS返回值】：" & 返回值): TracePrint (运行状态)
+	Delay (2000)
+    
+
+	'获取网页句柄
+	SmWeb.TabGo("#TabGetHwnd"): Delay (1000)
+	Tips ("【网页句柄】：" & SmWeb.TabGetHwnd()): TracePrint (运行状态)
+	Delay (2000)
+	
+	
+	'获取网页地址
+	SmWeb.TabGo("#TabGetURL"): Delay (1000)
+	Tips ("【网页地址】：" & SmWeb.TabGetURL()): TracePrint (运行状态)
+	Delay (2000)
+	
+	
+	'获取网页标题
+	SmWeb.TabGo("#TabGetTitle"): Delay (1000)
+	Tips ("【网页标题】：" & SmWeb.TabGetTitle()): TracePrint (运行状态)
+	Delay (2000)
+	
+	
+	'获取网页源码
+	SmWeb.TabGo("#TabGetHTML"): Delay (1000)
+	Tips ("【网页源码】：" & Left$(SmWeb.TabGetHTML(), 255)): TracePrint (运行状态)
+	Delay (2000)
+	
+	
+	'获取网页编码
+	SmWeb.TabGo("#TabGetCharset"): Delay (1000)
+	Tips ("【网页编码】：" & SmWeb.TabGetCharset()): TracePrint (运行状态)
+	Delay (2000)
+    
+    
+	'设置当前页面Cookie
+	SmWeb.TabGo("#TabSetCookie"): Delay (1000)
+	Tips ("【设置Cookie】：SMWH=神梦无痕;Now=" & Now()): TracePrint (运行状态)
+	SmWeb.TabSetCookie("SMWH=神梦无痕;Now=" & Now())
+	Delay (1000)
+	'获取网页Cookie
+	SmWeb.TabGo("#TabGetCookie"): Delay (1000)
+	Tips ("【获取Cookie】：" & SmWeb.TabGetCookie()): TracePrint (运行状态)
+	Delay (2000)
+    
+    
+	'设置浏览器UserAgent
+	SmWeb.TabGo("#TabSetUserAgent"): Delay (1000)
+	Tips ("【设置UserAgent】：Opera/8.0 (Windows NT 5.1; U; en)"): TracePrint (运行状态)
+	SmWeb.TabSetUserAgent("Opera/8.0 (Windows NT 5.1; U; en)")
+	Delay (1000)
+	'获取网页UserAgent
+	SmWeb.TabGo("#TabGetUserAgent"): Delay (1000)
+	Tips ("【获取UserAgent】：" & SmWeb.TabGetUserAgent()): TracePrint (运行状态)
+	Delay (2000)
+    
+    
+	'获取滚动条所在位置
+	SmWeb.TabGo("#TabGetScroll"): Delay (1000)
+	Tips ("【滚动条位置】：" & SmWeb.TabGetScroll()): TracePrint (运行状态)
+	Delay (2000)
+	
+	
+	'跳转到新的网址
+	SmWeb.TabGo("#TabGo"): Delay (1000)
+	Tips ("【正在跳转】：http://www.神梦.com"): TracePrint (运行状态)
+	SmWeb.TabGo("http://www.神梦.com")
+	Delay (1000)
+	'判断网页是否加载完毕（超时 30 秒）
+	SmWeb.TabIsReady(30)
+	'判断网页是否加载完毕加强版（多个关键字用“|”分割，0=文本方式；1=源码方式，超时 30 秒）
+	' 返回关键字索引（1=百度一下，2=神梦论坛，3=神梦无痕），失败返回0
+	Tips ("【就绪返回】：" & SmWeb.TabIsReadyEx("百度一下|神梦论坛|神梦无痕", 0, 30)): TracePrint (运行状态)
+	Delay (2000)
+	
+	
+	'前进操作
+	Tips ("正在前进网页。。。"): TracePrint (运行状态)
+	SmWeb.TabForward()
+	Delay (2000)
+	
+	
+	'后退操作
+	Tips ("正在后退网页。。。"): TracePrint (运行状态)
+	SmWeb.TabBack()
+	Delay (2000)
+	SmWeb.TabIsReady(30)
+	
+	
+	'停止加载页面
+	SmWeb.TabGo("#TabStop"): Delay (1000)
+	Tips ("正在停止加载页面。。。"): TracePrint (运行状态)
+	SmWeb.TabStop()
+	Delay (2000)
+	
+	
+	'刷新当前页面
+	SmWeb.TabGo("#TabRefresh"): Delay (1000)
+	Tips ("正在刷新当前页面。。。"): TracePrint (运行状态)
+	SmWeb.TabRefresh()
+	Delay (2000)
+	SmWeb.TabIsReady(30)
+    
+	
+	'保存当前标签页句柄
+	保存句柄 = SmWeb.TabGetHwnd()
+	Tips ("【保存句柄】：" & 保存句柄): TracePrint (运行状态)
+	Delay (1000)
+	
+	
+	'新建标签页
+	SmWeb.TabGo("#TabNew"): Delay (1000)
+	Tips ("正在打开新的标签页。。。"): TracePrint (运行状态)
+	SmWeb.TabNew("about:blank")
+	Delay (2000)
+	
+	
+	'查找新打开的标签页句柄
+	查找句柄 = SmWeb.FindWebHwnd("about:blank", 1 + 绑定类型数组(iw))
+	Tips ("【查找句柄】：" & 查找句柄): TracePrint (运行状态)
+	Delay (1000)
+	
+	
+	'切换到指定标签页
+	Tips ("正在切换到新的标签页。。。"): TracePrint (运行状态)
+	SmWeb.TabGoto(查找句柄)
+	Delay (1000)
+	
+	
+	'关闭当前标签
+	Tips ("正在关闭当前标签。。。"): TracePrint (运行状态)
+	SmWeb.TabClose()
+	Delay (1000)
+	'切换回之前保存的标签
+	Tips ("正在切换回旧的标签页。。。"): TracePrint (运行状态)
+	SmWeb.TabGoto(保存句柄)
+	Delay (2000)
+	
+	
+	'当前网页滚动到指定位置
+	SmWeb.TabGo("#TabScrollTo"): Delay (1000)
+	Tips ("【设置滚动条】：0, 500"): TracePrint (运行状态)
+	SmWeb.TabScrollTo(0, 500)
+	Delay (2000)
+	
+	
+	'当前网页枚举标记指定元素标签
+	SmWeb.TabGo("#TabEnumEle"): Delay (1000)
+	Tips ("【枚举标记元素标签】：A"): TracePrint (运行状态)
+	枚举数量 = SmWeb.TabEnumEle("A")
+	Tips ("【枚举数量】：" & 枚举数量): TracePrint (运行状态)
+	Delay (2000)
+	
+	
+	'网页截图
+	SmWeb.TabGo("#TabSnapShot"): Delay (1000)
+	Tips ("【网页截图】：截取区域 0, 0, 400, 200 范围图像保存到文件 C:\1.png"): TracePrint (运行状态)
+	SmWeb.TabSnapShot(0, 0, 400, 200, "C:\1.png")
+	Delay (2000)
+	
+	
+	'网页缩放
+	SmWeb.TabGo("#TabZoom"): Delay (1000)
+	Tips ("【缩放视图】：50%"): TracePrint (运行状态)
+	SmWeb.TabZoom(50)
+	Delay (1000)
+	Tips ("【缩放视图】：100%"): TracePrint (运行状态)
+	SmWeb.TabZoom (100)
+	Delay (2000)
+	
+	
+	'下载保存指定URL的文件到本地磁盘
+	SmWeb.TabGo("#TabSave"): Delay (1000)
+	Tips ("【下载文件】：http://127.0.0.1:8008/SmWeb.html 保存到 C:\SmWeb.html"): TracePrint (运行状态)
+	SmWeb.TabSave("http://127.0.0.1:8008/SmWeb.html", "C:\SmWeb.html")
+	Delay (2000)
+	
+	
+	'网页高亮关键字
+	SmWeb.TabGo("#TabKeyLight"): Delay (1000)
+	Tips ("【设置高亮】：" & SmWeb.TabKeyLight("关键字")): TracePrint (运行状态)
+	Delay (1000)
+	Tips ("【取消高亮】：" & SmWeb.TabKeyLight()): TracePrint (运行状态)
+	Delay (2000)
+	
+	
+	'====>>>【预处理弹窗】：提前为弹出窗口做准备（点击确定按钮）
+	SmWeb.TabGo("#TabPreDialog"): Delay (1000)
+	Tips ("【预处理弹窗】：提前为弹出窗口做准备（三个连续弹窗，需要点击三个按钮：true=确定；false=取消）"): TracePrint (运行状态)
+	SmWeb.TabPreDialog("神梦无痕", "true|false|true")
+	'点击按钮，弹出窗口
+	Tips ("点击【无返回弹窗】"): TracePrint (运行状态)
+	SmWeb.HtmlClick("#myPreDialog_alert")
+	Tips ("点击【有返回值弹窗】"): TracePrint (运行状态)
+	SmWeb.HtmlClick("//*[@id='myPreDialog_confirm']")
+	Tips ("点击【可输入内容弹窗】"): TracePrint (运行状态)
+	SmWeb.HtmlClick("id:myPreDialog_prompt")
+	'获取弹窗内容
+	Tips ("【获取弹窗内容】：" & SmWeb.TabGetDialog()): TracePrint (运行状态)
+	Delay (2000)
+	'<<<====【预处理弹窗】与【取弹窗内容】 是成对出现，缺一不可！
+	
+	
+	
+	'判断网页元素是否存在
+	SmWeb.TabGo("#HtmlExists"): Delay (1000)
+	Tips ("【是否存在】：" & SmWeb.HtmlExists("tag:input&type:text")): TracePrint (运行状态)
+	Delay (1000)
+	
+	
+	'枚举网页元素匹配数量
+	SmWeb.TabGo("#HtmlEnum"): Delay (1000)
+	匹配数量 = SmWeb.HtmlEnum("tag:input&type:text")
+	Tips ("【匹配数量】：" & 匹配数量): TracePrint (运行状态)
+	Delay (1000)
+	
+	
+	
+	'设置元素焦点
+	SmWeb.TabGo("#HtmlFocus"): Delay (1000)
+	Tips ("【设置焦点】：" & SmWeb.HtmlFocus("id:myFocus")): TracePrint (运行状态)
+	Delay (2000)
+	
+	
+	'移除元素焦点
+	SmWeb.TabGo("#HtmlFocus"): Delay (1000)
+	Tips ("【移除焦点】：" & SmWeb.HtmlBlur("#myFocus")): TracePrint (运行状态)
+	Delay (1000)
+	
+	
+	'元素点击
+	SmWeb.TabGo("#HtmlClick"): Delay (1000)
+	Tips ("【点击元素】：" & SmWeb.HtmlClick("id:myClick")): TracePrint (运行状态)
+	Delay (1000)
+	
+	
+	'输入文本内容
+	SmWeb.TabGo("#HtmlInput"): Delay (1000)
+	Tips ("【输入框】：神梦无痕"): TracePrint (运行状态)
+	SmWeb.HtmlInput("神梦无痕", "#myInput")
+	Delay (1000)
+	
+	
+	'勾选单/复选框
+	SmWeb.TabGo("#HtmlCheck"): Delay (1000)
+	Tips ("【单选框】：勾选"): TracePrint (运行状态)
+	SmWeb.HtmlCheck(True, "[id='myRadio']")
+	Tips ("【复选框】：勾选"): TracePrint (运行状态)
+	SmWeb.HtmlCheck(True, "//*[@id='myCheck']")
+	Delay (1000)
+	
+	
+	'设置下拉框
+	SmWeb.TabGo("#HtmlSelect"): Delay (1000)
+	Tips ("【下拉框】：香蕉"): TracePrint (运行状态)
+	SmWeb.HtmlSelect("香蕉", "id:mySelect")
+	Delay (1000)
+	
+	
+	'设置元素信息
+	SmWeb.TabGo("#HtmlSet"): Delay (1000)
+	Tips ("【设置信息】：value"): TracePrint (运行状态)
+	SmWeb.HtmlSet("value", "【作者】：神梦无痕", "id:mySet")
+	Delay (1000)
+	Tips ("【设置信息】：name"): TracePrint (运行状态)
+	SmWeb.HtmlSet("name", "QQ_1042207232", "id:mySet")
+	Delay (1000)
+	
+	
+	'获取元素信息
+	Tips ("【获取信息】：value"): TracePrint (运行状态)
+	Tips ("　　　　　　：" & SmWeb.HtmlGet("value", "id:mySet")): TracePrint (运行状态)
+	Delay (1000)
+	Tips ("【获取信息】：outerHTML"): TracePrint (运行状态)
+	Tips ("　　　　　　：" & SmWeb.HtmlGet("outerHTML", "id:mySet")): TracePrint (运行状态)
+	Delay (1000)
+	
+	
+	'滚动到指定元素
+	SmWeb.TabGo("#HtmlScroll"): Delay (1000)
+	Tips ("【滚动定位】：" & SmWeb.HtmlScroll("name:HtmlHover")): TracePrint (运行状态)
+	Delay (1000)
+	
+	
+	'鼠标在元素上悬停
+	Tips ("【元素悬停】：" & SmWeb.HtmlHover("#myHover")): TracePrint (运行状态)
+	Delay (1000)
+	
+	
+	'滑动验证码
+	SmWeb.TabGo("#HtmlSwipe"): Delay (1000)
+	Tips ("【滑动验证】：" & SmWeb.HtmlSwipe(128, 420, 400, 420, "#Swipe_btn")): TracePrint (运行状态)
+	Delay (1000)
+	
+	
+	
+	'执行元素事件
+	SmWeb.TabGo("#HtmlEvent"): Delay (1000)
+	Tips ("【执行事件】：鼠标左键按下"): TracePrint (运行状态)
+	SmWeb.HtmlEvent("mousedown", "#myEvent")
+	Tips ("【执行事件】：输入框改变"): TracePrint (运行状态)
+	SmWeb.HtmlEvent("change", "#myEvent")
+	Delay (1000)
+	
+	
+	'上传图片文件
+	SmWeb.TabGo("#HtmlInputFile"): Delay (1000)
+	Tips ("【图片路径】：C:\1.png"): TracePrint (运行状态)
+	SmWeb.HtmlInputFile("C:\1.png", "id:myInputFile")
+	Delay (1000)
+	
+	
+	'添加/还原元素边框
+	SmWeb.TabGo("#HtmlBorder"): Delay (1000)
+	Tips ("【添加边框】：" & SmWeb.HtmlBorder(True, "//*[@id='myBorder']")): TracePrint (运行状态)
+	Delay (1000)
+	Tips ("【还原边框】：" & SmWeb.HtmlBorder(False, "//*[@id='myBorder']")): TracePrint (运行状态)
+	Delay (1000)
+	
+	
+	'启用/禁用元素
+	SmWeb.TabGo("#HtmlEnabled"): Delay (1000)
+	Tips ("【禁用元素】：" & SmWeb.HtmlEnabled(False, "#myEnabled")): TracePrint (运行状态)
+	Delay (1000)
+	Tips ("【启用元素】：" & SmWeb.HtmlEnabled(True, "#myEnabled")): TracePrint (运行状态)
+	Delay (1000)
+	
+	
+	'显示/隐藏元素
+	SmWeb.TabGo("#HtmlVisible"): Delay (1000)
+	Tips ("【隐藏元素】：" & SmWeb.HtmlVisible(False, "id:myVisible")): TracePrint (运行状态)
+	Delay (1000)
+	Tips ("【显示元素】：" & SmWeb.HtmlVisible(True, "id:myVisible")): TracePrint (运行状态)
+	Delay (1000)
+	
+	
+	'判断元素是否启用
+	SmWeb.TabGo("#HtmlIsEnabled"): Delay (1000)
+	Tips ("【是否启用】：" & SmWeb.HtmlIsEnabled("[id='myIsEnabled']")): TracePrint (运行状态)
+	Delay (1000)
+	
+	
+	'判断元素是否显示
+	SmWeb.TabGo("#HtmlIsVisible"): Delay (1000)
+	Tips ("【是否显示】：" & SmWeb.HtmlIsVisible("[id='myIsVisible']")): TracePrint (运行状态)
+	Delay (1000)
+	
+	
+	'保存验证码图片
+	SmWeb.TabGo("#HtmlImage"): Delay (1000)
+	Tips ("【保存验证码】：C:\yzm.jpg"): TracePrint (运行状态)
+	SmWeb.HtmlImage("C:\yzm.jpg", "id:myImage")
+	Delay (1000)
+	
+	
+	'获取元素坐标
+	SmWeb.TabGo("#HtmlOffset"): Delay (1000)
+	Tips ("【元素坐标】：" & SmWeb.HtmlOffset("id:myOffset")): TracePrint (运行状态)
+	Delay (1000)
+	
+	
+	'获取 CSS 选择器
+	SmWeb.TabGo("#HtmlReadCSS"): Delay (1000)
+	Tips ("【CSS 选择器】：" & SmWeb.HtmlReadCSS("input.CSS")): TracePrint (运行状态)
+	Delay (1000)
+	
+	
+	'获取 XPath 选择器
+	SmWeb.TabGo("#HtmlReadXPath"): Delay (1000)
+	Tips ("【XPath选择器】：" & SmWeb.HtmlReadXPath("//INPUT[@class='XPath']")): TracePrint (运行状态)
+	Delay (1000)
+	
+	
+	'获取 WQM 选择器
+	SmWeb.TabGo("#HtmlReadWQM"): Delay (1000)
+	Tips ("【WQM 选择器】：" & SmWeb.HtmlReadWQM("tag:INPUT&type:button&class:WQM")): TracePrint (运行状态)
+	Delay (1000)
+	
+	
+	'设置表格内容
+	SmWeb.TabGo("#myTable"): Delay (1000)
+	Tips ("【设置1行一列】：神梦无痕"): TracePrint (运行状态)
+	SmWeb.HtmlTable(0, 1, 1, "神梦无痕", "#myTable")
+	Delay (1000)
+	Tips ("【设置2行一列】：小雪"): TracePrint (运行状态)
+	SmWeb.HtmlTable(0, 2, 1, "小雪", "//*[@id='myTable']")
+	Delay (1000)
+	Tips ("【设置3行二列】：女"): TracePrint (运行状态)
+	SmWeb.HtmlTable(0, 3, 2, "女", "id:myTable")
+	Delay (1000)
+	
+	
+	'获取表格内容
+	SmWeb.TabGo("#myTable"): Delay (1000)
+	Tips ("【获取1行一列】：" & SmWeb.HtmlGetTable(0, 1, 1, "#myTable")): TracePrint (运行状态)
+	Delay (1000)
+	Tips ("【获取2行一列】：" & SmWeb.HtmlGetTable(0, 2, 1, "//*[@id='myTable']")): TracePrint (运行状态)
+	Delay (1000)
+	Tips ("【获取3行二列】：" & SmWeb.HtmlGetTable(0, 3, 2, "id:myTable")): TracePrint (运行状态)
+	Delay (1000)
+	
+	
+	'获取列表内容
+	SmWeb.TabGo("#HtmlGetList"): Delay (1000)
+	Tips ("【获取索引 0 内容】：" & SmWeb.HtmlGetList(0, "#myGetList")): TracePrint (运行状态)
+	Delay (1000)
+	Tips ("【获取索引 1 内容】：" & SmWeb.HtmlGetList(1, "//*[@id='myGetList']")): TracePrint (运行状态)
+	Delay (1000)
+	Tips ("【获取索引 2 内容】：" & SmWeb.HtmlGetList(2, "id:myGetList")): TracePrint (运行状态)
+	Delay (1000)
+    
+    
+	'退出浏览器
+	SmWeb.TabGo("#Quit"): Delay (1000)
+	Tips ("正在退出浏览器！"): TracePrint (运行状态)
+	SmWeb.Quit()
+	Delay (1000)
+Next
+Msgbox "脚本执行完毕！"
+
+
+'卸载托盘
+UnTray()
+

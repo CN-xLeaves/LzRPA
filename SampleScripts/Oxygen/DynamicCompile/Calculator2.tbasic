@@ -1,0 +1,20 @@
+'
+'CALCULATOR 2
+'
+'
+'-------------------------
+'JIT COMPILE AN EXPRESSION
+'AND EXECUTE
+'=========================
+uses "oxygen"
+
+dim qes,ans as string
+do
+  qes=inputbox$ "Enter An Expression:"+$crlf+$crlf+"Result:"+$crlf+ans,"CALCULATOR",qes
+  if qes="" then exit do
+  o2_basic " dim as bstr a at #ans : a=str "+qes+$crlf
+  if len(o2_error) then msgbox 0,o2_error
+  o2_exec
+loop
+
+ 

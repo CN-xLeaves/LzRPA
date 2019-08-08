@@ -1,0 +1,45 @@
+
+'-----------------------------------------
+'C {} blocks
+'=========================================
+
+ 
+Uses "oxygen"
+Dim c,src As String
+dim v as long
+src="
+#basic
+
+
+
+cr=chr(13) chr(10)
+
+type guid
+  a as dword
+  b as word
+  c as word
+  d(8) as byte
+end type
+
+guid clsid
+
+'WITH OR WITHOUT CURLY BRACES
+
+guidval clsid, "96749377-3391-11D2-9EE3-00C04F797396"
+
+print "INPUT" cr +
+      "{96749377-3391-11D2-9EE3-00C04F797396}" cr +
+      "CHECK" cr +
+      guidtxt(clsid)
+
+
+
+"
+'msgbox 0,O2_prep src+o2_error
+O2_asmo src
+if Len(O2_ERROR) Then
+  msgbox 0,O2_ERROR
+else
+  o2_exec
+end if
+

@@ -1,0 +1,52 @@
+uses "EVAL"
+uses "CONSOLE"
+
+'---
+' This example shows how to connect thinBasic script variable with
+' internal Eval variables in order to allow Eval to interact
+' directly with script variable
+'---
+  
+'---Some timing variable
+dim t0, t1 as double = timer
+
+'---This string will contain math function to eval
+'---Define some y = f(x) ... function or whatever function
+dim MyFunction as string = "y = cos(x) * 10 + 20"
+
+'---Now define some script variable that will be used to interact
+'---with eval
+dim y, x as ext
+
+'---Here it is the trick. Using Eval_LinkExt you link together
+'---script variable with eval variables passing to eval
+'---the name of the eval variable name, the pointer to a script
+'---variable, and an initial value
+'---From now on every change in script variable value will effect
+'---the next eval execution and the other way round
+Eval_linkext("y", varptr(y), 0)
+Eval_linkext("x", varptr(x), 0)
+
+'---Define some globals
+dim MaxCount  as long value 5000
+
+'---And now go in a loop
+for x = 1 to MaxCount
+
+  '---Eval MyFunction. Remember x and y in script are linked at x, y in Eval formula
+  Eval(MyFunction)
+
+  '---Write some info output
+  printl format$(x, "0000"), y
+
+next 
+
+'---Measure the ending time
+t1 = timer
+
+'---Final results    
+printl "------------------------------------------------------"
+printl "Total execution time for " & MaxCount & " loops: " & format$(t1-t0, "#0.00000")
+
+'---Stop execution
+waitkey

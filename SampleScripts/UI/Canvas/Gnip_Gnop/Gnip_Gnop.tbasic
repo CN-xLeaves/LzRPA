@@ -1,0 +1,85 @@
+' Gnip Gnop By: Jim Steinbrecher    08-08-11
+ 
+#MINVERSION 1.8.8.0 ' -- We use cTimer introduced in 1.8.8.0
+ 
+Uses "UI" 
+  
+'---------------------------------------------------------------
+' You have 3 Min to get your best score  - use mouse to move paddle
+'---------------------------------------------------------------
+Function Main () As Long    
+  
+  Local cwh, score, level   As Long
+  Local cx,cy,x1,y1,py,ps   As Long
+  Local x,y,i,xd,yd,xs,ys   As Single
+  Local mousePosition       As POINTAPI
+  Local locX, locY          As Long 
+   
+  ' -- Create new "object" for time measurements
+  Local myTimer             As cTimer
+  myTimer = New cTimer()
+                             
+  score = 0
+  level = 1 
+  x=1 : y=1
+  xd=2:yd=2
+  py = 200
+  ps = 5 
+  xs = 3
+  ys = 3
+  xd = 2
+  yd = 2    
+   
+  MsgBox 0, "Game starts slow, but gets faster as the score gets heigher...."
+ 
+  cwh = Canvas_Window "GNIP GNOP   By: Jim Steinbrecher   08-08-11                    Use mouse to move the paddle", 300, 200, 640, 480
+  Canvas_Attach cwh, 0, %TRUE  
+  Canvas_Color %YELLOW, %BLACK      '---Foreground and background colors    
+  Canvas_Clear %BLACK
+  Canvas_Redraw  
+ 
+  GetAsyncKeyState(-1)       '---Reset keys  
+       
+  ' -- Start measuring the time
+  myTimer.Start
+         
+  While IsWindow(cwh)     
+    Canvas_SetPos(250, 1)  
+ 
+    Canvas_Print(" Level " & level & "    Score " & score & "    Time " & myTimer.ElapsedToString(%CTIMER_SECONDS, "0"))
+                                   
+    x = x+xd : If x > 625 Then xd = -xs                    'ball
+    If x<1 Then xd = xs
+    y = y+yd : If y > 465 Then yd=-ys
+    If y<1 Then yd = ys
+    Canvas_Ellipse(x, y, x+15, y+15, %YELLOW, %YELLOW)       
+     
+    Win_GetCursorPos(mousePosition)                           'Paddle
+    Win_ScreenToClient(cwh, mousePosition) 
+    Control Get Loc cwh, 0 To locX, locY
+    mousePosition.x -= locX
+    mousePosition.y -= locY 
+    py =  mousePosition.y
+    Canvas_Box(2,py,10,py+40,0, %YELLOW, %YELLOW)            
+       
+    If Between(x, 2, 15) And Between(y, py, py+40) Then score += 1 : xd = xs : Beep       'Score
+    level = Int(score/10+1)
+     
+    xs = level*3 : ys = level*3 : ps = level*6      
+     
+    Sleep 10
+    Canvas_Redraw
+    Canvas_Clear %BLACK 
+                   
+    If GetAsyncKeyState(%VK_ESCAPE) Then Exit While
+     
+    If myTimer.Elapsed(%CTIMER_SECONDS) >= 180 Then                                       'Game over = abt 3 Min
+      MsgBox 0, "times-Up, you have Level " & level & "  Score of " & score
+      Exit While
+    End If
+     
+  Wend
+   
+  Canvas_Window End
+   
+End Function

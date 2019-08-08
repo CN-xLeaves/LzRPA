@@ -1,0 +1,58 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+
+<head>
+<title>Introduction</title>
+<meta name="generator" content="Help &amp; Manual" />
+<meta name="keywords" content="" />
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<link type="text/css" href="default.css" rel="stylesheet" />
+</head>
+
+
+<body style="margin: 0px 0px 0px 0px; background: #eeeefe;">
+
+<font color=#3333ff><b><font size="5" color=#0000ff ><b>Introduction</b></font></b></font>
+
+<br>
+<br>
+Oxygen Basic (o2H) is a Just-In-Time compiler assembler, deployed in a single DLL that takes source code strings and returns
+ executable binary. It is an extension of the Oxygen assembler. This implementation can be used with thinBasic
+ to provide high speed functions for time critical operations, that would otherwise be impractical using
+ interpreted code alone. The compiler can also generate conventional executables and dynamic link libraries (DLL).
+<br><br>
+Oxygen supports Object Oriented Programming with multiple inheritance and also single inheritance modes, more
+ suited to COM. In addition to this O2H supports User-defined operators and operator sets for use with
+ complex numbers, matrices, vectors, sets and other specialised forms. It can also compile & execute strings
+ of source code at run time with its built in compile() function, opening new possibilities for functional
+ programming.
+<br><br>
+The built in function set is small. but contains the necessary tools to build class / function libraries
+ to any scale.
+<br><br>
+Oxygen can interact directly with thinBasic Variables - including User-Defined Types, or it can return values
+ using Subs and Functions like an external DLL.
+<br><br>
+In addition to understanding Basic in the QBasic genre, Oxygen can read sufficient C syntax to deal with most
+ C headers directly, eliminating the need to translate them.
+<br><br><br>
+
+
+<!-- FOOTER_START -->
+<P>&nbsp;</P>
+
+<table width="100%" border="0" cellspacing="0" cellpadding="2" bgcolor="#F0F0F0">
+<tr>
+<td align="left"><Font face="Verdana,Arial" size="1" color="#003366">Copyright &#169; Charles Pegge, 2010</FONT>
+</td>
+<td align="right"><Font face="Verdana,Arial" size="1" color="#003366">Support Web Site: <a href="http://www.thinbasic.com" target=_blank>http://www.thinbasic.com</a></FONT>
+</td>
+</tr>
+</table>
+<!-- FOOTER_END -->
+
+</body>
+</html>

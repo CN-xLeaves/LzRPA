@@ -1,0 +1,74 @@
+'------------------------------------------------------------------------------
+'
+'  WLanTypes.inc -- Structures used to hold wlan information.
+'
+'  Copyright (c) 2010-2011 PowerBASIC, Inc.
+'  Portions Copyright (c) Microsoft Corporation
+'  All Rights Reserved.
+'
+'  Last updated 02 May 2011
+'
+'------------------------------------------------------------------------------
+'  from WLanTypes.h of 14 Jul 2009
+'------------------------------------------------------------------------------
+
+#INCLUDE THIS ONCE
+
+%WLANTYPES_H = 1
+
+MACRO DOT11_BSS_TYPE_enum=LONG
+ENUM DOT11_BSS_TYPE SINGULAR
+    dot11_BSS_type_infrastructure = 1
+    dot11_BSS_type_independent
+    dot11_BSS_type_any
+END ENUM
+
+%DOT11_SSID_MAX_LENGTH = 32      ' 32 bytes
+
+TYPE DOT11_SSID
+    uSSIDLength AS DWORD
+    ucSSID      AS STRING * %DOT11_SSID_MAX_LENGTH
+END TYPE
+
+
+' DOT11_AUTH_ALGO_LIST
+MACRO DOT11_AUTH_ALGORITHM_enum=LONG
+ENUM DOT11_AUTH_ALGORITHM SINGULAR
+    DOT11_AUTH_ALGO_80211_OPEN       = 1
+    DOT11_AUTH_ALGO_80211_SHARED_KEY
+    DOT11_AUTH_ALGO_WPA
+    DOT11_AUTH_ALGO_WPA_PSK
+    DOT11_AUTH_ALGO_WPA_NONE                    ' used in NatSTA only
+    DOT11_AUTH_ALGO_RSNA
+    DOT11_AUTH_ALGO_RSNA_PSK
+    DOT11_AUTH_ALGO_IHV_START        = &H80000000???
+    DOT11_AUTH_ALGO_IHV_END          = &Hffffffff???
+END ENUM
+
+%DOT11_AUTH_ALGORITHM_OPEN_SYSTEM = %DOT11_AUTH_ALGO_80211_OPEN
+%DOT11_AUTH_ALGORITHM_SHARED_KEY  = %DOT11_AUTH_ALGO_80211_SHARED_KEY
+%DOT11_AUTH_ALGORITHM_WPA         = %DOT11_AUTH_ALGO_WPA
+%DOT11_AUTH_ALGORITHM_WPA_PSK     = %DOT11_AUTH_ALGO_WPA_PSK
+%DOT11_AUTH_ALGORITHM_WPA_NONE    = %DOT11_AUTH_ALGO_WPA_NONE
+%DOT11_AUTH_ALGORITHM_RSNA        = %DOT11_AUTH_ALGO_RSNA
+%DOT11_AUTH_ALGORITHM_RSNA_PSK    = %DOT11_AUTH_ALGO_RSNA_PSK
+
+' Cipher algorithm Ids (for little endian platform)
+MACRO DOT11_CIPHER_ALGORITHM_enum=LONG
+ENUM DOT11_CIPHER_ALGORITHM SINGULAR
+    DOT11_CIPHER_ALGO_NONE
+    DOT11_CIPHER_ALGO_WEP40
+    DOT11_CIPHER_ALGO_TKIP
+    DOT11_CIPHER_ALGO_CCMP          = &H04
+    DOT11_CIPHER_ALGO_WEP104
+    DOT11_CIPHER_ALGO_WPA_USE_GROUP = &H100
+    DOT11_CIPHER_ALGO_RSN_USE_GROUP
+    DOT11_CIPHER_ALGO_WEP
+    DOT11_CIPHER_ALGO_IHV_START     = &H80000000???
+    DOT11_CIPHER_ALGO_IHV_END       = &Hffffffff???
+END ENUM
+
+TYPE DOT11_AUTH_CIPHER_PAIR
+    AuthAlgoId   AS DOT11_AUTH_ALGORITHM_enum
+    CipherAlgoId AS DOT11_CIPHER_ALGORITHM_enum
+END TYPE

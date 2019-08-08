@@ -1,0 +1,319 @@
+' Windows Hello World
+' #2
+' with winmain message loop and wndproc
+' 12 July 2008
+' Charles Pegge
+
+
+Uses "Oxygen"
+Uses "File"
+
+dim src as string
+src="
+
+
+type WNDCLASS 
+( 
+  ;40 bytes
+  4 STYLE
+  4 lpfnwndproc
+  4 cbClsextra
+  4 cbWndExtra
+  4  hInstance
+  4  hIcon
+  4  hCursor
+  4  hbrBackground
+  4  lpszMenuName
+  4  lpszClassName
+)
+
+type MSG
+(
+  ; 28 bytes
+  4  hwnd;
+  4  message
+  4  wParam
+  4  lParam
+  4  time
+  8  pt
+)
+
+  indexers esi offset 0 ascending
+  esi=getmemory 1024
+  call WndProcLocate
+  mov [eax-4],esi ; store sys proc table pointer here
+
+  var 4 kernel32,user32,GDI32
+
+  kernel32=LoadLibrary `kernel32.dll`
+  user32=LoadLibrary `user32.dll`
+  GDI32=LoadLibrary `GDI32.dll`
+
+  bind kernel32
+  (
+    GetCommandLine  GetCommandLineA   ; @0
+    GetModuleHandle GetModuleHandleA  ; @4
+    ExitProcess     ExitProcess       ; @4
+  )
+
+  bind user32
+  (
+    LoadIcon         LoadIconA         ; @8
+    LoadCursor       LoadCursorA       ; @8
+    RegisterClass    RegisterClassA    ; @4
+    MessageBox       MessageBoxA       ; @4
+    CreateWindowEx   CreateWindowExA   ; @48
+    ShowWindow       ShowWindow        ; @8
+    UpdateWindow     UpdateWindow      ; @4
+    GetMessage       GetMessageA       ; @16
+    TranslateMessage TranslateMessage  ; @4
+    DispatchMessage  DispatchMessageA  ; @4
+    PostQuitMessage  PostQuitMessage   ; @4
+    BeginPaint       BeginPaint        ; @8
+    EndPaint         EndPaint          ; @8
+    GetClientRect    GetClientRect     ; @8  
+    DrawText         DrawTextA         ; @20
+    PostMessage      PostMessageA      ; @16
+    DefWindowProc    DefWindowProcA    ; @16
+  )
+
+
+  bind GDI32
+  (
+    GetStockObject   GetStockObject    ; @4
+  )
+
+
+                         '
+
+  def SW_NORMAL 1
+  def SW_SHOWDEFAULT 10
+  
+
+  var 4 cmdline,inst
+
+  cmdline=GetCommandLine
+  inst=GetModuleHandle 0
+  proc WinMain inst,0,cmdline,SW_NORMAL
+  freelibrary kernel32
+  freelibrary user32
+  freelibrary gdi32
+  freememory esi
+  ret
+    
+
+  o2 !10 ; align 16 bytes   
+ 
+ 
+  ;-------
+  WinMain:
+  ;-------  
+                    '
+ 
+  def CS_VREDRAW      1
+  def CS_HREDRAW      2
+  def IDI_APPLICATION 32512
+  def IDC_ARROW       32512
+  def WHITE_BRUSH     0
+  def MB_ICONERROR    16
+
+  def CW_USEDEFAULT       0x80000000
+  def WS_OVERLAPPEDWINDOW 0x00cf0000
+  
+  push ebp
+  mov ebp,esp
+  ;allocate stack space
+  sub esp,100
+  ; setup class data
+  mov edi,esp
+                     '
+  def wclass     edi
+  def style      [edi]
+  def pWndproc   [edi+4]
+  def cbClsExtra [edi+08]
+  def cbWndExtra [edi+12]
+  def hInstance  [edi+16]
+  def icon       [edi+20]
+  def cursor     [edi+24]
+  def background [edi+28]
+  def MenuName   [edi+32]
+  def ClassName  [edi+36]
+  
+  ; window handle  
+  def hWnd [edi+40]
+    
+  mov eax,CS_HREDRAW          '
+  or  eax,CS_VREDRAW          '
+  mov style,eax
+  pWndProc=proc WndProcLocate
+  mov  cbClsExtra,0    
+  mov  cbWndExtra,0    
+  mov  eax,[ebp+8]
+  mov  hInstance,eax
+  icon=LoadIcon 0, IDI_APPLICATION
+  cursor=LoadCursor 0,IDC_ARROW
+  background=GetStockObject WHITE_BRUSH '
+  mov MenuName,0
+  `HelloWin`
+    mov ClassName,eax
+    RegisterClass wclass
+    
+    (                           '
+      cmp eax,0 : jnz exit                 '
+      MessageBox 0,`Registration failed`,`Problem`,MB_ICONERROR       '
+      xor eax,eax              ' zero eax
+      jmp long end_app         ' jmp xitwm
+    )                          '
+
+
+    hWnd=CreateWindowEx 0, ClassName,`Hello Window`,
+      WS_OVERLAPPEDWINDOW,
+      CW_USEDEFAULT,CW_USEDEFAULT,640,480,
+      0,0,hInstance,0
+      
+    (
+      cmp eax,0 : jnz exit
+      MessageBox 0,`Unable to create window`,`problem`,MB_ICONERROR
+      xor eax,eax             ' zero eax
+      jmp long end_app          ' jmp xitwm
+    )                           '
+    ShowWindow hWnd,[ebp+20] ' show 
+    UpdateWindow hWnd
+
+
+    '     MESSAGE LOOP          '
+    
+    add edi,40 ; place for wmsg struc
+    (
+      GetMessage edi,0,0,0        '
+      cmp eax,0 : jz exit
+      TranslateMessage edi
+      DispatchMessage edi
+      repeat
+    )                      '
+    mov eax,[edi+8]            ' Msg.wParam 3rd param
+    
+    end_app:
+    ; deallocate stack space
+    mov esp,ebp : pop ebp                 '
+    ret 16                      '
+    ; end of WinMain
+
+
+    type RECT
+    (
+    ; 16 bytes
+    4  left
+    4  top
+    4  right
+    4  bottom
+    )
+
+    type PAINTSTRUCT
+    (
+    ; 64 bytes
+    4    hDC
+    4    fErase
+    rect rcPaint
+    4    fRestore
+    4    fIncUpdate
+    32   rgbReserved
+    )
+
+    ;-------------
+    WndProcLocate:
+    ;-------------
+    
+    ; return absolute location of WndProc
+    o2 !10               ; align 16
+    o2 e8 00 00 00 00    ; call next location
+    o2 58 83 c0 0b c3    ; pop this into eax and add 11 then ret
+    o2 00 00 00 00 00 00 ; round to 15 bytes
+
+    ;-------    
+    WndProc:
+    ;-------
+    def hWnd   [ebp+08] 
+    def wMsg   [ebp+12]            '
+    def wParam [ebp+16]            '
+    def lParam [ebp+20]            '
+
+    def WM_CREATE  1
+    def WM_DESTROY 2
+    def WM_PAINT   15
+    def WM_CLOSE   16
+    def WM_KEYDOWN 256
+ 
+    push ebp : mov ebp,esp 
+    push esi
+    ;
+    ; restore sys procs table pointer
+    call WndProcLocate
+    mov esi, [eax-4]
+    ;
+    ; not using stack locals so no subractions for esp
+    
+            '
+    mov eax,wMsg
+    (
+      (
+        cmp eax, WM_CREATE : jnz exit
+        xor eax,eax
+        jmp long endselect
+      )  ; end create
+        
+      (
+        cmp eax, WM_DESTROY : jnz exit
+        PostQuitMessage 0
+        xor eax,eax
+        jmp long endselect
+      ) ; end destroy 
+
+      (
+        cmp eax,WM_PAINT : jnz exit
+        sub esp,100 ; extra workspace
+        def cRect   [ebp-60]
+        def hDC     [ebp-20]
+        def Paintst  [ebp-100]
+        hDC=BeginPaint hWnd,&Paintst
+        GetClientRect  hWnd,&cRect
+          ; style
+          ; 0x20 DT_SINGLELINE
+          ; 0x04 DT_VCENTER
+          ; 0x01 DT_CENTER
+          ; 0x25
+        DrawText hDC,`Hello World!`,-1,&cRect,0x25
+        EndPaint hWnd,&Paintst
+        xor eax,eax
+        jmp long endselect
+      ) ; end paint
+
+      (
+        cmp eax,WM_KEYDOWN : jnz exit
+        (
+          mov eax,wParam
+          cmp al,27 : jnz exit ' esc key
+          PostMessage hWnd,WM_CLOSE,0,0
+        )
+        xor eax,eax  ' zero 
+        jmp long endselect
+      ) ; end keydown
+      ; case else
+      DefWindowProc hWnd,wMsg,wParam,lParam
+    ) ; end select
+    endselect:
+    ;
+    pop esi
+    mov esp,ebp : pop ebp
+    ret 16
+
+
+"
+'File_Save("t.txt",o2_len+$cr+o2_error+o2_view src ): stop
+'File_Save("t.txt",o2_len+$cr+o2_error+o2_prep src ): stop
+if len(o2_error) then msgbox 0,o2_error
+o2_asmo src
+o2_exec
+if len(o2_error) then msgbox 0,o2_error
+  
+  

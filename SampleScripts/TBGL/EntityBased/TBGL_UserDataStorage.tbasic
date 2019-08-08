@@ -1,0 +1,141 @@
+'===============================================================================
+'=                                 TBGL 0.2.2+                                 =
+'=                                                                             =
+'=                  Storage of custom data inside of entities                  =
+'=                                                                             =
+'===============================================================================
+
+Uses "TBGL" 
+
+' -- Create and show window - now with more options
+' -- Note maximize button will preserve aspect ratio ( to get rid of this behaviour add OR %TBGL_WS_DONTKEEPASPECTRATIO )
+Dim hWnd As Dword  = TBGL_CreateWindowEx("Little demo of TBGL 0.2.2 features - press ESC to quit", 480, 640, 32, %TBGL_WS_WINDOWED or %TBGL_WS_MAXIMIZEBOX or %TBGL_WS_CLOSEBOX) 
+TBGL_ShowWindow 
+
+CreateSceneAndEntities()
+
+' -- User data creation
+type tAlien
+  weight    as double
+  species   as asciiz * 64
+  planet    as asciiz * 64
+end Type
+
+' -- Variable used to fill
+global temp_Alien as tAlien
+temp_Alien.weight   = 5.0
+temp_Alien.species  = "Tripod"
+temp_Alien.planet   = "Jupiter"
+
+' -- Pass data to box
+tbgl_EntitySetUserData(%SCENE1, %eAlienFirst, temp_Alien)
+
+temp_Alien.weight   = 25.0
+temp_Alien.species  = "Me-Dus-A"
+temp_Alien.planet   = "Saturn"
+
+' -- Pass data to next box
+tbgl_EntitySetUserData(%SCENE1, %eAlienInBetween, temp_Alien)
+
+temp_Alien.weight   = 15.0
+temp_Alien.species  = "Ringy"
+temp_Alien.planet   = "Mars"
+
+' -- Pass data to next box
+tbgl_EntitySetUserData(%SCENE1, %eAlienLast, temp_Alien)
+
+' -- Something to write text
+tbgl_BuildFont tbgl_FontHandle("Arial", 10)
+
+' -- Resets status of all keys 
+TBGL_ResetKeyState()
+
+' -- Main loop
+While TBGL_IsWindow(hWnd) 
+
+  TBGL_ClearFrame 
+
+    TBGL_SceneRender(%SCENE1)
+    Display_Info()
+    
+  TBGL_DrawFrame 
+
+  ' -- ESCAPE key to exit application
+  If TBGL_GetWindowKeyState(hWnd, %VK_ESCAPE) Then Exit While 
+
+Wend 
+
+TBGL_DestroyWindow
+' -- fonts are deallocated automatically
+' -- END OF PROGRAM --
+
+
+sub CreateSceneAndEntities()
+
+  ' -- Load models
+  tbgl_m15InitModelBuffers 1, 2500
+  tbgl_m15LoadModel APP_SOURCEPATH+"Models\alien1.m15", "Textures\", 1, 1, %TBGL_NORMAL_SMOOTH 
+  tbgl_m15ClearModel 1
+  tbgl_m15LoadModel APP_SOURCEPATH+"Models\alien2.m15", "Textures\", 1, 2, %TBGL_NORMAL_SMOOTH 
+  tbgl_m15ClearModel 1  
+  tbgl_m15LoadModel APP_SOURCEPATH+"Models\alien3.m15", "Textures\", 1, 3, %TBGL_NORMAL_SMOOTH
+ 
+  
+  ' -- Create scene
+  %SCENE1 = 1
+  TBGL_SceneCreate(%SCENE1)
+
+  ' -- Create basic entities
+  %eCamera = 1
+  %eLight  = 10
+  %eAlienFirst      = 20
+  %eAlienInBetween  = 21
+  %eAlienLast       = 22
+
+  ' -- Create camera to look from 15, 15, 15 to 0, 0, 0 
+  TBGL_EntityCreateCamera(%SCENE1, %eCamera)
+    TBGL_EntitySetPos(%SCENE1, %eCamera, 15, 0, 15)
+    TBGL_EntitySetTargetPos(%SCENE1, %eCamera, 0, 0, 0)  
+    
+  ' -- Create point light  
+  TBGL_EntityCreateLight(%SCENE1, %eLight)
+    TBGL_EntitySetPos(%SCENE1, %eLight, 15, 10, 5)
+
+
+  ' -- Create something to look at
+  TBGL_EntityCreateDLSlot(%SCENE1, %eAlienFirst, 0, 1)
+    TBGL_EntitySetPos(%SCENE1, %eAlienFirst,-5, -7, 0)
+
+  TBGL_EntityCreateDLSlot(%SCENE1, %eAlienInBetween, 0, 2)
+    TBGL_EntitySetPos(%SCENE1, %eAlienInBetween,-5, 0, 0)
+      
+  TBGL_EntityCreateDLSlot(%SCENE1, %eAlienLast, 0, 3)
+    TBGL_EntitySetPos(%SCENE1, %eAlienLast,-5, 7, 0)
+    
+end sub
+
+Sub Display_Info()
+
+  local i as long
+  local x, y, z as double  
+  
+  ' -- Create variable to retrieve info
+  local overlay_Alien as tAlien PTR  
+  ' .. could be done as following too:
+  ' .. local overlay_Alien as tAlien at varptr(temp_Alien)
+  
+  tbgl_UseLighting 0
+  for i = %eAlienFirst to %eAlienLast
+    tbgl_EntityGetPos(%SCENE1, i, x, y, z)
+    tbgl_EntitysetRot(%SCENE1, i, 0, GetTickCount/100+i, 0)
+    ' -- Retrieve data
+    overlay_Alien = tbgl_EntityGetUserDataPointer(%SCENE1, i)    
+    ' .. could be done as following too:
+    ' SetAt(overlay_Alien, tbgl_EntityGetUserDataPointer(%SCENE1, i))
+    
+    tbgl_PrintFont "Weight:"+STR$(overlay_Alien.weight)+", species: "+overlay_Alien.species+" from planet "+overlay_Alien.planet, x-1, y-3, z
+  next  
+
+end sub
+ 
+  

@@ -1,0 +1,533 @@
+  #minversion 1.6.0.11
+  
+  uses "UI"
+  
+  DIM hDlg AS DWORD
+  dim Msg, wparam,lparam as dword
+
+  TYPE MEMORYSTATUS
+    dwLength        AS DWORD
+    dwMemoryLoad    AS DWORD
+    dwTotalPhys     AS DWORD
+    dwAvailPhys     AS DWORD
+    dwTotalPageFile AS DWORD
+    dwAvailPageFile AS DWORD
+    dwTotalVirtual  AS DWORD
+    dwAvailVirtual  AS DWORD
+  END TYPE
+
+  TYPE LARGE_INTEGER
+    dwLow           AS LONG
+    dwHigh          AS LONG
+  END TYPE
+
+  TYPE SYSTEM_BASIC_INFORMATION
+    dwUnknown1                AS LONG
+    uKeMaximumIncrement       AS LONG
+    uPageSize                 AS LONG
+    uMmNumberOfPhysicalPages  AS LONG
+    uMmLowestPhysicalPage     AS LONG
+    uMmHighestPhysicalPage    AS LONG
+    uAllocationGranularity    AS LONG
+    pLowestUserAddress        AS LONG
+    pMmHighestUserAddress     AS LONG
+    uKeActiveProcessors       AS LONG
+    bKeNumberProcessors       AS BYTE
+    bUnknown2                 AS BYTE
+    wUnknown3                 AS INTEGER
+  END TYPE
+  
+  TYPE SYSTEM_PERFORMANCE_INFORMATION
+    liIdleTime                AS quad 'LARGE_INTEGER
+    dwSpare(76)               AS LONG
+  END TYPE
+  
+  TYPE SYSTEM_TIME_INFORMATION
+    liKeBootTime              AS quad 'LARGE_INTEGER
+    liKeSystemTime            AS quad 'LARGE_INTEGER
+    liExpTimeZoneBias         AS quad 'LARGE_INTEGER
+    uCurrentTimeZoneId        AS LONG
+    dwReserved                AS LONG
+  END TYPE
+
+%SYSTEM_BASICINFORMATION = 0
+%SYSTEM_PERFORMANCEINFORMATION = 2
+%SYSTEM_TIMEINFORMATION = 3
+
+
+  ' Text Alignment Options
+  %TA_NOUPDATECP = 0
+  %TA_UPDATECP   = 1
+
+  %TA_LEFT       = 0
+  %TA_RIGHT      = 2
+  %TA_CENTER     = 6
+
+  %TA_TOP        = 0
+  %TA_BOTTOM     = 8
+  %TA_BASELINE   = 24
+  %TA_RTLREADING = 256
+  %TA_MASK       = %TA_BASELINE + %TA_CENTER + %TA_UPDATECP + %TA_RTLREADING
+
+
+  'DECLARE function GlobalMemoryStatus       LIB "KERNEL32.DLL"  ALIAS "GlobalMemoryStatus"        (lpBuffer AS MEMORYSTATUS) as long
+  DECLARE FUNCTION NtQuerySystemInformation LIB "ntdll.dll"     ALIAS "NtQuerySystemInformation"  (BYVAL unFlag1 AS DWORD, lpvBuffer AS SYSTEM_BASIC_INFORMATION, BYVAL dwBufferSize AS DWORD, BYVAL unFlag2 AS DWORD) AS DWORD
+  Declare Function ValidateRect             Lib "USER32.DLL"    Alias "ValidateRect"              (ByVal hWnd As DWord, lpRect As RECT) As Long
+  DECLARE FUNCTION PatBlt                   LIB "GDI32.DLL"     ALIAS "PatBlt"                    (BYVAL hdc AS DWORD, BYVAL x AS LONG, BYVAL y AS LONG, BYVAL nWidth AS LONG, BYVAL nHeight AS LONG, BYVAL dwRop AS DWORD) AS LONG
+  Declare Function BitBlt                   Lib "GDI32.DLL"     Alias "BitBlt"                    (ByVal hDestDC As DWord, ByVal x As Long, ByVal y As Long, ByVal nWidth As Long, ByVal nHeight As Long, ByVal hSrcDC As DWord, ByVal xSrc As Long, ByVal ySrc As Long, ByVal dwRop As DWord) As Long
+  Declare Function CreatePen                Lib "GDI32.DLL"     Alias "CreatePen"                 (ByVal nPenStyle As Long, ByVal nWidth As Long, ByVal crColor As DWord) As DWord
+  Declare Function MoveToEx                 Lib "GDI32.DLL"     Alias "MoveToEx"                  (ByVal hdc As DWord, ByVal x As Long, ByVal y As Long, lpPoint As POINTAPI) As Long
+  Declare Function LineTo                   Lib "GDI32.DLL"     Alias "LineTo"                    (ByVal hdc As DWord, ByVal x As Long, ByVal y As Long) As Long
+  DECLARE FUNCTION SetTextColor             LIB "GDI32.DLL"     ALIAS "SetTextColor"              (BYVAL hdc AS DWORD, BYVAL crColor AS DWORD) AS DWORD
+  DECLARE FUNCTION SetTextAlign             LIB "GDI32.DLL"     ALIAS "SetTextAlign"              (BYVAL hdc AS DWORD, BYVAL dwFlags AS DWORD) AS DWORD
+  DECLARE FUNCTION TextOut                  LIB "GDI32.DLL"     ALIAS "TextOutA"                  (BYVAL hdc AS DWORD, BYVAL x AS LONG, BYVAL y AS LONG, lpString AS ASCIIZ, BYVAL nCount AS LONG) AS LONG
+  Declare Function KillTimer                Lib "USER32.DLL"    Alias "KillTimer"                 (ByVal hWnd As DWord, ByVal nIDEvent As Long) As Long
+  DECLARE FUNCTION SetTimer                 LIB "USER32.DLL"    ALIAS "SetTimer"                  (BYVAL hWnd AS DWORD, BYVAL nIDEvent AS LONG, BYVAL uElapse AS DWORD, BYVAL lpTimerFunc AS LONG) AS LONG
+
+
+  global lpBuffer AS MEMORYSTATUS
+
+
+'  %ID_TIMER   = 1000
+    
+'  %PROG_BAR_1 = 1001
+'  %PROG_BAR_2 = 1002
+'  %PROG_BAR_3 = 1003
+
+  %IDD_Main         = 101
+  %IDC_lblUsage     = 103
+  %IDC_lblHistory   = 104
+  %IDC_FRAME1       = 105
+  %IDC_FRAME2       = 106
+
+  %Timer            = 1000
+
+  %MaxPoints        = 241
+
+'  global hProgress1 as dword
+'  global hProgress2 as dword
+'  global hProgress3 as dword
+
+  GLOBAL MemUsageDC   AS dword
+  GLOBAL hUsage       AS dword
+  GLOBAL MemHistoryDC AS dword
+  GLOBAL hHistory     AS dword
+  GLOBAL lPoints()    AS dword
+  redim lPoints(%MaxPoints)
+
+  GLOBAL hUsageBit    AS DWORD
+  GLOBAL ctlUWidth    AS dword
+  GLOBAL ctlUHeight   AS dword
+  GLOBAL hHistoryBit  AS DWORD
+  GLOBAL ctlHWidth    AS dword
+  GLOBAL ctlHHeight   AS dword
+
+  GLOBAL ps               AS paintstruct
+
+  GLOBAL liOldIdleTime    AS  quad
+  GLOBAL liOldSystemTime  AS  quad
+
+  global lRet             AS LONG
+
+  global wx, hy           AS LONG
+
+
+  DESKTOP GET CLIENT TO wx, hy
+ 
+  DIALOG NEW 0, "CPU Usage", -1, -1, 240, 60, _
+                                                %WS_CLIPSIBLINGS      |   _
+                                                %WS_CLIPCHILDREN      |   _
+                                                %WS_DLGFRAME          |   _
+                                                %WS_CAPTION           |   _
+                                                %WS_SYSMENU           |   _
+                                                %WS_OVERLAPPEDWINDOW  ,   _
+                                                %WS_EX_PALETTEWINDOW  |   _
+                                                %WS_EX_TOPMOST            _
+                                                TO hDlg
+
+  CONTROL ADD label, hDlg, %IDC_FRAME1      , "CPU Usage"         ,  3,  1,  60, 10
+  CONTROL ADD LABEL, hDlg, %IDC_lblUsage    , ""                  ,  3, 12,  48, 45
+  CONTROL ADD label, hDlg, %IDC_FRAME2      , "CPU Usage History" , 57,  1, 180, 10
+  CONTROL ADD LABEL, hDlg, %IDC_lblHistory  , ""                  , 57, 12, 180, 45
+
+  DIALOG SHOW modal hDlg, call "cbDialog_Proc"
+
+
+  callback function cbDialog_Proc() as long
+  
+    select case cbmsg
+      case %WM_INITDIALOG
+        
+        dialog set minsize cbhndl, 240, 70
+        'dialog set gradient cbhndl, %GRADIENT_FILL_RECT_V, rgb(200, 222, 222), rgb(0, 0, 0)
+        CONTROL set resize cbhndl, %IDC_lblUsage    , 1, 0, 1, 1
+        CONTROL set resize cbhndl, %IDC_lblHistory  , 1, 1, 1, 1
+        CONTROL set resize cbhndl, %IDC_FRAME1      , 1, 0, 1, 0
+        CONTROL set resize cbhndl, %IDC_FRAME2      , 1, 0, 1, 0
+        fn_InitDialog(cbhndl, %TRUE)
+        'dialog redraw cbhndl
+        lRet = Query()
+        DrawCpuUsage   (cbhndl, lRet)
+        DrawCpuHistory (cbhndl, lRet)
+        
+      'CASE %WM_CTLCOLORSTATIC
+      '  win_SetBKMode CBWPARAM, %TRANSPARENT
+      '  FUNCTION = win_GetStockObject(%NULL_BRUSH)
+      '  EXIT FUNCTION
+        
+      CASE %WM_TIMER
+        ValidateRect(CbHndl, 0)        
+        lRet = Query()
+        DrawCpuUsage   (cbhndl, lRet)
+        DrawCpuHistory (cbhndl, lRet)
+        
+      CASE %WM_PAINT
+        'ValidateRect(CbHndl, 0)        
+'        fn_InitDialog(cbhndl)
+'        lRet = Query()
+'        DrawCpuUsage   (cbhndl, lRet)
+'        DrawCpuHistory (cbhndl, lRet)
+
+        Win_BeginPaint hUsage, ps
+          bitblt ps.hdc, 0, 0, ctlUWidth, ctlUHeight, MemUsageDC, 0, 0, %SRCCOPY
+        Win_EndPaint  hUsage, ps
+        Win_BeginPaint hHistory, ps
+          bitblt ps.hdc, 0, 0, ctlHWidth, ctlHHeight, MemHistoryDC, 0, 0, %SRCCOPY
+        Win_EndPaint  hHistory, ps
+        
+      CASE %WM_SIZE
+        'ValidateRect(CbHndl, 0)        
+        fn_InitDialog(cbhndl)
+        lRet = Query()
+        DrawCpuUsage   (cbhndl, lRet)
+        DrawCpuHistory (cbhndl, lRet, %TRUE)
+      
+      CASE %WM_SYSCOMMAND
+
+        SELECT CASE wParam
+            
+          CASE %SC_CLOSE
+            fn_DestroyDialog(cbhndl)
+            EXIT WHILE
+
+        END SELECT
+        
+    END SELECT    
+
+  end function
+  
+
+  function fn_InitDialog(lDlg as long, optional ResetTimer as long)
+    dim TmpDC     AS DWORD
+    dim hBrush    AS DWORD
+
+    'msgbox 0, "0"
+    REDIM preserve lPoints(%MaxPoints)
+    'msgbox 0, "1"
+    
+    CONTROL HANDLE    lDlg, %IDC_lblUsage  TO hUsage
+    CONTROL GET SIZE  lDlg, %IDC_lblUsage  TO ctlUWidth, ctlUHeight
+    DIALOG UNITS      lDlg, ctlUWidth, ctlUHeight TO PIXELS ctlUWidth, ctlUHeight
+
+    '---Usage mem DC
+    'if hUsage = 0 then msgbox
+    TmpDC = win_GetDc(hUsage)
+    MemUsageDC = Win_CreateCompatibleDC(TmpDC)
+    hUsageBit = Win_CreateCompatibleBitmap(TmpDC, ctlUWidth, ctlUHeight)
+    Win_SelectObject MemUsageDC,hUsageBit
+    hBrush = Win_GetStockObject(%BLACK_BRUSH)
+    Win_SelectObject MemUsageDC, hBrush
+    PatBlt MemUsageDC, 0, 0, ctlUWidth, ctlUHeight, %PATCOPY
+    bitblt TmpDC, 0, 0, ctlUWidth, ctlUHeight, MemUsageDC, 0, 0, %SRCCOPY
+
+    Win_ReleaseDC hUsage, TmpDC
+
+    '---History mem DC
+    CONTROL HANDLE    lDlg, %IDC_lblHistory  TO hHistory
+    CONTROL GET SIZE  lDlg, %IDC_lblHistory  TO ctlHWidth, ctlHHeight
+    DIALOG UNITS      lDlg, ctlHWidth,ctlHHeight TO PIXELS ctlHWidth, ctlHHeight
+
+    TmpDC = Win_GetDC(hHistory)
+    MemHistoryDC = Win_CreateCompatibleDC(TmpDC)
+    hHistoryBit = Win_CreateCompatibleBitmap(TmpDC, ctlHWidth, ctlHHeight)
+    Win_SelectObject MemHistoryDC,hHistoryBit
+    Win_SelectObject MemHistoryDC, hBrush
+    PatBlt MemHistoryDC, 0,0,ctlHWidth, ctlHHeight, %PATCOPY
+    bitblt TmpDC, 0,0,ctlHWidth,ctlHHeight, MemHistoryDC, 0,0,%SRCCOPY
+
+    Object_Delete( hBrush)
+    Win_ReleaseDC hHistory, TmpDC
+    Init
+    if ResetTimer = %true then
+      SetTimer  lDlg, %Timer , 1000, 0
+    end if
+    
+  end function
+
+  function fn_DestroyDialog(lDlg as long)
+    killtimer lDlg , %Timer
+    Win_DeleteDC MemUsageDC
+    DeleteDC MemHistoryDC
+    Object_Delete( hUsageBit)
+    Object_Delete( hHistoryBit)
+
+  end function
+
+  function Init()
+    LOCAL SysTimeInfo AS SYSTEM_TIME_INFORMATION
+    LOCAL SysPerfInfo AS SYSTEM_PERFORMANCE_INFORMATION
+    LOCAL Ret AS LONG
+    
+    '---Get new system time
+    Ret = NtQuerySystemInformation(%SYSTEM_TIMEINFORMATION, SysTimeInfo, SizeOf(SysTimeInfo), 0&)
+    IF Ret <> 0 THEN
+      MSGBOX 0, "Error while initializing the system's time! " & Ret, %MB_OK, "Init"
+      EXIT function
+    END IF
+
+    Ret = NtQuerySystemInformation(%SYSTEM_PERFORMANCEINFORMATION, SysPerfInfo, SizeOf(SysPerfInfo), 0)
+    If Ret <> 0 Then
+      MsgBox 0, "Error while initializing the CPU's idle time! " & Ret, %MB_OK, "Init"       
+      Exit Function
+    End If
+
+
+    liOldSystemTime = SysTimeInfo.liKeSystemTime
+    liOldIdleTime = SysPerfInfo.liIdleTime
+
+  END function
+
+  FUNCTION Li2Double(byval x AS quad) AS DOUBLE
+    FUNCTION = x 'high x.dwHigh * 4.294967296E9 + x.dwLow
+  END FUNCTION
+
+  FUNCTION Query() AS LONG
+    LOCAL SysBaseInfo   AS SYSTEM_BASIC_INFORMATION
+    LOCAL SysPerfInfo   AS SYSTEM_PERFORMANCE_INFORMATION
+    LOCAL SysTimeInfo   AS SYSTEM_TIME_INFORMATION
+    LOCAL dbIdleTime    AS DOUBLE
+    LOCAL dbSystemTime  AS DOUBLE
+    LOCAL Ret           AS LONG
+
+    FUNCTION = -1
+    Ret = NtQuerySystemInformation(%SYSTEM_BASICINFORMATION, SysBaseInfo, SizeOf(SysBaseInfo), 0)
+    IF Ret <> 0 THEN
+        MSGBOX 0, "Error while retrieving the number of processors!", %MB_OK, "Query"
+        EXIT FUNCTION
+    END IF
+    'msgbox 0,   SysBaseInfo.uKeActiveProcessors & $crlf & _
+    '            SysBaseInfo.bKeNumberProcessors
+
+   'get new system time
+    Ret = NtQuerySystemInformation(%SYSTEM_TIMEINFORMATION, SysTimeInfo, SizeOf(SysTimeInfo), 0)
+    IF Ret <> 0 THEN
+        MSGBOX 0, "Error while initializing the system's time!", %MB_OK, "Query"
+        EXIT FUNCTION
+    END IF
+    Ret = NtQuerySystemInformation(%SYSTEM_PERFORMANCEINFORMATION, SysPerfInfo, SizeOf(SysPerfInfo),  0)
+     If Ret <> 0 Then
+        MsgBox 0, "Error while initializing the CPU's idle time!", %MB_OK, "Query"
+        Exit Function
+    END IF
+
+    dbIdleTime  =  Li2Double(SysPerfInfo.liIdleTime) - Li2Double(liOldIdleTime)
+    dbSystemTime = Li2Double(SysTimeInfo.liKeSystemTime) - Li2Double(liOldSystemTime)
+    IF dbSystemTime <> 0 THEN dbIdleTime = dbIdleTime / dbSystemTime
+
+    dbIdleTime = 100 - dbIdleTime * 100 / SysBaseInfo.bKeNumberProcessors + 0.5
+    'dbIdleTime = 100 - dbIdleTime * 100  + 0.5
+
+
+    'store new CPU's idle and system time
+    liOldIdleTime = SysPerfInfo.liIdleTime
+    liOldSystemTime = SysTimeInfo.liKeSystemTime
+    FUNCTION = INT(dbIdleTime)
+
+  END FUNCTION
+  
+  FUNCTION DrawCpuUsage(byval hWnd AS dword, byval lUsage AS LONG) AS LONG
+    LOCAL hPenRed           AS dword
+    LOCAL hPenYeallow       AS dword
+    LOCAL hPenGreeLight     AS dword
+    LOCAL hPenGreeDark     AS dword
+    LOCAL hBrush    AS dword
+    LOCAL lLoop     AS LONG
+    LOCAL hDC       AS dword
+    LOCAL ctlWidth  AS dword, ctlHeight AS dword
+    LOCAL szStr     AS ASCIIZ * 10
+    local HowManyLines    as long
+    local LineDistance    as long = 3
+    local BorderDistance  as long = 5
+    local PropUsage       as long
+'    local Scale           as long
+    local x1, y1, x2, y2  as long
+    
+    If lUsage > 100 Or lUsage < 0 THEN
+      Exit Function
+    End If
+    
+    CONTROL GET SIZE  hWnd, %IDC_lblUsage  TO ctlWidth, ctlHeight
+    DIALOG UNITS      hWnd, ctlWidth, ctlHeight TO PIXELS ctlWidth, ctlHeight
+
+    hBrush = Win_GetStockObject(%BLACK_BRUSH)
+    Win_SelectObject MemUsageDC, hBrush
+    patblt MemUsageDC, 0, 0, ctlWidth, ctlHeight, %BLACKNESS
+    hDC = Win_GetDC(hUsage)
+    hPenRed       = CreatePen(%PS_Solid, 1, RGB(255,   0,   0))
+    hPenYeallow   = CreatePen(%PS_Solid, 1, RGB(255, 255, 100))
+    hPenGreeLight = CreatePen(%PS_Solid, 1, RGB(150, 255, 100))
+    hPenGreeDark  = CreatePen(%PS_Solid, 1, RGB( 50, 150,  50))
+
+    
+    HowManyLines = ctlHeight  - _
+                          30  - _ '--Used for text
+                           BorderDistance      '--Used for top border
+    HowManyLines /= LineDistance
+    PropUsage = round((HowManyLines * lUsage / 100), 0) + 1
+
+'    scale = round((HowManyLines * 33)/100, 0)
+    
+'    '---Draw scaled grid
+'    FOR lLoop = 1 to HowManyLines
+'      x1 = BorderDistance
+'      y1 = BorderDistance + ((HowManyLines - lLoop) * LineDistance)
+'      x2 = ctlWidth - BorderDistance
+'      y2 = BorderDistance + ((HowManyLines - lLoop) * LineDistance)
+
+'      win_selectObject(MemUsageDC, hPenGreeDark)
+'      moveToEx MemUsageDC, x1, y1, 0  : LineTo MemUsageDC, x2, y2
+
+'      if between(PropUsage, 0, scale) then
+'        win_selectObject(MemUsageDC, hPenGreeLight)
+'        moveToEx MemUsageDC, x1, y1, 0  : LineTo MemUsageDC, x2, y2
+'      elseif between(lUsage, scale + 1, scale * 2) then
+'        win_selectObject(MemUsageDC, hPenYeallow)
+'        moveToEx MemUsageDC, x1, y1, 0  : LineTo MemUsageDC, x2, y2
+'      elseif between(lUsage, scale*2 + 1, 100) then
+'        win_selectObject(MemUsageDC, hPenRed)
+'        moveToEx MemUsageDC, x1, y1, 0  : LineTo MemUsageDC, x2, y2
+'      end if
+'    NEXT
+
+    FOR lLoop = 1 to HowManyLines
+      if PropUsage > lLoop then
+        Win_SelectObject(MemUsageDC, hPenGreeLight)
+      ELSE
+        Win_SelectObject(MemUsageDC, hPenGreeDark)
+      END IF
+
+      x1 = BorderDistance
+      y1 = BorderDistance + ((HowManyLines - lLoop) * LineDistance)
+      x2 = ctlWidth - BorderDistance
+      y2 = BorderDistance + ((HowManyLines - lLoop) * LineDistance)
+      
+      moveToEx MemUsageDC, x1, y1, 0    : LineTo MemUsageDC, x2, y2
+
+    NEXT
+
+    szStr = TRIM$(STR$(lUsage)) & "%"
+    win_SetBkMode MemUsageDC, %TRANSPARENT
+    SetTextColor MemUsageDC, %GREEN
+    SetTextAlign MemUsageDC, %TA_CENTER
+    textout MemUsageDC, 35, ctlHeight - 20, szStr, LEN(szStr)
+
+    BitBlt hDC, 0, 0, ctlWidth, ctlHeight, MemUsageDC, 0, 0, %SRCCOPY
+
+    Win_ReleaseDC  hUsage, hDC
+    Object_Delete( hPenRed )
+    Object_Delete( hPenYeallow )
+    Object_Delete( hPenGreeLight )
+    Object_Delete( hPenGreeDark )
+    Object_Delete( hBrush )
+
+    FUNCTION = 1
+
+  END FUNCTION
+
+  FUNCTION DrawCpuHistory(byval hWnd AS dword, byval lUsage AS LONG, optional byval OnlyRedraw as long) AS LONG
+    LOCAL hPenLight   AS dword
+    LOCAL hPenDark    AS dword
+    LOCAL hBrush      AS dword
+    LOCAL hDC         AS dword
+    LOCAL lLoop       AS dword
+    LOCAL ctlWidth    AS dword, ctlHeight AS dword
+    LOCAL szStr       AS ASCIIZ * 10
+    global lYLine     AS dword
+    local yPos        as long
+    local iDiv        as long
+    
+    If Outside(lUsage, 0, 100) THEN
+      Exit Function
+    End If
+
+    if OnlyRedraw = %FALSE then
+      array shift lPoints for -1
+      'FOR lLoop = 1 TO %MaxPoints - 1
+      '  lPoints(lLoop) = lPoints(lLoop + 1)
+      'NEXT
+    end if
+    lPoints(%MaxPoints) = lUsage
+
+    CONTROL GET SIZE  hWnd, %IDC_lblHistory  TO ctlWidth, ctlHeight
+    DIALOG UNITS      hWnd, ctlWidth, ctlHeight TO PIXELS ctlWidth, ctlHeight
+    
+    hBrush = Win_GetStockObject(%BLACK_BRUSH)
+    Win_SelectObject MemHistoryDC, hBrush
+    PatBlt MemHistoryDC, 0, 0,ctlWidth, ctlHeight, %BLACKNESS
+    hDC = Win_GetDC(hHistory)
+
+    hPenDark  = CreatePen(%PS_Solid, 0, RGB( 50, 150,  50))
+    '---Change color depending on CPU current load
+    if lUsage >= 70 then
+      hPenLight = CreatePen(%PS_Solid, 0, RGB(255, 0, 0))
+    elseif lUsage >= 50 then
+      hPenLight = CreatePen(%PS_Solid, 0, RGB(255, 255, 100))
+    else
+      hPenLight = CreatePen(%PS_Solid, 0, RGB(150, 255, 100))
+    end if      
+
+    '---Draw horizontal lines
+    Win_SelectObject(MemHistoryDC, hPenDark)
+    iDiv = 10
+    FOR lLoop = 0 TO ctlHeight / iDiv
+      moveToEx MemHistoryDC,   0, iDiv + (lLoop * iDiv ),  0
+      LineTo   MemHistoryDC, ctlWidth, iDiv + (lLoop * iDiv )
+    NEXT
+
+    IF lYLine = 0 THEN
+      lYLine = 9
+    ELSE
+      lYLine = lYLine - 1
+    END IF
+
+    '---Draw vertical lines
+    iDiv = 10
+    FOR lLoop = 0 TO ctlWidth STEP iDiv
+      moveToEx MemHistoryDC, lLoop + lYLine, ctlHeight,  0
+      LineTo   MemHistoryDC, lLoop + lYLine,  0
+    NEXT
+
+
+    Win_SelectObject(MemHistoryDC, hPenLight)
+    FOR lLoop = 1 TO %MaxPoints - 1
+      
+      yPos = ctlHeight-1 - (ctlHeight-1)*lPoints(lLoop) / 100
+      moveToEx MemHistoryDC, lLoop * ctlWidth/%MaxPoints    , yPos    ,  0
+
+      yPos = ctlHeight-1 - (ctlHeight-1)*lPoints(lLoop+1) / 100
+      LineTo   MemHistoryDC, (lLoop + 1) * ctlWidth/%MaxPoints, yPos
+
+    NEXT
+
+    BitBlt hDC, 0, 0, ctlWidth, ctlHeight, MemHistoryDC, 0, 0, %SRCCOPY
+
+    Win_ReleaseDC  hHistory, hDC
+    
+    Object_Delete(hPenLight)
+    Object_Delete(hPenDark)
+    Object_Delete(hBrush)
+
+    Function = 1
+    
+  END FUNCTION
+

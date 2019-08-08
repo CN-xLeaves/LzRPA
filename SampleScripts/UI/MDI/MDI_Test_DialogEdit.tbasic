@@ -1,0 +1,558 @@
+Uses "UI" 
+Uses "Console"
+
+
+#MINVERSION    1.7.0.0
+
+#SCRIPTVERSION 1.0.0.2
+
+#include "MDI_Test_DialogEdit.inc"
+'----------------------------------------------------------------
+'
+'----------------------------------------------------------------
+Begin ControlID
+  %MDIMenu_MDI
+  %MDIMenu_File_NewForm
+  %MDIMenu_File_Exit
+
+  %MDIMenu_View_Properties
+  %MDIMenu_View_Controls
+
+  %MDIMenu_Window_Cascade
+  %MDIMenu_Window_TileHor
+  %MDIMenu_Window_TileVer
+  %MDIMenu_Window_IconArrange
+  %MDIMenu_Window_ActivateNext
+  
+  %MDIMenu_Help_Help
+  %MDIMenu_Help_About
+  
+End ControlID
+
+Global hMDIFrame              As Long    ' Main MDI Dialog handle
+
+Global hMDIFrame_Menu         As Long
+Global hMDIFrame_Menu_File    As Long
+Global hMDIFrame_Menu_View    As Long
+Global hMDIFrame_Menu_Window  As Long
+Global hMDIFrame_Menu_Help    As Long
+
+global MDI_ClientHandle       as long
+global MDI_Controls           as long
+
+
+global Style   as long
+global ExStyle as long
+
+
+'--------------------------------------------------------------------
+%IDC_CHK1 = 121
+%IDC_CHK2 = 122
+'--------------------------------------------------------------------
+
+type tGridInfo
+  cGridX        As Long
+  cGridY        As Long
+  ShowGrid      As Long
+  SnapToGrid    As Long
+  GridColor     as long
+  GridBrush     As DWord
+end type
+
+type tDLGInfo
+  hDlg          As DWord
+  lGrid         as tGridInfo
+  ghBit         As DWord
+  gMemDC        As DWord
+  gPt           As POINTAPI
+  gRc           As RECT
+  hCur_Cross    As DWord
+end type
+
+
+'----------------------------------------------------------------
+'               Main Dialog (called a MDI Frame)
+'----------------------------------------------------------------
+Sub Main() as long
+  randomize
+  
+    Style = _
+            %WS_DLGFRAME          | _
+            %WS_CAPTION           | _
+            %WS_SYSMENU           | _
+            %WS_OVERLAPPEDWINDOW  | _
+            %WS_CLIPCHILDREN      | _
+            %WS_CLIPSIBLINGS      | _
+            %DS_CENTER
+    ExStyle = 0
+
+    Dialog New pixels, 0, "MDI and a dialog editor test", 0, 0,  640,  480, Style, ExStyle To hMDIFrame
+    
+    Menu New Bar To hMDIFrame_Menu
+      Menu New PopUp To hMDIFrame_Menu_File
+      Menu Add PopUp, hMDIFrame_Menu ,"&File", hMDIFrame_Menu_File, %MF_ENABLED
+        Menu Add String, hMDIFrame_Menu_File  , "&New form"       , %MDIMenu_File_NewForm             , %MF_ENABLED
+        Menu Add String, hMDIFrame_Menu_File  , "-"               , %NULL                         , %MF_ENABLED
+        Menu Add String, hMDIFrame_Menu_File  , "E&xit"           , %MDIMenu_File_Exit                , %MF_ENABLED
+
+      Menu New PopUp To hMDIFrame_Menu_View
+      Menu Add PopUp, hMDIFrame_Menu ,"&View", hMDIFrame_Menu_View, %MF_ENABLED
+        Menu Add String, hMDIFrame_Menu_View  , "Properties"      , %MDIMenu_View_Properties     , %MF_ENABLED
+        Menu Add String, hMDIFrame_Menu_View  , "Controls"        , %MDIMenu_View_Controls       , %MF_ENABLED
+
+
+      Menu New PopUp To hMDIFrame_Menu_Window
+      Menu Add PopUp, hMDIFrame_Menu ,"&Window", hMDIFrame_Menu_Window, %MF_ENABLED
+        Menu Add String, hMDIFrame_Menu_Window, "Cascade"         , %MDIMenu_Window_Cascade      , %MF_ENABLED
+        Menu Add String, hMDIFrame_Menu_Window, "Tile Horizontal" , %MDIMenu_Window_TileHor      , %MF_ENABLED
+        Menu Add String, hMDIFrame_Menu_Window, "Tile Vertical"   , %MDIMenu_Window_TileVer      , %MF_ENABLED
+        'Menu Add String, hMDIFrame_Menu_Window, "Icon arrange"    , %MDIFrame_Window_IconArrange  , %MF_ENABLED
+        Menu Add String, hMDIFrame_Menu_Window  , "-"             , %NULL                         , %MF_ENABLED
+        Menu Add String, hMDIFrame_Menu_Window, "Activate next"   , %MDIMenu_Window_ActivateNext , %MF_ENABLED
+
+      Menu New PopUp To hMDIFrame_Menu_Help
+      Menu Add PopUp, hMDIFrame_Menu ,"&Help", hMDIFrame_Menu_Help, %MF_ENABLED
+        Menu Add String, hMDIFrame_Menu_Help  , "Help"            , %MDIMenu_Help_Help           , %MF_ENABLED
+        Menu Add String, hMDIFrame_Menu_Help  , "-"               , %NULL                         , %MF_ENABLED
+        Menu Add String, hMDIFrame_Menu_Help  , "About"           , %MDIMenu_Help_About          , %MF_ENABLED
+
+    Menu Attach hMDIFrame_Menu, hMDIFrame
+    
+    '---Must be MODELESS dialog without a message loop
+    '---Message loop will be governed by MDI_MessageLoop function
+    '---To be executed after this line
+    Dialog Show Modeless hMDIFrame , Call MDIFrame_DLGPROC
+
+
+    ' ----------------------
+      MDI_ClientHandle = MDI_CreateClient(hMDIFrame)
+        ' ---------------------- IMPORTANT
+          MDI_SubClassDialog hMDIFrame
+        ' ----------------------
+        
+    ' IMPORTANT: MDI_MessageLoop must be invoked after MDI_CreateClient calling
+      MDI_MessageLoop MDI_ClientHandle
+    '-----------------------
+
+End Sub
+
+'----------------------------------------------------------------
+CallBack Function MDIFrame_DLGPROC() as long
+'----------------------------------------------------------------
+  Static lState As Long
+
+ 
+    Select Case CbMsg
+      Case %WM_INITDIALOG
+        MDI_Controls = MDIFrame_TOOLBAR_CONTROLS cbhndl
+    
+      Case %WM_SIZE
+        'mdi_sizeclient CbHndl, 60, 0, 60, 0
+        'return %TRUE
+        MDI_IconArrange MDI_ClientHandle 
+
+      Case %WM_COMMAND
+        Select Case CbCtl
+          Case %MDIMenu_File_NewForm
+            MDIFrame_MAKECHILD_NewForm(MDI_ClientHandle)
+            
+          Case  %MDIMenu_File_Exit
+            dialog end cbhndl
+
+          case %MDIMenu_Window_Cascade
+            mdi_cascade MDI_ClientHandle
+          case %MDIMenu_Window_TileHor
+            mdi_tile MDI_ClientHandle, %MDITILE_HORIZONTAL
+          case %MDIMenu_Window_TileVer
+            mdi_tile MDI_ClientHandle, %MDITILE_VERTICAL
+          'case %MDIFrame_Window_IconArrange
+          '  mdi_iconarrange MDI_ClientHandle
+          case %MDIMenu_Window_ActivateNext
+            mdi_NEXT MDI_ClientHandle, %NULL, %NULL
+          
+          case %MDIMenu_View_Controls
+            dialog show state MDI_Controls, %SW_SHOWNORMAL to lState
+            if lState then
+              dialog show state MDI_Controls, %SW_HIDE
+            end if
+            win_setforeground cbhndl
+
+        End Select
+
+      Case %WM_DESTROY
+        '--------------------
+        ' Important otherwise process remain active
+        '--------------------
+        '[breakpoint] <Any note here. Breakpoint will be set to line following this statement>
+        Local lMDIClient As DWord
+        While Assign(Mdi_GetActive(MDI_ClientHandle), lMDIClient)
+          PrintL "Closing " & lMDIClient
+          Dialog End lMDIClient
+          Sleep 1000
+        Wend
+        MDI_PostQuitMessage
+          
+      Case Else
+    End Select
+End Function
+
+'----------------------------------------------------------------
+'               MDI Child Dialog
+'----------------------------------------------------------------
+function MDIFrame_TOOLBAR_CONTROLS(ByVal hParent as long) as long
+  local hChild  as long
+  
+    Style   = %WS_SYSMENU
+    ExStyle = %WS_EX_TOOLWINDOW OR %WS_EX_WINDOWEDGE
+
+    Dialog New pixels, hParent, "Controls...", -120, -20, 100, 300, Style, ExStyle To hChild
+    Dialog Show modeless hChild ', Call ...
+    win_setforeground hParent
+    
+  function = hChild
+end function
+
+'----------------------------------------------------------------
+'               MDI Child Dialog
+'----------------------------------------------------------------
+function MDIFrame_MAKECHILD_NewForm(ByVal hParent as long) as long
+  Local hChild    As DWord
+  local pDlgInfo  as tDlgInfo ptr
+  local pVar      as long
+
+  static LastX   as long
+  static LastY   as long
+
+    Style = _
+            %WS_CHILD | _
+            %WS_OVERLAPPEDWINDOW | _
+            %WS_CLIPCHILDREN | _
+            %WS_CLIPSIBLINGS
+
+    ExStyle = %WS_EX_MDICHILD | %WS_EX_CONTROLPARENT
+
+    LastX += 10
+    If LastX > 300 then LastX = 10
+    LastY += 10
+    If LastY > 300 then LastY = 10
+
+
+    pVar = heap_alloc(sizeof(tDLGInfo))
+    Dialog New Pixels, hParent, "DrawRect and grid sample", LastX, LastY, 400, 300, Style, ExStyle To hChild
+    pDlgInfo = pVar
+    pDlgInfo.hDlg = hChild
+    
+    dialog set user hChild, 1, pVar
+    
+    Control Add Checkbox, hChild, %IDC_CHK1, "&Snap to grid ", 300, 220, 80, 12
+    Control Add Checkbox, hChild, %IDC_CHK2, "&Show grid ",    300, 236, 80, 12
+    Control Set Check     hChild, %IDC_CHK1, 1
+    Control Set Check     hChild, %IDC_CHK2, 2
+   
+    Control Add Button,   hChild, %IDCANCEL, "&Quit",          300, 260, 80, 20
+   
+    control set resize hChild, %IDC_CHK1, 0, 1, 0, 1
+    control set resize hChild, %IDC_CHK2, 0, 1, 0, 1
+    control set resize hChild, %IDCANCEL, 0, 1, 0, 1
+    
+    Dialog Show Modeless hChild, Call MDIChild_DLGPROC
+        MDI_SubClassDialog hChild
+
+    MDI_SendMessage %WM_MDIACTIVATE, hChild, 0
+
+end function
+
+ 
+'----------------------------------------------------------------
+'
+'----------------------------------------------------------------
+CallBack Function MDIChild_DLGPROC() As Long
+  Local lRes      As Long
+  local lGridSize as long
+
+  local pDlgInfo  as tDlgInfo ptr
+  '---We always need get our window structure of personalized info
+  pDlgInfo = dialog_GetUser(CbHndl, 1)
+  
+  Select Case CbMsg
+     Case %WM_INITDIALOG
+'        MDI_SubClassDialog CbHndl
+
+        '---Fill the window personalized set of info
+        with pDlgInfo
+          lGridSize    = 10'rnd(2, 15)       '---Every window can have different grid size
+          .lGrid.cGridX       = lGridSize     ' horizontal grid size
+          .lGrid.cGridY       = lGridSize     ' vertical grid size
+
+          .lGrid.ShowGrid     = 1      ' show grid at start 
+          .lGrid.SnapToGrid   = 1      ' snap drawing to grid at start
+
+          .hCur_Cross         = Win_LoadCursor(0, %IDC_CROSS) ' store handle of cursor to use at draw
+          .lGrid.GridBrush    = MakeGridBrush(CbHndl)     ' and create grid brush
+        end with
+
+     Case %WM_CTLCOLORDLG ' paint grid if gShowGrid is on..
+        If pDlgInfo.lGrid.ShowGrid Then
+          PrintL "OK show"
+          If pDlgInfo.lGrid.GridBrush Then
+            PrintL "OK grid"
+            Function = pDlgInfo.lGrid.GridBrush
+          End If
+        End If
+ 
+     Case %WM_SETCURSOR
+        ' If mouse button is pressed, over-ride default cursor and
+        ' set "own", here cross cursor. Note - in dialogs, we must return
+        ' %TRUE to inform dialog engine we have taken charge. In SDK-style
+        ' windows, we would have had to return zero and break out.
+        If CBWPARAM = CBHNDL And HIWRD(CBLPARAM) = %WM_LBUTTONDOWN Then
+          'If Win_GetCursor <> pDlgInfo.hCur_Cross Then
+            'Win_SetCursor pDlgInfo.hCur_Cross
+            Function = %TRUE
+          'End If
+        End If
+        
+     Case %WM_LBUTTONDOWN', %WM_LBUTTONDBLCLK 'start selrect draw
+        SelRectBegin CBHNDL
+ 
+     Case %WM_MOUSEMOVE
+        If (CbWParam And %MK_LBUTTON) Then 'if mouse button is down while moved, draw rect
+          SelRectDraw CBHNDL, LOWRD(CBLPARAM), HIWRD(CBLPARAM)
+          PrintL pDlgInfo.gRc.nLeft, pDlgInfo.gRc.nTop, pDlgInfo.gRc.nRight, pDlgInfo.gRc.nBottom
+        End If
+ 
+     Case %WM_LBUTTONUP 'mouse button released - end draw
+        SelRectEnd CBHNDL
+          PrintL pDlgInfo.gRc.nLeft, pDlgInfo.gRc.nTop, pDlgInfo.gRc.nRight, pDlgInfo.gRc.nBottom
+        ' Now, when mouse button is released, global RECT (gRc)
+        ' will hold coordinates of final drawn rect. If you 
+        ' for example want to select a group of controls or
+        ' other objects, you can use IntersectRect API to see
+        ' if parts of other RECT's are withing this global rect.
+        ' Or use the coordinates to create a control/object of
+        ' this size, whatever..
+
+'    Case %WM_MOUSEACTIVATE
+'    
+'        Local PA1 As POINTAPI
+'        Local PA2 As POINTAPI
+'        Local hWndCtrl As Long
+'        win_GetCursorPos( PA1 )
+'        win_ClientToScreen( CbHndl, PA2 )
+'        hWndCtrl = win_ChildWindowFromPoint( CbHndl, PA1.X - PA2.X, PA1.Y - PA2.Y )
+'        if hWndCtrl then
+'          if hWndCtrl <> CbHndl then
+'            win_PostMessage hWndCtrl, %WM_NCLBUTTONDOWN, %HTCAPTION, 0 
+'            Function = %MA_NOACTIVATEANDEAT
+'          end if
+'        end if
+           
+     Case %WM_COMMAND      ' <- a control is calling
+        Select Case CbCtl  ' <- look at control's id
+           Case %IDC_CHK1
+              If CbCtlMsg = %BN_CLICKED Or CbCtlMsg = 1 Then
+                 Control Get Check CbHndl, CbCtl To pDlgInfo.lGrid.SnapToGrid
+              End If
+ 
+           Case %IDC_CHK2
+              If CbCtlMsg = %BN_CLICKED Or CbCtlMsg = 1 Then
+                 Control Get Check CbHndl, CbCtl To pDlgInfo.lGrid.ShowGrid
+                 RedrawWindow CbHndl, %Null, 0, %RDW_ERASE Or %RDW_INVALIDATE Or %RDW_UPDATENOW
+              End If
+ 
+           Case %IDCANCEL
+              If CbCtlMsg = %BN_CLICKED Or CbCtlMsg = 1 Then
+                 Dialog End CbHndl
+              End If
+ 
+        End Select
+
+     Case %WM_DESTROY 'delete what we created on exit, to avoid mem leaks
+        PrintL "In child deleting ..." & CBHNDL
+        If pDlgInfo.lGrid.GridBrush Then Win_DeleteObject pDlgInfo.lGrid.GridBrush
+        If pDlgInfo.ghBit           Then Win_DeleteObject Win_SelectObject(pDlgInfo.gMemDC, pDlgInfo.ghBit)
+        If pDlgInfo.gMemDC          Then Win_DeleteDC pDlgInfo.gMemDC  'should already be deleted, but to make sure..
+        HEAP_Free(pDlgInfo)'Dialog_GetUser(CBHNDL, 1))
+
+  End Select
+  
+End Function
+
+ 
+'----------------------------------------------------------------
+' initialize sel rect drawing
+' Copy dialog to global "screen buffer" for use as base for flicker
+' free drawing and later restore.
+'--------------------------------------------------------------------
+Sub SelRectBegin (ByVal hWnd As DWord)
+  Local hDC   As DWord
+  Local hBit  As DWord
+  Local pt    As POINTAPI
+  Local rc    As RECT
+
+  '---We always need get our window structure of personalized info
+  Local pDlgInfo  As tDlgInfo Ptr 
+  pDlgInfo = Dialog_GetUser(hWnd, 1) 
+
+   
+  Win_SetCapture hWnd                 ' set capture to desired window
+  Win_GetClientRect hWnd, rc          ' get client size 
+  MapWindowPoints hWnd, 0, rc, 2      ' map client coordiantes to screen
+  Win_ClipCursor rc                       ' clip cursor to client coordinates
+ 
+  WIN_GetCursorPos pDlgInfo.gPt                ' get cursor pos on screen
+  Win_ScreenToClient hWnd, pDlgInfo.gPt        ' convert to client coordinates 
+ 
+  If pDlgInfo.lGrid.SnapToGrid Then
+    pDlgInfo.gPt.x = (pDlgInfo.gPt.x \ pDlgInfo.lGrid.cGridX) * pDlgInfo.lGrid.cGridX  ' if snap to grid, calculate "grid'd pos"
+    pDlgInfo.gPt.y = (pDlgInfo.gPt.y \ pDlgInfo.lGrid.cGridY) * pDlgInfo.lGrid.cGridY  ' via multiply of integer divide result
+  End If
+ 
+  WIN_GetClientRect hWnd, rc          'create a global memDC and copy window to it.
+  hDC              = Win_GetDC(hWnd) 
+  pDlgInfo.gMemDC  = Win_CreateCompatibleDC (hDC)
+  pDlgInfo.ghBit   = Win_CreateCompatibleBitmap(hDC, rc.nRight, rc.nBottom)
+  pDlgInfo.ghBit   = Win_SelectObject(pDlgInfo.gMemDC, pDlgInfo.ghBit)
+ 
+  Win_BitBlt pDlgInfo.gMemDC, 0, 0, rc.nRight, rc.nBottom, hDC, 0, 0, %SRCCOPY
+  win_ReleaseDc hWnd, hDC
+ 
+End Sub
+ 
+'----------------------------------------------------------------
+' perform sel rect drawing
+'--------------------------------------------------------------------
+Sub SelRectDraw (ByVal hWnd As DWord, ByVal x As Long, ByVal y As Long)
+  Local hDC     As DWord
+  Local hBrush  As DWord
+  Local hPen    As DWord
+  Local rc      As RECT
+  Local memDC   As DWord
+  Local hBit    As DWord
+
+  '---We always need get our window structure of personalized info
+  Local pDlgInfo  As tDlgInfo ptr
+  pDlgInfo = Dialog_GetUser(hWnd, 1)
+ 
+  If pDlgInfo.lGrid.SnapToGrid Then
+     ' MS cross cursor has mis-aligned hotspot - it should be at
+     ' cross, but is upper-left corner. We should use own cross,
+     ' but this is just a sample, so instead cheat and add 4 to pos..
+     x = x + 4 '<- depends on where hotspot in cursor is..
+     y = y + 4
+     x = (x \ pDlgInfo.lGrid.cGridX) * pDlgInfo.lGrid.cGridX 'first integer divide, then multiply for "grid effect".
+     y = (y \ pDlgInfo.lGrid.cGridY) * pDlgInfo.lGrid.cGridY
+  End If
+ 
+  ' must make sure rect coordinates are correct, 
+  ' so right side always is larger than left, etc.
+  If (pDlgInfo.gPt.x <= x) And (pDlgInfo.gPt.y >= y) Then
+     win_SetRect pDlgInfo.gRc, pDlgInfo.gPt.x, y, x, pDlgInfo.gPt.y
+  ElseIf (pDlgInfo.gPt.x > x) And (pDlgInfo.gPt.y > y) Then
+     win_SetRect pDlgInfo.gRc, x, y, pDlgInfo.gPt.x, pDlgInfo.gPt.y
+  ElseIf (pDlgInfo.gPt.x >= x) And (pDlgInfo.gPt.y <= y) Then
+     win_SetRect pDlgInfo.gRc, x, pDlgInfo.gPt.y, pDlgInfo.gPt.x, y
+  Else
+     Win_SetRect pDlgInfo.gRc, pDlgInfo.gPt.x, pDlgInfo.gPt.y, x, y
+  End If
+ 
+  WIN_GetClientRect hWnd, rc
+  If pDlgInfo.gRc.nLeft = pDlgInfo.gRc.nRight  Then pDlgInfo.gRc.nRight += 1'<- ensure we never get a "null rect"
+  If pDlgInfo.gRc.nTop  = pDlgInfo.gRc.nBottom Then pDlgInfo.gRc.nBottom += 1
+ 
+  hDC = Win_GetDC(hWnd) 
+  memDC  = Win_CreateCompatibleDC (hDC) 'create temporary memDC to draw in
+  hBit   = Win_CreateCompatibleBitmap(hDC, rc.nRight, rc.nBottom)
+  hBit   = Win_SelectObject(memDC, hBit)
+  hBrush = Win_SelectObject(memDC, Win_GetStockObject(%NULL_BRUSH)) 'for hollow rect
+ 
+  Win_BitBlt memDC, 0, 0, rc.nRight, rc.nBottom, pDlgInfo.gMemDC, 0, 0, %SRCCOPY 'copy original buffer to temp DC
+ 
+  hPen = Win_SelectObject(memDC, Win_CreatePen(%PS_SOLID, 2, Win_GetSysColor(%COLOR_3DSHADOW))) 'create pen
+  Win_Rectangle memDC, pDlgInfo.gRc.nLeft, pDlgInfo.gRc.nTop, pDlgInfo.gRc.nRight + 1, pDlgInfo.gRc.nBottom + 1             'draw rect
+  Win_DeleteObject Win_SelectObject(memDC, hPen)
+ 
+  Win_BitBlt hDC, 0, 0, rc.nRight, rc.nBottom, memDC, 0, 0, %SRCCOPY 'copy temp DC to window
+ 
+  Win_SelectObject memDC, hBrush
+  If hBit  Then WIN_DeleteObject Win_SelectObject(memDC, hBit) 'clean up to avoid mem leaks
+  If memDC Then win_DeleteDC memDC
+  win_ReleaseDc hWnd, hDC
+ 
+End Sub
+ 
+'----------------------------------------------------------------
+' end sel rect drawing
+' Copy original window buffer back to screen to wipe out drawn
+' rectangle, delete global memDC, release capture and clipped cursor.
+'--------------------------------------------------------------------
+Sub SelRectEnd (ByVal hWnd As DWord)
+  Local hDC   As DWord
+  Local rc    As RECT
+
+  '---We always need get our window structure of personalized info
+  local pDlgInfo  as tDlgInfo ptr
+  pDlgInfo = dialog_GetUser(hWnd, 1)
+ 
+  hDC = win_GetDc(hWnd)
+  WIN_GetClientRect hWnd, rc
+  Win_BitBlt hDC, 0, 0, rc.nRight, rc.nBottom, pDlgInfo.gMemDC, 0, 0, %SRCCOPY
+  win_ReleaseDc hWnd, hDC
+ 
+  If pDlgInfo.ghBit  Then
+    WIN_DeleteObject Win_SelectObject(pDlgInfo.gMemDC, pDlgInfo.ghBit)
+    pDlgInfo.ghBit  = 0
+  end if
+  If pDlgInfo.gMemDC Then
+    win_DeleteDC pDlgInfo.gMemDC
+    pDlgInfo.gMemDC = 0
+  end if
+  WIN_ReleaseCapture
+ 
+  Win_ClipCursor %NULL
+ 
+End Sub
+ 
+'----------------------------------------------------------------
+' Create a patterned brush for grid. By using this, grid draw becomes
+' very quick, even on full size dialogs. Must warn though - in Win95,
+' brush can be max 8x8 pixels. In Win98 and later, brush can be bigger,
+' so never a problem there.
+'--------------------------------------------------------------------
+Function MakeGridBrush(ByVal hWnd As Long) As DWord
+  Local hDC     As DWord
+  Local memDC   As DWord
+  Local hBit    As DWord
+  Local hBitOld As DWord
+  Local rc      As RECT
+  Local lRet    As DWord
+
+  '---We always need get our window structure of personalized info
+  local pDlgInfo  as tDlgInfo ptr
+  pDlgInfo = dialog_GetUser(hWnd, 1)
+ 
+  hDC     = win_GetDC(hWnd)
+  memDC   = Win_CreateCompatibleDC(hDC)
+  hBit    = Win_CreateCompatibleBitmap(hDC, pDlgInfo.lGrid.cGridX, pDlgInfo.lGrid.cGridY)
+  hBitOld = Win_SelectObject(memDC, hBit)
+
+  rc.nRight  = pDlgInfo.lGrid.cGridX
+  rc.nBottom = pDlgInfo.lGrid.cGridY
+  Win_FillRect memDC, rc, Win_GetSysColorBrush(%COLOR_3DFACE)
+  
+  '---Paint "dots" in all four corners
+    Win_SetPixelV memDC, 0, 0, 0
+    Win_SetPixelV memDC, 0, pDlgInfo.lGrid.cGridY, 0
+    Win_SetPixelV memDC, pDlgInfo.lGrid.cGridX, 0, 0
+    Win_SetPixelV memDC, pDlgInfo.lGrid.cGridX, pDlgInfo.lGrid.cGridY, 0
+ 
+  lRet = Win_CreatePatternBrush (hBit)
+  Function = lRet
+ 
+  '---Clean up to avoid mem leaks
+    Win_SelectObject  memDC, hBitOld
+    Win_DeleteObject  hBit
+    win_DeleteDC      memDC
+    win_ReleaseDC     hWnd, hDC
+ 
+End Function

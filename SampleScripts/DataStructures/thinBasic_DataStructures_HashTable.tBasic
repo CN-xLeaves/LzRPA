@@ -1,0 +1,96 @@
+Uses "console"
+
+Long cBrightRed = %CONSOLE_FOREGROUND_RED | %CONSOLE_FOREGROUND_INTENSITY
+
+Dim t1      As CTIMER
+Dim lCount  As Long
+
+t1 = New CTIMER
+
+PrintL "Creating an Hash Table able to store 1 Million key/data pairs"
+PrintL "Data can be any size up to the OS limit for each 32 bit process"
+PrintL "Keys are case sensitive"
+PrintL "--------------------------------------------------"
+DWord pHash = Hash_New(1000000)
+
+PrintL "Hash Table created!"
+PrintL "Hash pointer:", pHash
+PrintL "--------------------------------------------------"
+
+PrintL "Press a key to fill Hash Table with 100000 key/data pairs" In cBrightRed
+WaitKey
+t1.start
+For lCount = 1 To 100000
+  Hash_Set(pHash, "KEY" & lCount, "DATA" & lCount & String$(500, "x"))
+Next
+t1.Stop
+
+'[breakpoint] <Any note here. Breakpoint will be set to line following this statement>
+PrintL Hash_GetKeys(pHash, ",")
+
+PrintL "Time to ADD 100000 keys/values more than 500 bytes each:", t1.elapsed
+PrintL "--------------------------------------------------"
+
+PrintL "Hash count:", Hash_Count(pHash) 
+PrintL "--------------------------------------------------"
+
+PrintL "Press a key to search Hash Table all 100000 key/data pairs" In cBrightRed
+WaitKey
+t1.start
+For lCount = 1 To 100000
+  Hash_Get(pHash, "KEY" & lCount)
+Next
+t1.Stop
+PrintL "Time to GET 100000 keys:", t1.elapsed
+PrintL "--------------------------------------------------"
+
+
+PrintL "Now printing some key/data pairs" In cBrightRed
+WaitKey
+PrintL "Data1000   is:", Hash_Get(pHash, "KEY" & 1000)    , Hash_Exists(pHash, "KEY" & 1000)  
+PrintL "Data10000  is:", Hash_Get(pHash, "KEY" & 10000)   , Hash_Exists(pHash, "KEY" & 10000) 
+PrintL "Data100000 is:", Hash_Get(pHash, "KEY" & 100000)  , Hash_Exists(pHash, "KEY" & 100000)
+PrintL "--------------------------------------------------"
+
+PrintL "Pointer to Data1000   is:", Hash_GetPtr(pHash, "KEY" & 1000)  , Peek$(Hash_GetPtr(pHash, "KEY" & 1000), 20)  
+PrintL "Pointer to Data10000  is:", Hash_GetPtr(pHash, "KEY" & 10000) , Peek$(Hash_GetPtr(pHash, "KEY" & 10000), 20)
+PrintL "Pointer to Data100000 is:", Hash_GetPtr(pHash, "KEY" & 100000), Peek$(Hash_GetPtr(pHash, "KEY" & 100000), 20)
+PrintL "--------------------------------------------------"
+
+PrintL "Press a key to delete 3 key/data within 100000 key/data pairs" In cBrightRed
+WaitKey
+PrintL "Delete 3 key/data pairs"
+  Hash_Del(pHash, "KEY" & 1000)  
+  Hash_Del(pHash, "KEY" & 10000) 
+  Hash_Del(pHash, "KEY" & 100000)
+PrintL "Now Hash table now has", Hash_Count(pHash), "Keys"
+PrintL "--------------------------------------------------"
+
+PrintL "Press a key to CLONE original Hash Table" In cBrightRed
+WaitKey
+Dim pClonedHash As Long
+PrintL "Cloning original Hash Table"
+pClonedHash = Hash_Clone(pHash)
+PrintL "Cloned Hash Table has", Hash_Count(pClonedHash), "Keys"
+PrintL "Cloned Hash Table has", Hash_CapGet(pClonedHash), "capacity"
+PrintL "--------------------------------------------------"
+
+PrintL "Press a key to change capacity to Cloned Hash Table" In cBrightRed
+WaitKey
+PrintL "Changing capacity to the double of the inserted key/data"
+Hash_CapSet(pClonedHash, Hash_Count(pClonedHash) * 2)
+PrintL "Cloned Hash Table has now a new capacity", Hash_CapGet(pClonedHash)
+PrintL "--------------------------------------------------"
+
+PrintL "Press a key to free memory" In cBrightRed
+WaitKey
+
+PrintL "Free Hash table memory"
+Hash_Free(pHash)
+Hash_Free(pClonedHash)
+PrintL "--------------------------------------------------"
+
+PrintL "--------------------------------------------------" In cBrightRed
+PrintL "---All done. Press a KEY to FINISH----------------" In cBrightRed
+PrintL "--------------------------------------------------" In cBrightRed
+WaitKey

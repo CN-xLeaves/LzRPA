@@ -1,0 +1,25 @@
+uses "LAN"
+
+Dim sServer as string = "" 'If empty use local server, otherwise specify the remote server name like "\\MYSERVER" 
+dim sResult as string
+
+' Level 0
+sResult = LAN_GetUseInformation(sServer, $CRLF, $TAB, %LAN_INFO_0_LEVEL)
+
+if len(sResult) then
+    msgbox 0, sResult, %MB_OK, "LAN Use level 0 Enumeration " + iif$(len(sServer), "for server " + sServer, "local server")
+end if
+
+' Level 1
+sResult = LAN_GetUseInformation(sServer, $CRLF, $TAB, %LAN_INFO_1_LEVEL)
+
+if len(sResult) then
+    msgbox 0, sResult, %MB_OK, "LAN Use level 1 Enumeration " + iif$(len(sServer), "for server " + sServer, "local server")
+end if
+
+' Level 2
+sResult = LAN_GetUseInformation(sServer, $CRLF, $TAB, %LAN_INFO_2_LEVEL)
+
+if len(sResult) then
+    msgbox 0, sResult, %MB_OK, "LAN Use level 2 Enumeration " + iif$(len(sServer), "for server " + sServer, "local server")
+end if

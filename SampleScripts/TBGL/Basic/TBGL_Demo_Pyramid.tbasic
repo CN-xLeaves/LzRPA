@@ -1,0 +1,53 @@
+' Pyramid FPS, Conversion of a Basic4GL Programme.
+ 
+' Include the thinBASIC OpenGL Library
+uses "TBGL" 
+ 
+' Declare Our Constants and Variables here
+ 
+' Rotation Variable
+dim angle as single
+ 
+' Timing Variables
+dim FrameRate as number
+ 
+' Create a Window and Return Handle
+dim hWnd as dword
+hWnd = tbgl_createwindowEx("Pyramid FPS - Press 'Esc' to Quit", 640, 480, 32, %TBGL_WS_WINDOWED)
+TBGL_ShowWindow
+ 
+' Reset State of all Keys
+TBGL_ResetKeyState()
+ 
+' Main Programme Loop starts here
+while tbgl_iswindow(hWnd)
+  FrameRate = tbgl_GetFrameRate
+  tbgl_clearframe                   ' Clear Screen
+  tbgl_resetmatrix                  ' Reset the Current Matrix
+  tbgl_camera 0, 0, 1, 0, 0, 0      ' Default Camera Position
+  
+  tbgl_translate 0, 0, -4           ' Move Pyramid to Centre of Screen
+  tbgl_rotate angle, 0.0, 1.0, 0.0  ' Rotation Setup
+  
+  drawPyramid()
+  
+  tbgl_drawframe ' Swap the Drawing Buffers
+  
+  angle += 180.0/FrameRate
+  
+  if tbgl_getasynckeystate(%VK_ESCAPE) then exit while
+  
+wend
+ 
+sub drawPyramid()
+ 
+  tbgl_beginpoly %GL_TRIANGLE_FAN
+    tbgl_color   0, 128, 255 : tbgl_vertex  0.0,  1.0,  0.0
+    tbgl_color 255,   0,   0 : tbgl_vertex -1.0, -1.0,  1.0
+    tbgl_color 255, 255, 255 : tbgl_vertex  1.0, -1.0,  1.0
+    tbgl_color   0,   0, 255 : tbgl_vertex  1.0, -1.0, -1.0
+    tbgl_color   0, 255,   0 : tbgl_vertex -1.0, -1.0, -1.0
+    tbgl_color 255,   0,   0 : tbgl_vertex -1.0, -1.0,  1.0
+  tbgl_endpoly
+  
+end sub

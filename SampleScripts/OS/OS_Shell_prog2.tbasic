@@ -1,0 +1,25 @@
+'-------------------------------------------------------
+' OS_Shell_prog2.tbasic
+'-------------------------------------------------------
+
+Uses "OS"
+Uses "console"
+
+PrintL "START ", APP_ScriptName
+
+'...
+'...do all the jobs this script has to do...
+'...
+
+
+'---Now execute next script    
+Dim thinBasic       As String = APP_Path & APP_Name
+Dim NextScript_Name As String = APP_ScriptPath & "OS_Shell_prog3.tbasic"
+Dim NextScript_pID  As DWord
+  
+'---Executed in async mode. Execution of this script will immediately continue after this command
+NextScript_pID = OS_Shell(thinBasic & " " & $DQ & NextScript_Name & $DQ, %OS_WNDSTYLE_NORMAL, %OS_SHELL_ASYNC)
+PrintL "Executed process ", NextScript_pID
+PrintL "STOP ", APP_ScriptName
+
+WaitKey

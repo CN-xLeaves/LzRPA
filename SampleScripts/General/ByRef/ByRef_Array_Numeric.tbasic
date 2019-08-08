@@ -1,0 +1,29 @@
+'---Create a numeric array and assign all its elements
+'---a default value of 1
+dim MyArray(10, 100) as long value 1
+
+'---Show an element
+msgbox 0, MyArray(10, 100)
+
+'---Call the modifier function passing the whoole array
+'---Arrays will be passed BYREF by default even if forced BYVAL
+FillIt(MyArray)
+
+'---Show again data to see what happened
+msgbox 0, MyArray(10, 100)
+
+'-----------------------------------------------------------
+' To indicate you want to pass an array, just put a ()
+' after the name of the parameter. Simple
+function FillIt(InternalByRefArray() as long)
+'-----------------------------------------------------------
+  dim X, Y   as long
+  
+  for X = 1 to ubound(InternalByRefArray(1))    '---First dimension
+    for Y = 1 to ubound(InternalByRefArray(2))  '---Second dimension
+      InternalByRefArray(X, Y) = X * Y          '---Assign some dummy data
+    next
+  next
+  
+end function
+

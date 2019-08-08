@@ -1,0 +1,38 @@
+' ========================================================================================
+' Demonstrates the use of the load method.
+' The following example creates a DOMDocument object and uses the load method to load a
+' local XML file.
+' ========================================================================================
+
+uses "Console"
+
+#default declare Checkduplicates    %TRUE
+#default declare CheckMissing       %TRUE
+
+#INCLUDE "%APP_INCLUDEPATH%\TB_XML60.INC"
+
+' ========================================================================================
+' Main
+' ========================================================================================
+FUNCTION MAIN() as long
+
+   LOCAL pXmlDoc AS DWORD
+
+   pXmlDoc = XmlCreateObject($PROGID_Msxml2DOMDocument)
+   IXMLDOMDocument_put_async pXmlDoc, %FALSE
+
+   IXMLDOMDocument_load pXmlDoc, "books.xml"
+   IF XmlParseError_get_errorCode(pXmlDoc) <> 0 THEN
+      console_writeline "You have error " & XmlParseError_get_reason(pXmlDoc)
+   ELSE
+      console_writeline IXMLDOMDocument_get_xml(pXmlDoc)
+   END IF
+
+   XmlRelease pXmlDoc
+
+   console_writeline "--- Press any key to finish ---"
+   console_WAITKEY
+
+END FUNCTION
+
+Main

@@ -1,0 +1,56 @@
+'=========================
+'FUNCTION CALLS BY POINTER
+'=========================
+
+uses "oxygen"
+
+dim src as string
+
+src = "
+
+  basic
+
+
+  'DECLARE PROTOTYPE FOR THE FUNCTIONS
+  '-----------------------------------
+
+  declare function fun(v as long) as long
+
+  '
+  'TEST FUNCTIONS
+  '--------------
+
+  function fa(v as long) as long =v
+  function fb(v as long) as long =v*2
+  function fc(v as long) as long =v*3
+
+
+  'BUILD FUNCTION POINTER TABLE
+  '----------------------------
+   
+  dim p(4)=>(&fa#long,&fb#long,&fc#long)
+  '
+  '
+  'SELECT CALL ADDRESS AND TEST
+  '----------------------------
+
+###
+  &fun=p(1)
+  '&fun=&fa#long
+  '---------
+  a=fun(7)+fun(100)
+###
+print a
+
+  
+  "
+
+
+
+o2_basic src
+
+if len(o2_error) then msgbox 0, o2_error : stop
+msgbox 0, o2_len+$cr+o2_prep src
+
+o2_exec
+

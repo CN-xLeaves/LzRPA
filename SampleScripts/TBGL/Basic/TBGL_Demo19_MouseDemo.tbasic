@@ -1,0 +1,131 @@
+  '=============================================================================
+  '=                          Basic mouse interaction                          =
+  '=                                                                           =
+  '=                           Petr Schreiber, 2007                            =
+  '=============================================================================
+
+  Uses "TBGL" 
+  uses "console"
+  
+  Console_SetScreenBufferSize(130, 50)
+  Console_ShowWindow(%Console_SW_MAXIMIZE)
+
+  randomize timer 
+  
+  Dim hWnd As Dword 
+
+  hWnd = TBGL_CreateWindowEx("Drag the spheres with mouse - press ESC to quit", 640, 480, 32, %TBGL_WS_WINDOWED) 
+  TBGL_ShowWindow 
+  
+  tbgl_UseLighting %TRUE
+  tbgl_UseLightSource %GL_LIGHT0, %TRUE
+  
+  type TSphere
+    x       as single
+    y       as single
+    radius  as single
+    cR      as long
+    cG      as long
+    cB      as long
+  end type
+  
+  dim NumSphere as long = 16
+  dim mySphere(NumSphere) as TSphere
+  
+  local i as long
+  
+  for i = 1 to NumSphere
+    mySphere(i).x = rnd(-5,5)
+    mySphere(i).y = rnd(-3,3)
+    mySphere(i).radius = rndf(0.2, 1)
+    mySphere(i).cR = rnd(128,255)
+    mySphere(i).cG = rnd(128,255)
+    mySphere(i).cB = rnd(128,255)    
+  next
+  
+  Local SphereHeld as long
+  local x,y,z as double
+    
+  TBGL_ResetKeyState() ' Resets key status before keypress checking 
+
+  While tbgl_IsWindow(hWnd) 
+
+    tbgl_ClearFrame 
+    tbgl_Camera 0,0,10,0,0,0
+     
+    
+    DrawGridXY
+    
+    
+    for i = 1 to NumSphere    
+      tbgl_Pushmatrix
+        tbgl_Translate mySphere(i).x, mySphere(i).y, 0
+        tbgl_Color mySphere(i).cR, mySphere(i).cG, mySphere(i).cB
+        tbgl_Sphere mySphere(i).radius
+      tbgl_Popmatrix
+    next  
+    
+    if tbgl_MouseGetLButton then
+      if SphereHeld = 0 then SphereHeld = GetSphereID( tbgl_MouseGetPosX, tbgl_MouseGetPosY )
+    elseif tbgl_MouseGetLButton = 0 then
+      SphereHeld = 0
+    end if  
+    
+    if SphereHeld then      
+      TBGL_GetPixelInfo tbgl_MouseGetPosX, tbgl_MouseGetPosY, %TBGL_PINFO_XYZ, x,y,z
+      mySphere(SphereHeld).x = x
+      mySphere(SphereHeld).y = y
+      console_writeline "Sphere " & SphereHeld & " moved to [" & mySphere(SphereHeld).x & "] [" & mySphere(SphereHeld).y & "]"
+    end if   
+    
+    tbgl_DrawFrame 
+
+    If tbgl_GetWindowKeyState( hWnd, %VK_ESCAPE) Then Exit While 
+
+  Wend 
+
+  TBGL_DestroyWindow 
+  
+  sub DrawGridXY()
+    tbgl_UseLighting %FALSE
+  
+    local i as long
+    tbgl_Color 0,255,0
+    tbgl_BeginPoly %GL_LINES
+    for i = -10 to 10
+
+      tbgl_Vertex -10, i, 0
+      tbgl_Vertex  10, i, 0
+      
+      tbgl_Vertex  i,-10, 0
+      tbgl_Vertex  i, 10, 0
+      
+    next  
+    tbgl_EndPoly
+    
+    tbgl_UseLighting %TRUE    
+  end sub  
+ 
+  
+  function GetSphereID( mouseX as long, mouseY as long )
+    local cX, cY, cz as single
+    local i as long
+    
+    ' -- Projects mouse coordinates to 3D space
+    TBGL_GetPixelInfo ( mouseX, mouseY, %TBGL_PINFO_XYZ, cx, cy, cz )
+    function = 0
+    
+    for i = 1 to NumSphere    
+      if cx ><  mySphere(i).x-mySphere(i).radius, mySphere(i).x+mySphere(i).radius and _
+         cy ><  mySphere(i).y-mySphere(i).radius, mySphere(i).y+mySphere(i).radius then
+         function = i
+         console_writeline "Activated sphere id " & i
+      end if   
+    next     
+    
+  end function 
+
+
+
+
+

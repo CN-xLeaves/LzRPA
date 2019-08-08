@@ -1,0 +1,83 @@
+uses "oxygen"
+dim src as string
+
+'--------------------
+'LOCAL DECLARATIONS +
+'early & late binding
+'====================
+ 
+src ="
+  
+  '--------------
+  function test()
+  '==============
+  
+    'LOCAL EARLY BINDING
+    '-------------------
+    declare function MessageBox lib `user32.dll` alias `MessageBoxA` (byval as long,
+      byval as string, byval as string, byval as long) as long   
+
+    MessageBox 0,`Early binding okay`,`test local declaration`,0
+  
+
+    'LOCAL LATE BINDING
+    '------------------
+
+    dim a=loadlibrary `user32.dll`
+    dim p=getProcAddress (a,`MessageBoxA`)
+
+    
+    'LOW LEVEL TEST 1
+    '----------------
+
+    call p 0,`Low level call okay`,`test low level call`,0
+
+
+    'LOW LEVEL TEST 2
+    '----------------
+    
+    bind a ( MessageBox  MessageBoxA )
+
+    MessageBox 0,`Low level binding okay`,`test low level call`,0
+    '
+
+
+    'HIGH LEVEL TEST 1
+    '-----------------
+    declare function MessageBox (byval as long, byval as string,
+      byval as string, byval as long) as long at p
+        
+    MessageBox 0,`Hi level binding okay`,`test local declaration`,0
+
+
+
+    'HIGH LEVEL TEST 2
+    '-----------------
+    declare function MessageBox (byval as long, byval as string,
+      byval as string, byval as long) as long
+
+    &MessageBox=p
+
+    MessageBox 0,`Delayed hi-level binding okay`,`test local declaration`,0
+    
+    FreeLibrary a
+
+  
+  end function
+
+  test
+  
+  'THIS IS OUT OF SCOPE BECAUSE THE DECLARATION WAS LOCAL
+  'MessageBox 0,`okay`,`test inner declaration`,0
+  
+  "
+ 
+  
+'msgbox 0,o2_prep src 
+o2_basic src
+if len(o2_error) then
+  msgbox 0, o2_error : stop
+end if
+o2_exec
+ 
+ 

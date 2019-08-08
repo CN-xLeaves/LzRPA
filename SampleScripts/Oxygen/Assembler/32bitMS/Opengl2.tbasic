@@ -1,0 +1,1591 @@
+' Opengl
+'
+' with winmain message loop and wndproc
+' 12 July 2008
+' revised 26 Jul 2010
+' Charles Pegge
+
+
+Uses "Oxygen"
+'Uses "File"
+
+dim src as string
+src="
+  ; ASMOSPHERE SYNTAX
+  ; -----------------
+  '#file "opengl2.exe"
+  def null 0
+   
+  type WNDCLASSEX
+  ( 
+  ;48 bytes
+  4 cbsize
+  4 STYLE
+  4 lpfnwndproc
+  4 cbClsextra
+  4 cbWndExtra
+  4  hInstance
+  4  hIcon
+  4  hCursor
+  4  hbrBackground
+  4  lpszMenuName
+  4  lpszClassName
+  4  hIconSm
+  )
+
+  type MSG
+  (
+  ; 28 bytes
+  4  hwnd;
+  4  message
+  4  wParam
+  4  lParam
+  4  time
+  8  pt
+  )
+
+
+  indexers `esi` offset 0 ascending ; all globals
+  esi=getmemory 4096
+  
+  call fwd here : .here : pop eax : sub eax,here : add eax,bssdata
+  mov [eax+624],ebx   ; store procs & globals table ptr
+  mov [eax+632],esi ; store runtimes table ptr
+  
+
+ 
+ 
+  ;-------------
+  ; DLL bindings
+  ;-------------
+
+  var 4 kernel32,user32,GDI32,opengl32,glu32
+
+  kernel32=LoadLibrary   `kernel32.dll`
+  user32  =LoadLibrary   `user32.dll`
+  GDI32   =LoadLibrary   `GDI32.dll`
+  opengl32=LoadLibrary   `Opengl32.dll`
+  glu32   =LoadLibrary   `glu32.dll`
+
+  bind kernel32
+  (
+    GetExitCodeProcess GetExitCodeProcess ; @8
+    ExitProcess     ExitProcess           ; @4
+    GetCommandLine  GetCommandLineA       ; @0
+    GetModuleHandle GetModuleHandleA      ; @4
+    QueryPerformanceCounter QueryPerformanceCounter ; @4
+    QueryPerformanceFrequency QueryPerformanceFrequency ; @4
+  )
+
+  bind user32
+  (
+    GetActiveWindow  GetActiveWindow   ; @0
+    LoadIcon         LoadIconA         ; @8
+    LoadCursor       LoadCursorA       ; @8
+    RegisterClass    RegisterClassA    ; @4
+    RegisterClassEx  RegisterClassExA  ; @4
+    MessageBox       MessageBoxA       ; @4
+    CreateWindowEx   CreateWindowExA   ; @48
+    DestroyWindow    DestroyWindow     ; @4
+    ShowWindow       ShowWindow        ; @8
+    UpdateWindow     UpdateWindow      ; @4
+    GetMessage       GetMessageA       ; @16
+    TranslateMessage TranslateMessage  ; @4
+    DispatchMessage  DispatchMessageA  ; @4
+    PostQuitMessage  PostQuitMessage   ; @4
+    BeginPaint       BeginPaint        ; @8
+    EndPaint         EndPaint          ; @8
+    GetClientRect    GetClientRect     ; @8  
+    DrawText         DrawTextA         ; @20
+    PostMessage      PostMessageA      ; @16
+    DefWindowProc    DefWindowProcA    ; @16
+    SetTimer         SetTimer          ; @16
+    KillTimer        KillTimer         ; @8
+    GetDC            GetDC             ; @8
+    ReleaseDC        ReleaseDC         ; @4
+    ChangeDisplaySettings ChangeDisplaySettingsA
+  )
+
+
+  bind GDI32
+  (
+    SetPixelFormat SetPixelFormat
+    DeleteObject      DeleteObject
+    SwapBuffers       SwapBuffers
+    GetStockObject    GetStockObject    ; @4
+    ChoosePixelFormat ChoosePixelFormat
+  )
+
+  bind opengl32
+  (
+    glGetString    glGetString
+    glGetIntegerv  glGetIntegerv
+    glGenLists     glGenLists
+    glDeleteLists  glDeleteLists
+    glNewList      glNewList
+    glBegin        glBegin
+    glNormal3f     glNormal3f
+    glVertex3f     glVertex3f
+    glNormal3fv    glNormal3fv
+    glVertex3fv    glVertex3fv
+    glEnd          glEnd
+    glEndList      glEndList
+    glCallList     glCallList
+    glPushMatrix   glPushMatrix
+    glPopMatrix    glPopMatrix
+    glRotatef      glRotatef
+    glScalef       glScalef
+    glTranslatef   glTranslatef
+    glMaterialfv   glMaterialfv
+    glMaterialf    glMaterialf
+    glColor4fv     glColor4fv
+    glClearColor   glClearColor
+    glClear        glClear
+    glLoadIdentity glLoadIdentity
+    glDisable      glDisable
+    glEnable       glEnable
+    glColor3f      glColor3f
+    glDepthFunc    glDepthFunc
+    glPolygonMode  glPolygonMode
+    glBlendFunc    glBlendFunc
+    glMatrixMode   glMatrixMode
+    glOrtho        glOrtho
+    glViewport     glViewport
+    glScissor      glScissor
+    glCullFace     glCullFace
+    glFrontFace    glFrontFace
+    glLightfv      glLightfv
+    glVertex2i     glVertex2i
+    glFinish       glFinish
+    glDepthMask    glDepthMask
+    glGetDoublev glGetDoublev
+    ;----
+    ; wgl
+    ;----
+    wglCreateContext   wglCreateContext 
+    wglDeleteContext   wglDeleteContext
+    wglMakeCurrent     wglMakeCurrent
+    wglUseFontOutlines wglUseFontOutlinesA
+    wglGetCurrentDC    wglGetCurrentDC
+    wglGetProcAddress  wglGetProcAddress
+ )
+
+  bind glu32
+  (
+    gluLookAt      gluLookAt
+    gluPerspective gluPerspective
+  )
+  
+  ;----------------------
+  ; Opengl ARB extensions
+  ;----------------------
+  
+
+  var 4 glMultiTexCoord2fARB glActiveTextureARB
+  var 4 pa wglChoosePixelFormatARB
+
+  glMultiTexCoord2fARB    = wglGetProcAddress `glMultiTexCoord2fARB`
+  glActiveTextureARB      = wglGetProcAddress `glActiveTextureARB`
+  pa                      = wglGetProcAddress `wglGetExtensionsStringARB`
+  wglChoosePixelFormatARB = wglGetProcAddress `wglChoosePixelFormatARB`
+
+
+  ;--------
+  ; GLOBALS
+  ;--------
+
+
+  var 4 viewport(4)
+  var 8 ModelView(16) Projection(16)
+
+  ;static as single model_diffuse(0 TO 3)  => { 1.0, 0.8, 0.8, 1.0 }
+  ;static as single model_specular(0 TO 3) => { 0.6, 0.6, 0.6, 1.0 }
+  ;static as single model_shininess = 20.0
+
+  var 16 model_diffuse model_specular
+  var 4 model_shininess
+  data
+  (
+    ns 1.0 ns 0.8 ns 0.8 ns 1.0
+    ns 0.6 ns 0.6 ns 0.6 ns 1.0
+    ns 20.0
+  )
+  mov edx,eax
+
+  copyn &model_diffuse,edx,36 ; table values to variables
+     
+  var 4 light_position(4) light_diffuse(4) light_specular(4) light_ambient(4)
+  var 8 half
+  data
+  (
+    ns0.0 ns8.0 ns8.0 ns1.0
+    ns1.0 ns1.0 ns1.0 ns1.0
+    ns1.0 ns1.0 ns1.0 ns1.0
+    ns0.2 ns0.2 ns0.3 ns1.0
+    nd0.5
+  )
+  mov edx,eax
+
+  copyn &light_position,edx,72 ; copy table to arrays above
+  var 8 twopi
+  fldpi
+  fadd st0,st0
+  fstp qword twopi
+
+  var 8 aspect
+  var 4 rot_x rot_y rot_z ; view rotation
+  var 4 wwidth wheight wwidthm wheightm
+  var 4 hWnd hDC npixelformat hRC
+  var 4 bselect kselect refresh
+  var 8 grtic1 grtic2
+  var 4 ReqShutdown
+
+    ; WNDPROC globals
+    ;----------------
+    var 4 mposX mPosy sPosX sPosY bLeft bMid bRight xpos
+    var 4 xpos ypos active_view
+
+  ;============================================================
+  ;============================================================
+  ;============================================================
+
+
+  ;--------------------------------------
+  ; Prepare to Launch Windows Application
+  ;-------------------------------------- 
+
+  def SW_NORMAL 1
+  def SW_SHOWDEFAULT 10
+
+  var 4 cmdline,inst
+
+  cmdline=GetCommandLine
+  inst=GetModuleHandle 0
+  ;
+  call WinMain inst,0,cmdline,SW_NORMAL
+  ;
+  ; release libraries and memory
+  ;-----------------------------
+  ;
+  FreeLibrary kernel32
+  FreeLibrary user32
+  FreeLibrary GDI32
+  FreeLibrary opengl32
+  FreeLibrary glu32
+  FreeMemory esi
+  ret
+    
+
+  o2 !10 ; align 16 bytes   
+
+
+
+''========================================================================
+'' DrawTorus() - Draw a solid torus (use a display list for the model)
+''========================================================================
+
+  ;---------
+  DrawTorus:
+  ;---------
+
+  var 4 torus_list
+  (
+    cmp torus_list,0
+    jnz exit
+    call build_torus
+  )
+  glCallList torus_list
+  ret
+
+  build_torus:
+  ;-----------
+
+  ; using static varables
+  
+  var 4 i j k
+  var 8 s t x y z nx ny nz
+
+  ; initial values
+  ; --------------
+  var 8 torus_major torus_minor
+  var 4 torus_major_res torus_minor_res
+  data
+  (
+    nd 1.5 nd 0.5
+  )
+  fld  qword [eax]
+  fstp qword torus_major
+  fld  qword [eax+8]
+  fstp qword torus_minor
+  mov dword torus_major_res,32
+  mov dword torus_minor_res,32
+
+
+  torus_list=glGenLists 1
+  glNewList torus_list, 0x1300 ; GL_COMPILE
+  '
+    ; iterations
+    ;
+    mov i,0
+    toro_do1:
+      'twopi = 2.0 * PI
+      'FOR i = 0 TO TORUS_MINOR_RES-1
+      '    glBegin( GL_QUAD_STRIP )
+    glBegin 8 ; GL_QUAD_STRIP
+    mov j,0
+    toro_do2:
+    mov k,1
+    toro_do3:
+      'FOR j = 0 TO TORUS_MAJOR_RES
+      'FOR k = 1 TO 0 STEP -1
+      's = (i + k) MOD TORUS_MINOR_RES + 0.5
+      't = j MOD TORUS_MAJOR_RES
+      '
+      '' Calculate point on surface
+      'x = (TORUS_MAJOR+TORUS_MINOR*COS(s*twopi/TORUS_MINOR_RES))*COS(t*twopi/TORUS_MAJOR_RES)
+      'y = TORUS_MINOR * SIN(s * twopi / TORUS_MINOR_RES)
+      'z = (TORUS_MAJOR+TORUS_MINOR*COS(s*twopi/TORUS_MINOR_RES))*SIN(t*twopi/TORUS_MAJOR_RES)
+      '                   '
+      '' Calculate surface normal
+      'nx = x - TORUS_MAJOR*COS(t*twopi/TORUS_MAJOR_RES)
+      'ny = y
+      'nz = z - TORUS_MAJOR*SIN(t*twopi/TORUS_MAJOR_RES)
+      'gscale = 1.0 / SQR( nx*nx + ny*ny + nz*nz )
+    var 8 gscale      '
+    fild   qword torus_minor_res
+    fild   dword i
+    fiadd  dword k
+    fprem
+    fadd   qword half
+    fstp   qword s
+    fcomp  st0
+    '
+    fild  dword torus_major_res
+    fild  dword j
+    fprem
+    fstp  qword t
+    fcomp st0
+    '
+    ' Calculate point on surface
+    ' x
+    fld   qword torus_major
+    fld   qword torus_minor
+    fld   qword s
+    fmul  qword twopi
+    fidiv dword torus_minor_res
+    fcos
+    fmulp st1,st0
+    faddp st1,st0
+    '
+    fld   qword t
+    fmul  qword twopi
+    fidiv dword torus_major_res
+    fcos
+    fmulp st1,st0
+    fstp  qword x
+    ' y
+    fld   qword torus_minor
+    fld   qword s
+    fmul  qword twopi
+    fidiv dword torus_minor_res
+    fsin
+    fmulp st1,st0
+    fstp  qword y
+    ' z
+    fld   qword torus_major
+    fld   qword torus_minor
+    fld   qword s
+    fmul  qword twopi
+    fidiv dword torus_minor_res
+    fcos
+    fmulp st1,st0
+    faddp st1,st0
+    '
+    fld   qword t
+    fmul  qword twopi
+    fidiv dword torus_major_res
+    fsin
+    fmulp st1,st0
+    fstp  qword z
+    '
+    ' Calculate surface normal
+    '
+    fld   qword x
+    fld   qword t
+    fmul  qword twopi
+    fidiv dword torus_major_res
+    fcos
+    fmul  qword torus_major
+    fsubp st1,st0
+    fstp  qword nx
+    '
+    fld  qword y
+    fstp qword ny
+    '
+    fld   qword z
+    fld   qword t
+    fmul  qword twopi
+    fidiv dword torus_major_res
+    fsin
+    fmul  qword torus_major
+    fsubp st1,st0
+    fstp  qword nz
+    '
+    fld1
+    fld qword nx
+    fmul st0,st0
+    fld qword ny
+    fmul st0,st0
+    fld qword nz
+    fmul st0,st0
+    faddp st1,st0
+    faddp st1,st0
+    fsqrt
+    fdivp st1,st0
+    fstp qword gscale
+    '
+    fld  qword nx
+    fmul qword gscale
+    fstp qword nx
+    fld  qword ny
+    fmul qword gscale
+    fstp qword ny
+    fld  qword nz
+    fmul qword gscale
+    fstp qword nz
+    ;
+    push edi
+    ;
+    sub esp,16
+    mov edi,esp
+    '
+    ' normals
+    '
+    fld  qword nx
+    fstp dword [edi]
+    fld  qword ny
+    fstp dword [edi+4]
+    fld  qword nz
+    fstp dword [edi+8]
+    glNormal3fv edi
+    fld  qword x
+    fstp dword [edi+0]
+    fld  qword y
+    fstp dword [edi+4]
+    fld  qword z
+    fstp dword [edi+8]
+    glVertex3fv edi
+    '
+    add esp,16
+    pop edi
+      'nx = nx*gscale
+      'ny = ny*gscale
+      'nz = nz*gscale
+      'glNormal3f( nx, ny, nz )
+      'glVertex3f( x, y, z )
+  ; iterations
+
+  dec k
+  cmp k,0
+  jge long toro_do3
+  inc j
+  mov eax,torus_major_res
+  cmp j,eax
+  jle long toro_do2
+  glend
+  inc i
+  mov eax,torus_minor_res
+  cmp i,eax 
+  jl long toro_do1
+  ;
+  glEndlist
+  ret ; end of buildtorus
+  
+  
+  o2 !10 ; align 16 bytes   
+
+''========================================================================
+'' DrawScene() - Draw the scene (a rotating torus)
+''========================================================================
+
+  ;---------
+  DrawScene:
+  ;---------
+    glPushMatrix
+    ; Rotate the object
+    push edi
+    sub esp,12
+    mov edi,esp   
+    fild dword rot_x
+    fmul qword half
+    fstp dword [edi  ]
+    fild dword rot_y
+    fmul qword half
+    fstp dword [edi+4]
+    fild dword rot_z
+    fmul qword half
+    fstp dword [edi+8]
+    ; user rotation
+    glRotatef  [edi  ], 1.0, 0.0, 0.0
+    glRotatef  [edi+4], 0.0, 1.0, 0.0 
+    glRotatef  [edi+8], 0.0, 0.0, 1.0 
+    add esp,12
+    pop edi
+    ; Set model color (used for orthogonal views, lighting disabled)
+    glColor4fv &model_diffuse
+
+    '' Set model material (used for perspective view, lighting enabled)
+    (
+    def GL_AMBIENT   0x1200
+    def GL_DIFFUSE   0x1201
+    def GL_SPECULAR  0x1202
+    def GL_SHININESS 0x1601
+    def GL_FRONT     0x0404
+    glMaterialfv  GL_FRONT, GL_DIFFUSE,   &model_diffuse
+    glMaterialfv  GL_FRONT, GL_SPECULAR,  &model_specular
+    glMaterialf   GL_FRONT, GL_SHININESS, model_shininess
+    )
+
+    call DrawTorus
+    glPopMatrix
+    ret ; end of drawscene
+
+
+  o2 !4
+
+''========================================================================
+'' DrawGrid() - Draw a 2D grid (used for orthogonal views)
+''========================================================================
+
+    ;--------
+    DrawGrid:
+    ;--------
+    ;
+    ;( BYVAL gscale AS SINGLE, BYVAL gsteps AS INTEGER )
+    ( ; local scope
+    indexers `ebp` offset 8 ascending
+    var 4 gscale gsteps ; float & long
+    indexers `ebp` offset 0 descending
+    var 4 i     ; long
+    var 4 z y x ; single
+    
+    push ebp
+    mov  ebp,esp
+    sub esp,32 ; allocate stack space
+    
+    glPushMatrix
+    '' Set background to some dark bluish grey
+    glClearColor  0.05, 0.05, 0.2, 0.0
+    glClear 0x4000 ; GL_COLOR_BUFFER_BIT 
+    ;
+    '' Setup modelview matrix (flat XY view)
+    glLoadIdentity
+      sub esp,72
+      mov edx,esp
+      fldz
+      fst  qword [edx]
+      fst  qword [edx+8]
+      fst  qword [edx+24]
+      fst  qword [edx+32]
+      fst  qword [edx+40]
+      fst  qword [edx+48]
+      fstp qword [edx+64]
+      fld1
+      fst  qword [edx+16]
+      fstp qword [edx+56]
+    gluLookAt ; 0.0, 0.0,  1.0,
+              ; 0.0, 0.0,  0.0,
+              ; 0.0  1.0,  0.0 
+    '' We don't want to update the Z-buffer
+    glDepthMask 0 ; GL_FALSE 
+
+    '' Set grid color
+    glDisable 0xb50 ; GL_LIGHTING
+    glColor3f  0.0, 0.5, 0.5 
+    glBegin 1 ; GL_LINES
+
+    '' Horizontal lines
+      ; x =  gscale * 0.5 * (gsteps-1)
+      ; y = -gscale * 0.5 * (gsteps-1)
+      ;FOR i = 0 TO gsteps-1
+      ;glVertex3f( -x, y, 0.0 )
+      ;glVertex3f( x, y, 0.0 )
+      ;y = y + gscale
+      ;NEXT
+    def init_ixy
+    (
+      fild dword gsteps
+      fld1
+      fsubp st1,st0
+      fmul qword half
+      fmul dword gscale
+      fst  dword x
+      fstp dword y
+      mov i,0
+    )
+    init_ixy
+    xor y,  0x80000000 ; negate
+    (
+        fldz
+        fstp dword z
+        xor x,0x80000000 ; negate
+        glVertex3fv  &x
+        xor x,0x80000000 ; negate
+        glVertex3fv  &x
+        ;y = y + gscale
+        fld  dword y
+        fadd dword gscale
+        fstp dword y
+        inc i
+        mov eax,i
+        cmp eax,gsteps
+        jl repeat
+    )
+    '' Vertical lines
+      ;x = -gscale * 0.5 * (gsteps-1)
+      ;y = gscale * 0.5 * (gsteps-1)
+      ;FOR i = 0 TO gsteps-1
+      ;glVertex3f  x, -y, 0.0
+      ;glVertex3f  x,  y, 0.0
+      ;x = x + gscale
+      ;NEXT
+    init_ixy
+    xor x,  0x80000000 ; negate
+    (
+        fldz
+        fstp dword z
+        xor y,0x80000000 ; negate
+        glVertex3fv  &x
+        xor y,0x80000000 ; negate
+        glVertex3fv  &x
+        ;y = y + gscale
+        fld  dword x
+        fadd dword gscale
+        fstp dword x
+        inc i
+        mov eax,i
+        cmp eax,gsteps
+        jl repeat
+    )
+    glEnd
+
+    '' Enable Z-buffer writing again
+    glDepthMask 1 ; GL_TRUE
+    glPopMatrix
+    mov esp,ebp ; disallocate
+    pop ebp
+    ret 8
+    ) ; end local scope
+    ; end of GRID
+
+  o2 !10 ; align 16 bytes   
+ 
+''========================================================================
+'' DrawAllViews()
+''========================================================================
+
+  ;------------
+  DrawAllViews:
+  ;------------
+
+  ;'' Calculate aspect of window
+  (
+    fld1
+    fstp qword aspect
+    cmp wheight,0
+    jle exit
+    fild  dword wwidth
+    fidiv dword wheight
+    fstp  qword aspect
+  )
+    '' Clear screen
+    glClearColor  0.0, 0.0, 0.0, 0.0
+    mov eax,    0x4000 ; GL_COLOR_BUFFER_BIT
+    or eax,     0x0100 ; GL_DEPTH_BUFFER_BIT
+    glClear eax
+    glEnable    0x0C11 ; GL_SCISSOR_TEST 
+    glEnable    0x0B71 ; GL_DEPTH_TEST 
+    glDepthFunc 0x0203 ; GL_LEQUAL 
+
+    ;------------------------
+    '' ** ORTHOGONAL VIEWS **
+    ;------------------------
+
+    '' For orthogonal views, use wireframe rendering
+    glPolygonMode 0x0408,0x1B01  ; GL_FRONT_AND_BACK, GL_LINE 
+
+    '' Enable line anti-aliasing
+    glEnable 0x0B20 ; GL_LINE_SMOOTH 
+    glEnable 0x0BE2 ; GL_BLEND 
+    glBlendFunc 0x0302, 0x0303 ; GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA
+
+    '' Setup orthogonal projection matrix
+    glMatrixMode 0x1701 ; GL_PROJECTION
+    glLoadIdentity
+       
+    sub esp,48
+    mov edx,esp
+    mov  dword [edx],3
+    fild dword [edx]
+    fst  qword [edx+24]
+    fchs
+    fst  qword [edx+16]
+    fmul qword aspect
+    fst  qword [edx]
+    fchs
+    fstp qword [edx+8]
+    fld1
+    fstp qword [edx+32]
+    mov  dword [edx+40],50
+    fild dword [edx+40]
+    fstp qword [edx+40]
+    glOrtho ; ( -3.0*aspect, 3.0*aspect, -3.0, 3.0, 1.0, 50.0 )
+
+    glMatrixMode 0x1700 ; GL_MODELVIEW 
+    
+   
+    '' Upper left view (TOP VIEW)
+    ;----------------------------
+    glViewport  0, wheightm, wwidthm, wheightm
+    glScissor   0, wheightm, wwidthm, wheightm
+    glLoadIdentity
+      sub esp,72
+      mov edx,esp
+      fldz
+      fst  qword [edx]
+      fst  qword [edx+8]
+      fst  qword [edx+16]
+      fst  qword [edx+24]
+      fst  qword [edx+32]
+      fst  qword [edx+40]
+      fst  qword [edx+48]
+      fstp qword [edx+64]
+      mov  [edx+8],10
+      fild dword [edx+8]
+      fstp  qword [edx+8]
+      mov   dword [edx+16],1000
+      fld1
+      fidiv dword [edx+16]
+      fstp  qword [edx+16]
+      fld1
+      fstp  qword [edx+56]   
+    gluLookAt ; 0.0, 10.0, 1e-3,  '' Eye-position (above)
+              ; 0.0,  0.0, 0.0,   '' View-point
+              ; 0.0,  1.0, 0.0    '' Up-vector
+    
+    call DrawGrid 0.5, 12
+    call DrawScene
+
+    ;
+    '' Lower left view (FRONT VIEW)
+    ;------------------------------
+    glViewport 0, 0, wwidthm, wheightm 
+    glScissor  0, 0, wwidthm, wheightm 
+    glLoadIdentity
+
+      sub esp,72
+      mov edx,esp
+      fldz
+      fst  qword [edx]
+      fst  qword [edx+8]
+      fst  qword [edx+24]
+      fst  qword [edx+32]
+      fst  qword [edx+40]
+      fst  qword [edx+48]
+      fstp qword [edx+64]
+      mov  [edx+16],10
+      fild dword [edx+16]
+      fstp qword [edx+16]
+      fld1
+      fstp qword [edx+56]   
+    gluLookAt ; 0.0, 0.0, 10.0,   '' Eye-position (in front of)
+              ; 0.0, 0.0, 0.0,    '' View-point
+              ; 0.0, 1.0, 0.0     '' Up-vector
+    call DrawGrid 0.5, 12
+    call DrawScene
+
+    '' Lower right view (SIDE VIEW
+    ;-----------------------------
+    glViewport wwidthm, 0, wwidthm, wheightm
+    glScissor wwidthm, 0, wwidthm, wheightm
+    glLoadIdentity
+      sub esp,72
+      mov edx,esp
+      mov [edx],10
+      fild dword [edx]
+      fstp qword [edx]
+      fldz
+      fst  qword [edx+8]
+      fst  qword [edx+16]
+      fst  qword [edx+24]
+      fst  qword [edx+32]
+      fst  qword [edx+40]
+      fst  qword [edx+48]
+      fstp qword [edx+64]
+      fld1
+      fstp qword [edx+56]
+
+    gluLookAt  ; 10.0, 0.0, 0.0,    '' Eye-position (to the right)
+               ;  0.0, 0.0, 0.0,    '' View-point
+               ;  0.0, 1.0, 0.0     '' Up-vector
+
+    call DrawGrid 0.5, 12
+    call DrawScene
+
+    '' Disable line anti-aliasing
+    glDisable 0x0B20 ; GL_LINE_SMOOTH
+    glDisable 0x0BE2 ; GL_BLEND
+    
+perspec:
+
+    '' ** PERSPECTIVE VIEW **
+
+    '' For perspective view, use solid rendering
+    glPolygonMode 0x0408, 0x1B02  ; GL_FRONT_AND_BACK, GL_FILL
+
+    '' Enable face culling (faster rendering)
+    glEnable    0x0B44 ; GL_CULL_FACE
+    glCullFace  0x0405 ; GL_BACK
+    glFrontFace 0x0900 ; GL_CW
+
+    '' Setup perspective projection matrix
+    glMatrixMode 0x1701 ; GL_PROJECTION
+    glLoadIdentity
+      sub esp,32
+      mov edx,esp
+      mov [edx],65
+      fild dword [edx]
+      fstp qword [edx]
+      fld  qword aspect
+      fstp qword [edx+8]
+      fld1
+      fstp qword [edx+16]
+      mov [edx+24],50
+      fild dword [edx+24]
+      fstp qword [edx+24]
+    gluPerspective ; 65.0, aspect, 1.0, 50.0
+    glMatrixMode 0x1700 ; GL_MODELVIEW
+
+    '' Upper right view (PERSPECTIVE VIEW)
+    mov ecx,wwidth
+    shr ecx,1
+    mov edx,wheight
+    shr edx,1
+    glViewport ecx, edx, ecx, edx
+    mov ecx,wwidth
+    shr ecx,1
+    mov edx,wheight
+    shr edx,1
+    glScissor ecx, edx, ecx, edx
+    glLoadIdentity
+      sub esp,72
+      mov edx,esp
+    fldz
+    fst  qword [edx+24]
+    fst  qword [edx+32]
+    fst  qword [edx+40]
+    fst  qword [edx+48]
+    fstp qword [edx+64]
+    fld1
+    fstp qword [edx+56]
+    mov  dword [edx],3
+    fild dword [edx]
+    fst  qword [edx]
+    fst  qword [edx+16]
+    fld1
+    fadd st0,st0
+    fdivp st1,st0
+    fstp  qword ptr [edx+8]
+    gluLookAt ; 3.0, 1.5, 3.0, '' Eye-position
+              ; 0.0, 0.0, 0.0, '' View-point
+              ; 0.0, 1.0, 0.0  '' Up-vector
+    '' Configure and enable light source 1
+    def GL_LIGHT1   0x4001
+    def GL_POSITION 0x1203
+    def GL_AMBIENT  0x1200
+    def GL_DIFFUSE  0x1201
+    def GL_SPECULAR 0x1202
+    ;
+    glLightfv GL_LIGHT1, GL_POSITION, &light_position 
+    glLightfv GL_LIGHT1, GL_AMBIENT,  &light_ambient 
+    glLightfv GL_LIGHT1, GL_DIFFUSE,  &light_diffuse
+    glLightfv GL_LIGHT1, GL_SPECULAR, &light_specular
+    glEnable GL_LIGHT1
+    glEnable 0x0B50 ; GL_LIGHTING
+
+    '' Draw scene
+    call DrawScene
+
+    glDisable 0x0B50 ; GL_LIGHTING
+    glDisable 0x0B44 ; GL_CULL_FACE
+    glDisable 0x0B71 ; GL_DEPTH_TEST
+    glDisable 0x0C11 ; GL_SCISSOR_TEST
+
+border:
+
+    '' Draw a border around the active view
+    (
+      ;IF( active_view > 0 AND active_view <> 2 ) THEN
+      mov eax,active_view
+      cmp eax,0
+      jle long exit
+      cmp eax,2
+      jz long exit
+      glViewport 0, 0, wwidth, wheight
+      glMatrixMode 0x1701 ; GL_PROJECTION
+      glLoadIdentity
+        sub esp,48
+        mov edx,esp
+        fldz
+        fst  qword [edx]
+        fst  qword [edx+16]
+        fstp qword [edx+32]
+        fld1
+        fst  qword [edx+40] ; 1
+        fadd st0,st0
+        fst  qword [edx+08] ; 2
+        fstp qword [edx+24] ; 2
+      glOrtho ; 0.0, 2.0, 0.0, 2.0, 0.0, 1.0
+      glMatrixMode 0x1700 ; GL_MODELVIEW
+      glLoadIdentity
+      glColor3f 1.0 ,0.5 ,0.0
+      sub esp,12
+      mov edx,esp
+      mov eax,active_view
+      dec eax
+      mov ecx,1
+      and ecx,eax
+      mov [edx],ecx
+      mov ecx,eax
+      shr ecx,1 ; \2
+      neg ecx
+      add ecx,1
+      mov [edx+4],ecx
+      fild dword [edx]
+      fstp dword [edx]
+      fild dword [edx+4]
+      fstp dword [edx+4]
+      mov  dword [edx+8],0
+      glTranslatef ; (active_view-1) AND 1, 1-(active_view-1)\2, 0.0
+      glBegin 3 ; GL_LINE_STRIP
+        glVertex2i 0, 0
+        glVertex2i 1, 0
+        glVertex2i 1, 1
+        glVertex2i 0, 1
+        glVertex2i 0, 0
+      glEnd
+    ) ; scope
+ret ; end of drawallviews
+
+
+
+;============================================================================
+; do_the_next_frame(BYVAL hWnd AS HWND )  ' construct each frame
+;============================================================================
+
+  ;----------
+  next_frame:
+  ;----------
+  (
+    def hWnd [ebp+8]
+  
+    mov eax,bselect
+    or  eax,kselect
+    or  eax,refresh
+    mov dword ptr refresh,0
+    (
+      cmp eax,0
+      jz exit
+      ; 0x4000 GL_COLOR_BUFFER_BIT 
+      ; 0x0100 GL_DEPTH_BUFFER_BIT
+      ; 0x4100 
+      glClear 0x4100 ; GL_COLOR_BUFFER_BIT OR GL_DEPTH_BUFFER_BIT
+      call DrawAllViews
+      ;glfinish
+      SwapBuffers HDC
+    )
+    skip
+    (
+      lea edx,grtic1
+      mov eax,[edx+8]
+      mov [edx],eax
+      mov eax,[edx+12]
+      mov [edx+4],eax
+    )
+    ret 4
+  )
+
+;============================================================================
+
+  ;-------
+  WinMain:
+  ;-------  
+                    '
+ 
+  def CS_VREDRAW          1
+  def CS_HREDRAW          2
+  def IDI_APPLICATION     32512
+  def IDC_ARROW           32512
+  def WHITE_BRUSH         0
+  def MB_ICONERROR        16
+  def CW_USEDEFAULT       0x80000000
+  def WS_OVERLAPPEDWINDOW 0x00cf0000
+  def WS_VISIBLE          0x10000000   
+
+  push ebp
+  mov ebp,esp
+  ;allocate stack space
+  sub esp,100
+  ; setup class data
+  mov edi,esp
+                     '
+  def wclass     edi
+  def cbsize     [edi]
+  def style      [edi+04]
+  def pWndproc   [edi+08]
+  def cbClsExtra [edi+12]
+  def cbWndExtra [edi+16]
+  def hInstance  [edi+20]
+  def icon       [edi+24]
+  def cursor     [edi+28]
+  def background [edi+32]
+  def MenuName   [edi+36]
+  def ClassName  [edi+40]
+  def IconSm     [edi+44]
+   
+  mov cbsize,48    
+  mov eax,CS_HREDRAW ; 2          '
+
+  or  eax, 1 'CS_VREDRAW ; 1
+
+  mov style,eax
+
+  call fwd here : .here : pop eax : sub eax,here : add eax,WndProc
+  mov pWndProc,eax
+
+  ;pWndProc=call WndProcLocate
+  mov  cbClsExtra,0    
+  mov  cbWndExtra,0    
+  mov  eax,[ebp+8]
+  mov  hInstance,eax
+
+  Icon=LoadIcon [ebp+8], IDI_APPLICATION
+  cursor=LoadCursor 0,IDC_ARROW
+  background=GetStockObject 4 ; 0..4 BRUSHes '
+  mov MenuName,0
+  `HelloWin`
+  mov ClassName,eax
+  IconSm=LoadIcon [ebp+8], IDI_APPLICATION
+  RegisterClassEx wclass
+   
+    cmp eax,0
+    (                           '
+      jnz exit                 '
+      MessageBox 0,`Registration failed`,`Problem`,MB_ICONERROR       '
+      xor eax,eax              ' zero eax
+      jmp long end_app         ' jmp xitwm
+    )
+
+    ;hWnd=CreateWindowEx 0, ClassName,`Hello Window`,
+    ;  WS_OVERLAPPEDWINDOW,
+    ;  CW_USEDEFAULT,CW_USEDEFAULT,640,480,
+    ;  0,0,hInstance,0
+    ;(
+    ;  cmp eax,0                  '
+    ;  jnz exit                    '
+    ;  MessageBox 0,`Unable to create window`,`problem`,MB_ICONERROR
+    ;  xor eax,eax             ' zero eax
+    ;  jmp long end_app          ' jmp xitwm
+    ;)
+    
+
+  type PixelFormatDescriptor
+  (
+  ; 40 bytes
+  2 nSize
+  2 nVersion
+  4 dwFlags
+  1 iPixelType
+  1 cColorBits
+  1 cRedBits
+  1 cRedShift
+  1 cGreenBits
+  1 cGreenShift
+  1 cBlueBits
+  1 cBlueShift
+  1 cAlphaBits
+  1 cAlphaShift
+  1 cAccumBits
+  1 cAccumRedBits
+  1 cAccumGreenBits
+  1 cAccumBlueBits
+  1 cAccumAlphaBits
+  1 cDepthBits
+  1 cStencilBits
+  1 cAuxBuffers
+  1 iLayerType
+  1 bReserved
+  4 dwLayerMask
+  4 dwVisibleMask
+  4 dwDamageMask
+  )
+  
+
+    var PixelFormatDescriptor pfd
+    ; words
+    mov eax,1
+    shl eax,16
+    add al, sizeof PIXELFORMATDESCRIPTOR
+    mov  pfd.nsize,eax
+    ;mov  word  pfd.nSize, sizeof PIXELFORMATDESCRIPTOR
+    ;mov  word  pfd.nVersion      ,1    ; Version. Always set to 1.
+      mov eax                     ,4    ; PFD_DRAW_TO_WINDOW
+      or  eax                     ,0x20 ; PFD_SUPPORT_OPENGL
+      or  eax                     ,1    ; FD_DOUBLEBUFFER
+    mov       pfd.dwFlags         ,eax  ;
+    mov byte  pfd.iPixelType      ,0    ; PFD_TYPE_RGBA      ; Red, Green, Blue, & Alpha Mode
+    mov byte  pfd.cColorBits      ,0x20 ; 32-Bit Color Mode
+    mov byte  pfd.cRedBits        ,NULL ; Ignore Color and Shift Bits...
+    mov byte  pfd.cRedShift       ,NULL
+    mov byte  pfd.cGreenBits      ,NULL
+    mov byte  pfd.cGreenShift     ,NULL
+    mov byte  pfd.cBlueBits       ,NULL
+    mov byte  pfd.cBlueShift      ,NULL
+    mov byte  pfd.cAlphaBits      ,NULL
+    mov byte  pfd.cAlphaShift     ,NULL
+    mov byte  pfd.cAccumBits      ,NULL
+    mov byte  pfd.cAccumRedBits   ,NULL
+    mov byte  pfd.cAccumGreenBits ,NULL
+    mov byte  pfd.cAccumBlueBits  ,NULL
+    mov byte  pfd.cAccumAlphaBits ,NULL
+    mov byte  pfd.cDepthBits      ,16   ; bits z-buffer depth 8 16 24
+    mov byte  pfd.cStencilBits    ,1    ; Stencil Buffer
+    mov byte  pfd.cAuxBuffers     ,NULL ; No Auxiliary Buffer
+    mov byte  pfd.iLayerType      ,0    ; PFD_MAIN_PLANE ; Main Drawing Plane
+    mov byte  pfd.bReserved       ,NULL
+    mov dword pfd.dwLayerMask     ,NULL
+    mov dword pfd.dwVisibleMask   ,NULL
+    mov dword pfd.dwDamageMask    ,NULL
+
+    ;hDC=GetDC hWnd
+    ;ReleaseDC hWnd,hDC
+    ;DestroyWindow hWndP
+
+    mov eax, WS_VISIBLE
+    or  eax, WS_OVERLAPPEDWINDOW
+    mov style,eax
+    hWnd = CreateWindowEx 0,ClassName,`Oxygen Opengl Demo`,
+    style,100,100,400,400,0,0,hInstance,0
+    
+    hDC=GetDC hWnd
+    nPixelFormat = ChoosePixelFormat hDC, &pfd
+    SetPixelFormat hDC, nPixelFormat, &pfd
+    hRC = wglCreateContext hDC
+    wglMakeCurrent hDC, hRC
+    ; intialise opengl
+    
+    var 4 timerval
+    mov timerval,16 ' a bit less than 1/60 sec
+    SetTimer hWnd,1,timerval,NULL
+
+    ShowWindow hWnd,[ebp+20] ' show 
+    UpdateWindow hWnd
+
+
+    '     MESSAGE LOOP          '
+    
+    add edi,52 ; place for wmsg struc
+    (
+      GetMessage edi,0,0,0
+      cmp eax,0
+      jz exit
+      TranslateMessage edi
+      DispatchMessage edi
+      repeat
+    )
+ 
+    KillTimer hWnd,1
+    glDeleteLists 1000, 255 ' font
+    wglMakeCurrent hDC, NULL
+    wglDeleteContext hRC
+    ReleaseDC hWnd,hDC
+
+    mov eax,[edi+8] ' Msg.wParam 3rd param   
+    '
+    end_app:
+    '
+    ; deallocate stack space
+    mov esp,ebp
+    pop ebp                 '
+    ret 16 ;  ; end of WinMain
+
+
+    type RECT
+    (
+    ; 16 bytes
+    4  left
+    4  top
+    4  right
+    4  bottom
+    )
+
+    type PAINTSTRUCT
+    (
+    ; 64 bytes
+    4    hDC
+    4    fErase
+    rect rcPaint
+    4    fRestore
+    4    fIncUpdate
+    32   rgbReserved
+    )
+
+
+    def WM_CREATE        1
+    def WM_DESTROY       2
+    def WM_MOVE          3
+    def WM_SIZE          5
+    def WM_ACTIVATE      6
+    def WM_PAINT         15
+    def WM_CLOSE         16
+    def WM_TIMER         0x113
+    ;
+    def WM_KEYDOWN       0x100
+    def WM_KEYUP         0x101
+    def WM_CHAR          0x102
+    def WM_DEADCHAR      0x103
+    def WM_SYSKEYDOWN    0x104
+    def WM_SYSKEYUP      0x105
+    def WM_SYSCHAR       0x107
+    def WM_MOUSEMOVE     0x200
+    def WM_LBUTTONDOWN   0x201
+    def WM_LBUTTONUP     0x202
+    def WM_LBUTTONDBLCLK 0x203   
+    def WM_RBUTTONDOWN   0x204
+    def WM_RBUTTONUP     0x205
+    def WM_MBUTTONDOWN   0x207
+    def WM_MBUTTONUP     0x208
+    def WM_MBUTTONDBLCLK 0x209
+    def WM_MOUSEWHEEL    0x20a
+ 
+    ;-------    
+    WndProc:
+    ;-------
+  
+    ( ; local scope
+    
+    indexers `ebp` offset 8 ascending ; params
+    var 4 hWnd wMsg wParam lParam
+    ;
+    push ebp                '
+    mov ebp,esp 
+    push esi
+    push ebx
+
+    call fwd here : .here : pop eax : sub eax,here : add eax,bssdata
+    mov ebx,[eax+624]   ; restore procs & globals table ptr
+    mov esi,[eax+632] ; restore runtimes table ptr
+    ;
+    indexers `ebp` offset -8 descending ; locals
+    ;
+    ; restore essential pointers
+    ;
+    ;call WndProcLocate
+    ;mov esi, [eax-4] ; dlls & globals
+    ;mov ebx, [eax-8] ; runtimes
+
+    
+    ;
+    ; not using stack locals so no subractions for esp
+    
+            '
+    mov eax,wMsg
+    (
+    
+ skip (
+        cmp eax, WM_CREATE   '
+        jnz exit
+        xor eax,eax
+        jmp long endselect
+      )  ; end create
+        
+      (
+        cmp eax, WM_DESTROY
+        jnz exit
+        PostQuitMessage 0
+        xor eax,eax
+        jmp long endselect
+      ) ; end destroy 
+
+      (
+        cmp eax,WM_TIMER
+        jnz exit
+        (
+          cmp wParam,1
+          jnz exit
+          call next_frame hWnd
+          mov refresh,0
+          (
+            cmp ReqShutDown,0
+            jz exit
+            PostQuitMessage 0
+          )
+        )
+        xor eax,eax
+        jmp long endselect
+      ) ; end timer
+
+ skip (
+        cmp eax,WM_PAINT
+        ;
+        jnz exit
+        ;mov refresh,1
+        sub esp,100 ; extra workspace
+        def cRect   [ebp-60]
+        def hDC     [ebp-20]
+        def Paintst  [ebp-100]
+        hDC=BeginPaint hWnd,&Paintst
+        GetClientRect  hWnd,&cRect
+          ; style
+          ; 0x20 DT_SINGLELINE
+          ; 0x04 DT_VCENTER
+          ; 0x01 DT_CENTER
+          ; 0x25
+        DrawText hDC,`Hello World!`,-1,&cRect,0x25
+        EndPaint hWnd,&Paintst
+        add esp,100
+        xor eax,eax
+        jmp long endselect
+      ) ; end paint
+
+      (
+        cmp eax,WM_SIZE
+        jnz long exit
+        'Set the viewport to new dimensions
+        ;wWidth=CLNG(LOword(lParam))
+        ;wHeight=CLNG(HIword(lParam))
+        mov eax,lParam
+        and eax,0xffff
+        mov wWidth,eax
+        mov eax,lParam
+        shr eax,16
+        mov wHeight,eax
+        ;glViewport 0, 0, wWidth, wHeight
+        ;lea edx,viewport
+        ;mov [edx],0
+        ;mov [edx+4],0
+        ;mov eax,wwidth
+        ;mov [edx+8],eax
+        ;mov eax,wheight
+        ;mov [edx+12],eax       
+        ; viewport(0)=0 : viewport(1)=0 : viewport(2)=wWidth : viewport(3)=wHeight
+        glMatrixMode 0x1701 ; GL_PROJECTION
+        glLoadIdentity
+          sub esp,32
+          mov edx,esp
+          mov [edx],45
+          fild dword [edx]
+          fstp qword [edx]
+          fild dword  wwidth
+          fidiv dword wHeight
+          fstp qword [edx+08]
+          fld1
+          fstp qword [edx+16]
+          mov  [edx+24],100
+          fild dword [edx+24]
+          fstp qword [edx+24]
+        gluPerspective ; 45.0  wWidth/wHeight  1.0, 100.0
+        glMatrixMode 0x1700 ; GL_MODELVIEW
+        ;glGetDoublev 0x0BA6, &ModelView  ; GL_MODELVIEW_MATRIX, &ModelView
+        ;glGetDoublev 0x0BA7, &Projection ; GL_PROJECTION_MATRIX, &Projection
+
+        ; centre point
+        ;-------------
+        mov eax,wwidth
+        shr eax,1
+        mov wwidthm,eax
+        mov eax,wheight
+        shr eax,1
+        mov wheightm,eax
+        
+        mov refresh,1
+        xor eax,eax
+        jmp long endselect
+      )
+
+      (
+        cmp eax,WM_KEYDOWN
+        jnz exit
+        mov kselect,1
+        (
+          mov eax,wParam
+          cmp al,27  ' esc key
+          jnz exit
+          PostMessage hWnd,WM_CLOSE,0,0
+        )
+        xor eax,eax  ' zero 
+        jmp long endselect
+      ) ; end keydown
+      
+      (
+        cmp eax,WM_KEYUP
+        jnz exit
+        mov kselect,0
+        jmp long endselect
+      ) ; end keyup
+
+      (
+        cmp eax,WM_LBUTTONDOWN
+        jnz long exit
+        ; bLeft  = 1 : sPosX=mPosX : sPosY=mPosy
+        mov bleft,1
+        or bselect,2
+        sPosX = mPosx
+        sPosY = mPosY
+        mov eax,lParam
+        mov xpos,eax
+        and xpos,0xffff
+        mov ypos,eax
+        shr ypos,16
+        '' Detect which of the four views was clicked
+        mov active_view,1
+        mov eax,wwidth
+        shr eax,1
+        cmp xpos,eax
+        (
+         jl exit
+         inc active_view
+        )
+        mov eax,wheight
+        shr eax,1
+        cmp ypos,eax
+        (
+         jl exit
+         add active_view,2
+        )
+        xor eax,eax  ' zero 
+        jmp long endselect
+      ) ; end LButtonDown
+      
+      (
+        cmp eax,WM_LBUTTONUP
+        jnz exit
+        mov bselect,0
+        mov bleft,0
+        ;mov active_view,0
+        xor eax,eax  ' zero 
+        jmp long endselect
+      )
+      
+      (
+        cmp eax,WM_MOUSEMOVE
+        jnz long exit
+        var 4 x y ; static
+        ;
+        mov bselect, 1
+        mPosX = lParam
+        mPosY = lParam
+        and mPosX,0xffff
+        shr mPosY,16
+        ;
+        (
+          cmp bleft,1
+          jnz long exit
+          x = mPosX
+          y = mPosY
+          '' Depending on which view was selected, rotate around different axes
+          mov eax, active_view
+          (
+            cmp eax,1 ; CASE 1
+            jnz exit
+            mov eax,rot_x
+            add eax,y
+            sub eax,ypos
+            mov rot_x,eax
+            ;
+            mov eax,rot_z
+            add eax,x
+            sub eax,xpos
+            mov rot_z,eax
+            jmp endpselect
+            ;
+            ;rot_x = rot_x + y - ypos
+            ;rot_z = rot_z + x - xpos
+          )
+          (
+            cmp eax,3 ; CASE 3
+            jnz exit
+            mov eax,rot_x
+            add eax,y
+            sub eax,ypos
+            mov rot_x,eax
+            ;
+            mov eax,rot_y
+            add eax,x
+            sub eax,xpos
+            mov rot_y,eax
+            jmp endpselect
+            ;
+            ;rot_x = rot_x + y - ypos
+            ;rot_y = rot_y + x - xpos
+          )
+          (
+            cmp eax,4 ; CASE 4
+            jnz exit
+            mov eax,rot_y
+            add eax,x
+            sub eax,xpos
+            mov rot_y,eax
+            ;
+            mov eax,rot_z
+            add eax,y
+            sub eax,ypos
+            mov rot_z,eax
+            jmp endpselect
+            ;
+            ;rot_y = rot_y + x - xpos
+            ;rot_z = rot_z + y - ypos
+          )
+          (
+            ;CASE ELSE
+            '' Do nothing for perspective view, or if no view is selected
+          )
+          endpselect:
+          ;----------
+          '' Remember mouse position
+          xpos = x
+          ypos = y
+        )
+        jmp long endselect
+      ) ; end MOUSEMOVE 
+      ;
+      ; case else
+      DefWindowProc hWnd,wMsg,wParam,lParam
+    ) ; end message processing
+    endselect:
+    ;
+    pop ebx
+    pop esi
+    mov esp,ebp
+    pop ebp
+    ret 16 ; end WNDPROC
+
+    ) ; local scope
+"
+' thinBASIC SYNTAX
+' ----------------
+
+dim vv,ww as long
+dim ff as single
+'File_Save("z.txt",o2_view(src))
+'msgbox 0,o2_prep src
+o2_asmo src
+if len(o2_error) then
+  'file_save("t.txt",o2_view(src))
+  msgbox 0,o2_error
+  stop
+end if  
+o2_exec
+'msgbox 0,o2_len  
+'msgbox 0,vv+$cr+ww
+  

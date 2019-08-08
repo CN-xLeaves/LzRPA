@@ -1,0 +1,69 @@
+  USES "TcpUdp"
+  USES "FILE"
+  USES "Console"
+  
+  '---Setting up some initial values
+  DIM MyPage  AS STRING = "http://www.thinbasic.com/"
+  DIM MySite  AS STRING = "www.thinbasic.com"
+  DIM SavePage  AS STRING = APP_SourcePath & "Page.txt"
+ 
+  DIM sBuffer AS STRING
+  DIM sPage   AS STRING     
+  DIM Count   AS LONG
+  DIM lError  AS LONG
+  
+  '---Get a new free file
+  DIM nFile   AS LONG = Tcp_FreeFile
+  
+  console_WriteLine("Starting connection to " & MySite)
+ 
+  '---Connecting to site
+  lError = TCP_Open(80, MySite, nFile, 60000)
+
+  '---If no errors procede with page download
+  IF lError = 0 THEN
+    console_WriteLine("Connection established.")
+    console_WriteLine("Starting to dowload requested page: " & MyPage)
+
+    '---Send request to web server
+    TCP_Print(nFile, "GET " & MyPage & " HTTP/1.0")
+    TCP_Print(nFile, "Referer: http://www.thinbasic.com/")
+    TCP_Print(nFile, "User-Agent: TCP Test using thinBasic")
+    TCP_Print(nFile, "")
+
+    '---Ahere loop till no more data to download
+    DO
+      INCR Count
+      sBuffer = TCP_Recv(nFile, 4096)
+      sPage = sPage & sBuffer
+      console_Write(".")
+    LOOP WHILE ((LEN(sBuffer) > 0) AND (ERR = 0))
+
+    Console_WriteLine("")
+    Console_WriteLine("Operation finished.")  
+
+    Console_WriteLine("Closing connection.")  
+    '---Close connection
+    TCP_Close(nFile)
+    
+    Console_WriteLine("Saving downloaded page into: " & SavePage)
+    
+    '---Removing http protocol header
+    dim ProtocolHeader          as string
+    dim ProtocolHeaderPosition  as long
+    ProtocolHeaderPosition = instr(sPage, $crlf & $crlf)
+    if ProtocolHeaderPosition > 0 then
+      ProtocolHeader = left$(sPage, ProtocolHeaderPosition)
+      Console_WriteLine("Returned header: ")
+      Console_WriteLine(ProtocolHeader)
+      
+      sPage = mid$(sPage, ProtocolHeaderPosition + 4)
+    end if
+    '---Save buffer to file
+    File_Save(SavePage, sPage)
+  ELSE
+    console_WriteLine("An error occured during connection. Error code is: " & lError)
+  END IF        
+  Console_WriteLine("Press any key to finish.")  
+  
+  Console_WaitKey

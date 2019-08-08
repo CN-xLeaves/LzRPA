@@ -1,0 +1,48 @@
+
+<tr>
+<td></td>
+<td>
+<pre>
+
+data "void"        ,-15, 11, 0
+data "byte"        ,-15, 12, &h21
+data "astring"     ,-15, 14, &he1
+data "pstring"     ,-15, 14, &he1
+data "bstring"     ,-15, 15, &hc1
+data "char"        ,-15, 13, &ha1
+data "zstring"     ,-15, 16, &ha1
+data "asciiz"      ,-15, 16, &ha1
+
+data "short"       ,-15, 17, 2
+data "long"        ,-15, 18, 4
+data "int"         ,-15, 19, 4
+data "integer"     ,-15, 20, 4
+data "float"       ,-15, 21, &h64
+data "single"      ,-15, 22, &h64
+data "double"      ,-15, 23, &h68
+data "quad"        ,-15, 24, 8
+data "word"        ,-15, 25, &h22
+data "dword"       ,-15, 26, &h24
+data "qword"       ,-15, 27, &h28
+data "uint"        ,-15, 28, &h24
+
+data "__int8"      ,-15, 30, 1
+data "__int16"     ,-15, 31, 2
+data "__int32"     ,-15, 32, 4
+data "__int64"     ,-15, 33, 8
+data "int8_t"      ,-15, 34, 1
+data "int16_t"     ,-15, 35, 2
+data "int32_t"     ,-15, 36, 4
+data "int64_t"     ,-15, 37, 8
+data "uint8_t"     ,-15, 38, &h21
+data "uint16_t"    ,-15, 39, &h22
+data "uint32_t"    ,-15, 40, &h24
+data "uint64_t"    ,-15, 41, &h28
+
+data "any"         ,-15, 42, &h08
+data "sys"          ,-15, 42, &h08
+data "bool"         ,-15, 42, &h08
+
+</pre>
+</td>
+</tr>

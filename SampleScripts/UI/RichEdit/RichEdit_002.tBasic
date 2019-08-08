@@ -1,0 +1,495 @@
+ USES "UI"
+  USES "FILE"
+  uses "OS"
+  
+  #include "%APP_INCLUDEPATH%\RichEdit32.inc"
+
+  Begin ControlID
+    %IDBTN_BOLD     
+    %IDBTN_ITALIC
+    %IDBTN_ULINE
+    %IDBTN_STRIKE
+    
+    %IDCHK_COLOR    
+    
+    %IDCB_FONTNAME  
+    %IDCB_FONTSIZE
+    %IDCB_ZOOM
+    
+    %ID_EDITOR      
+    %ID_STATUSBAR
+    
+    '---Menu commands
+    '---File
+    %ID_MENU_FILE_OPEN       
+    %ID_MENU_FILE_SAVEAS     
+    %ID_MENU_FILE_EXIT       
+
+    '---Edit
+    
+    '---Format
+    %ID_MENU_FORMAT_BG_COLOR 
+    %ID_MENU_FORMAT_FG_COLOR 
+
+    '---RTF Control
+    %ID_MENU_CONTROL_BG_COLOR
+    %ID_MENU_CONTROL_TEST_UBB
+
+    '---Help
+    %ID_MENU_HELP            
+    %ID_MENU_ABOUT           
+  End ControlID  
+
+
+  global hEdit  AS dword
+  global hMenu  AS dword
+ 
+  function Main()
+    local hDlg   AS dword
+    '---Menu handle
+    LOCAL hPopupFile, hPopupEdit, hPopupFormat, hPopupFormat, hPopupControl, hPopupHelp  AS dword
+
+    '---First create a top-level menu:
+    MENU NEW BAR TO hMenu
+
+    '---Add a top-level menu item with a popup menu:
+    MENU NEW POPUP TO hPopupFile
+    MENU ADD POPUP,  hMenu, "&File", hPopupFile, %MF_ENABLED
+    MENU ADD STRING, hPopupFile, "&Open ...", %ID_MENU_FILE_OPEN, %MF_ENABLED
+    MENU ADD STRING, hPopupFile, "&Save as ...", %ID_MENU_FILE_SAVEAS, %MF_ENABLED
+    MENU ADD STRING, hPopupFile, "-",      0, 0
+    MENU ADD STRING, hPopupFile, "&Exit", %ID_MENU_FILE_EXIT, %MF_ENABLED
+
+    '---Add a top-level menu item with a popup menu:
+    MENU NEW POPUP TO hPopupFormat
+    MENU ADD POPUP,  hMenu, "&Format", hPopupFormat, %MF_ENABLED
+    MENU ADD STRING, hPopupFormat, "&Background color ...", %ID_MENU_FORMAT_BG_COLOR, %MF_ENABLED
+    MENU ADD STRING, hPopupFormat, "&Foreground color ...", %ID_MENU_FORMAT_FG_COLOR, %MF_ENABLED
+
+    '---Add a top-level menu item with a popup menu:
+    MENU NEW POPUP TO hPopupControl
+    MENU ADD POPUP,  hMenu, "&Control", hPopupControl, %MF_ENABLED
+    MENU ADD STRING, hPopupControl, "&Background color ...", %ID_MENU_CONTROL_BG_COLOR, %MF_ENABLED
+    MENU ADD STRING, hPopupControl, "-"      , 0, 0
+    MENU ADD STRING, hPopupControl, "Test UBB Code", %ID_MENU_CONTROL_TEST_UBB, %MF_ENABLED
+
+    '---Finally, we'll add a second top-level menu and popup
+    '---For this popup, we can reuse the first popup variable:
+    MENU NEW POPUP TO hPopupHelp
+    MENU ADD POPUP , hMenu     , "&Help"  , hPopupHelp, %MF_ENABLED
+    MENU ADD STRING, hPopupHelp, "&Help"  , %ID_MENU_HELP, %MF_ENABLED
+    MENU ADD STRING, hPopupHelp, "-"      , 0, 0
+    MENU ADD STRING, hPopupHelp, "&About" , %ID_MENU_ABOUT, %MF_ENABLED
+ 
+    DIALOG NEW 0, "TinyWord - RichEdit sample", -1, -1, 600, 350, _
+                                                %WS_DLGFRAME          | _
+                                                %ds_center            | _
+                                                %WS_CAPTION           | _
+                                                %WS_SYSMENU           | _
+                                                %WS_OVERLAPPEDWINDOW  | _
+                                                %ws_clipsiblings      | _
+                                                %ws_clipchildren      , _
+                                                0 TO hDlg
+
+
+    DIM lx, ly, wx, hy AS LONG
+    DIALOG GET SIZE   hDlg TO lx, ly
+    DIALOG GET CLIENT hDlg TO wx, hy
+
+    '---Attach menu to dialog          
+    MENU ATTACH hMenu, hDlg
+    
+    CONTROL ADD rtf_GetClass, hDlg, %ID_EDITOR, "", 0, 24, 600, 300, _
+                                                    %WS_CHILD           OR _
+                                                    %WS_CLIPCHILDREN    OR _
+                                                    %WS_VISIBLE         OR _
+                                                    %ES_MULTILINE       OR _
+                                                    %WS_VSCROLL         OR _
+                                                    %WS_HSCROLL         OR _
+                                                    %ES_AUTOVSCROLL     OR _
+                                                    %ES_AUTOHSCROLL     OR _
+                                                    %ES_WANTRETURN      , _
+                                                    %WS_EX_CLIENTEDGE
+
+    '---Set event mask so we'll get EN_SELCHANGE and %ENM_MOUSEEVENTS notifications
+    CONTROL SEND hDlg, %ID_EDITOR, %EM_SETEVENTMASK, 0, %ENM_SELCHANGE OR %ENM_MOUSEEVENTS
+    '---Set some options
+    CONTROL SEND hDlg, %ID_EDITOR, %EM_SETOPTIONS, %ECOOP_OR, %ECO_SELECTIONBAR
+    '---Allow 1 meg files
+    control send hDlg, %ID_EDITOR, %EM_LIMITTEXT, 1000000, 0
+
+    '---Return window handle to richedit text
+    CONTROL HANDLE hDlg, %ID_EDITOR TO hEdit
+
+    '---Create combo box for font names
+    dim FontList() as string
+    PARSE(Font_List, FontList, $tab)
+    CONTROL ADD COMBOBOX, hDlg, %IDCB_FONTNAME, FontList(), 4, 4, 100, 120, %CBS_DROPDOWNLIST OR %CBS_SORT OR %WS_VSCROLL
+ 
+    '---Create combo box for font size
+    DIM FontSize() AS STRING
+    dim tmpFontSizeString as string
+    tmpFontSizeString = "2 4 6 8 9 10 11 12 14 16 18 20 22 24 26 28 30 32 34 36 40 42 44 46 48 50 60 72"
+    PARSE(tmpFontSizeString, FontSize, $spc)
+    CONTROL ADD COMBOBOX, hDlg, %IDCB_FONTSIZE, FontSize(), 110, 4, 30, 120, %CBS_DROPDOWNLIST OR %WS_VSCROLL
+
+    '---Create some push button
+    CONTROL ADD BUTTON, hDlg, %IDBTN_BOLD,     "&B",    150, 4, 14,  14, %BS_AUTOCHECKBOX OR %BS_PUSHLIKE
+    CONTROL ADD BUTTON, hDlg, %IDBTN_ITALIC,   "&I",    164, 4, 14,  14, %BS_AUTOCHECKBOX OR %BS_PUSHLIKE
+    CONTROL ADD BUTTON, hDlg, %IDBTN_ULINE ,   "&U",    178, 4, 14,  14, %BS_AUTOCHECKBOX OR %BS_PUSHLIKE
+    CONTROL ADD BUTTON, hDlg, %IDBTN_STRIKE ,  "&S",    192, 4, 14,  14, %BS_AUTOCHECKBOX OR %BS_PUSHLIKE
+
+    '---Create combo box for font size
+    DIM Zooms() AS STRING
+    dim tmpZoomsString as string
+    tmpZoomsString = "10% 20% 30% 40% 50% 60% 70% 80% 90% 100% 110% 120% 130% 140% 150% 160% 170% 180% 190% 200% 250% 300%"
+    PARSE(tmpZoomsString, Zooms, $spc)
+    CONTROL ADD COMBOBOX, hDlg, %IDCB_ZOOM, Zooms(), 210, 4, 40, 100, %CBS_DROPDOWNLIST OR %WS_VSCROLL
+    COMBOBOX SELECT hDlg, %IDCB_ZOOM, 10
+
+    control set resize hDlg, %ID_EDITOR    , 1, 1, 1, 1
+
+    DIALOG SHOW MODAL hDlg, call dlgCallback
+  end function  
+
+  callback function dlgCallback()
+
+    dim pNmh    AS NMHDR
+    dim tmpStr  as string
+    dim tmpVal  as ext
+    dim Refresh as long value %false
+    dim looper  as long
+    dim lColor as long
+    dim sFileName as string
+    
+    '---Now test the message
+    SELECT CASE cbMsg
+
+      case %WM_INITDIALOG  '---Message fired at the very beginning when dialog is initialized
+        '---Fill richedit with above created text
+        RTF_SetFontName(cbHndl, %ID_EDITOR, "Courier New")
+        RTF_SetFontSize(cbHndl, %ID_EDITOR, 12)
+
+        '---This set word wrap mode ON
+        control send  cbHndl, %ID_EDITOR, %EM_SETTARGETDEVICE, 0, 0
+
+        '---Status Bar
+        Control Add statusbar, cbHndl, %ID_STATUSBAR, "", , , , , %SBARS_SIZEGRIP '| %CCS_BOTTOM '| %WS_CHILD | %WS_VISIBLE
+       
+        StatusBar_SetParts cbHndl, %ID_STATUSBAR, 80, 160, -1
+        statusbar_SetIcon  cbHndl, %ID_StatusBar, 1, OS_GetSystemDir & "shell32.dll", 54
+        statusbar_SetIcon  cbHndl, %ID_StatusBar, 2, OS_GetSystemDir & "shell32.dll", 57
+        statusbar_SetIcon  cbHndl, %ID_StatusBar, 3, OS_GetSystemDir & "shell32.dll", 1
+
+      CASE %WM_NOTIFY
+        '---Get notification UDT
+        SELECT CASE cbCtl
+          CASE %ID_EDITOR
+            Refresh = %TRUE
+
+        end select
+        
+      CASE %WM_COMMAND
+        
+        SELECT CASE cbCtl
+          case %ID_MENU_FILE_EXIT, %IDCANCEL
+            dialog end cbhndl
+              
+          case %ID_MENU_FILE_OPEN
+            sFileName = RichEdit_OpenFile(cbHndl)
+            if sFileName <> "" then
+              StatusBar_SetText cbHndl, %ID_STATUSBAR, sFileName, 3
+              
+              select case ucase$(FILE_PATHSPLIT(sFileName, %Path_Ext))
+                case "RTF"
+                  RTF_LoadFromFile(cbHndl, %ID_EDITOR, sFileName, %SF_rtf)
+                case else
+                  RTF_LoadFromFile(cbHndl, %ID_EDITOR, sFileName, %sf_text)
+              end select
+            end if
+
+            Refresh = %TRUE
+            
+          case %ID_MENU_FILE_SAVEAS
+            '---Ask for file name
+            sFileName = RichEdit_SaveFile(cbHndl)
+            sFileName = trim$(sFileName)
+            '---If not empty ...
+            if sFileName <> "" then
+
+              '---Check if file exists and if yes ask if to be replaced
+              if RichEdit_Check_FileExistsGO(cbHndl, sFileName) = %true then
+                '---Now call relevant save function depending on file extension
+                select case ucase$(right$(sFileName, 4))
+                  case ".TXT"
+                    RTF_SaveToFile(cbHndl, %ID_EDITOR, sFileName, %SF_TEXT)
+                  case ".RTF"
+                    RTF_SaveToFile(cbHndl, %ID_EDITOR, sFileName, %SF_rtf)
+                end select
+              end if
+            end if            
+
+          case %ID_MENU_FORMAT_FG_COLOR
+            '---Set foreground color of current word or selected text
+            lColor = Dialog_ChooseColor(cbHndl, rgb(255, 0, 0), %CC_RGBINIT OR %CC_FULLOPEN )
+            RTF_SetFGColor(cbHndl, %ID_EDITOR, lColor)
+            Refresh = %TRUE
+            
+          case %ID_MENU_FORMAT_BG_COLOR
+            '---Set background color of current word or selected text
+            'lColor = Dialog_ChooseColor(cbHndl, RTF_GetBGColor(cbHndl, %ID_EDITOR), %CC_RGBINIT OR %CC_FULLOPEN )
+            lColor = Dialog_ChooseColor(cbHndl, rgb(255, 0, 0), %CC_RGBINIT OR %CC_FULLOPEN )
+            RTF_SetBGColor(cbHndl, %ID_EDITOR, lColor)
+            Refresh = %TRUE
+
+          case %ID_MENU_CONTROL_BG_COLOR
+            '---Set background color of control
+            lColor = Dialog_ChooseColor(cbHndl, rgb(255, 0, 0), %CC_RGBINIT OR %CC_FULLOPEN )
+            if lColor <> -1 then
+              CONTROL SEND cbHndl, %ID_Editor, %EM_SETBKGNDCOLOR, 0, lColor
+              Refresh = %TRUE
+            end if
+                                    
+          CASE %IDCB_FONTNAME
+            IF cbCtlMsg = %CBN_SELENDOK THEN
+              COMBOBOX GET TEXT cbHndl, %IDCB_FONTNAME TO tmpStr
+              if tmpStr <> "" then RTF_SetFontName(cbHndl, %ID_Editor, tmpStr)
+              Refresh = %TRUE
+            END IF
+
+          CASE %IDCB_FONTSIZE
+            IF cbCtlMsg = %CBN_SELENDOK THEN
+              COMBOBOX GET TEXT cbHndl, %IDCB_FONTSIZE TO tmpStr
+              if val(tmpStr) > 0 then RTF_SetFontSIZE(cbHndl, %ID_Editor, val(tmpStr))
+              Refresh = %TRUE
+            END IF
+
+          CASE %IDCB_ZOOM
+            IF cbCtlMsg = %CBN_SELENDOK THEN
+              COMBOBOX GET TEXT cbHndl, %IDCB_ZOOM TO tmpStr
+              tmpStr = remove$(tmpStr, "%")
+              if val(tmpStr) > 0 then
+                tmpVal = val(tmpStr)
+                control send  cbHndl, %ID_EDITOR, %EM_SETZOOM, tmpVal, 100
+                Refresh = %TRUE
+              end if
+            END IF
+              
+          CASE %IDBTN_BOLD
+            IF SendMessage(CONTROL_GetHandle(cbHndl, %IDBTN_BOLD), %BM_GETCHECK, 0, 0) THEN
+              RTF_SetEffect(cbHndl, %ID_Editor, RTF_GetEffect(cbHndl, %ID_Editor) OR %CFE_BOLD)
+            ELSE
+              RTF_SetEffect(cbHndl, %ID_Editor, RTF_GetEffect(cbHndl, %ID_Editor) AND NOT %CFE_BOLD)
+            END IF
+            Refresh = %TRUE
+
+          CASE %IDBTN_ITALIC
+            IF SendMessage(CONTROL_GetHandle(cbHndl, %IDBTN_ITALIC), %BM_GETCHECK, 0, 0) THEN
+              RTF_SetEffect(cbHndl, %ID_Editor, RTF_GetEffect(cbHndl, %ID_Editor) OR %CFE_ITALIC)
+            ELSE
+              RTF_SetEffect(cbHndl, %ID_Editor, RTF_GetEffect(cbHndl, %ID_Editor) AND NOT %CFE_ITALIC)
+            END IF
+            Refresh = %TRUE
+
+          CASE %IDBTN_ULINE
+            IF SendMessage(CONTROL_GetHandle(cbHndl, %IDBTN_ULINE), %BM_GETCHECK, 0, 0) THEN
+              RTF_SetEffect(cbHndl, %ID_Editor, RTF_GetEffect(cbHndl, %ID_Editor) OR %CFE_UNDERLINE)
+            ELSE
+              RTF_SetEffect(cbHndl, %ID_Editor, RTF_GetEffect(cbHndl, %ID_Editor) AND NOT %CFE_UNDERLINE)
+            END IF
+            Refresh = %TRUE
+ 
+          CASE %IDBTN_STRIKE
+            IF SendMessage(CONTROL_GetHandle(cbHndl, %IDBTN_STRIKE), %BM_GETCHECK, 0, 0) THEN
+              RTF_SetEffect(cbHndl, %ID_Editor, RTF_GetEffect(cbHndl, %ID_Editor) OR %CFE_STRIKEOUT)
+            ELSE
+              RTF_SetEffect(cbHndl, %ID_Editor, RTF_GetEffect(cbHndl, %ID_Editor) AND NOT %CFE_STRIKEOUT)
+            END IF
+            Refresh = %TRUE
+            
+          case %ID_MENU_CONTROL_TEST_UBB
+            rtf_appendtext(cbHndl, %ID_Editor, _
+                    "[size=12]This line [size=24][b]t[/b][i]e[/i][u]s[/u][s]t[/s][size=12] a single letter formatting." & $crlf & $crlf, %RTF_UBB)
+
+            rtf_appendtext(cbHndl, %ID_Editor, _
+                    "This is [whatever]not recognized UBB code[text] using []"      & $crlf & _
+                    "This is [b]Bold[/b] and this is not bold"      & $crlf & _
+                    "This is [i]Italic[/i] and this is not italic"  & $crlf & _
+                    "This is [u]Underlined[/u] and this is not underlined"  & $crlf & _
+                    "This is [s]Strikeout[/s] and this is not strikeout"  & $crlf & _
+                    "[RIGHT]This is on the RIGHT side" & $crlf & _
+                    "[CENTER]This is in the CENTER"  & $crlf & _
+                    "[LEFT]This is on the LEFT side"  & $crlf & _
+                    "[font=arial]This line should be Arial"  & $crlf & _
+                    "[font=courier new]This line should be Courier New"  & $crlf & _
+                    "[font=times new roman]This line should be Times New Roman"  & $crlf & _
+                    "[font=courier new][size=6]This line 6 points font"  & $crlf & _
+                    "[size=12]This line 12 points font"  & $crlf & _
+                    "[size=18]This line 18 points font"  & $crlf & _
+                    "[size=24]This line 24 points font"  & $crlf & _
+                    "[size=40]This line 40 points font"  & $crlf & _
+                    "[size=12]Back to 12 points font."  & $crlf & _
+                    "", %RTF_UBB)
+
+ 
+            RTF_AppendText(CBHNDL, %ID_Editor, _
+                    "Now some nested color blocks:" & $CRLF & _
+                    "[color=%RGB_INDIANRED]IndianRed color [b]BOLD[/b] [b][i]BOLD Italic[/i][/b]. [color=%RGB_LIMEGREEN]LimeGreen inside a previous color block[/color] again in IndianRed[/color] back to original color" & $CRLF & _
+                    "", %RTF_UBB)
+
+            RTF_AppendText(CBHNDL, %ID_Editor, _
+                    "[bcolor=%RGB_INDIANRED][i]IndianRed[/i] [color=%RGB_LIMEGREEN] now [u]LimeGreen[/u][/color] again in [b]IndianRed[/b][/color] back to original color" & $CRLF & _
+                    "", %RTF_UBB)
+
+            Randomize
+            rtf_appendtext(cbHndl, %ID_Editor, _
+                    "[b]And now some random foreground color:[/b]"      & $crlf & _
+                    "", %RTF_UBB)
+                    
+            for looper = 1 to 5
+              rtf_appendtext(cbHndl, %ID_Editor, _
+                      "[color=" & rgb(rnd(0, 255), rnd(0,255), rnd(0, 255)) & "]colored foregound color, colored foregound color"      & $crlf & _
+                      "", %RTF_UBB)
+            next
+            rtf_appendtext(cbHndl, %ID_Editor, _
+                    "[color=0][b]followed by some random background color:[/b]"      & $crlf & _
+                    "", %RTF_UBB)
+
+            for looper = 1 to 5
+              rtf_appendtext(cbHndl, %ID_Editor, _
+                      "[bcolor=" & rnd(0, 255) & "," & rnd(0,255) & "," & rnd(0, 255) & "]colored backgound color, colored backgound color"      & $crlf & _
+                      "", %RTF_UBB)
+            next
+
+            rtf_appendtext(cbHndl, %ID_Editor, _
+                    "[bcolor=255,255,255][b]to finish with both fore/back color at the same time:[/b]"      & $crlf & _
+                    "", %RTF_UBB)
+
+            for looper = 1 to 5
+              rtf_appendtext(cbHndl, %ID_Editor, _
+                      "[color=" & rnd(0, 255) & "," & rnd(0,255) & "," & rnd(0, 255) & "]" & "[bcolor=" & rnd(0, 255) & "," & rnd(0,255) & "," & rnd(0, 255) & "]colored foregound color, colored backgound color"      & $crlf & _
+                      "", %RTF_UBB)
+            next
+
+            'MsgBox CBHNDL, "OK, now we will change the control color."
+            'For looper = 1 To 100
+            '  RTF_AppendText(CBHNDL, %ID_Editor, "[bcolor=" & Rnd(0, 255) & "," & Rnd(0,255) & "," & Rnd(0, 255) & "]", %RTF_UBB)
+            'Next
+
+
+            Refresh = %TRUE
+                        
+        END SELECT 
+            
+    END SELECT
+
+    '---In case we need to update editor control ...
+    if Refresh = %true then
+      UpdateControls(cbHndl)
+      Refresh = %false
+    end if
+
+  end function
+   
+  '--------------------------------------------------------------------
+  ' Update comboboxes and font effect buttons
+  '--------------------------------------------------------------------
+  SUB UpdateControls( hDlg as dword )
+    LOCAL lRet AS LONG, txt AS STRING
+    local cRange      as CHARRANGE
+    
+    dim SelStart, SelEnd, SelNBytes as long
+    dim CurLine, CurPos, LineStart, LineLen as long
+
+    txt = RTF_GetFontName(hDlg, %ID_EDITOR)
+    SendMessage CONTROL_GetHandle(hDlg, %IDCB_FONTNAME), %CB_SELECTSTRING, -1, STRPTR(txt)
+   
+    txt = FORMAT$(rtf_GetFontSize(hDlg, %ID_Editor))
+    SendMessage CONTROL_GetHandle(hDlg, %IDCB_FONTSIZE), %CB_SELECTSTRING, -1, STRPTR(txt)
+   
+    lRet = RTF_GetEffect(hDlg, %ID_Editor)
+    CONTROL SEND hDlg, %IDBTN_BOLD, %BM_SETCHECK, IIF((lRet AND %CFE_BOLD), %BST_CHECKED, %BST_UNCHECKED), 0
+    
+    
+    CONTROL SEND hDlg, %IDBTN_ITALIC, %BM_SETCHECK, _
+                 IIF((lRet AND %CFE_ITALIC), %BST_CHECKED, %BST_UNCHECKED), 0
+   
+    CONTROL SEND hDlg, %IDBTN_ULINE, %BM_SETCHECK, _
+                 IIF((lRet AND %CFE_UNDERLINE), %BST_CHECKED, %BST_UNCHECKED), 0
+   
+    CONTROL SEND hDlg, %IDBTN_STRIKE, %BM_SETCHECK, _
+                 IIF((lRet AND %CFE_STRIKEOUT), %BST_CHECKED, %BST_UNCHECKED), 0
+   
+
+    SendMessage(hEdit, %EM_EXGETSEL, 0, varptr(cRange)) '---Pass the simulated structure pointer
+    SelStart = cRange.cpMin                             '---Get back data using binary conversion
+    SelEnd   = cRange.cpMin
+    CurLine = SendMessage(hEdit, %EM_EXLINEFROMCHAR, 0, SelStart) 'line number
+    CurPos  = SelEnd - SendMessage(hEdit, %EM_LINEINDEX, -1, 0)   'pos. in line
+
+    StatusBar_SetText hDlg, %ID_STATUSBAR, "Row: " & format$(CurLine + 1), 1
+    StatusBar_SetText hDlg, %ID_STATUSBAR, "Col: " & format$(CurPos + 1), 2
+
+   
+    control set focus hDlg, %ID_EDITOR
+    
+  END SUB
+
+  '-----------------------------------------------------------------------------
+  ' Load a file inside rich edit control
+  '-----------------------------------------------------------------------------
+  function RichEdit_OpenFile( hDlg as dword ) as string
+    dim sFile   as string
+    dim sFilter as string
+
+    sFilter  = "Rich Text Format (*.rtf)|*.rtf|"
+    sFilter += "thinBasic Files (*.tBasic, *.tBasicc)|*.tBasic;*.tBasicc|"
+    sFilter += "Text Files (*.TXT)|*.TXT|"
+    sFilter += "All Files (*.*)|*.*"
+
+    sFile = Dialog_OpenFile(hDlg, _
+                            "Open an file", _
+                            DIR_GetCurrent, _
+                            sFilter, _
+                            "rtf", _
+                            %OFN_FILEMUSTEXIST OR %OFN_HIDEREADONLY or %OFN_ENABLESIZING)
+    function = sFile
+  end function
+
+
+  function RichEdit_SaveFile( hDlg as dword ) as string
+    dim sFile   as string
+    dim sFilter as string
+
+    sFilter  = "Rich Text Format (*.rtf)|*.rtf|"
+    sFilter += "thinBasic Files (*.tBasic, *.tBasicc)|*.tBasic;*.tBasicc|"
+    sFilter += "Text Files (*.TXT)|*.TXT|"
+    sFilter += "All Files (*.*)|*.*"
+
+    sFile = Dialog_SaveFile(hDlg, _
+                            "Open an file", _
+                            DIR_GetCurrent, _
+                            sFilter, _
+                            "tBasic", _
+                            %OFN_FILEMUSTEXIST OR %OFN_HIDEREADONLY or %OFN_ENABLESIZING)
+    function = sFile
+  end function
+
+  function RichEdit_Check_FileExistsGO(hDlg as dword, sFileName as string) as long
+    DIM Message   AS STRING
+    
+    function = %true
+        
+    '---If file already exists, ask if to replace
+    if file_exists(sFileName) then
+
+      Message = "File " & sFileName & "\n\n"
+      Message += "already exists. Do yoy want to replace?\n\n"
+      DIM lResult AS LONG = MSGBOX(hDlg, Message, %MB_YESNOcancel, "Replace file?")
+      IF lResult = %IDNO or lResult = %idcancel THEN
+        function = %false
+      END IF
+    end if
+    
+  end function
+  

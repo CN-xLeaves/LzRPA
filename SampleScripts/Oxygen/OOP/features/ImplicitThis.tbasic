@@ -1,0 +1,41 @@
+
+uses "oxygen","file"
+dim src as string
+
+'-------------
+'IMPLICIT THIS
+'=============
+'
+
+src = "
+  
+  bb=666 'SHOULD BE OVERRIDEN BY IMPLICIT THIS
+  
+  class cla
+  '
+  bb as long
+  '
+  method mt() as long
+    bb=42
+    print str(this.bb) "  " str(bb) "  "
+  end method
+  '
+  end class
+  
+  dim as cla a
+  a.mt
+  
+  "
+
+
+
+'msgbox 0, o2_prep src
+
+o2_basic src
+
+
+if len(o2_error) then
+  msgbox 0, o2_error : stop
+end if
+
+o2_exec

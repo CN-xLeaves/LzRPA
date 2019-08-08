@@ -1,0 +1,29 @@
+
+uses "oxygen"
+
+dim as string src
+dim as long pHypot3d
+dim as long pFinish
+
+src="
+  function hypot3d(double a,double b, double c) as double  link #pHypot3d
+  return sqr( a*a+b*b+c*c)
+  end function
+
+  sub finish() link #pFinish
+  terminate
+  end sub
+"
+o2_basic src
+if o2_error then
+  msgbox 0,o2_error
+  stop
+else
+  o2_exec
+end if
+
+declare function Hypot3d(byval double, byval double, byval double ) as double at pHypot3d
+declare sub Finish() at pFinish
+
+msgbox 0,Hypot3d(0,3,4)
+Finish()

@@ -1,0 +1,11 @@
+uses "UI"
+
+dim lColor  as long
+
+lColor = Dialog_ChooseColor(0, rgb(255, 0, 0), %CC_RGBINIT OR %CC_FULLOPEN )
+
+if lColor = -1 then
+  msgbox 0, "Color Dialog cancel by user"
+else
+  msgbox 0, "Your color is: " & hex$(lCOlor, 6)
+end if  

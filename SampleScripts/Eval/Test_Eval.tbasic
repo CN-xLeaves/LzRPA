@@ -1,0 +1,39 @@
+USES "CONSOLE"    '---We need Console module to write output
+USES "EVAL"       '---We need Eval module to evaluate math strings
+
+DIM t0, t1 AS DOUBLE = TIMER  '---Some timing variable
+DIM MyFunction AS STRING      '---Will contain math function to eval
+
+'---Define y = f(x) ... function
+MyFunction = "y = COS(x) * 10 + SIN(x)"
+
+'---Tells eval engine to define new 2 variables: x and y
+Eval_SetNumber("x", 0)
+Eval_SetNumber("y", 0)
+
+'---Define a looper and its max
+DIM Count     AS LONG
+DIM MaxCount  AS LONG VALUE 50
+
+FOR Count = -MaxCount to MaxCount
+  '---Set X value
+  Eval_SetNumber("x", Count)
+  '---Eval MyFunction
+  Eval(MyFunction)
+  '---Write some info output
+  CONSOLE_WRITELINE(format$(Count, "0000") & " " & Eval_GetNumber("y"))
+NEXT 
+
+'---Measure the ending time
+t1 = TIMER
+
+'---Final results
+CONSOLE_WRITELINE("------------------------------------------------------")
+CONSOLE_WRITELINE("Time in seconds for " & str$(MaxCount * 2) & " loops: ")
+CONSOLE_WRITELINE(FORMAT$(t1-t0, "#0.00000"))
+CONSOLE_WRITELINE("------------------------------------------------------")
+
+'---Wait for a key to stop execution
+CONSOLE_WAITKEY
+
+   

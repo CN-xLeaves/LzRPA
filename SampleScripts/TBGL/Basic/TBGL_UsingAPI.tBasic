@@ -1,0 +1,54 @@
+  '=============================================================================
+  '=                       Using raw openGL in thinBASIC                       =
+  '=                                                                           =
+  '=                           Petr Schreiber, 2007                            =
+  '=============================================================================
+
+
+  Uses "TBGL"
+
+  #INCLUDE Once "%APP_INCLUDEPATH%\thinbasic_gl.inc"
+  #INCLUDE Once "%APP_INCLUDEPATH%\thinbasic_glu.inc"
+
+
+  HiResTimer_Init
+
+  dim hWnd as dword
+
+  hWnd = TBGL_CreateWindowex("Picture rendered by pure OpenGL API - press ESC to quit", 640, 480, 32, %TBGL_WS_WINDOWED)
+  TBGL_ShowWindow
+
+  TBGL_ResetKeyState()      ' Resets key status before keypress checking
+
+  while tbgl_IsWindow(hWnd)
+     
+    glClear (%GL_COLOR_BUFFER_BIT OR %GL_DEPTH_BUFFER_BIT)
+    glLoadIdentity
+      
+    gluLookAt (0,0,5,0,0,0,0,1,0)   ' Setups camera to look from 0,0,5 to 0,0,0
+      
+    glRotatef (hirestimer_get/10000,1,1,1)
+      
+    glBegin %GL_TRIANGLES           ' Starts polygon definition based on triangles
+      glColor3ub 255, 0, 0          ' Sets RGB color
+      glVertex3f -1,-1,0            ' Adds vertex
+      glColor3ub 0, 255, 0
+      glVertex3f  1,-1,0
+      glColor3ub 0, 0, 255
+      glVertex3f  0, 1,0
+    glEnd                           ' Ends polygon definition
+
+    TBGL_DrawFrame                  ' Swaps the buffers - displays rendered image
+    
+    if tbgl_GetWindowKeyState( hwnd, %VK_ESCAPE ) THEN exit while    
+    
+  wend
+  TBGL_DestroyWindow               ' Closes TBGL window
+
+
+
+
+
+
+
+

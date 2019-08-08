@@ -1,0 +1,194 @@
+'---------------------------------------------------------------------------------
+'---ThinBASIC needed modules
+'---------------------------------------------------------------------------------
+Uses "EXE"
+Uses "LL"
+Uses "FILE" 
+Uses "Console"
+Uses "UI"
+Uses "OS"
+
+'---------------------------------------------------------------------------------
+'---Include needed files
+'---------------------------------------------------------------------------------
+#INCLUDE "%APP_INCLUDEPATH%\RMChart.inc"    ' -- Comes with thinBASIC instalation
+
+'---------------------------------------------------------------------------------
+'---Constant declaration
+'---------------------------------------------------------------------------------
+Begin ControlID
+  %ID_RMC1        
+End ControlID
+%MAX_ITEM       = 9
+
+'---------------------------------------------------------------------------------
+'---Global variables
+'---------------------------------------------------------------------------------
+
+Global aData(%MAX_ITEM) As Double
+Global nFiles As Long
+Global sTime As String
+
+'-------------------------------------------------------------------------
+'Main Program
+'-------------------------------------------------------------------------
+Function Main()
+    Dim T1 As Long
+
+    T1 = Timer
+    ListDir(OS_GetWindowsDir, "*.*", "*.EXE")  
+    sTime = Format$(Timer - T1, "#0.00000")
+    Console_WriteLine("TOTAL TIME (Secs): " & sTime)
+    Console_WriteLine("FILE SCANNED: " & Str$(nFiles))
+    CreateWindow()
+    Console_WriteLine($CRLF + "Press any key to end")
+    Console_WaitKey
+End Function
+'---------------------------------------------------------------------------------
+'
+'---------------------------------------------------------------------------------
+  
+Function LoadLabels() As String
+  Local sTmp As String
+  
+  sTmp  = EXE_GetTypeName(%IMAGE_TYPE_DOS_MZ) & "*" & EXE_GetTypeName(%IMAGE_TYPE_WIN16_NE) & "*" & EXE_GetTypeName(%IMAGE_TYPE_WIN32_LE) & "*"
+  sTmp += EXE_GetTypeName(%IMAGE_TYPE_WIN32_PE) & "*" & EXE_GetTypeName(%EXE_ERROR_DOS_SIGNATURE) & "*" & EXE_GetTypeName(%EXE_ERROR_ACCESS_DENIED) & "*"
+  sTmp += EXE_GetTypeName(%EXE_ERROR_FILE_NOT_FOUND) & "*" & EXE_GetTypeName(%EXE_ERROR_READ) & "*" & EXE_GetTypeName(%EXE_ERROR_OTHERS)
+  
+  Function = sTmp
+End Function
+
+'---------------------------------------------------------------------------------
+' Grid base bars graph
+'---------------------------------------------------------------------------------
+Function Show_Bars(ByVal hParentDlg As DWord) As Long
+  Local nRetval As Long
+  Local sLabel As String
+  Local i As Long
+  'DIM aData() AS DOUBLE
+
+
+  ' This example uses the short notation style (no UDTs) and omits
+  ' all default properties, so the code is quite small
+  nRetVal = RMC_CreateChart(hParentDlg, %ID_RMC1, 0, 0, 660, 480)        ' create the chart control
+  nRetVal = RMC_AddRegion(%ID_RMC1)                                   ' add a Region to the chart
+  nRetval = RMC_AddCaption(%ID_RMC1, 1, "Executables Type Analysys of Windows folder and sub folders (" & nFiles & " files)", %ColorBlue, %ColorYellow, 11, %TRUE)  ' add a Caption to region 1
+  nRetval = RMC_AddGrid(%ID_RMC1, 1, %ColorBeige, 0, 0, 0, 0, 0, %RMC_BICOLOR_LABELAXIS) ' add a Grid to region 1
+  nRetval = RMC_AddDataAxis(%ID_RMC1, 1, %RMC_DATAAXISLEFT, 0, nFiles, 11) ' add a Data axis to region 1
+  'Create labels for x axis
+  sLabel = LoadLabels()
+  nRetval = RMC_AddLabelAxis(%ID_RMC1, 1, sLabel, 1)' add a Label axis to region 1
+            RMC_SetLAXLineStyle %ID_RMC1, 1, %RMC_LINESTYLENONE ' No lines for the label axis
+  nRetval = RMC_AddBarSeries(%ID_RMC1, 1, aData, %MAX_ITEM, %RMC_BARSINGLE, %RMC_BAR_FLAT_GRADIENT1) ' add a Bar series to region 1
+  '                                                                    ' all bars have as default the same color, but:
+  nRetval = RMC_SetSeriesColor(%ID_RMC1, 1, 1, %ColorRed, 3)              ' bar #3 gets Red
+  
+  Function = nRetVal
+  If nRetVal < 0 Then Exit Function                                   ' Error?
+
+  RMC_Draw %ID_RMC1                                                   ' Draw the chart 
+End Function
+
+Function Remap(n As Long) As Long
+
+  Select Case n
+      Case < 0
+          Function = n + 10
+      Case Else
+          Function = n - 100
+  End Select        
+
+End Function
+
+Function CreateWindow()
+
+  Local hDlg            As DWord
+  Local nDlgH, nDlgW    As Long
+
+  nDlgW = 640
+  nDlgH = 400
+
+  Dialog New 0, "Test running on " & OS_WinVersionText & " -=- Time requiried: " & sTime & " secs.", -1, -1, nDlgW, nDlgH, _
+             %DS_CENTER Or %WS_SYSMENU Or %WS_MINIMIZEBOX Or %WS_MAXIMIZEBOX Or %WS_CAPTION Or %WS_THICKFRAME, _
+             %WS_EX_CONTROLPARENT To hDlg
+
+  Dialog Show Modal hDlg, Call dlgCallback
+End Function
+
+CallBack Function dlgCallback() As Long    
+  Local nError          As Long  
+  Local nDlgH, nDlgW    As Long  
+  '---Now test the message
+  Select Case CBMSG
+
+    Case %WM_INITDIALOG
+      '---To work, RMChart.dll needs GDIPlus library
+      '---During window initialize we check if such a library exists
+      '---A special function (Libray_Exists) permits to check if a library exists
+      If Library_Exists("gdiplus.dll") Then
+        MsgBox 0, "RM Chart needs GDIPLUS" & $CRLF & _
+                  "Please go to http://www.microsoft.com/downloads/details.aspx?FamilyId=6A63AB9C-DF12-4D41-933C-BE590FEAA05A&displaylang=en"
+      End If          
+      
+      nError = Show_Bars(CBHNDL) 
+      If nError Then MsgBox CBHNDL, "Error " + Str$(nError), %MB_OK Or %MB_ICONERROR,"RMChart Demo"                     
+      
+
+    Case %WM_SIZE
+      Dialog Get Client CBHNDL To nDlgW, nDlgH
+      Dialog Units CBHNDL, nDlgW, nDlgH To Pixels nDlgW, nDlgH
+      RMC_SetCtrlSize( %ID_RMC1, nDlgW, nDlgH)        
+          
+  End Select
+
+End Function
+
+Sub ProcessFile(lDir As String, sFileMask As String)
+  Local Count     As Long
+  Local FileName  As String                 
+  Local pList     As Long
+  Local nItems    As Long
+  Local nType As Long
+
+  pList = DIR_List(lDir, sFileMask, %FILE_NORMAL Or %FILE_HIDDEN Or %FILE_SYSTEM Or %FILE_ADDPATH)
+  nItems = LL_Count(pList)
+  
+  If nItems > 0 Then
+    For Count = 1 To nItems     
+      Incr nFiles
+      FileName = LL_GetItem(pList, Count)
+      nType = EXE_GetType(FileName)
+      Incr aData(Remap(nType))
+      Console_WriteLine(Filename & " -> " & EXE_GetTypeName(nType))       
+    Next
+  End If                  
+  
+End Sub
+ 
+Function ListDir(sDir As String, sDirMask As String, sFileMask As String) As Long
+
+  Local Count   As Long
+  Local Item    As String                 
+  Local pList   As Long
+  Local nItems  As Long 
+  Local CurrentRow  As Long 
+  
+  Local TFS As Quad
+  
+  pList = DIR_List(sDir, sDirMask, %FILE_SUBDIR Or %FILE_HIDDEN Or %FILE_ADDPATH)
+  nItems = LL_Count(pList)
+  
+  If nItems > 0 Then
+    For Count = 1 To nItems
+      Item = LL_GetItem(pList, Count)
+      CurrentRow = nFiles
+      TFS = ProcessFile(Item, sFileMask)
+      Incr nFiles
+      ListDir(Item, sDirMask, sFileMask)
+    Next
+  End If
+  
+End Function
+
+
+ 

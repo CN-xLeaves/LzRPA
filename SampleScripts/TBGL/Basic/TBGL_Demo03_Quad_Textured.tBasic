@@ -1,0 +1,75 @@
+  '=============================================================================
+  '=                         Rotating textured square                          =
+  '=                                                                           =
+  '=                           Petr Schreiber, 2007                            =
+  '=============================================================================
+
+  Uses "TBGL"               ' -- Module for 3D graphics
+
+  Dim hWnd As Dword 
+
+  ' -- Creates window and returns handle by which we can identify it
+  hWnd = TBGL_CreateWindowEx("Rotating textured square, press ESC to quite", 640, 480, 32, %TBGL_WS_WINDOWED) 
+  TBGL_ShowWindow 
+  
+  ' -- Loads texture to slot 1 with MIPMAP filtering
+  tbgl_LoadTexture APP_SourcePath+"Textures\Test.Bmp", 1, %TBGL_TEX_MIPMAP
+  
+  ' -- Enables aplication of textures to objects
+  tbgl_UseTexturing %TRUE
+  
+  ' -- We will apply texture 1
+  tbgl_BindTexture 1
+
+  TBGL_ResetKeyState() ' -- Resets status of all keys 
+
+  ' -- Main loop
+  While TBGL_IsWindow(hWnd) 
+    
+    ' -- Erases previous frame
+    tbgl_ClearFrame 
+      
+      ' -- Sets camera to look from 0,0,5 to 0,0,0
+      tbgl_Camera 0, 0, 5, _
+                  0, 0, 0
+    
+      ' -- All following geometry will be rotated around vector 0,1,0
+      ' -- That is - Y axis
+      tbgl_Rotate GetTickCount/10, 0, 1, 0
+      
+      ' -- Creates quads, shapes with 4 vertices
+      tbgl_BeginPoly %GL_QUADS
+        tbgl_Color 255,   0,   0    ' -- Red color
+        tbgl_TexCoord2D 0, 0        ' -- Texture coordinate, lower left corner
+        tbgl_Vertex -1, -1,  0
+        
+        tbgl_Color   0, 255,   0    ' -- Green color
+        tbgl_TexCoord2D 1, 0        ' -- Texture coordinate, lower right corner        
+        tbgl_Vertex  1, -1,  0
+                
+        tbgl_Color   0,   0, 255    ' -- Blue color
+        tbgl_TexCoord2D 1, 1        ' -- Texture coordinate, higher right corner                
+        tbgl_Vertex  1,  1,  0        
+        
+        tbgl_Color 255, 255, 0      ' -- Yellow color
+        tbgl_TexCoord2D 0, 1        ' -- Texture coordinate, higher left corner                        
+        tbgl_Vertex -1,  1,  0                
+      tbgl_EndPoly
+
+    ' -- Finishes drawing
+    tbgl_DrawFrame 
+
+    ' -- If ESC key is pressed, it will jump out of loop
+    If TBGL_GetWindowKeyState( hWnd, %VK_ESCAPE) Then Exit While 
+
+  Wend 
+
+  ' -- Destroys window
+  TBGL_DestroyWindow
+ 
+   
+
+
+
+
+

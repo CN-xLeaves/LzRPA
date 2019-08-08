@@ -1,0 +1,338 @@
+{
+    "Caption": "Registry",
+    "Remark": "注册表",
+    "ModuleName": "Registry",
+    "Icon": "公文包",
+    "Visible": true,
+    "Templet": "index.html",
+    "Help": {
+        "Caption": ""
+    },
+    "Child": [
+        {
+            "Caption": "单文件使用扩展库",
+            "Icon": "信息",
+            "Visible": true,
+            "Templet": "document.html",
+            "Help": {
+                "Caption": "扩展库使用帮助",
+                "Document": "在项目中使用扩展库功能会自动将扩展库引入项目，项目编译或运行时，自动加入扩展库依赖代码和文件。<br><br>如果您在单文件中希望使用本扩展库，则必须编写扩展库依赖代码才能调用扩展库中的函数，否则会报错，LzRPA 建议使用工程方式编写程序，但仍保留单文件使用扩展库的方法。<br><br>扩展库依赖代码：<br>&nbsp;&nbsp;Uses &quot;Registry&quot;<br><br>建议将引用扩展库代码统一添加到全局代码块，也就是代码的最上面。"
+            }
+        },
+        {
+            "Caption": "Registry_KeyExists",
+            "Remark": "判断键是否存在",
+            "Visible": true,
+            "Function": true,
+            "InsCode": "Registry_KeyExists(%HKEY_CLASSES_ROOT, \"路径\", \"键名\")",
+            "Templet": "command.html",
+            "Help": {
+                "Caption": "Registry_KeyExists",
+                "Define": "iRet = Registry_KeyExists(HKEY, sMainKey, sKeyName)",
+                "Describe": "判断注册表中指定路径下的键是否存在",
+                "RetType": "Integer",
+                "Return": "存在返回 true；sMainKey 不存在返回 -1；sMainKey 存在但 sKeyName 不存在返回 -2",
+                "Param": [
+                    {
+                        "Caption": "HKEY",
+                        "DataType": "String",
+                        "Describe": "根键，可以设置为：<br>\\\"HKEYCR\\\" (%HKEY_CLASSES_ROOT)<br>\\\"HKEYCU\\\" (%HKEY_CURRENT_USER)<br>\\\"HKEYLM\\\" (%HKEY_LOCAL_MACHINE)<br>\\\"HKEYU\\\"  (%HKEY_USERS)<br>\\\"HKEYCC\\\" (%HKEY_CURRENT_CONFIG)",
+                        "Optional": true
+                    },
+                    {
+                        "Caption": "sMainKey",
+                        "DataType": "String",
+                        "Describe": "键路径",
+                        "Optional": true
+                    },
+                    {
+                        "Caption": "sKeyName",
+                        "DataType": "String",
+                        "Describe": "子键名",
+                        "Optional": true
+                    }
+                ]
+            }
+        },
+        {
+            "Caption": "Registry_PathExists",
+            "Remark": "判断路径是否存在",
+            "Visible": true,
+            "Function": true,
+            "InsCode": "Registry_PathExists(%HKEY_CLASSES_ROOT, \"路径\")",
+            "Templet": "command.html",
+            "Help": {
+                "Caption": "Registry_PathExists",
+                "Define": "iRet = Registry_PathExists(HKEY, sMainKey)",
+                "Describe": "判断注册表中指定路径是否存在",
+                "RetType": "Boolean",
+                "Return": "存在返回 true；sMainKey 不存在返回 false",
+                "Param": [
+                    {
+                        "Caption": "HKEY",
+                        "DataType": "String",
+                        "Describe": "根键，可以设置为：<br>\\\"HKEYCR\\\" (%HKEY_CLASSES_ROOT)<br>\\\"HKEYCU\\\" (%HKEY_CURRENT_USER)<br>\\\"HKEYLM\\\" (%HKEY_LOCAL_MACHINE)<br>\\\"HKEYU\\\"  (%HKEY_USERS)<br>\\\"HKEYCC\\\" (%HKEY_CURRENT_CONFIG)",
+                        "Optional": true
+                    },
+                    {
+                        "Caption": "sMainKey",
+                        "DataType": "String",
+                        "Describe": "键路径",
+                        "Optional": true
+                    }
+                ]
+            }
+        },
+        {
+            "Caption": "Registry_GetValue",
+            "Remark": "读文本键值",
+            "Visible": true,
+            "Function": true,
+            "InsCode": "Registry_GetValue(%HKEY_CLASSES_ROOT, \"路径\", \"键名\")",
+            "Templet": "command.html",
+            "Help": {
+                "Caption": "Registry_GetValue",
+                "Define": "sRet = Registry_GetValue(HKEY, sMainKey, sKeyName)",
+                "Describe": "读取注册表中指定路径下的键值（文本类型）",
+                "RetType": "String",
+                "Return": "返回键值数据",
+                "Param": [
+                    {
+                        "Caption": "HKEY",
+                        "DataType": "String",
+                        "Describe": "根键，可以设置为：<br>\\\"HKEYCR\\\" (%HKEY_CLASSES_ROOT)<br>\\\"HKEYCU\\\" (%HKEY_CURRENT_USER)<br>\\\"HKEYLM\\\" (%HKEY_LOCAL_MACHINE)<br>\\\"HKEYU\\\"  (%HKEY_USERS)<br>\\\"HKEYCC\\\" (%HKEY_CURRENT_CONFIG)",
+                        "Optional": true
+                    },
+                    {
+                        "Caption": "sMainKey",
+                        "DataType": "String",
+                        "Describe": "键路径",
+                        "Optional": true
+                    },
+                    {
+                        "Caption": "sKeyName",
+                        "DataType": "String",
+                        "Describe": "子键名",
+                        "Optional": true
+                    }
+                ]
+            }
+        },
+        {
+            "Caption": "Registry_GetDWord",
+            "Remark": "读整数键值",
+            "Visible": true,
+            "Function": true,
+            "InsCode": "Registry_GetDWord(%HKEY_CLASSES_ROOT, \"路径\", \"键名\")",
+            "Templet": "command.html",
+            "Help": {
+                "Caption": "Registry_GetDWord",
+                "Define": "iRet = Registry_GetDWord(HKEY, sMainKey, sKeyName)",
+                "Describe": "读取注册表中指定路径下的键值（DWORD类型）",
+                "RetType": "Integer",
+                "Return": "返回键值数据",
+                "Param": [
+                    {
+                        "Caption": "HKEY",
+                        "DataType": "String",
+                        "Describe": "根键，可以设置为：<br>\\\"HKEYCR\\\" (%HKEY_CLASSES_ROOT)<br>\\\"HKEYCU\\\" (%HKEY_CURRENT_USER)<br>\\\"HKEYLM\\\" (%HKEY_LOCAL_MACHINE)<br>\\\"HKEYU\\\"  (%HKEY_USERS)<br>\\\"HKEYCC\\\" (%HKEY_CURRENT_CONFIG)",
+                        "Optional": true
+                    },
+                    {
+                        "Caption": "sMainKey",
+                        "DataType": "String",
+                        "Describe": "键路径",
+                        "Optional": true
+                    },
+                    {
+                        "Caption": "sKeyName",
+                        "DataType": "String",
+                        "Describe": "子键名",
+                        "Optional": true
+                    }
+                ]
+            }
+        },
+        {
+            "Caption": "Registry_SetValue",
+            "Remark": "写文本键值",
+            "Visible": true,
+            "Function": true,
+            "InsCode": "Registry_SetValue(%HKEY_CLASSES_ROOT, \"路径\", \"键名\", \"值\")",
+            "Templet": "command.html",
+            "Help": {
+                "Caption": "Registry_SetValue",
+                "Define": "bRet = Registry_SetValue(HKEY, sMainKey, sKeyName, sValue)",
+                "Describe": "设置注册表中指定路径下的键值（文本类型）",
+                "RetType": "Boolean",
+                "Return": "成功返回 true",
+                "Param": [
+                    {
+                        "Caption": "HKEY",
+                        "DataType": "String",
+                        "Describe": "根键，可以设置为：<br>\\\"HKEYCR\\\" (%HKEY_CLASSES_ROOT)<br>\\\"HKEYCU\\\" (%HKEY_CURRENT_USER)<br>\\\"HKEYLM\\\" (%HKEY_LOCAL_MACHINE)<br>\\\"HKEYU\\\"  (%HKEY_USERS)<br>\\\"HKEYCC\\\" (%HKEY_CURRENT_CONFIG)",
+                        "Optional": true
+                    },
+                    {
+                        "Caption": "sMainKey",
+                        "DataType": "String",
+                        "Describe": "键路径",
+                        "Optional": true
+                    },
+                    {
+                        "Caption": "sKeyName",
+                        "DataType": "String",
+                        "Describe": "子键名",
+                        "Optional": true
+                    },
+                    {
+                        "Caption": "sValue",
+                        "DataType": "String",
+                        "Describe": "键值",
+                        "Optional": true
+                    }
+                ]
+            }
+        },
+        {
+            "Caption": "Registry_SetDWord",
+            "Remark": "写整数键值",
+            "Visible": true,
+            "Function": true,
+            "InsCode": "Registry_SetDWord(%HKEY_CLASSES_ROOT, \"路径\", \"键名\", 1)",
+            "Templet": "command.html",
+            "Help": {
+                "Caption": "Registry_SetDWord",
+                "Define": "bRet = Registry_SetDWord(HKEY, sMainKey, sKeyName, sValue)",
+                "Describe": "设置注册表中指定路径下的键值（DWORD类型）",
+                "RetType": "Boolean",
+                "Return": "成功返回 true",
+                "Param": [
+                    {
+                        "Caption": "HKEY",
+                        "DataType": "String",
+                        "Describe": "根键，可以设置为：<br>\\\"HKEYCR\\\" (%HKEY_CLASSES_ROOT)<br>\\\"HKEYCU\\\" (%HKEY_CURRENT_USER)<br>\\\"HKEYLM\\\" (%HKEY_LOCAL_MACHINE)<br>\\\"HKEYU\\\"  (%HKEY_USERS)<br>\\\"HKEYCC\\\" (%HKEY_CURRENT_CONFIG)",
+                        "Optional": true
+                    },
+                    {
+                        "Caption": "sMainKey",
+                        "DataType": "String",
+                        "Describe": "键路径",
+                        "Optional": true
+                    },
+                    {
+                        "Caption": "sKeyName",
+                        "DataType": "String",
+                        "Describe": "子键名",
+                        "Optional": true
+                    },
+                    {
+                        "Caption": "sValue",
+                        "DataType": "Integer",
+                        "Describe": "键值",
+                        "Optional": true
+                    }
+                ]
+            }
+        },
+        {
+            "Caption": "Registry_DelKey",
+            "Remark": "删除路径",
+            "Visible": true,
+            "Function": true,
+            "InsCode": "Registry_DelKey(%HKEY_CLASSES_ROOT, \"路径\")",
+            "Templet": "command.html",
+            "Help": {
+                "Caption": "Registry_DelKey",
+                "Define": "bRet = Registry_DelKey(HKEY, sMainKey)",
+                "Describe": "删除注册表中指定路径下的所有键值",
+                "RetType": "Boolean",
+                "Return": "成功返回 true",
+                "Param": [
+                    {
+                        "Caption": "HKEY",
+                        "DataType": "String",
+                        "Describe": "根键，可以设置为：<br>\\\"HKEYCR\\\" (%HKEY_CLASSES_ROOT)<br>\\\"HKEYCU\\\" (%HKEY_CURRENT_USER)<br>\\\"HKEYLM\\\" (%HKEY_LOCAL_MACHINE)<br>\\\"HKEYU\\\"  (%HKEY_USERS)<br>\\\"HKEYCC\\\" (%HKEY_CURRENT_CONFIG)",
+                        "Optional": true
+                    },
+                    {
+                        "Caption": "sMainKey",
+                        "DataType": "String",
+                        "Describe": "键路径",
+                        "Optional": true
+                    }
+                ]
+            }
+        },
+        {
+            "Caption": "Registry_DelValue",
+            "Remark": "删除键值",
+            "Visible": true,
+            "Function": true,
+            "InsCode": "Registry_DelValue(%HKEY_CLASSES_ROOT, \"路径\", \"键名\")",
+            "Templet": "command.html",
+            "Help": {
+                "Caption": "Registry_DelValue",
+                "Define": "bRet = Registry_DelValue(HKEY, sMainKey, sKeyName)",
+                "Describe": "删除注册表中指定路径下某一项键值",
+                "RetType": "Boolean",
+                "Return": "成功返回 true",
+                "Param": [
+                    {
+                        "Caption": "HKEY",
+                        "DataType": "String",
+                        "Describe": "根键，可以设置为：<br>\\\"HKEYCR\\\" (%HKEY_CLASSES_ROOT)<br>\\\"HKEYCU\\\" (%HKEY_CURRENT_USER)<br>\\\"HKEYLM\\\" (%HKEY_LOCAL_MACHINE)<br>\\\"HKEYU\\\"  (%HKEY_USERS)<br>\\\"HKEYCC\\\" (%HKEY_CURRENT_CONFIG)",
+                        "Optional": false
+                    },
+                    {
+                        "Caption": "sMainKey",
+                        "DataType": "String",
+                        "Describe": "键路径",
+                        "Optional": false
+                    },
+                    {
+                        "Caption": "sKeyName",
+                        "DataType": "String",
+                        "Describe": "子键名",
+                        "Optional": false
+                    }
+                ]
+            }
+        },
+        {
+            "Caption": "Registry_GetAllKeys",
+            "Remark": "列出键值",
+            "Visible": true,
+            "Function": true,
+            "InsCode": "Registry_GetAllKeys(%HKEY_CLASSES_ROOT, \"路径\")",
+            "Templet": "command.html",
+            "Help": {
+                "Caption": "Registry_GetAllKeys",
+                "Define": "sRet = Registry_GetAllKeys(HKEY, sMainKey[, Separator])",
+                "Describe": "列出注册表中指定路径下的所有键值",
+                "RetType": "String",
+                "Return": "返回路径下的所有键值",
+                "Param": [
+                    {
+                        "Caption": "HKEY",
+                        "DataType": "String",
+                        "Describe": "根键，可以设置为：<br>\\\"HKEYCR\\\" (%HKEY_CLASSES_ROOT)<br>\\\"HKEYCU\\\" (%HKEY_CURRENT_USER)<br>\\\"HKEYLM\\\" (%HKEY_LOCAL_MACHINE)<br>\\\"HKEYU\\\"  (%HKEY_USERS)<br>\\\"HKEYCC\\\" (%HKEY_CURRENT_CONFIG)",
+                        "Optional": false
+                    },
+                    {
+                        "Caption": "sMainKey",
+                        "DataType": "String",
+                        "Describe": "键路径",
+                        "Optional": false
+                    },
+                    {
+                        "Caption": "Separator",
+                        "DataType": "String",
+                        "Describe": "分隔符",
+                        "Optional": true
+                    }
+                ]
+            }
+        }
+    ]
+}

@@ -1,0 +1,178 @@
+
+Uses "oxygen","console"
+Dim c,src As String
+dim v as long
+src="
+
+
+
+'-----------------------------------------
+'32 bit or 64 bit
+'=========================================
+
+ 
+  #file "TestHelloDLL.exe" independent 64 bit
+
+  /*
+
+  '================
+  BOOTSTRAP LIBRARY
+  '================
+
+  IMPORTED PROCEDURES:       Offsets from proc_address_list (IAT):  32  64BIT
+  '-------------------------------------------------------------------------
+  data "/+4 .LoadLibrary        hw0 `LoadLibraryA` 00"             '00  00
+  data "/+4 .GetProcAddress     hw0 `GetProcAddress` 00"           '04  08
+  data "/+4 .FreeLibrary        hw0 `FreeLibrary` 00"              '08  16
+  data "/+4 .GetModuleHandle    hw0 `GetModuleHandleA` 00"         '12  24
+  data "/+4 .GetCommandLine     hw0 `GetCommandLineA` 00"          '16  32
+  data "/+4 .GetExitCodeProcess hw0 `GetExitCodeProcess` 00"       '20  40
+  data "/+4 .ExitProcess        hw0 `ExitProcess` 00"              '24  48
+                                                                   '28  56
+  data "/+4 .SysAllocStringByteLen hw0 `SysAllocStringByteLen` 00" '32  64
+  data "/+4 .SysFreeString hw0 `SysFreeString` 00"                 '36  72
+                                                                   '40  80
+  data "/+4 .MessageBox hw0 `MessageBoxA` 00"                      '44  88
+
+  */
+
+
+  '-------------------------------
+  'TEST FOR 32 BIT OR 64BIT SYSTEM
+  '===============================
+  '
+
+
+  mov eax,0
+  o2 48 'this means `dec eax` in 32 bit mode and is a rex prefix in 64 bit mode (converts eax into rax)
+  mov eax,eax
+  cmp eax,0
+  jz fwd platform64
+    call fwd here : .here : pop ecx : sub ecx,here : add ecx,import_address_table
+    push 0 : `Title: o2` : push eax : `32 bit platform` : push eax : push 0
+    call [ecx+44]
+    ret
+  '
+  .platform64
+###
+    push rbx
+    sub rsp,64
+    mov rcx,0
+    mov r9,0
+    "64 bit platform" : mov rdx,rax
+    "Title O2" : mov r8,rax
+    lea rip rbx,import_address_table
+    call [rbx+88]
+    add rsp,64
+    pop rbx
+###
+  
+
+  def FrameSize 64
+
+  '-----------
+  'MAIN PROLOG
+  '===========
+
+  push rbx
+
+  sub rsp,FrameSize
+  '
+  '
+  lea rip rbx,import_address_table
+  '
+  jmp fwd over
+  .libname  : o2 `helloDLL.dll` 00
+  .procname : o2 `greeting` 00
+  .over
+
+  lea rip rcx,libname  : call [rbx+0] 'LoadLibrary
+
+  cmp rax,0 : jnz fwd ok
+    jmp fwd over
+    .title : o2 `TEST HELLO DLL` 00
+    .text  : o2 `Library not Loaded` 00
+    .over
+    lea rip r8,title : lea rip rdx,text
+    mov rcx,0 : mov r9,0 : call [rbx+88] 'messagebox
+    jmp fwd finish
+  .ok
+
+  mov [rsp+56],rax 'save handle
+  mov rcx,[rsp+56] : lea rip rdx,procname : call [rbx+8] 'GetProcAddress
+
+  cmp rax,0 : jnz fwd ok
+    jmp fwd over
+    .title : o2 `TEST HELLO DLL` 00
+    .text  : o2 `Procedure not Located` 00
+    .over
+    lea rip r8,title : lea rip rdx,text
+    mov rcx,0 : mov r9,0 : call [rbx+88] 'messagebox
+    jmp fwd finish
+  .ok
+
+  call rax
+
+  mov rcx,[rsp+56] : call [rbx+16] 'FreeLibrary
+
+
+  jmp fwd over
+  .title : o2 `TEST HELLO DLL` 00
+  .text  : o2 `Test Completed` 00
+  .over
+  lea rip r8,title : lea rip rdx,text
+  mov rcx,0 : mov r9,0 : call [rbx+88] 'messagebox
+  ' 
+
+
+
+  '----------------------
+  'TERMINATION OF PROCESS
+  '======================
+  '
+  .finish
+  '
+  xor rcx,rcx       '0
+  call [rbx+24]     'GetModuleHandleA
+  mov [rsp+48],rax  'save handle
+  '-----------------'
+  mov rcx,rax       'handle
+  lea rdx,[rsp+56]  'for exit code byref
+  call [rbx+40]     'GetExitCodeProcess
+  '-----------------'
+  mov rcx,[rsp+48]  'load Module Handle
+  mov rdx,[rsp+56]  'load Exit Code
+  call [rbx+48]     'ExitProcess
+  '-----------------'
+
+  add rsp,FrameSize
+  pop rbx
+  ret
+
+  o2 /+10
+  '---------------------------------------------------------------
+  .message ' Handle in r8, pText in rdx, pTitle in r9, Style in r9
+  '===============================================================
+  sub rsp,32
+  mov rcx,0 'null handle
+  mov r9,0 'style
+  call [rbx+88] 'MessageBoxA
+  add rsp,32
+  ret
+
+
+
+"
+
+printl O2_view src
+c=O2_ASM src
+'msgbox 0,len(c)
+If Len(O2_ERROR) Then
+  printl O2_ERROR
+else
+  printl "Compiled"
+end if
+printl ""
+printl "Press key to finish"
+waitkey
+

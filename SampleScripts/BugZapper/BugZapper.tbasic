@@ -1,0 +1,1029 @@
+Uses "Console"
+'[todo] <Something to do here>
+'[] <enter your annotation here>
+'[!] <pay attention note: important>
+'[o] <this part needs to be optimized>
+'[todo] <Something to do here>
+'[t] <this part needs to be tested>
+
+
+Global nPassed, nFailed, nTotal As Long
+Global sPassed, sFailed As String
+
+sPassed = "passed"
+sFailed = "FAILED"
+
+
+TestOperators()
+TestProgramFlow()
+TestStringHandling()
+TestTiming()
+TestTotal()
+Console_WriteLine($CRLF + "Press any key to end")
+CONSOLE_WAITKEY
+                     
+
+Sub TestTotal()
+  CONSOLE_WRITELINE("Number of test:")
+  CONSOLE_WRITELINE(String$(50, "-"))
+  CONSOLE_WRITELINE("Passed test       : " & nPassed  )
+  CONSOLE_WRITELINE("Failed test       : " & nFailed  )
+  CONSOLE_WRITELINE("         --------------------")
+  CONSOLE_WRITELINE("             TOTAL: " & nTotal  )
+  
+  CONSOLE_WRITELINE(String$(50, "-"))
+End Sub
+
+
+Function TestTiming() As Long
+  Local TI, TL, TP, TE, TT As Double
+
+  TI = APP_Timer(%APP_TIMER_INIT        )
+  TL = APP_Timer(%APP_TIMER_LOAD        )
+  TP = APP_Timer(%APP_TIMER_PREPROCESSOR)
+  TE = APP_Timer(%APP_TIMER_EXECTOTAL   )
+  TT = TI + TL + TP + TE
+  
+  CONSOLE_WRITELINE(String$(50, "-"))
+  CONSOLE_WRITELINE("Execution timing (seconds):")
+  CONSOLE_WRITELINE(String$(50, "-"))
+  CONSOLE_WRITELINE("Initialize    time: " & Format$(TI, "#0.0000000")  )
+  CONSOLE_WRITELINE("Loading       time: " & Format$(TL, "#0.0000000")  )
+  CONSOLE_WRITELINE("Pre-Processor time: " & Format$(TP, "#0.0000000")  )
+  CONSOLE_WRITELINE("Execution     time: " & Format$(TE, "#0.0000000")  )
+  CONSOLE_WRITELINE("         --------------------")
+  CONSOLE_WRITELINE("             TOTAL: " & Format$(TT, "#0.0000000")  )
+  
+  CONSOLE_WRITELINE(String$(50, "-"))
+End Function
+
+Function TestStringHandling() As Long
+Local i, n As Long
+Local sGroup, sType, sItem, sDummy As String
+Local sArray() As String
+
+
+   sGroup = "Core"
+   sType  = "String Handling"
+   DisplayGroup(sGroup, sType)
+
+   ' ASC
+   sItem = "ASC"
+   If Asc("A") = 65 Then
+      DisplayResult(sGroup, sItem, sPassed)
+   Else
+      DisplayResult(sGroup, sItem, sFailed)
+   End If
+
+   ' Ascii2Unicode
+   sItem = "Ascii2Unicode"
+   If Unicode2Ascii(Ascii2Unicode("Hi there")) = "Hi there" Then
+      DisplayResult(sGroup, sItem, sPassed)
+   Else
+      DisplayResult(sGroup, sItem, sFailed)
+   End If
+
+   ' BIN$
+   sItem = "BIN$"
+   If Bin$(7) = "111" Then
+      DisplayResult(sGroup, sItem, sPassed)
+   Else
+      DisplayResult(sGroup, sItem, sFailed)
+   End If
+
+   ' CHOOSE$
+   sItem = "CHOOSE$"
+   i = 3
+   If Choose$(i, "AA", "BB", "CC", "DD", "EE") = "CC" Then
+      DisplayResult(sGroup, sItem, sPassed)
+   Else
+      DisplayResult(sGroup, sItem, sFailed)
+   End If
+
+   ' CHR$
+   sItem = "CHR$"
+   i = 66
+   If Chr$(i) = "B" Then
+      DisplayResult(sGroup, sItem, sPassed)
+   Else
+      DisplayResult(sGroup, sItem, sFailed)
+   End If
+
+   ' CSET$
+   sItem = "CSET$"
+   i = 7
+   If CSet$("aBc", i) = "  aBc  " Then 
+      DisplayResult(sGroup, sItem, sPassed)
+   Else
+      DisplayResult(sGroup, sItem, sFailed)
+   End If
+
+   ' DATE$ Ops!
+   sItem = "DATE$"
+   DisplayResult(sGroup, sItem + " (" + Date$ + ") ", sPassed)
+
+   ' EXTRACT$
+   sItem = "EXTRACT$"
+   i = 3
+   If  Extract$(i, ",  12345,678", ",") = " 12345" Then
+      DisplayResult(sGroup, sItem, sPassed)
+   Else
+      DisplayResult(sGroup, sItem, sFailed)
+   End If
+
+   ' FORMAT$
+   sItem = "FORMAT$"
+   i = 123.456
+   If Format$(i, 2) = "1.2E+2" Then
+      If Format$(123.456, 5) = "123.46" Then
+         DisplayResult(sGroup, sItem, sPassed)
+      Else
+         DisplayResult(sGroup, sItem, sFailed + " 1")
+      End If
+   Else
+      DisplayResult(sGroup, sItem, sFailed + " 2")
+   End If
+
+   ' GUID$
+   sItem = "GUID$"
+   sDummy = GUID$("")
+   i = Len(sDummy)
+   If i = 16 Then
+      DisplayResult(sGroup, sItem, sPassed)
+   Else
+      DisplayResult(sGroup, sItem, sFailed)
+   End If
+
+   ' GUIDTXT$
+   sItem = "GUIDTXT$"
+   i = Len(GuidTxt$(sDummy))
+   If i = 38 Then
+      DisplayResult(sGroup, sItem, sPassed)
+   Else
+      DisplayResult(sGroup, sItem, sFailed)
+   End If
+
+   ' HEX$
+   sItem = "HEX$"
+   i = -1
+   If Hex$(i) = "FFFFFFFFFFFFFFFF" Then
+      DisplayResult(sGroup, sItem, sPassed)
+   Else
+      DisplayResult(sGroup, sItem, sFailed)
+   End If
+
+   ' IIF$
+   sItem = "IIF$"
+   i = -1
+   n = IIf(i = -1, 1, 0)
+   i = 7
+   n = n + IIf(i = 3, 0, 1) 
+   If n = 2 Then
+      DisplayResult(sGroup, sItem, sPassed)
+   Else
+      DisplayResult(sGroup, sItem, sFailed)
+   End If
+   
+   ' INSTR
+   sItem = "INSTR"
+   sDummy = "ABCD FGHI ABCD"
+   n = InStr(sDummy, "E")
+   i = InStr(sDummy, "F")
+   If n = 0 And i = 6 Then
+      If InStr(2, sDummy, "ABC") = 11 Then
+         DisplayResult(sGroup, sItem, sPassed)
+      Else
+         DisplayResult(sGroup, sItem, sFailed + " 1")
+      End If
+   Else
+      DisplayResult(sGroup, sItem, sFailed + " 2")
+   End If
+
+   ' LCASE$
+   sItem = "LCASE$"
+   sDummy = "Hi ThERe 2!"
+   If LCase$(sDummy) = "hi there 2!" Then
+      DisplayResult(sGroup, sItem, sPassed)
+   Else
+      DisplayResult(sGroup, sItem, sFailed)
+   End If
+
+   ' LEFT$
+   sItem = "LEFT$"
+   sDummy = "Hi ThERe 2!"
+   If LEFT$(sDummy, 4) = "Hi T" Then
+      DisplayResult(sGroup, sItem, sPassed)
+   Else
+      DisplayResult(sGroup, sItem, sFailed)
+   End If
+
+   ' LEN
+   sItem = "LEN"
+   sDummy = "Hi ThERe 2!"
+   If Len(sDummy) = 11 Then
+      DisplayResult(sGroup, sItem, sPassed)
+   Else
+      DisplayResult(sGroup, sItem, sFailed)
+   End If
+
+   ' LSET$
+   sItem = "LSET$"
+   sDummy = "Hi ThERe 2!"
+   If LSet$(sDummy, 15) = "Hi ThERe 2!    " Then
+      DisplayResult(sGroup, sItem, sPassed)
+   Else
+      DisplayResult(sGroup, sItem, sFailed)
+   End If
+
+   ' LTRIM$
+   sItem = "LTRIM$"
+   sDummy = "     Hi ThERe 2!  "
+   If LTrim$(sDummy) = "Hi ThERe 2!  " Then
+      DisplayResult(sGroup, sItem, sPassed)
+   Else
+      DisplayResult(sGroup, sItem, sFailed)
+   End If
+
+   ' MCASE$
+   sItem = "MCASE$"
+   sDummy = "Hello world and hi there company!"
+   If MCase$(sDummy) = "Hello World And Hi There Company!" Then
+      DisplayResult(sGroup, sItem, sPassed)
+   Else
+      DisplayResult(sGroup, sItem, sFailed)
+   End If
+
+   ' MID$
+   sItem = "MID$"
+   sDummy = "Hello world and hi there company!"
+   If Mid$(sDummy, 7, 5) = "world" Then
+      DisplayResult(sGroup, sItem, sPassed)
+   Else
+      DisplayResult(sGroup, sItem, sFailed)
+   End If
+
+   ' MKBYT$
+   sItem = "MKBYT$"
+   If CVBYT(MKBYT$(255)) = 255 Then
+      DisplayResult(sGroup, sItem, sPassed)
+   Else
+      DisplayResult(sGroup, sItem, sFailed)
+   End If
+
+   ' MKCUR$
+   sItem = "MKCUR$"
+   If CVCUR(MKCUR$(12345678)) = 12345678 Then
+      DisplayResult(sGroup, sItem, sPassed)
+   Else
+      DisplayResult(sGroup, sItem, sFailed)
+   End If
+
+   ' MKCUX$
+   sItem = "MKCUX$"
+   If CVCUX(MKCUX$(1234567890)) = 1234567890 Then
+      DisplayResult(sGroup, sItem, sPassed)
+   Else
+      DisplayResult(sGroup, sItem, sFailed)
+   End If
+
+   ' MKD$
+   sItem = "MKD$"
+   If Round(CVD(MKD$(12345.67)), 2) = 12345.67 Then
+      DisplayResult(sGroup, sItem, sPassed)
+   Else
+      DisplayResult(sGroup, sItem, sFailed & " " & Round(CVD(MKD$(12345.67)), 2) & "    " & 12345.67)
+   End If
+
+   ' MKDWD$
+   sItem = "MKDWD$"
+   If CVDWD(MKDWD$(4294967295)) = 4294967295 Then
+      DisplayResult(sGroup, sItem, sPassed)
+   Else
+      DisplayResult(sGroup, sItem, sFailed)
+   End If
+
+   ' MKE$
+   sItem = "MKE$"
+   If CVE(MKE$(123456.789)) = 123456.789 Then
+      DisplayResult(sGroup, sItem, sPassed)
+   Else
+      DisplayResult(sGroup, sItem, sFailed)
+   End If
+
+   ' MKI$
+   sItem = "MKI$"
+   If CVI(MKI$(12345)) = 12345 Then
+      DisplayResult(sGroup, sItem, sPassed)
+   Else
+      DisplayResult(sGroup, sItem, sFailed)
+   End If
+
+   ' MKL$
+   sItem = "MKL$"
+   If CVL(MKL$(12345678)) = 12345678 Then
+      DisplayResult(sGroup, sItem, sPassed)
+   Else
+      DisplayResult(sGroup, sItem, sFailed)
+   End If
+
+   ' MKQ$
+   sItem = "MKQ$"
+   If CVQ(MKQ$(12345678901)) = 12345678901 Then
+      DisplayResult(sGroup, sItem, sPassed)
+   Else
+      DisplayResult(sGroup, sItem, sFailed)
+   End If
+
+   ' MKWRD$
+   sItem = "MKWRD$"
+   If CVWRD(MKWRD$(65535)) = 65535 Then
+      DisplayResult(sGroup, sItem, sPassed)
+   Else
+      DisplayResult(sGroup, sItem, sFailed)
+   End If
+
+   ' MKS$
+   sItem = "MKS$"
+   If Round(CVS(MKS$(12.3)),2) = 12.3 Then
+      DisplayResult(sGroup, sItem, sPassed)
+   Else
+      DisplayResult(sGroup, sItem, sFailed)
+   End If
+
+   ' PARSE
+   sItem = "PARSE"
+   sDummy = "Blue, Green, Red, White"
+   ReDim sArray(4)
+   Parse sDummy, sArray, ", "
+   If sArray(1) = "Blue" And sArray(2) = "Green" And sArray(3) = "Red" And sArray(4) = "White" Then
+      DisplayResult(sGroup, sItem, sPassed)
+   Else
+      DisplayResult(sGroup, sItem, sFailed)
+   End If
+
+   ' PARSE$
+   sItem = "PARSE$"
+   sDummy = Parse$("Blue, Green, Red, White", "e", 1)
+   If sDummy = "Blu" Then
+      sDummy = Parse$("Blue, Green, Red, White", "e", 5)
+      If sDummy = "d, Whit" Then
+         DisplayResult(sGroup, sItem, sPassed)
+      Else
+         DisplayResult(sGroup, sItem, sFailed)
+      End If
+   Else
+      DisplayResult(sGroup, sItem, sFailed)
+   End If
+
+   ' PARSECOUNT
+   sItem = "PARSECOUNT"
+   sDummy = "Blue, Green, Red,White"
+   If ParseCount(sDummy, ", ") = 3 Then
+      DisplayResult(sGroup, sItem, sPassed)
+   Else
+      DisplayResult(sGroup, sItem, sFailed +ParseCount(sDummy, ", "))
+   End If
+
+End Function
+
+Function TestProgramFlow() As Long
+Local i, n As Long
+Local sGroup, sType, sItem As String
+
+   sGroup = "Program Flow"
+   sType  = ""
+   DisplayGroup(sGroup, sType)
+
+   ' DO WHILE/LOOP
+   sItem = "DO WHILE/LOOP"
+   i = 0
+   n = 0
+   Do While i <= 5 
+      i = i + 1
+      n = n + 1
+      If n > 5 Then
+         Exit Do
+      End If
+
+   Loop
+   If n = 6 Then
+      DisplayResult(sGroup, sItem, sPassed)
+   Else
+      DisplayResult(sGroup, sItem, sFailed)
+   End If
+
+
+   ' DO UNTIL/LOOP
+   sItem = "DO UNTIL/LOOP"
+   i = 0
+   n = 0
+   Do Until i >= 5
+      i = i + 1
+      n = n + 1
+      If n > 5 Then
+         Exit Do
+      End If
+   
+   Loop
+   If n = 5 Then
+      DisplayResult(sGroup, sItem, sPassed)
+   Else
+      DisplayResult(sGroup, sItem, sFailed)
+   End If
+
+
+   ' DO/LOOP WHILE
+   sItem = "DO/LOOP WHILE"
+   i = 0
+   n = 0
+   Do  
+      i = i + 1
+      n = n + 1
+      If n > 5 Then
+         Exit Do
+      End If
+
+   Loop While i <= 5
+   If n = 6 Then
+      DisplayResult(sGroup, sItem, sPassed)
+   Else
+      DisplayResult(sGroup, sItem, sFailed)
+   End If
+
+
+   ' DO/LOOP UNTIL
+   sItem = "DO/LOOP UNTIL"
+   i = 0
+   n = 0
+   Do
+      i = i + 1
+      n = n + 1
+      If n > 5 Then
+         Exit Do
+      End If
+
+   Loop Until i >= 5
+   If n = 5 Then
+      DisplayResult(sGroup, sItem, sPassed)
+   Else
+      DisplayResult(sGroup, sItem, sFailed)
+   End If
+
+   ' EXIT DO
+   sItem = "EXIT DO"
+   i = 0
+   Do
+      i = i + 1
+      If i = 5 Then
+         Exit Do
+      End If
+   Loop
+   If i = 5 Then
+      DisplayResult(sGroup, sItem, sPassed)
+   Else
+      DisplayResult(sGroup, sItem, sFailed)
+   End If
+
+
+   ' ITERATE DO
+   sItem = "ITERATE DO"
+   i = 0
+   n = 0
+   Do
+      i = i + 1
+      If i > 3 Then
+         Iterate Do
+      End If
+      n = n + 1
+   Loop Until i >= 5
+   If n = 3 Then
+      DisplayResult(sGroup, sItem, sPassed)
+   Else
+      DisplayResult(sGroup, sItem, sFailed)
+   End If
+
+   ' DoEvents
+   sItem = "DoEvents"
+   DoEvents
+   DisplayResult(sGroup, sItem, sPassed)
+
+
+   ' EXIT FUNCTION
+   sItem = "EXIT FUNCTION"
+   If DoExitFunction = 7 Then
+      DisplayResult(sGroup, sItem, sPassed)
+   Else
+      DisplayResult(sGroup, sItem, sFailed)
+   End If
+
+   ' FOR/NEXT
+   sItem = "FOR/NEXT"
+   For i = 1 To 10
+    n = i
+   Next
+   If n = 10 Then
+      DisplayResult(sGroup, sItem, sPassed)
+   Else
+      DisplayResult(sGroup, sItem, sFailed)
+   End If
+
+   ' FOR STEP/NEXT
+   sItem = "FOR STEP/NEXT"
+   n = 0
+   For i = 2 To 6 Step 2
+    n = n + 1
+   Next
+   
+   If n = 3 Then
+      n = 0
+      For i = 12 To 3 Step -3
+        n = n + 1
+      Next
+      
+      If n = 4 Then
+         DisplayResult(sGroup, sItem, sPassed)
+      Else
+         DisplayResult(sGroup, sItem, sFailed + " 1")
+      End If
+   Else
+      DisplayResult(sGroup, sItem, sFailed + " 2")
+   End If
+
+
+   ' FOR EXIT/NEXT
+   sItem = "FOR EXIT/NEXT"
+   For i = 1 To 10
+    If i = 7 Then
+           Exit For
+        End If
+   Next
+   If i = 7 Then
+      DisplayResult(sGroup, sItem, sPassed)
+   Else
+      DisplayResult(sGroup, sItem, sFailed & " " & I)
+   End If
+
+   ' FOR ITERATE/NEXT
+   n = 0
+   sItem = "FOR ITERATE/NEXT"
+   For i = 1 To 10
+      If i = 7 Then
+         Iterate For
+      End If
+      n = n + 1
+   Next
+   If n = 9 Then
+      DisplayResult(sGroup, sItem, sPassed)
+   Else
+      DisplayResult(sGroup, sItem, sFailed)
+   End If
+
+
+   ' IF THEN ELSE
+   sItem = "IF THEN ELSE"
+   n = 1
+   If n = 2 Then
+      DisplayResult(sGroup, sItem, sFailed)
+   Else
+      DisplayResult(sGroup, sItem, sPassed)
+   End If
+
+   ' IF THEN ELSEIF
+   sItem = "IF THEN ELSEIF"
+   n = 1
+   If n = 2 Then
+      DisplayResult(sGroup, sItem, sFailed)
+   ElseIf n = 1 Then
+      DisplayResult(sGroup, sItem, sPassed)
+   Else
+      DisplayResult(sGroup, sItem, sFailed)
+   End If
+
+   ' REM
+   sItem = "REM"
+   n = 1
+   REM n = 5
+   If n = 1 Then
+      DisplayResult(sGroup, sItem, sPassed)
+   Else n = 1
+      DisplayResult(sGroup, sItem, sFailed)
+   End If
+
+   ' '
+   sItem = "'"
+   n = 1
+   ' n = 5
+   If n = 1 Then
+      DisplayResult(sGroup, sItem, sPassed)
+   Else n = 1
+      DisplayResult(sGroup, sItem, sFailed)
+   End If
+
+
+   ' SELECT CASE
+   sItem = "SELECT CASE"
+   n = 3
+   Select Case n
+      Case 1
+         DisplayResult(sGroup, sItem, sFailed + " 1")
+      Case 3
+         DisplayResult(sGroup, sItem, sPassed)
+      Case 5
+         DisplayResult(sGroup, sItem, sFailed + " 2")
+      Case Else
+         DisplayResult(sGroup, sItem, sFailed + " 3")
+   End Select
+
+   ' Sleep
+   CONSOLE_WRITELINE("Now starting sleep test. It will take a while. Hold on  ...")
+   sItem = "Sleep"
+   i = 2
+   n = SLEEP(i)
+   If i = n Then
+      DisplayResult(sGroup, sItem, sPassed)
+   Else n = 1
+      DisplayResult(sGroup, sItem, sFailed)
+   End If
+
+   ' STOP ops ehhh!
+   sItem = "STOP"
+   DisplayResult(sGroup, sItem, sPassed)
+
+   ' WHILE/WEND
+   sItem = "WHILE/WEND"
+   i = 0
+   While i < 10
+    i = i + 1
+    n = i
+   Wend
+   If n = 10 Then
+      DisplayResult(sGroup, sItem, sPassed)
+   Else
+      DisplayResult(sGroup, sItem, sFailed)
+   End If
+
+   ' WHILE EXIT/WEND
+   sItem = "WHILE EXIT/WEND"
+   i = 0
+   While i <= 10
+    i = i + 1
+    n = i
+        If i = 5 Then
+           Exit While
+        End If
+   Wend
+   If n = 5 Then
+      DisplayResult(sGroup, sItem, sPassed)
+   Else
+      DisplayResult(sGroup, sItem, sFailed)
+   End If
+
+   ' WHILE ITERATE/WEND
+   sItem = "WHILE ITERATE/WEND"
+   i = 0
+   While i <= 10
+      i = i + 1
+      If i = 5 Then
+         Iterate While
+      End If
+      n = i
+   Wend
+   If n = 11 Then
+     DisplayResult(sGroup, sItem, sPassed)
+   Else
+     DisplayResult(sGroup, sItem, sFailed)
+   End If
+
+   ' SELECT inside SELECT
+   '[breakpoint] <Any note here. Breakpoint will be set to line following this statement>
+   sItem = "SELECT inside SELECT"
+   i = 3
+   n = 1
+   Select Case i
+    Case 1
+    Case 2
+    Case 3
+      If n = 1 Then
+        Select Case n
+          Case 1
+            PrintL "OK"
+        End Select
+      End If
+   End Select
+
+End Function
+
+
+
+
+Function DoExitFunction() As Long
+'[!] <Attention to this function>
+
+   Function = 7
+   Exit Function
+   Function = 10
+
+End Function
+
+
+Function TestOperators() As Long
+
+   DoTestOperatorsArithmetic
+   
+   DoTestOperatorsComparison
+   DoTestOperatorsLogical
+
+End Function
+
+Function DoTestOperatorsLogical() As Long
+Local i, n As Long
+Local sGroup, sType, sItem As String
+
+   sGroup = "Operator"
+   sType  = "Logical"
+   DisplayGroup(sGroup, sType)
+
+   ' Operator AND
+   sItem = "AND"
+   i = 1
+   n = 1
+   If (i And n) Then
+      i = 1
+      n = 0
+      If (i And n) = 0 Then
+         i = 0
+         n = 0
+         If (i And n) = 0 Then
+            i = 0
+            n = 1
+            If (i And n) = 0 Then
+               DisplayResult(sGroup, sItem, sPassed)
+            Else
+           DisplayResult(sGroup, sItem, sFailed + " 1")
+            End If
+         Else
+        DisplayResult(sGroup, sItem, sFailed + " 2")
+         End If
+       Else
+     DisplayResult(sGroup, sItem, sFailed + " 3")
+      End If
+   Else
+    DisplayResult(sGroup, sItem, sFailed + " 4")
+   End If
+
+   ' Operator OR
+   sItem = "OR"
+   i = 1
+   n = 1
+   If (i Or n) = 1 Then
+      i = 1
+      n = 0
+      If (i Or n) = 1 Then
+         i = 0
+         n = 0
+         If (i Or n) = 0 Then
+            i = 0
+            n = 1
+            If (i Or n) = 1 Then
+               DisplayResult(sGroup, sItem, sPassed)
+            Else
+           DisplayResult(sGroup, sItem, sFailed + " 1")
+            End If
+         Else
+        DisplayResult(sGroup, sItem, sFailed + " 2")
+         End If
+       Else
+     DisplayResult(sGroup, sItem, sFailed + " 3")
+      End If
+   Else
+    DisplayResult(sGroup, sItem, sFailed + " 4")
+   End If
+
+   ' Operator NOT
+   sItem = "NOTB"
+   i = 1
+   If (NotB i) = -2 Then
+      i = -1
+      If (NotB i) = 0 Then
+         DisplayResult(sGroup, sItem, sPassed)
+       Else
+     DisplayResult(sGroup, sItem, sFailed + " 1")
+      End If
+   Else
+    DisplayResult(sGroup, sItem, sFailed + " 2")
+   End If
+
+   ' Operator XOR
+   sItem = "XOR"
+   i = 33
+   n = 68
+   If (i XOR n) = 101 Then
+      If (i XOR 101) = n Then
+         DisplayResult(sGroup, sItem, sPassed)
+       Else
+     DisplayResult(sGroup, sItem, sFailed + " 1")
+      End If
+   Else
+    DisplayResult(sGroup, sItem, sFailed + " 2")
+   End If
+
+   ' Operator IsFalse
+   sItem = "IsFalse"
+   n = 0
+   If IsFalse(n) = -1 Then
+     n = 1
+     If IsFalse(n) = 0 Then
+        DisplayResult(sGroup, sItem, sPassed)
+     Else
+        DisplayResult(sGroup, sItem, sFailed)
+     End If
+   Else
+     DisplayResult(sGroup, sItem, sFailed)
+   End If
+
+
+   ' Operator IsTrue
+   sItem = "IsTrue"
+   n = 0
+   If IsTrue(n) = 0 Then
+     n = 1
+     If IsTrue(n) = -1 Then
+        DisplayResult(sGroup, sItem, sPassed)
+     Else
+        DisplayResult(sGroup, sItem, sFailed + " 1")
+     End If
+   Else
+     DisplayResult(sGroup, sItem, sFailed + " 2")
+   End If
+
+End Function
+
+Function DoTestOperatorsComparison() As Long
+  Local i, n As Long
+  Local sGroup, sType, sItem As String
+
+  sGroup = "Operator"
+  sType  = "Comparison"
+  DisplayGroup(sGroup, sType)
+
+  ' Operator >
+  sItem = ">"
+  i = 2
+  n = 1
+  If i > n Then
+    DisplayResult(sGroup, sItem, sPassed)
+  Else
+    DisplayResult(sGroup, sItem, sFailed)
+  End If
+
+  ' Operator >=
+  sItem = ">="
+  i = 2
+  n = 1
+  If i >= n Then
+    i = 2
+    n = 2
+    If i >= n Then
+      DisplayResult(sGroup, sItem, sPassed)
+    Else
+      DisplayResult(sGroup, sItem, sFailed + " 1")
+    End If
+  Else
+    DisplayResult(sGroup, sItem, sFailed + " 2")
+  End If
+
+  ' Operator =
+  sItem = "="
+  i = 2
+  n = 2
+  If i = n Then
+    DisplayResult(sGroup, sItem, sPassed)
+  Else
+    DisplayResult(sGroup, sItem, sFailed)
+  End If
+
+  ' Operator <
+  sItem = "<"
+  i = 6
+  n = 7
+  If i < n Then
+    DisplayResult(sGroup, sItem, sPassed)
+  Else
+    DisplayResult(sGroup, sItem, sFailed)
+  End If
+
+  ' Operator <=
+  sItem = "<="
+  i = 1
+  n = 2
+  If i <= n Then
+    i = 7
+    n = 7
+    If i <= n Then
+      DisplayResult(sGroup, sItem, sPassed)
+    Else
+      DisplayResult(sGroup, sItem, sFailed + " 1")
+    End If
+  Else
+    DisplayResult(sGroup, sItem, sFailed + " 2")
+  End If
+
+  ' Operator <>
+  sItem = "<>"
+  i = 1
+  n = 5
+  If n <> i Then
+    DisplayResult(sGroup, sItem, sPassed)
+  Else
+    DisplayResult(sGroup, sItem, sFailed)
+  End If
+
+End Function
+
+
+Function DoTestOperatorsArithmetic() As Long
+Local i, n As Long
+Local sGroup, sType, sItem As String
+
+   sGroup = "Operator"
+   sType  = "Arithmetic"
+   DisplayGroup(sGroup, sType)
+
+   ' Operator +
+   sItem = "+"
+   i = 1
+   n = i + 2
+   If n = 3 Then
+    DisplayResult(sGroup, sItem, sPassed)
+   Else
+    DisplayResult(sGroup, sItem, sFailed)
+   End If
+
+   ' Operator -
+   sItem = "-"
+   i = 3
+   n = i - 2
+   If n = 1 Then
+    DisplayResult(sGroup, sItem, sPassed)
+   Else
+    DisplayResult(sGroup, sItem, sFailed)
+   End If
+
+   ' Operator *
+   sItem = "*"
+   i = 2
+   n = i * 2
+   If n = 4 Then
+    DisplayResult(sGroup, sItem, sPassed)
+   Else
+    DisplayResult(sGroup, sItem, sFailed)
+   End If
+
+   ' Operator /
+   sItem = "/"
+   i = 6
+   n = i / 3
+   If n = 2 Then
+    DisplayResult(sGroup, sItem, sPassed)
+   Else
+    DisplayResult(sGroup, sItem, sFailed)
+   End If
+
+   ' Operator \
+   sItem = "\"
+   i = 12
+   n = i \ 5
+   If n = 2 Then
+    DisplayResult(sGroup, sItem, sPassed)
+   Else
+    DisplayResult(sGroup, sItem, sFailed)
+   End If
+
+End Function
+
+
+Sub DisplayResult(sGroup As String, sItem As String, sResult As String)
+
+   CONSOLE_WRITELINE(LSet$(sGroup, 20) & LSet$(sItem, 30) + sResult)
+
+   If sResult = sPassed Then
+      nPassed += 1
+   Else
+      nFailed += 1
+   End If
+
+   nTotal += 1
+
+End Sub
+
+
+Sub DisplayGroup(sGroup As String, sType As String)
+  Local i As Long
+
+   i = 25
+
+   CONSOLE_WRITELINE(String$(i, "-"))
+   CONSOLE_WRITELINE(sGroup + " " + sType)
+   CONSOLE_WRITELINE(String$(i, "-"))
+
+End Sub

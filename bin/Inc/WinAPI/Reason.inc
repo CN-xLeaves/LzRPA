@@ -1,0 +1,123 @@
+'------------------------------------------------------------------------------
+'
+'  Reason.inc -- Equates for shutdown reason codes for Windows XP and later
+'
+'  Copyright (c) 2003-2011 PowerBASIC, Inc.
+'  Portions Copyright (c) Microsoft Corporation
+'  All Rights Reserved.
+'
+'  Last updated 02 May 2011
+'
+'------------------------------------------------------------------------------
+'  from reason.h of 14 Jul 2009
+'------------------------------------------------------------------------------
+
+
+#INCLUDE THIS ONCE
+
+%REASON_INC = 1
+%SENTINEL_Reason = 1
+
+
+' Reason flags
+
+' Flags used by the various UIs.
+%SHTDN_REASON_FLAG_COMMENT_REQUIRED          = &H01000000
+%SHTDN_REASON_FLAG_DIRTY_PROBLEM_ID_REQUIRED = &H02000000
+%SHTDN_REASON_FLAG_CLEAN_UI                  = &H04000000
+%SHTDN_REASON_FLAG_DIRTY_UI                  = &H08000000
+
+' Flags that end up in the event log code.
+%SHTDN_REASON_FLAG_USER_DEFINED           = &H40000000
+%SHTDN_REASON_FLAG_PLANNED                = &H80000000???
+
+' Microsoft major reasons.
+%SHTDN_REASON_MAJOR_OTHER                 = &H00000000
+%SHTDN_REASON_MAJOR_NONE                  = &H00000000
+%SHTDN_REASON_MAJOR_HARDWARE              = &H00010000
+%SHTDN_REASON_MAJOR_OPERATINGSYSTEM       = &H00020000
+%SHTDN_REASON_MAJOR_SOFTWARE              = &H00030000
+%SHTDN_REASON_MAJOR_APPLICATION           = &H00040000
+%SHTDN_REASON_MAJOR_SYSTEM                = &H00050000
+%SHTDN_REASON_MAJOR_POWER                 = &H00060000
+%SHTDN_REASON_MAJOR_LEGACY_API            = &H00070000
+
+' Microsoft minor reasons.
+%SHTDN_REASON_MINOR_OTHER                 = &H00000000
+%SHTDN_REASON_MINOR_NONE                  = &H000000ff
+%SHTDN_REASON_MINOR_MAINTENANCE           = &H00000001
+%SHTDN_REASON_MINOR_INSTALLATION          = &H00000002
+%SHTDN_REASON_MINOR_UPGRADE               = &H00000003
+%SHTDN_REASON_MINOR_RECONFIG              = &H00000004
+%SHTDN_REASON_MINOR_HUNG                  = &H00000005
+%SHTDN_REASON_MINOR_UNSTABLE              = &H00000006
+%SHTDN_REASON_MINOR_DISK                  = &H00000007
+%SHTDN_REASON_MINOR_PROCESSOR             = &H00000008
+%SHTDN_REASON_MINOR_NETWORKCARD           = &H00000009
+%SHTDN_REASON_MINOR_POWER_SUPPLY          = &H0000000a
+%SHTDN_REASON_MINOR_CORDUNPLUGGED         = &H0000000b
+%SHTDN_REASON_MINOR_ENVIRONMENT           = &H0000000c
+%SHTDN_REASON_MINOR_HARDWARE_DRIVER       = &H0000000d
+%SHTDN_REASON_MINOR_OTHERDRIVER           = &H0000000e
+%SHTDN_REASON_MINOR_BLUESCREEN            = &H0000000F
+%SHTDN_REASON_MINOR_SERVICEPACK           = &H00000010
+%SHTDN_REASON_MINOR_HOTFIX                = &H00000011
+%SHTDN_REASON_MINOR_SECURITYFIX           = &H00000012
+%SHTDN_REASON_MINOR_SECURITY              = &H00000013
+%SHTDN_REASON_MINOR_NETWORK_CONNECTIVITY  = &H00000014
+%SHTDN_REASON_MINOR_WMI                   = &H00000015
+%SHTDN_REASON_MINOR_SERVICEPACK_UNINSTALL = &H00000016
+%SHTDN_REASON_MINOR_HOTFIX_UNINSTALL      = &H00000017
+%SHTDN_REASON_MINOR_SECURITYFIX_UNINSTALL = &H00000018
+%SHTDN_REASON_MINOR_MMC                   = &H00000019
+%SHTDN_REASON_MINOR_SYSTEMRESTORE         = &H0000001a
+%SHTDN_REASON_MINOR_TERMSRV               = &H00000020
+%SHTDN_REASON_MINOR_DC_PROMOTION          = &H00000021
+%SHTDN_REASON_MINOR_DC_DEMOTION           = &H00000022
+
+
+%SHTDN_REASON_UNKNOWN      = %SHTDN_REASON_MINOR_NONE
+
+%SHTDN_REASON_LEGACY_API   = %SHTDN_REASON_MAJOR_LEGACY_API  _
+                         OR  %SHTDN_REASON_FLAG_PLANNED
+
+' This mask cuts out UI flags.
+%SHTDN_REASON_VALID_BIT_MASK           = &Hc0ffffff???
+
+' Convenience flags.
+%PCLEANUI = %SHTDN_REASON_FLAG_PLANNED  OR  %SHTDN_REASON_FLAG_CLEAN_UI
+%UCLEANUI = %SHTDN_REASON_FLAG_CLEAN_UI
+%PDIRTYUI = %SHTDN_REASON_FLAG_PLANNED  OR  %SHTDN_REASON_FLAG_DIRTY_UI
+%UDIRTYUI = %SHTDN_REASON_FLAG_DIRTY_UI
+
+'
+' Maximum character lengths for reason name, description, problem id, and
+' comment respectively.
+'
+%MAX_REASON_NAME_LEN    = 64
+%MAX_REASON_DESC_LEN    = 256
+%MAX_REASON_BUGID_LEN   = 32
+%MAX_REASON_COMMENT_LEN = 512
+%SHUTDOWN_TYPE_LEN      = 32
+
+'
+'  S.E.T. policy value
+'
+'
+%POLICY_SHOWREASONUI_NEVER             = 0
+%POLICY_SHOWREASONUI_ALWAYS            = 1
+%POLICY_SHOWREASONUI_WORKSTATIONONLY   = 2
+%POLICY_SHOWREASONUI_SERVERONLY        = 3
+
+
+'
+' Snapshot policy values
+'
+%SNAPSHOT_POLICY_NEVER          = 0
+%SNAPSHOT_POLICY_ALWAYS         = 1
+%SNAPSHOT_POLICY_UNPLANNED      = 2
+
+'
+' Maximum user defined reasons
+'
+%MAX_NUM_REASONS = 256

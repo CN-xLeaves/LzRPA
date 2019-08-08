@@ -1,0 +1,83 @@
+' DIM VARIATIONS
+
+uses "oxygen","file"
+dim src as string
+src = "
+
+  basic
+
+  '----------------
+  'POST DEFINE TYPE
+  '================
+ 
+  dim i,j,k as long
+  
+  '---------------
+  'PRE DEFINE TYPE
+  '===============
+  
+  dim as long i,j,k
+  
+  '-----------
+  'MIXED TYPES
+  '===========
+
+
+  dim as long i,j,k, as string s,t
+
+
+  '----------
+  'MULTI LINE
+  '==========
+
+  dim as long i,j,k,
+      as string s,t
+
+
+  dim as long,
+  i,
+  j,
+  k
+
+  '--------------
+  'INITIAL VALUES
+  '==============
+  
+  dim as long,
+  i = 1,
+  j = 2,
+  k = 42
+  
+  '-------------------------
+  'SPREAD LINES AND COMMENTS
+  '=========================
+
+  dim as long,
+  
+  i = 1,  ' these can be spread over many lines
+  
+  '--------
+  j = 2,  ' with intervening comments
+  
+  '--------
+  
+  k = 42  '
+  
+  '--------------------
+  'MULTIPLE ASSIGNMENTS
+  '====================
+
+  dim as long a(10) => (2,4,6,8,10,12,42,99)  
+  print `Answer: ` +  str a(7)
+
+
+
+  "
+o2_asmo src
+
+'msgbox 0, o2_view src
+
+if len(o2_error) then
+  msgbox 0, o2_error : stop
+end if
+o2_exec

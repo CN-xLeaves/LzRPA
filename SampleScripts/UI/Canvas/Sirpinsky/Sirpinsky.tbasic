@@ -1,0 +1,52 @@
+Uses "ui"
+ 
+ 
+DWord hdc,hwin
+hwin=Canvas_Window("Sirpinsky Christmas Tree",320,240,256,256)
+Canvas_Attach(hwin,0,%TRUE) 
+Canvas_Font("comic",16,%CANVAS_FONTSTYLE_BOLD)
+ 
+ 
+Long steps,n
+Single ax,ay,bx,by,cx,cy,px,py
+ 
+ 
+steps=10000
+ax=10.0: cy=10.0
+px=ax: py=ay
+ay=246.0
+bx=246.0
+by=246.0
+cx=128.0 
+ 
+Canvas_Clear(&h0CE628,0)
+ 
+While IsWindow(hwin)
+For n=0 To steps
+    Canvas_Color(Rgb(0,0,255))
+    Canvas_SetPixel(px,py) 
+Select Case Rnd(1,3)
+       Case 1
+          px=(px+ax)/2.0
+          py=(py+ay)/2.0
+       Case 2
+          px=(px+bx)/2.0
+          py=(py+by)/2.0
+       Case 3       
+          px=(px+cx)/2.0
+          py=(py+cy)/2.0
+End Select         
+Next
+ 
+ 
+Canvas_Redraw
+If GetAsyncKeyState(27) Then Exit While
+Wend
+Canvas_Window End
+ 
+ 
+Sub SetText(x,y As Long, txt As String, xkol,ykol As Long) 
+    Canvas_Color(xkol,ykol)
+    Canvas_SetPos(x,y)
+    Canvas_Print(txt)
+End Sub

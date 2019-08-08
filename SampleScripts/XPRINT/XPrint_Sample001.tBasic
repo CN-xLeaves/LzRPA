@@ -1,0 +1,75 @@
+  uses "XPRINT"
+  
+  randomize
+  
+  xprint_attach "choose", "thinBasic sample spool file"
+
+  dim ClientWidth, ClientHeight     as long
+  dim SizeWidth, SizeHeight         as long
+  dim ppiX, ppiY                    as long
+  dim mLeft, mTop, mRight, mBottom  as long
+  dim Quality           as long
+  dim Orientation       as long
+  dim DC                as dword
+
+  dim CurrentPrinter    as string
+  
+  CurrentPrinter = xprint$
+  if CurrentPrinter <> "" then
+    'xprint_set(%XPRINT_set_orientation, 2)
+    'xprint_scale(1, 1, 1000, 1000)
+        
+    xprint_get(%XPRINT_GET_DC , DC)
+    xprint_get(%XPRINT_GET_CLIENT       , ClientWidth, ClientHeight)
+    xprint_get(%XPRINT_GET_SIZE         , SizeWidth  , SizeHeight  )
+    xprint_get(%XPRINT_GET_ppi          , ppiX       , ppiY        )
+    xprint_get(%XPRINT_GET_MARGIN       , mLeft, mTop, mRight, mBottom)
+    xprint_get(%XPRINT_GET_orientation  , Orientation)
+    xprint_get(%XPRINT_GET_quality      , Quality)
+
+    xprint_box(0, 0, ClientWidth, ClientHeight, 0)
+
+    xprint_font "Arial", 24, 0
+    xprint "thinBasic: XPrint module example" & $crlf
+    xprint_font "Courier New", 10, 0
+    
+    xprint "Selected printer: " & CurrentPrinter & $crlf
+    xprint "DC              : " & DC & $crlf
+    xprint "PPI             : X="     & ppiX        & "   Y="      & ppiY         & $crlf
+    xprint "Client area     : Width=" & ClientWidth & "   Height=" & ClientHeight & $crlf
+    xprint "Size            : Width=" & SizeWidth   & "   Height=" & SizeHeight   & $crlf
+    xprint "Margin          : Left=" & mLeft & "   Top=" & mTop & "   Right=" & mRight & "   Bottom=" & mBottom  & $crlf
+    xprint "Orientation     : " & Orientation  & $crlf
+    xprint "Quality         : " & Quality  & $crlf
+
+
+    dim CountY as long
+    dim CountX as long
+
+    xprint_font "Courier New", 5, 0
+    for CountY = 0 to SizeHeight step 20
+      '---Set a random color
+      xprint_color rgb(rnd(1, 255), rnd(1, 255), rnd(1, 255))
+      xprint_set(%xprint_set_pixel, 100, CountY)
+      xprint_set(%xprint_set_pos  , ClientWidth - 100, CountY)
+      xprint CountY & $crlf
+    next
+    
+
+    xprint_font "Courier New", 4, 0
+    xprint_color rgb(0, 0, 0)
+    xprint_line 100, 2000, 2000, 2000
+    xprint_line 100, 2100, 2000, 2100
+    for Countx = 100 to 2000 step 50
+      xprint_style rnd(0, 4)
+      xprint_line CountX, 2000, CountX, 2100
+      xprint_set(%xprint_set_pos  , CountX + 5, 2050)
+      xprint CountX
+    next
+    
+    xprint_formfeed
+    xprint_close
+  else
+    msgbox 0, "No printer selected."
+  end if
+  

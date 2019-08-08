@@ -1,0 +1,43 @@
+'
+'----------------------------------
+'TRACING EXECUTION OF ASSEMBLY CODE
+'==================================
+ 
+ 
+Uses "oxygen"
+Dim src As String
+
+src="
+  #basic
+  
+  '----------------
+  'DIAGNOSTIC MACROS
+  '================
+    
+  def SHOW pushad : mov a,%1 : print `%1: ` hex a : popad
+  def MSG pushad : print %1 : popad
+  def FLAGS pushad : pushf : pushf : pop eax : mov a,eax : print `Flag Register: ` hex a : popf : popad
+
+  dim a
+  
+  '--------  
+  'ASM TEST
+  '========
+  
+  mov ecx,0
+  mov eax,1
+  cmp eax,0
+  FLAGS
+  jz nif
+    MSG `condition Not met`
+    mov ecx,1
+  nif:
+  SHOW ecx
+  "
+
+'MsgBox 0,O2_PREP src
+O2_BASIC src
+If Len(O2_ERROR) Then MsgBox 0,O2_ERROR : Stop
+O2_EXEC
+ 
+ 

@@ -1,0 +1,17 @@
+Uses "OS"
+
+dim sMsg as string
+
+IF OS_WinGetVersionTimeline = %OS_Windows_XP then 
+    sMsg = "Detected Windows XP!"
+else
+    sMsg  = "You aren't running on Windows XP!"
+    sMsg += $CRLF & "You are running on:"
+    sMsg += $CRLF & OS_WinVersionText
+    sMsg += $CRLF & "Timeline: " & OS_WinGetVersionTimeline
+    sMsg += $crlf & "Wow: " & OS_IsWow64
+
+end if
+
+Msgbox 0, sMsg
+

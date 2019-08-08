@@ -1,0 +1,71 @@
+'===============================================================================
+'=                                 TBGL 0.2.2+                                 =
+'=                                                                             =
+'=                     4 fonts at time, DTP suicide within                     =
+'=                                                                             =
+'===============================================================================
+
+Uses "TBGL" 
+
+' -- Create and show window
+Dim hWnd As Dword  = TBGL_CreateWindowEx("TBGL and hell of 8 fonts :) - press ESC to quit", 640, 480, 32, %TBGL_WS_WINDOWED) 
+TBGL_ShowWindow 
+
+' -- Creates 4 different TTF fonts
+TBGL_BuildFont TBGL_FontHandle("Arial",           20)               , 1
+TBGL_BuildFont TBGL_FontHandle("Times New Roman", 22, %TBGL_ITALICS), 2
+TBGL_BuildFont TBGL_FontHandle("Courier New",     24, %TBGL_BOLD)   , 3
+TBGL_BuildFont TBGL_FontHandle("Arial Black",     32)               , 4
+
+' -- Creates 4 different bitmap fonts
+tbgl_LoadbmpFont APP_SOURCEPATH+"Textures\FONT_GRAYORANGE.BMP", 10, 1
+tbgl_LoadbmpFont APP_SOURCEPATH+"Textures\FONT_GRAYORANGE.BMP", 20, 2
+tbgl_LoadbmpFont APP_SOURCEPATH+"Textures\FONT_GRAYORANGE.BMP", 30, 3
+tbgl_LoadbmpFont APP_SOURCEPATH+"Textures\FONT_GRAYORANGE.BMP", 4, 4
+
+' -- Resets status of all keys 
+TBGL_ResetKeyState()
+
+' -- Main loop
+While TBGL_IsWindow(hWnd) 
+
+  TBGL_ClearFrame 
+  
+    ' Windows fonts
+    TBGL_SetActiveFont 1
+    TBGL_PrintFont "Some people say...", -5, 3+sin(GetTickCount/1000+1)/2, -10
+
+    TBGL_SetActiveFont 2
+    TBGL_PrintFont "...that using...", 2, 1+sin(GetTickCount/1000+2)/2, -10
+
+    TBGL_SetActiveFont 3
+    TBGL_PrintFont "...more than two fonts...", -5, -1+sin(GetTickCount/1000+3)/2, -10
+
+    TBGL_SetActiveFont 4
+    TBGL_PrintFont "...can make people sick ;)", -5, -3+sin(GetTickCount/1000+4)/2, -10
+
+    ' BMP fonts
+    tbgl_UseBlend %TRUE
+    TBGL_SetActiveBMPFont 1
+    TBGL_PrintBMP "They", 1, 4
+
+    TBGL_SetActiveBMPFont 2
+    TBGL_PrintBMP "are", 9, 8
+
+    TBGL_SetActiveBMPFont 3
+    TBGL_PrintBMP "right", 18,13
+
+    TBGL_SetActiveBMPFont 4
+    TBGL_PrintBMP "!", 4,2
+    tbgl_UseBlend %FALSE    
+  TBGL_DrawFrame 
+
+  ' -- ESCAPE key to exit application
+  If TBGL_GetWindowKeyState(hWnd, %VK_ESCAPE) Then Exit While 
+
+Wend 
+
+' -- No need to kill fonts, garbage collector takes care of it
+
+TBGL_DestroyWindow
+ 

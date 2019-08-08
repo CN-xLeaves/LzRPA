@@ -1,0 +1,110 @@
+'----------------------------------------------------------------------------
+'----------------------------------------------------------------------------
+' This script will demonstrate how to:
+' - create a new ODBC environment
+' - connect to a DB
+' - perform SQL queries
+' - retrieve data fetching records
+' - bind script variables to data fields
+'----------------------------------------------------------------------------
+' Thanks to Jose Roca for his hard work on ODBC wrapper
+'----------------------------------------------------------------------------
+
+'---Use console module to show output
+uses "console"
+
+'---IMPORTANT: include this file in order to use ODBC functionalities
+'              inside your scripts
+#include "%APP_INCLUDEPATH%\ODBC352.INC"
+
+
+'----------------------------------------------------------------------------
+' Shows field info
+'----------------------------------------------------------------------------
+SUB ShowColumnsData (sTableName as string, fIdx as long, ucol AS ODBC_COLUMNS_TYPE)
+
+  console_Cls
+
+  Console_SetTextAttribute(%Console_FOREGROUND_intensity)
+  console_writeline "------------------------------------------------------"
+  console_writeline "- Table " & sTableName
+  console_writeline "- Field number " & fIdx
+  console_writeline "------------------------------------------------------"
+  Console_SetTextAttribute(%Console_FOREGROUND_green)
+  console_writeline "Catalog name:              " & trim$(ucol.szCatalogName        , any $spc & $tab & $nul)
+  console_writeline "Schema name:               " & trim$(ucol.szSchemaName         , any $spc & $tab & $nul)
+  console_writeline "Table name:                " & trim$(ucol.szTableName          , any $spc & $tab & $nul)
+  console_writeline "Column name                " & trim$(ucol.szColumnName         , any $spc & $tab & $nul)
+  console_writeline "Data type:                 " & trim$(ucol.iDataType            , any $spc & $tab & $nul)
+  console_writeline "Type name:                 " & trim$(ucol.szTypeName           , any $spc & $tab & $nul)
+  console_writeline "Column size:               " & trim$(ucol.lColumnSize          , any $spc & $tab & $nul)
+  console_writeline "Buffer length:             " & trim$(ucol.lBufferLength        , any $spc & $tab & $nul)
+  console_writeline "Decimal digits:            " & trim$(ucol.iDecimalDigits       , any $spc & $tab & $nul)
+  console_writeline "Numeric precision radix:   " & trim$(ucol.iNumPrecRadix        , any $spc & $tab & $nul)
+  console_writeline "Can accept nulls:          " & trim$(ucol.iNullable            , any $spc & $tab & $nul)
+  console_writeline "Remarks:                   " & trim$(ucol.szRemarks            , any $spc & $tab & $nul)
+  console_writeline "Column default:            " & trim$(ucol.szColumnDefault      , any $spc & $tab & $nul)
+  console_writeline "IRD SQL data type:         " & trim$(ucol.iSqlDataType         , any $spc & $tab & $nul)
+  console_writeline "Datetime subtype code:     " & trim$(ucol.iDateTimeSubtypeCOde , any $spc & $tab & $nul)
+  console_writeline "Character octet length:    " & trim$(ucol.lCharOctetLength     , any $spc & $tab & $nul)
+  console_writeline "Ordinal position:          " & trim$(ucol.lOrdinalPosition     , any $spc & $tab & $nul)
+  console_writeline "Cannot accept nulls:       " & trim$(ucol.szIsNullable         , any $spc & $tab & $nul)
+  console_writeline "------------------------------------------------------"
+
+  console_WAITKEY
+  console_CLS
+
+END SUB
+
+'---Declare needed variables
+dim hEnv    AS DWORD
+dim hDbc    AS DWORD
+dim hStmt   AS DWORD
+dim ConStr  AS STRING
+
+'---Allocates an environment handle
+hEnv = OdbcAllocEnv
+IF OdbcError THEN
+  console_writeline("Script aborted. It was not possible to create an environment handle.")
+  Terminate
+end if
+
+'---Allocates the connection handle
+hDbc = OdbcAllocConnect(hEnv)
+IF ISFALSE hDbc THEN
+  console_writeline("Script aborted. It was not possible to allocate the connection handle.")
+  Terminate
+end if
+
+'---Connects with the ODBC driver
+ConStr = "DRIVER={Microsoft Access Driver (*.mdb)};DBQ=biblio.mdb;UID=;PWD=;"
+OdbcOpenConnection(hDbc, ConStr)
+IF OdbcError THEN
+   console_writeline(OdbcGetConnectionErrorInfo(hDbc))
+   Terminate
+END IF
+
+dim nColumns as long value OdbcColumnsCount hDbc, "Authors"
+DIM xcol AS ODBC_COLUMNS_TYPE
+dim lIdx as long
+
+for lIdx = 1 to nColumns
+  OdbcColumn hDbc, "Authors", lIdx, xcol
+  ShowColumnsData "Authors", lIdx, xcol
+next
+
+Terminate
+
+
+'----------------------------------------------------------------------------
+function Terminate()
+'----------------------------------------------------------------------------
+
+  IF hStmt  THEN OdbcCloseCursor hStmt      '---Closes the cursor
+  IF hStmt  THEN OdbcCloseStmt hStmt        '---Closes the statement handle
+  IF hDbc   THEN OdbcCloseConnection hDbc   '---Closes the connection
+  IF hEnv   THEN OdbcFreeEnv hEnv           '---Frees the environment handle
+
+  stop
+
+end function

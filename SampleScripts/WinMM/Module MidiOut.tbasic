@@ -1,0 +1,280 @@
+
+'**********************************
+'******* GESTIONE MIDI OUT ********
+'**********************************
+
+'Type MIDIOUTCAPS
+'    wMid As Integer
+'    wPid As Integer
+'    vDriverVersion As Long
+'    szPname As Asciiz * 32
+'    wTechnology As Integer
+'    wVoices As Integer
+'    wNotes As Integer
+'    wChannelMask As Integer
+'    dwSupport As Long
+'End Type
+
+'Inserita ma non necessaria
+Declare Function mciSendString Lib "winmm.dll" Alias "mciSendStringA" (ByVal lpstrCommand As String, ByVal lpstrReturnString As String, ByVal uReturnLength As Long, ByVal hwndCallback As Long) As Long
+'Per rendere la form sempre visibile o no
+Declare Function SetWindowPos Lib "User32" Alias "SetWindowPos" (ByVal hWnd As Long, ByVal hWndInsertAfter As Long, ByVal X As Long, ByVal Y As Long, ByVal cx As Long, ByVal cy As Long, ByVal wFlags As Long)
+
+'Dichiarazioni funzioni MIDI
+'Declare Function midiOutGetNumDevs Lib "winmm.dll" Alias "midiOutGetNumDevs"() As Byte
+'Declare Function midiOutGetDevCaps Lib "winmm.dll" Alias "midiOutGetDevCapsA" (ByVal uDeviceID As Long, lpCaps As MIDIOUTCAPS, ByVal uSize As Long) As Long
+'Declare Function midiOutOpen Lib "winmm.dll" Alias "midiOutOpen" (lphMidiOut As Long, ByVal uDeviceID As Long, ByVal dwCallback As Long, ByVal dwInstance As Long, ByVal dwFlags As Long) As Long
+'Declare Function midiOutClose Lib "winmm.dll" Alias "midiOutClose" (ByVal hMidiOut As Long) As Long
+'Declare Function midiOutStart Lib "winmm.dll" Alias "midiOutStart" (ByVal hMidiOut As Long) As Long      
+'Declare Function midiOutStop Lib "winmm.dll" Alias "midiOutStop" (ByVal hMidiOut As Long) As Long
+'Declare Function midiOutReset Lib "winmm.dll" Alias "midiOutReset" (ByVal hMidiOut As Long) As Long
+'Declare Function midiOutShortMsg Lib "winmm.dll" Alias "midiOutShortMsg" (ByVal hMidiOut As Long, ByVal dwMsg As Long) As Long
+'Declare Function midiOutGetErrorText Lib "winmm.dll" Alias "midiOutGetErrorTextA" (ByVal Error As Long, ByVal lpText As String, ByVal uSize As Long) As Long
+'Declare Function midiOutSetVolume Lib "winmm.dll" Alias "midiOutSetVolume" (ByVal uDeviceID As Long, ByVal dwVolume As Long) As Long
+'Declare Function midiOutGetVolume Lib "winmm.dll" Alias "midiOutGetVolume" (ByVal uDeviceID As Long, lpdwVolume As Long) As Long
+
+' Costanti Callback    ' momentaneamente dichiarate nel modulo MidiIn
+'Const CALLBACK_TYPEMASK = &H70000  
+'Const CALLBACK_NULL = 0'&H0          
+'Const CALLBACK_WINDOW = &H10000     '******* COME DA TUO SUGGERIMENTO *******
+'Const CALLBACK_TASK = &H20000     
+'Const CALLBACK_FUNCTION = &H30000 
+
+'' Costanti errori
+'Const MMSYSERR_BASE = 0  
+'Const MMSYSERR_NOERROR = 0
+'Const MMSYSERR_BADDEVICEID = (MMSYSERR_BASE + 2)     ' device ID out of range
+'Const MMSYSERR_INVALPARAM = (MMSYSERR_BASE + 11)     ' invalid parameter passed
+'Const MMSYSERR_NODRIVER = (MMSYSERR_BASE + 6)        ' no device driver present
+'Const MMSYSERR_NOMEM = (MMSYSERR_BASE + 7)           ' memory allocation error
+'Const MMSYSERR_INVALHANDLE = (MMSYSERR_BASE + 5)     ' device handle is invalid 
+'
+'Const MIDIERR_BASE = 64
+'Const MIDIERR_STILLPLAYING = (MIDIERR_BASE + 1)      ' still something playing
+'Const MIDIERR_NOTREADY = (MIDIERR_BASE + 3)          ' hardware is still busy
+'Const MIDIERR_BADOPENMODE = (MIDIERR_BASE + 6)       ' operation unsupported w/ open mode
+'
+''Costanti Screen
+'Const SWP_NOSIZE = &H1
+'Const SWP_NOMOVE = &H2
+'Const HWND_TOPMOST = -1
+'Const HWND_NOTOPMOST = -2
+'
+''Costanti midi    
+'Const MIDIMAPPER = (-1)
+'Const MIDI_MAPPER = (-1)
+'Const NOTE_OFF = 128
+'Const NOTE_ON = 144
+'Const POLY_KEY_PRESS = &HA0
+'Const CONTROL_CHANGE = 176
+'Const PROGRAM_CHANGE = 192
+'Const CHANNEL_PRESSURE = &HD0
+'Const PITCH_BEND = 224
+'Const SYSEX = &HF0
+'Const MTC_QFRAME = &HF1
+'Const EOX = &HF7
+'Const MIDI_CLOCK = &HF8
+'Const MIDI_START = &HFA
+'Const MIDI_CONTINUE = &HFB
+'Const MIDI_STOP = &HFC
+
+Dim hMidiOut   As Long         ' HMIDIOUT
+Dim midiOutErr As Long         ' return code
+Dim MidiOutConnection As Boolean = FALSE 
+
+Dim midiMsg  As Long            ' messaggio (Word) midi da inviare
+Dim Channel  As Byte            ' canale (0-15)
+Dim Volume   As Byte            ' volume
+Dim baseNote As Byte            ' nota di base
+Dim lastNote As Byte
+Dim LastDrag As Byte
+Dim lastChordInDrag As Byte
+
+Dim msb As Integer   ' most  significant byte
+Dim lsb As Integer   ' least significant byte
+Dim Valore As Long   
+
+'*******************************************************************
+'******** funzioni aggiuntive, non prettamente necessarie **********
+'******************************************************************* 
+'Funzioni Screen
+Function RendiFormSempreVisibile(MyForm As Long)    'cambiato da object a long
+     SetWindowPos MyForm.hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE Or SWP_NOSIZE
+End Function
+
+Function NonRendiFormSempreVisibile(MyForm As Long)  'cambiato da object a long
+     SetWindowPos MyForm.hWnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE Or SWP_NOSIZE
+End Function
+
+'Funzioni delay microsecondi, sostituibile forse con HiResTimer_Get
+Function DelayUs(MicroS)
+  Dim Frq_Base As Currency, Time_memo As Currency, Time_now As Currency
+  Dim dif As Long
+    If QueryPerformanceFrequency(Frq_Base) Then
+        QueryPerformanceCounter Time_memo       ' Repère temps
+        Do
+            QueryPerformanceCounter Time_now    ' Comparer le Repère temps au temps qui
+            dif = (Time_now - Time_memo) * 1000000 / Frq_Base  ' s'écoule
+        Loop Until dif > MicroS                 ' Si pause pas suffisante recommencer
+    End If
+End Function
+ 
+'***************************************************************************** 
+'******** Funzioni MIDI di basso livello, non prettamente necessarie *********   
+'*****************************************************************************
+Function SetController(ByVal nController As Integer, ByVal nValore As Integer, ByVal nChannel As Integer)
+    midiMsg = CONTROL_CHANGE + (nController * &H100) + (nValore * &H10000) + nChannel
+    midiOut_ShortMsg hMidiOut, midiMsg
+   ' Sleep 50
+End Function
+
+Function SetInstrument(ByVal Instrument As Integer, ByVal nChannel As Integer)
+    midiMsg = %PROGRAM_CHANGE + (Instrument * &H100) + nChannel
+    midiOut_ShortMsg hMidiOut, midiMsg
+    'Sleep 50
+End Function
+
+Function SendPitchBend(ByVal Semitoni As Integer, ByVal nValore As Integer, ByVal nChannel As Integer)
+   
+   SetController 101, 0, nChannel          ' 3 CONTROLLI RPN PER SETTARE
+   SetController 100, 0, nChannel          ' IL RANGE DEL PITH BENDER
+   SetController 6, Semitoni, nChannel     '  AL VALORE DI Semitoni
+          
+   SetController 101, 127, nChannel        ' RESETTA
+   SetController 100, 127, nChannel        ' RESETTA
+   
+   Call Nibblize(nValore)
+    
+   midiMsg = PITCH_BEND + (lsb * &H100) + (msb * &H10000) + nChannel
+   midiOut_ShortMsg hMidiOut, midiMsg   'INVIA MIDI
+   'Sleep 50
+   
+End Function
+
+Function SendPitchBendShort(ByVal nValore As Integer, ByVal nChannel As Integer)
+   
+   Call Nibblize(nValore)
+    
+   midiMsg = PITCH_BEND + (lsb * &H100) + (msb * &H10000) + nChannel
+   midiOut_ShortMsg hMidiOut, midiMsg   'INVIA MIDI
+   'Sleep 50
+End Function
+
+Function Nibblize(ByVal Valore As Long)
+  lsb = Valore And &H7F       ' screen off first seven bits
+  Valore = Valore And &H7F80  ' take the rest
+  msb = Valore / 128          ' - and shift 7 bits down
+End Function
+
+Function getMIDIoutErrText(ByVal sEvent As String, ByVal nRc As Integer)
+    Dim errText As String
+    errtext = MidiOut_GetErrorText(midiOutErr)
+    MsgBox "Error in " & sEvent & CRLF & errText
+End Function
+ 
+'*****************************************************
+'********** FUNZIONI MIDI DI ALTO LIVELLO ************ 
+'*****************************************************
+Function init_MIDI_OUT(DeviceOut As Long) As Long    'apre la porta MidiOut prescelta in base all'indice
+   
+   If DeviceOut > MidiOut_GetNumDevs() Then
+       MsgBox NULL,"Indice device MidiOut errato"   
+       Exit Function    
+   End If  
+    
+   If MidiOutConnection = TRUE Then  
+     MsgBox NULL,"Invocata apertura MidiOut(" & DeviceOut & ") ma il device è già aperto "   
+     midiOut_Close hMidiOut 
+     Exit Function
+   End If 
+    
+   midiOutErr = midiOut_Open(hMidiOut, DeviceOut , 0, 0, %CALLBACK_NULL)
+   CheckResult(midiOutErr,"midiOut_Open")
+    
+   If midiOutErr <> 0 Or hMidiOut = 0 Then Exit Function 
+   '''MsgBox NULL,"Device MidiOut(" & DeviceOut & ") aperto con successo!"   
+   
+   MidiOutConnection = TRUE
+   Return midiOutErr
+End Function
+
+Function NoteOn (Ch As Byte, Note As Byte, Velocity As Byte) As Integer  'suona la nota
+  'midiMsg = 144 + (nController * &H100) + (nValue * &H10000) + nChannel  
+  Function = midiOut_ShortMsg(hMidiOut, %NOTE_ON + Ch + _
+                            (SHIFT SIGNED LEFT Note,8) + _
+                            (SHIFT SIGNED LEFT Velocity,16)) 
+End Function
+
+Function NoteOff (Ch As Byte, Note As Byte, Velocity As Byte) As Integer  'rilascia la nota
+  'midiMsg = 128 + (nController * &H100) + (nValue * &H10000) + nChannel  
+  Function = midiOut_ShortMsg(hMidiOut, %NOTE_OFF + Ch + _
+                            (SHIFT SIGNED LEFT Note,8) + _
+                            (SHIFT SIGNED LEFT Velocity,16))
+End Function
+
+Function CChange(Ch As Byte, Ctrl As Byte, Vlue As Byte) As Integer       'Control Change
+  'midiMsg = 128 + (nController * &H100) + (nValue * &H10000) + nChannel  
+  Function = midiOut_ShortMsg(hMidiOut, %CONTROL_CHANGE + Ch + _
+                            (SHIFT SIGNED LEFT Ctrl,8) + _
+                            (SHIFT SIGNED LEFT Vlue,16))
+End Function
+
+Function PChange (inst As Integer) As Integer                   'Program change (imposta lo strumento GM)
+  Function = midiOut_ShortMsg(hMidiOut, %PROGRAM_CHANGE + (SHIFT SIGNED LEFT inst,8))
+End Function
+  
+  
+Function end_MIDI_OUT() As Long          'chiude la porta MidiOut aperta in precedenza
+  'midiOutErr = mciSendString("stop midi", 0&, 0, 0)
+  'midiOutErr = mciSendString("close midi", 0&, 0, 0)
+  If MidiOutConnection = FALSE Then  
+     MsgBox NULL,"Invocata chiusura MidiOut ma il device non è aperto " 
+     Exit Function
+  End If
+  
+  midiOutErr = midiOut_Close(hMidiOut)
+  CheckResult(midiOutErr,"midiOut_Close")
+  
+  If midiOutErr <> 0 Then Exit Function
+  '''MsgBox NULL,"Devive MidiOut chiuso con successo!" 
+    
+  
+  MidiOutConnection = FALSE
+  Return midiOutErr
+End Function
+
+Function inst_MIDI(nr As Integer) As String   'ritorna il nome dello strumento GM in base all'indice
+  Local inst_name(128) As String = [_
+  "Acoustic Grand Piano","Bright Acousticustic Piano","Electric Grand Piano", _
+   "Honky-tonk Piano","Electric Piano 1","Electric Piano 2","Harpsichord", _ 
+   "Clavi","Celesta","Glockenspiel","Music Box","Vibraphone","Marimba", _
+   "Xylophone","Tubular Bells","Dulcimer","Drawbar Organ","Percussive Organ", _ 
+   "Rock Organ","Church Organ","Reed Organ","Accordion","Harmonica", _
+   "Tango Accordion","Acoustic Guitar (nylon)","Acoustic Guitar (steel)", _
+   "Electric Guitar (jazz)","Electric Guitar (clean)","Electric Guitar (muted)",_ 
+   "Overdriven Guitar","Distortion Guitar","Guitar harmonics","Acoustic Bass", _ 
+   "Electric Bass (finger)","Electric Bass (pick)","Fretless Bass","Slap Bass 1", _
+   "Slap Bass 2","Synth Bass 1","Synth Bass 2","Violin","Viola","Cello","Contrabass", _
+   "Tremolo Strings","Pizzicato Strings","Orchestral Harp","Timpani", _
+   "String Ensemble 1","String Ensemble 2","SynthStrings 1","SynthStrings 2", _ 
+   "Choir Aahs","Voice Oohs","Synth Voice","Orchestra Hit","Trumpet","Trombone", _ 
+   "Tuba","Muted Trumpet","French Horn","Brass Section","SynthBrass 1", _ 
+   "SynthBrass 2","Soprano Sax","Alto Sax","Tenor Sax","Baritone Sax","Oboe", _ 
+   "English Horn","Bassoon","Clarinet","Piccolo","Flute","Recorder","Pan Flute", _
+   "Blown Bottle","Shakuhachi","Whistle","Ocarina","Lead 1 (square)","Lead 2 (sawtooth)", _
+   "Lead 3 (calliope)","Lead 4 (chiff)","Lead 5 (charang)","Lead 6 (voice)", _ 
+   "Lead 7 (fifths)","Lead 8 (bass + lead)","Pad 1 (new age)","Pad 2 (warm)", _ 
+   "Pad 3 (polysynth)","Pad 4 (choir)","Pad 5 (bowed)","Pad 6 (metallic)","Pad 7 (halo)", _ 
+   "Pad 8 (sweep)","FX 1 (rain)","FX 2 (soundtrack)","FX 3 (crystal)","FX 4 (atmosphere)", _ 
+   "FX 5 (brightness)","FX 6 (goblins)","FX 7 (echoes)","FX 8 (sci-fi)","Sitar","Banjo", _ 
+   "Shamisen","Koto","Kalimba","Bag pipe","Fiddle","Shanai","Tinkle Bell","Agogo", _ 
+   "Steel Drums","Woodblock","Taiko Drum","Melodic Tom","Synth Drum","Reverse Cymbal", _ 
+   "Guitar Fret Noise","Breath Noise","Seashore","Bird Tweet","Telephone Ring", _
+   "Helicopter","Applause","Gunshot"]     
+   
+   'MsgBox 0,inst_MIDI(nr)',"Funzione inst_name" 
+   
+   'Function = [inst_name(nr)]    
+   Return inst_name(nr)
+End Function
+

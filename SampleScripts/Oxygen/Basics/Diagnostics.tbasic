@@ -1,0 +1,31 @@
+' DIAGNOSTICS
+
+uses "oxygen","file"
+dim src as string
+src = "
+  basic
+  dim i,j=1 as long
+  dim s,t as string
+  s=space 500
+  for i=1 to 10
+    t=str(i)+chr(13)+chr(10)
+    mid (s,j)=t
+    j+=len t
+  next
+  dec j
+  print left s,j
+  "
+o2_asmo src
+
+'-------
+'OUTPUTS
+'=======
+
+file_save ("s.txt", o2_prep src) ' o2 Assembler output
+file_save ("t.txt", o2_view src) ' o2 script output
+file_save ("t.bin", o2_get)             ' o2 binary
+
+if len(o2_error) then
+  msgbox 0, o2_error : stop
+end if
+o2_exec

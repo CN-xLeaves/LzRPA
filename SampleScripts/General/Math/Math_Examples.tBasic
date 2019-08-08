@@ -1,0 +1,45 @@
+DIM n AS number         
+n = 16
+DIM f AS EXT = FactorialCustom(n)  ' -- Note: ThinBasic has Factorial function built in        
+
+MSGBOX 0, "Factorial of " + n + " = " + f
+MSGBOX 0, "I've called a recursive function " + RecursiveExample(1, 100) + " times"
+
+DIM msg   AS STRING
+DIM count AS LONG
+
+FOR count = 1 TO 64
+  msg = msg + format$(Count,"000") & " [" + FORMAT$(2^count,"#0") + "]"
+  IF MOD(count,2) = 0 THEN
+    msg = msg + crlf
+  ELSE
+    msg = msg + " "
+  END IF
+NEXT
+MSGBOX 0, "From 2^1 to 2 ^ 64:\n" + msg
+msgbox 0, "RNDF:" & rndf(10,20)
+
+Function FactorialCustom(InVal As Quad) As Ext
+  Local i  As Quad
+  Local r  As Quad
+  
+  r = 1
+  For i = 2 To InVal
+    r = r * i
+  Next
+  Function = r
+  
+End Function 
+   
+Function RecursiveExample(n As Number, MaxRecurse As Number) As Ext
+  Dim s As String Value Repeat$(1000, "1")
+
+  If n >= MaxRecurse Then                            
+    Function = n
+    Exit Function                                   
+  Else
+    Incr n
+    Function = RecursiveExample(n, MaxRecurse)    
+  End If                 
+
+End Function 

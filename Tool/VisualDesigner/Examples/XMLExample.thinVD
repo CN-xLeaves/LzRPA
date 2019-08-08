@@ -1,0 +1,61 @@
+<?xml version='1.0'?>
+<thinVisualForm version="1.0">
+	<Header>
+		<Description>Simple Dialog</Description>
+		<Author>Eros Olmi</Author>
+		<Version>1.1</Version>
+		<DateCreated>2012/05/06</DateCreated>
+		<DateLastSaved>2012/05/06</DateLastSaved>
+	</Header>
+	<Forms>
+		<Form Caption = "Main Form Caption" Width="300" Height="300">
+			<Controls>
+				<Control>
+					<Class>BUTTON</Class>
+					<WStyle>3|5|19|21</WStyle>
+					<WStyleEX>0</WStyleEX>
+					<CStyle>10</CStyle>
+					<CStyleEX>0</CStyleEX>
+					<FontName>MS Sans Serif</FontName>
+					<FontPoint>8</FontPoint>
+					<Left>10</Left>
+					<Top>10</Top>
+					<Right>50</Right>
+					<Bottom>25</Bottom>
+					<AnchorLeft></AnchorLeft>
+					<AnchorTop></AnchorTop>
+					<AnchorRight></AnchorRight>
+					<AnchorBottom></AnchorBottom>
+					<Caption>Button</Caption>
+					<Tooltip></Tooltip>
+					<ImagePath></ImagePath>
+					<ID>1000</ID>
+					<IDName>IDC_BUTTON_1</IDName>
+				</Control>
+				<Control>
+					<Class>BUTTON</Class>
+					<WStyle>3|5|19|21</WStyle>
+					<WStyleEX>0</WStyleEX>
+					<CStyle>10</CStyle>
+					<CStyleEX>0</CStyleEX>
+					<FontName>MS Sans Serif</FontName>
+					<FontPoint>8</FontPoint>
+					<Left>100</Left>
+					<Top>100</Top>
+					<Right>150</Right>
+					<Bottom>125</Bottom>
+					<AnchorLeft></AnchorLeft>
+					<AnchorTop></AnchorTop>
+					<AnchorRight></AnchorRight>
+					<AnchorBottom></AnchorBottom>
+					<Caption>Button</Caption>
+					<Tooltip></Tooltip>
+					<ImagePath></ImagePath>
+					<ID>1001</ID>
+					<IDName>IDC_BUTTON_2</IDName>
+				</Control>
+			</Controls>
+		</Form>
+	</Forms>
+</thinVisualForm>
+

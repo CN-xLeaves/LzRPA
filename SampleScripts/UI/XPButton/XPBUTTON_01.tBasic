@@ -1,0 +1,75 @@
+uses "UIAdv"
+Uses "UI"
+
+Begin ControlID
+  %IDC_BUTTON1 
+  %IDC_BUTTON2 
+  %IDC_BUTTON3 
+End ControlID
+
+' ========================================================================================
+' Main
+' ========================================================================================
+FUNCTION Main() as long
+
+   LOCAL hDlg AS LONG
+
+   DIALOG NEW 0, "XP Button Demo", 0, 0, 105, 90, %DS_CENTER OR %WS_OVERLAPPED OR %WS_THICKFRAME OR %WS_SYSMENU TO hDlg
+   
+   ' Note: %BS_FLAT will do nothing in a themed application, but will make a button with flat appearance otherwise.
+   Control Add XPBUTTON, hDlg, %IDC_BUTTON1, "&Ok", 10, 5, 80, 16, %WS_TABSTOP Or %WS_VISIBLE Or %WS_CHILD 'OR %BS_FLAT
+   Control Add XPBUTTON, hDlg, %IDC_BUTTON2, "&Cancel", 10, 27, 80, 16, %WS_TABSTOP Or %WS_VISIBLE Or %WS_CHILD
+
+'XPButton_DisableTheming hDlg, %IDC_BUTTON1
+'XPButton_DisableTheming hDlg, %IDC_BUTTON2
+
+   Control Add Button, hDlg, %IDC_BUTTON3, "Classic button", 10, 50, 80, 16
+
+   ' Set the icons (change the names for the ones of your own icons)
+   XPButton_SetIcon         hDlg, %IDC_BUTTON1, APP_SourcePath & "16_OK.ICO"            , %XPBUTTON_NORMAL    , %FALSE
+   XPButton_SetIcon         hDlg, %IDC_BUTTON1, APP_SourcePath & "16_OKHOT.ICO"         , %XPBUTTON_HOT       , %FALSE
+   XPButton_SetImageMargin  hDlg, %IDC_BUTTON1, 5, %FALSE
+   XPButton_SetToggle       hDlg, %IDC_BUTTON1, %TRUE, %FALSE
+   
+   XPButton_SetIcon         hDlg, %IDC_BUTTON2, APP_SourcePath & "16_CANCEL.ICO"        , %XPBUTTON_NORMAL    , %FALSE
+   XPButton_SetIcon         hDlg, %IDC_BUTTON2, APP_SourcePath & "16_CANCELDISABLED.ICO", %XPBUTTON_DISABLED  , %FALSE
+   XPButton_SetImagePos     hDlg, %IDC_BUTTON2, %XPBUTTON_RIGHT Or %XPBUTTON_VCENTER, %FALSE
+   XPButton_SetTextFormat   hDlg, %IDC_BUTTON2, %DT_RIGHT Or %DT_VCENTER Or %DT_SINGLELINE, %FALSE
+   'CONTROL DISABLE          hDlg, %IDC_BUTTON2
+   
+
+
+   DIALOG SHOW MODAL hDlg, CALL DlgProc
+
+END FUNCTION
+' ========================================================================================
+
+' ========================================================================================
+' Main Dialog procedure
+' ========================================================================================
+CALLBACK FUNCTION DlgProc() AS LONG
+
+   SELECT CASE CBMSG
+
+      CASE %WM_COMMAND
+         SELECT CASE CBCTL
+            CASE %IDCANCEL
+               IF CBCTLMSG = %BN_CLICKED THEN DIALOG END CBHNDL
+            CASE %IDC_BUTTON1
+               IF CBCTLMSG = %BN_CLICKED THEN
+                  MSGBOX 0, "Button 1 cliked"
+               END IF
+            CASE %IDC_BUTTON2
+               IF CBCTLMSG = %BN_CLICKED THEN
+                  DIALOG END CBHNDL
+               END IF
+            CASE %IDC_BUTTON3
+               IF CBCTLMSG = %BN_CLICKED THEN
+                  MSGBOX 0, "Button 3 cliked"
+               END IF
+         END SELECT
+
+   END SELECT
+
+END FUNCTION
+' ========================================================================================

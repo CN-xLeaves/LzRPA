@@ -1,0 +1,44 @@
+
+
+'USER DEFINED TYPES
+
+
+uses "oxygen","file"
+dim src as string
+
+
+src = "
+
+  basic
+  
+  type color32
+  
+    r as byte
+    g as byte
+    b as byte
+    a as byte
+    lbl as string
+    
+  end type
+  
+  dim c as color32
+  
+  c.r=16
+  c.b=16
+  c.g=16
+  c.a=32
+  c.lbl=`Dark: `
+  
+  print  c.lbl hex c.a
+     
+  "
+
+o2_asmo src
+
+'msgbox 0, o2_view src
+
+if len(o2_error) then
+  msgbox 0, o2_error : stop
+end if
+
+o2_exec

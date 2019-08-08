@@ -1,0 +1,21 @@
+
+
+'-----------------------------------
+'UI TBGL AND OXYGEN WORKING TOGETHER
+'===================================
+
+
+
+#MINVERSION 1.8.0.0
+
+uses "UI", "TBGL", "OXYGEN"
+
+
+
+#include "Globals.inc"
+#include "Keypads.inc"
+#include "MainFunctions.inc"
+#include "Constructs.inc"
+#include "Dialog2.inc"
+#include "MainDialog.inc"
+

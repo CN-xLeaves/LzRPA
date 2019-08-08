@@ -1,0 +1,46 @@
+uses "FILE"
+
+dim sFile             as string value APP_SourceFullName & ".bak"
+'---Create a new temp file to work with copying current script file
+file_save(sFile, File_load(APP_SourceFullName), %FILE_HIDDEN)
+
+'---Save current attribute
+dim SaveOriginalAttr  as long value file_getattr(sFile)
+dim NewAttr           as long
+
+msgbox 0,   "File attributes for file"  & $crlf & _
+            sFile                       & $crlf & _
+            "is:"                       & $crlf & _
+            SaveOriginalAttr & "->" & AttrToStr(SaveOriginalAttr)
+
+'---Change attribute to ReadOnly
+file_setattr(sFile, %FILE_READONLY)
+
+NewAttr = file_getattr(sFile)
+msgbox 0,   "File attributes for file"  & $crlf & _
+            sFile                       & $crlf & _
+            "is now:"                   & $crlf & _
+            NewAttr                             & _
+            "->" & AttrToStr(NewAttr)   & $crlf(2) & _
+            "Attribute will be changed back to " & SaveOriginalAttr
+
+'---Back to original attribute and delete it
+file_setattr(sFile, SaveOriginalAttr)
+file_kill(sFile)
+
+
+function AttrToStr(lAttr as long) as string
+  local sOut as string
+
+  if lAttr and %FILE_NORMAL     then sOut += "NORMAL "
+  if lAttr and %FILE_READONLY   then sOut += "READONLY "
+  if lAttr and %FILE_HIDDEN     then sOut += "HIDDEN "
+  if lAttr and %FILE_SYSTEM     then sOut += "SYSTEM "
+  if lAttr and %FILE_VLABEL     then sOut += "VLABEL "
+  if lAttr and %FILE_SUBDIR     then sOut += "SUBDIR "
+  if lAttr and %FILE_ARCHIVE    then sOut += "ARCHIVE "
+  if lAttr and %FILE_NORMAL     then sOut += "NORMAL "
+
+  function = sOut
+  
+End Function

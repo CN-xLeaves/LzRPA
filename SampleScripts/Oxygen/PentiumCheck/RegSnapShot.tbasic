@@ -1,0 +1,170 @@
+'
+'TECHNIQUES FOR VIEWING REGISTERS
+'
+'these can be embedded in a program for testing & debugging
+
+uses "oxygen"
+dim s as string
+s="
+  basic
+  dim tab as string = chr 9
+
+  '---------
+  def SeeCPU
+  '=========
+  '
+  pusha
+  print `
+  CPU Registers:
+  
+  EAX:` tab hex([esp+28]) `
+  ECX:` tab hex([esp+24]) `
+  EDX:` tab hex([esp+20]) `
+  EBX:` tab hex([esp+16]) `
+  ESP:` tab hex([esp+12]) `
+  EBP:` tab hex([esp+08]) `
+  ESI:` tab hex([esp+04]) `
+  EDI:` tab hex([esp+00]) `
+  `
+  popa
+  end def
+
+
+  '------------  
+  sub SeeSimd()
+  '============
+  '
+  'CAPTURE SIMD REGS INTO ARRAY D()
+  '
+###
+  dim as single d(32)
+  eax=&d
+###
+  movups [eax   ],xmm0
+  movups [eax+16],xmm1
+  movups [eax+32],xmm2
+  movups [eax+48],xmm3
+  movups [eax+64],xmm4
+  movups [eax+80],xmm5
+  movups [eax+96],xmm6
+  movups [eax+112],xmm7
+  dim as string s
+  s= `
+  SIMD Registers:
+  
+  `
+  dim i,j=48
+  for i=1 to 32 step 4
+    s+= `XMM` chr(j) `:` +
+    tab str(d(i))   tab str(d(i+1)) +
+    tab str(d(i+2)) tab str(d(i+3)) `
+    `
+    inc j
+  next
+  
+  
+  
+  print s
+  '
+  end sub
+
+  '--------------------------
+  function GetFPU() as string
+  '==========================
+  '
+  function=nuls 300
+  eax=*function
+  fsave  [eax+80]
+  frstor [eax+80]
+  fstp qword [eax+00]
+  fstp qword [eax+08]
+  fstp qword [eax+16]
+  fstp qword [eax+24]
+  fstp qword [eax+32]
+  fstp qword [eax+40]
+  fstp qword [eax+48]
+  fstp qword [eax+56]
+  frstor [eax+80]
+  end function
+ 
+
+  '-----------------------------------
+  function PrintFPU(s as string)
+  '===================================
+  '
+  if len (s)<80 then print `no fpu data` : exit function
+  dim i=*s
+  dim as double d at i
+  mov eax,i
+  fsave [eax+80]
+  print `
+  FPU Registers:
+  
+  ST0:` tab str(d(1)) `
+  ST1:` tab str(d(2)) `
+  ST2:` tab str(d(3)) `
+  ST3:` tab str(d(4)) `
+  ST4:` tab str(d(5)) `
+  ST5:` tab str(d(6)) `
+  ST6:` tab str(d(7)) `
+  ST7:` tab str(d(8)) `
+  `
+  mov eax,i
+  frstor [eax+80]
+  end function  
+ 
+ 
+  
+
+  '=========
+  '
+  'TESTS
+  '
+  '=========
+  
+  mov eax,0
+  mov ecx,1
+  mov edx,2
+  mov edi,7
+  SeeCPU
+  
+  dim s(10) as string
+  finit
+  fld1 : fldpi  : fldz : s(1)=GetFPU
+  fld1 : fldl2e : fldz : s(2)=GetFPU
+  PrintFPU s(1)
+  PrintFPU s(2)
+  finit
+
+
+  dim i
+  dim as single f(32)
+  '
+  'TEST DATA:  FILL SIMD REGS
+  '
+  for i=1 to 32 : f(i)=i+i : next
+  '
+  eax=&f
+  '
+  movups xmm0,[eax   ]
+  movups xmm1,[eax+16]
+  movups xmm2,[eax+32]
+  movups xmm3,[eax+48]
+  movups xmm4,[eax+64]
+  movups xmm5,[eax+80]
+  movups xmm6,[eax+96]
+  movups xmm7,[eax+112]
+  '   
+  SeeSimd
+
+  
+"
+
+
+
+'======================================
+
+o2_asmo s
+if len(o2_error) then msgbox 0,o2_error
+'msgbox 0,o2_view s
+o2_exec

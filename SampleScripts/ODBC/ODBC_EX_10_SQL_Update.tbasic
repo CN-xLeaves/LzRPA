@@ -1,0 +1,111 @@
+'----------------------------------------------------------------------------
+'----------------------------------------------------------------------------
+' This script will demonstrate how to:
+' - create a new ODBC environment
+' - connect to a DB
+' - update a record using a prepared statement
+'----------------------------------------------------------------------------
+' Thanks to Jose Roca for his hard work on ODBC wrapper
+'----------------------------------------------------------------------------
+
+'---Use console module to show output
+Uses "console"
+Uses "UI"
+
+'[!] Include this file in order to use ODBC inside your scripts
+#include "%APP_INCLUDEPATH%\ODBC352.INC"
+
+  '[breakpoint] Script start
+  Local r As Integer
+  Local hEnv As DWord
+  Local hDbc As DWord
+  Local hStmt As DWord
+  Local szInConnectionString As Asciiz * 1025
+  Local szOutConnectionString As Asciiz * 1025
+  Local strOutput As String
+  Local sSQL As String
+
+  ' Allocates the environment handle
+  r = SQLAllocHandle (%SQL_HANDLE_ENV, %SQL_NULL_HENV, hEnv)
+  If IsFalse SQL_SUCCEEDED(r) Or IsFalse hEnv Then Terminate
+
+  ' Tells to the driver manager that is an application that uses the ODBC driver 3.x
+  r = SQLSetEnvAttr (hEnv, %SQL_ATTR_ODBC_VERSION, ByVal %SQL_OV_ODBC3, %SQL_IS_INTEGER)
+  If IsFalse SQL_SUCCEEDED(r) Then  Terminate
+   ' Allocates the connection handle
+  r =  SQLAllocHandle (%SQL_HANDLE_DBC, hEnv, hDbc)
+  If IsFalse SQL_SUCCEEDED(r) Then  Terminate
+
+  ' Connection string
+  szInConnectionString = "DRIVER={Microsoft Access Driver (*.mdb)};" & _
+                         "DBQ=biblio.mdb;UID=;PWD=;"
+  ' Connects with the ODBC driver
+  r = SQLDriverConnect (hDbc, _
+                       %HWND_DESKTOP, _
+                       szInConnectionString, _
+                       Len(szInConnectionString), _
+                       szOutConnectionString, _
+                       SizeOf (szOutConnectionString), _
+                       ByVal %NULL, _
+                       %SQL_DRIVER_COMPLETE)
+  ' Check for errors
+  If IsFalse SQL_SUCCEEDED(r) Then
+     PrintL SQLGetErrorInfo(%SQL_HANDLE_DBC, hDbc, r)
+     Terminate
+  End If
+
+  ' Allocates an statement handle
+  r = SQLAllocHandle (%SQL_HANDLE_STMT, hDbc, hStmt)
+  If IsFalse SQL_SUCCEEDED(r) Or IsFalse hStmt Then  Terminate
+
+  ' Binds the parameter
+  Local lAuId As Long
+  Local szAuthor As Asciiz * 256
+  Local cbAuId As Long
+  Local cbAuthor As Long
+  Local lRowCount As Long 
+
+  sSQL = "UPDATE Authors SET Author=? WHERE Au_ID=?"
+  r = SQLPrepare(hStmt, sSQL, %SQL_NTS)
+  r = SQLBindParameter(hStmt, 1, %SQL_PARAM_INPUT, %SQL_C_CHAR, %SQL_CHAR, 255, 0, szAuthor, SizeOf(szAuthor), cbAuthor)
+  r = SQLBindParameter(hStmt, 2, %SQL_PARAM_INPUT, %SQL_C_LONG, %SQL_INTEGER, 4, 0, lAuId, 0, cbAuID)
+
+  ' Fills the parameter value
+  lAuId = 999 : cbAuId = SizeOf(lAuId)
+  szAuthor = "William Shakespeare" : cbAuthor = Len(szAuthor)
+
+  PrintL "Executing:", sSQL
+  PrintL "With AuthorID =", lAuId
+  PrintL "With Author =", szAuthor
+  ' Executes the prepared statement
+  r = SQLExecute(hStmt)
+  If SQL_SUCCEEDED(r) Then
+     SQLRowCount(hStmt, lRowCount)
+     PrintL "Record updated: ", lRowCount
+  Else
+     StdOut SQLGetErrorInfo(%SQL_HANDLE_STMT, hStmt, r)
+     Terminate
+  End If
+
+   WaitKey
+
+  '----------------------------------------------------------------------------
+  Function Terminate() As Long
+  '----------------------------------------------------------------------------
+
+    ' Closes the cursor
+    If hStmt Then SQLCloseCursor(hStmt)
+    ' Closes the statement handle
+    If hStmt Then SQLFreeHandle(%SQL_HANDLE_STMT, hStmt)
+    ' Closes the connection
+    If hDbc Then
+       SQLDisconnect(hDbc)
+       SQLFreeHandle (%SQL_HANDLE_DBC, hDbc)
+    End If
+    ' Frees the environment handle
+    If hEnv Then SQLFreeHandle(%SQL_HANDLE_ENV, hEnv)
+
+    Stop
+
+  End Function
+

@@ -1,0 +1,66 @@
+#MINVERSION 1.9.1
+
+Uses "ui"
+
+Long x, y, z ,f
+Long w, h
+
+'---Load original sprite and get sprite info
+DWord hJump   = Canvas_BitmapLoad(APP_ScriptPath & "jump.bmp", 0, 0)
+'---Attach the new bitmap in order subsequent Canvas operation will be performed on it
+Canvas_Attach hJump, 0, %TRUE 
+Canvas_BitmapGet(w, h)
+
+'---Dinamically create a new bitmap 10 times langer original sprite
+'---and copy into it original sprite stretching it 10 times langer
+DWord hJump10x = Canvas_BitmapNew w * 10, h * 10
+'---Attach the new bitmap in order subsequent Canvas operation will be performed on it
+Canvas_Attach hJump10x, 0, %TRUE
+Canvas_Stretch2 hJump, 0, 1, 1, w, h, 1, 1, w * 10, h * 10', eMix, eStretch
+
+'---Create canvas window ...
+DWord hwin = Canvas_Window("Stern Sprite", 320, 240, 640, 480)
+Canvas_Attach(hwin, 0, %TRUE) 
+Canvas_Font("arial", 16, %CANVAS_FONTSTYLE_BOLD)
+
+Canvas_SetAutoSize 640, 480, %TRUE
+
+'---Main loop
+While IsWindow(hwin)
+  Canvas_Clear(&h000000)
+  Sprite32(hJump   , 140,  80, f, 1)
+  Sprite32(hJump10x, 200, 130, f, 10)
+
+  SetText(220, 8, "HUHU, IT'S ME", &hFFFFFF, &hFF0000)
+  Canvas_Redraw
+  f = IIf(f = 7, 0, f + 1)
+  'f += 1
+  'If f = 8 Then f = 0
+  If GetAsyncKeyState(27) Then Exit While
+  Sleep 40
+Wend
+Canvas_Window End
+
+'---Destroy bitmaps
+  Canvas_Attach hJump, 0, %TRUE 
+  Canvas_BitmapEnd
+  Canvas_Attach hJump10x, 0, %TRUE 
+  Canvas_BitmapEnd
+ 
+Sub SetText(x,y As Long, txt As String, xkol,ykol As Long) 
+    Canvas_Color(xkol,ykol)
+    Canvas_SetPos(x,y)
+    Canvas_Print(txt)
+End Sub
+ 
+'---Draw a sprite using sprite handle indicating its frame and magnify
+Sub Sprite32(hSprite As Long , x As Long, y As Long, lframe As Long, lMagnify As Long)
+    Local x1, y1, x2, y2 As Long
+    x1 = 1 + 32 * lframe * lMagnify
+    y1 = 1
+    x2 = x1 + 32 * lMagnify
+    y2 = 32 * lMagnify
+    '---Extract from hSprite a portion of the bitmap (from x1,y1 to x2,y2) and copy it
+    '---into current Canvas (second param: ID = 0) at x,y position drawing pixel xoring with current canvas pixel
+    canvas_BitmapCopy3 hSprite, 0, x1, y1, x2, y2, x, y, %Canvas_Mix_XorSrc  
+End Sub

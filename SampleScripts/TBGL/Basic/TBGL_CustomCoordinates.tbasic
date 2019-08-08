@@ -1,0 +1,79 @@
+'
+' Simple example of custom coordinates usage
+'
+
+Uses "TBGL" 
+
+' -- Create and show window
+Dim hWnd As Dword  = TBGL_CreateWindowEx("Rendering using custom 2D coordinates - press ESC to quit", 640, 480, 32, %TBGL_WS_WINDOWED or %TBGL_WS_CLOSEBOX) 
+TBGL_ShowWindow 
+
+TBGL_UseLighting %TRUE
+TBGL_UseLightSource %GL_LIGHT0, %TRUE
+
+tbgl_SetLightParameter %GL_LIGHT0, %TBGL_LIGHT_POSITION, 15, 10, 15, 1
+
+tbgl_BackColor 255, 255, 255
+
+dim i as double
+DIM FrameRate AS DOUBLE
+
+' -- Resets status of all keys 
+TBGL_ResetKeyState()
+
+' -- Main loop
+While TBGL_IsWindow(hWnd) 
+  FrameRate = TBGL_GetFrameRate
+
+  TBGL_ClearFrame 
+  
+  ' -- Specifies 2D mode, and (-5, -5) as lower left corner, and (5, 5) as upper right one
+  TBGL_RenderMatrix2D(-5, -5, 5, 5)
+
+    tbgl_lineWidth 1
+    tbgl_BeginPoly %GL_LINES
+    
+      TBGL_Color 0, 0, 0
+      ' -- X axis
+      tbgl_vertex -5, 0
+      tbgl_vertex  5, 0
+      
+      ' -- Y axis
+      tbgl_vertex  0, 5
+      tbgl_vertex  0,-5
+
+      ' -- Marks on axes
+      for i = -5 to 5
+        tbgl_vertex  i, -0.1
+        tbgl_vertex  i,  0.1
+        
+        tbgl_vertex -0.1, i
+        tbgl_vertex  0.1, i
+      next  
+    tbgl_EndPoly
+    
+    tbgl_lineWidth 2
+    tbgl_BeginPoly %GL_LINES  
+      
+      for i = -5 to 5 step 0.1
+        TBGL_Color 255, 0, 0
+        TBGL_Vertex i, sin(i)
+        TBGL_Vertex i+0.1, sin(i+0.1)
+        
+        TBGL_Color 0, 255, 0
+        TBGL_Vertex i, cos(i)
+        TBGL_Vertex i+0.1, cos(i+0.1)
+        
+      next  
+
+    TBGL_ENDPOLY
+
+  TBGL_DrawFrame 
+
+  ' -- ESCAPE key to exit application
+  If TBGL_GetWindowKeyState(hWnd, %VK_ESCAPE) Then Exit While 
+
+Wend 
+
+TBGL_DestroyWindow
+ 

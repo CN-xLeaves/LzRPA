@@ -1,0 +1,195 @@
+  '=============================================================================
+  '=                                2D Sprites                                 =
+  '=                          Collision/Event example                          =
+  '=                                                                           =
+  '=                          Michael Hartlef, 2009                            =
+  '=============================================================================
+
+
+Uses "TBGL"
+
+dim hWnd AS DWORD
+dim FrameRate AS DOUBLE
+DIM xdiff as single
+DIM width, height as long
+
+'*****************************************************************
+FUNCTION Main()
+'*****************************************************************
+  local sprBackGround as long
+  local dirTextures       as string = "Textures\"
+  local mySprite, enemySprite, bulletSprite as long
+  local xp,yp as single
+    
+  ' -- Create and show window
+  hWnd = TBGL_CreateWindowEx("TBGL 2D Sprite sample (collision check) - press A/D/W/S/SPACE and ESC to quit", 640, 480, 32, %TBGL_WS_WINDOWED or %TBGL_WS_CLOSEBOX)
+  TBGL_ShowWindow 
+
+  TBGL_GetWindowClient( hWnd, width, height )
+  ' -- Load the sprites
+  mySprite  = TBGL_SPRITELOAD( APP_SourcePath + dirTextures + "ship2.tga")
+  TBGL_SPRITESETCOLLISIONGROUP(mySprite,2)
+  enemySprite  = TBGL_SpriteLoad( APP_SOURCEPATH + dirTextures + "ship3.tga")
+  TBGL_SPRITESETCOLLISIONGROUP(enemySprite,1)
+  bulletSprite  = TBGL_SPRITELOAD( APP_SourcePath + dirTextures + "bullet.tga")
+  TBGL_SPRITESETCOLLISIONGROUP(bulletSprite,1)
+  TBGL_SPRITESETCOLLISIONWITH(bulletSprite,2,%FALSE)
+  TBGL_SPRITESETACTIVE(bulletSprite,%FALSE)
+  
+  ' -- Set some events to control the sprites
+  TBGL_SpriteSetEvent(enemySprite,%TBGL_OnBeforeDraw,"onEnemyDraw")
+  TBGL_SpriteSetEvent(MySprite,%TBGL_OnBeforeDraw,"onMyDraw")
+  TBGL_SpriteSetEvent(bulletSprite,%TBGL_OnBeforeDraw,"onBulletDraw")
+  TBGL_SpriteSetEvent(bulletSprite,%TBGL_OnCollision,"onBulletCollision")
+  
+  ' -- set the xDiff factor which controls the horizontal movement of the enemy
+  xdiff = 200
+  
+  ' -- Set some render states
+  tbgl_uselighting %FALSE
+  tbgl_useblend %FALSE
+
+  TBGL_UseDepth %FALSE
+  tbgl_UseTexture %TRUE
+  TBGL_USEVSYNC %TRUE
+
+  tbgl_UseAlphaTest %TRUE
+  tbgl_AlphaFunc %tbGL_GREATER, 0.1
+
+  ' -- Resets status of all keys 
+  TBGL_ResetKeyState()
+  ' -- Set the TBGL color to pure white, so colors of sprites are the same like in the texture
+  tbgl_color 255,255,255
+  ' -- Set the background to a dark blue
+  tbgl_backColor 0, 0 ,80
+      
+  ' -- Scale the sprites to half of their size
+  TBGL_SpriteSetScale(mySprite,0.5)
+  TBGL_SpriteSetScale(enemySprite,0.5)
+  TBGL_SpriteSetScale(bulletSprite,0.5)
+
+  ' -- Now set the sprites position in the middle of the screen
+  TBGL_SpriteSetPos(enemySprite,width/2,height/2-180)
+  TBGL_SpriteSetPos(mySprite,width/2,height/2+180)
+  
+  ' -- Main loop
+  While TBGL_IsWindow(hWnd) 
+    FrameRate = TBGL_GetFrameRate
+
+    ' -- Set the render matrix to the window clients resolution
+    TBGL_Rendermatrix2D (0,height,width,0)
+    
+    ' -- Not really important to clear a frame here as we draw a background anyway
+    TBGL_ClearFrame
+    
+    ' -- With one command you draw all active sprites, even if it is just one :-)
+    TBGL_SpritesDrawAll
+    
+    ' -- Flip the buffer so you see something on the screen
+    TBGL_DrawFrame 
+
+    ' -- ESCAPE key to exit application
+    If TBGL_GetWindowKeyState(hWnd, %VK_ESCAPE) Then Exit While 
+    
+    ' -- Move mySprite depending which key is pressed
+    If TBGL_GetWindowKeyState(hWnd, %VK_A) Then     TBGL_SpriteSetPos(mySprite, -60.0/framerate, 0 , %TRUE) 
+    If TBGL_GetWindowKeyState(hWnd, %VK_D) Then     TBGL_SpriteSetPos(mySprite,  60.0/framerate, 0 , %TRUE) 
+    If TBGL_GetWindowKeyState(hWnd, %VK_W) Then     TBGL_SpriteSetPos(mySprite, 0.0, -60.0/framerate, %TRUE) 
+    If TBGL_GetWindowKeyState(hWnd, %VK_S) Then     TBGL_SpriteSetPos(mySprite, 0.0, 60.0/framerate, %TRUE) 
+    
+    ' -- Shot the bullet when SPACE is pressed
+    If TBGL_GetWindowKeyState(hWnd, %VK_SPACE) Then
+        if TBGL_SpritegetActive(bulletSprite)=%FALSE then
+            TBGL_SpriteGetPos(mySprite,xp,yp)
+            TBGL_SPRITESETPOS(bulletsprite,xp,yp-30)
+            TBGL_SpriteSetActive(bulletSprite,%TRUE)
+        end if
+    end if
+    
+  Wend 
+
+  ' -- Now let's clean up the memory
+  TBGL_SpritesDeleteAll
+  
+  TBGL_DestroyWindow
+END FUNCTION 
+
+
+'*****************************************************************
+sub onBulletDraw()
+'*****************************************************************
+    local s,col as long
+    local x,y as single
+    ' -- Get the handle to the sprite that called this event
+    s = TBGL_MeSprite
+    
+    TBGL_SpriteSetPos(s, 0.0, -600.0/framerate,  %TRUE)
+    
+    ' -- Get the current position of the sprite 
+    TBGL_SpriteGetPos(s, x,y)
+
+    ' -- Set the bullet to not active if it reaches the top of the screen
+    if y < 0 then TBGL_SpriteSetActive(s,%FALSE)
+    col = TBGL_SpriteCollided(s)
+end sub
+
+
+'*****************************************************************
+sub onBulletCollision()
+'*****************************************************************
+    local s,s2 as long
+    local x,y,a as single
+    ' -- Get the handle to the sprite that called this event
+    s = TBGL_MeSprite
+    ' -- Get the handle to the sprite that got hit during the collision
+    s2 = TBGL_YouSprite
+    ' -- Read and set the angle of the other sprite
+    a = TBGL_SpriteGetAngle(s2)
+    TBGL_SpriteSetAngle(s2, a+30 )
+    
+    ' -- Set the bullet to not active 
+    TBGL_SpriteSetActive(s,%FALSE)
+    
+end sub
+
+
+'*****************************************************************
+sub onMyDraw()
+'*****************************************************************
+    local s as long
+    local x,y as single
+    ' -- Get the handle to the sprite that called this event
+    s = TBGL_MeSprite
+    
+    ' -- Get the current position of the sprite 
+    TBGL_SpriteGetPos(s, x,y)
+   ' -- Check the sprites position and change the position eventually
+     if x > (width -40.0)  then x = width - 40.0
+    if x < 40.0 then  x = 40.0
+    if y < 40.0 then  y = 40.0
+    if y > (height - 40) then y = height - 40.0
+    ' -- Set the new position
+    TBGL_SpriteSetPos(s, x, y)
+end sub
+
+
+'*****************************************************************
+sub onEnemyDraw()
+'*****************************************************************
+    local s as long
+    local x,y as single
+    ' -- Get the handle to the sprite that called this event
+    s = TBGL_MeSprite
+    
+    ' -- Change the position of the enemy sprite
+    TBGL_SpriteSetPos(s, xDiff/framerate, 0.0 , %TRUE)
+    
+    ' -- Get the new position of the sprite and changing 
+    ' -- the xDiff factor if the sprite comes close to the wall
+    TBGL_SpriteGetPos(s, x,y)
+    ' -- Check the sprites position and change the xDiff factor eventually
+    if x > (width -40.0) and xdiff > 1 then xdiff *= -1.0
+    if x < (40.0) and xdiff < 1 then xdiff *= -1.0
+end sub
+
+

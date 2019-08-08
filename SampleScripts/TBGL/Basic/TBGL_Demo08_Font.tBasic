@@ -1,0 +1,79 @@
+  '=============================================================================
+  '=                             Font from texture                             =
+  '=                                                                           =
+  '=                           Petr Schreiber, 2007                            =
+  '=============================================================================
+
+  Uses "TBGL"
+
+
+  dim hWnd as dword
+  DIM runText As Single
+
+  hWnd = TBGL_CreateWindowex("Bitmap font - press ESC to quit", 640, 480, 32, %TBGL_WS_WINDOWED)   ' Creates OpenGL window, it returns handle
+  TBGL_ShowWindow                     ' Shows the window
+
+  Tbgl_LoadBMPFont App_SourcePath+"Textures\TBGL_Font.bmp"    ' Loads texture for font
+
+  runText = 50
+
+  dim FrameRate as double
+  TBGL_ResetKeyState()        ' Resets key status before keypress checking
+
+  while TBGL_IsWindow(hWnd)
+
+    '---Script will run on different PCs so we must assure
+    '---constant speed of movement by scaling movement relative to framerate
+    FrameRate = tbgl_GetFrameRate
+
+    TBGL_ClearFrame                   ' Prepares clear frame
+
+    TBGL_Camera 0,0,5,0,0,0           ' Setups camera to look from 0,0,5 to 0,0,0
+    TBGL_Rotate getTickCount/10,1,1,1 ' Rotates around vector 1,1,1
+
+    TBGL_BeginPoly %GL_TRIANGLES      ' Starts polygon definition based on triangles
+      TBGL_Color 255,0,0              ' Sets RGB color
+      TBGL_Vertex -1,-1,0             ' Adds vertex
+
+      TBGL_Color 0,255,0
+      TBGL_Vertex  1,-1,0
+
+      TBGL_Color 0,0,255
+      TBGL_Vertex  0, 1,0
+    TBGL_EndPoly                      ' Ends polygon definition
+
+    TBGL_ResetMatrix                  ' Important before printing on screen !
+                                      ' It resets all transformations, which were made before
+
+    TBGL_Color 255,128,0              ' Setting color this way affects even font
+    tbgl_printBMP "THIN",14,6
+
+    TBGL_Color 0,0,255
+    tbgl_printBMP "BASIC",18,6
+
+    TBGL_UseBlend %TRUE
+    TBGL_Color 255,255,0
+    tbgl_printBMP "- using TBGL module -",8,8+sin(timer)
+    TBGL_UseBlend %FALSE
+
+    runText -= 10 / FrameRate
+    
+    if runText < -100 then runText = 50
+    TBGL_Color 255,255,255
+    tbgl_printBMP "thinBasic - interpreted language with no limits", runText, 25
+
+    TBGL_DrawFrame                   ' Swaps the buffers - displays rendered image
+      
+    if TBGL_GetWindowKeyState( hWnd, %VK_ESCAPE) then EXIT WHILE
+        
+  wend
+
+  TBGL_DestroyWindow                ' Closes OpenGL window
+
+
+
+
+
+
+
+

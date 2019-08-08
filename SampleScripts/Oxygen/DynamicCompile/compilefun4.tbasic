@@ -1,0 +1,58 @@
+
+'=====================================
+'RUNTIME COMPILING FROM STRINGS
+'WITH ACCESS TO ALL PARENTAL VARIABLES
+'=====================================
+
+uses "oxygen"
+dim src as string
+
+src = "
+  '
+  '-----------------------------------------------
+  function evaluate (string s, long b,e) as string
+  '===============================================
+  '
+  double x,y,z
+  long a,p=1
+  string v,u,tab,cr,er
+  '
+  cr=chr(13) chr(10) : tab=chr 9
+  v=nuls 4000
+  mid v,p,s+cr+cr
+  p+=4+len s
+  '
+  a=compile s
+  er=error
+  if er then print `runtime error: `  er : uncompile a : exit function
+  for x=b to e
+    call a
+    'u=str(x) tab str(y) cr
+    u= x tab y cr
+    mid v,p,u : p+=len u
+  next
+  '
+  function=left v,p-1
+  uncompile a
+  '
+  end function
+  
+  print evaluate "y=x*x*x",1,10
+  print evaluate "y=sqrt x",1,9
+  
+"
+
+
+
+
+
+o2_asmo src
+
+'msgbox 0, o2_prep src
+
+if len(o2_error) then
+  msgbox 0, o2_error : stop
+end if
+
+o2_exec
+

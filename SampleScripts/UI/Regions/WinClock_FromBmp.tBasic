@@ -1,0 +1,83 @@
+  '---
+  ' Splash window using region created from bitmap files
+  '---
+  
+  uses "UI"
+
+  '---Define needed equates   
+  Begin ControlID
+    %IDC_TIMER   '---Timer event
+    %IDC_LABEL   '---Lable for digital time
+  End ControlID
+  %TIMER_DELAY = 1000 '---Timer delay (in milliseconds)
+
+  '------------------------------------------------------------------------------
+  ' Program start point
+  '------------------------------------------------------------------------------
+  FUNCTION Main() as long
+  '------------------------------------------------------------------------------
+    LOCAL hDlg      AS DWORD    '---Used to store window handle
+    local wStyle    as long
+    local wExStyle  as long
+    
+    '---Prepare dialog style and extended style
+    wStyle    = %DS_CENTER OR %WS_POPUP OR %WS_VISIBLE  OR %WS_SYSMENU or %WS_MAXIMIZEBOX OR %WS_MINIMIZEBOX
+    wExStyle  = 0 '---Set %WS_EX_TOPMOST to have the window always at to of the other windows
+    
+    '---Create a new dialog
+    DIALOG NEW 0, "thinBasic: 24h Clock", -1, -1, 300, 300, wStyle, wExStyle TO hDlg
+    
+    '---Show dialog
+    DIALOG SHOW modal hDlg, call cbDialog
+    
+  END FUNCTION
+ 
+  '------------------------------------------------------------------------------
+  ' Procedure for main window
+  callback FUNCTION cbDialog() as long
+  '------------------------------------------------------------------------------
+
+    '---Now test the message 
+    SELECT CASE cbMsg
+      
+      case %WM_INITDIALOG
+        '---Event fired only once when dialog is initialized
+
+        '---Shape window following image contours
+        dialog shapetobmp cbhndl, app_sourcepath & "24hClock.bmp"
+        '---Add a label for digital clock
+        CONTROL ADD LABEL, cbhndl, %IDC_LABEL, "", 62, 99, 40, 12, %WS_CHILD OR %WS_VISIBLE OR %WS_BORDER OR %SS_CENTERIMAGE OR %SS_CENTER
+
+        '---Add a timer to the dialog. It will be fired as event every %TIMER_DELAY milliseconds
+        dialog set Timer cbhndl, %IDC_TIMER, %TIMER_DELAY, %NULL
+        CONTROL SET TEXT cbhndl, %IDC_LABEL, time$
+  
+      case %WM_LBUTTONDBLCLK
+        WIN_Show(hDlg, %SW_MINIMIZE)
+           
+      CASE %WM_LBUTTONDOWN
+        '---Release the mouse and force a move using left mouse down
+        WIN_ReleaseCapture
+        dialog send cbhndl, %WM_NCLBUTTONDOWN, %HTCAPTION, %NULL
+
+      CASE %WM_RBUTTONDOWN
+        '---If left mouse click then exit slash window
+        dialog END cbhndl
+
+      CASE %WM_TIMER
+        '---Event fired automatically by dialog timer
+        '---Do here what is needed to update window
+        
+        '---Change label setting digital time
+        CONTROL SET TEXT cbhndl, %IDC_LABEL, time$
+
+      CASE %WM_DESTROY 
+
+        '---Important: delete timers before exit
+        dialog Kill Timer cbhndl, %IDC_TIMER
+      
+    END SELECT
+    
+END FUNCTION
+
+

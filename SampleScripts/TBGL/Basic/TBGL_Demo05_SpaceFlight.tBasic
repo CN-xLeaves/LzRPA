@@ -1,0 +1,83 @@
+  '=============================================================================
+  '=                           Space flight illusion                           =
+  '=                                                                           =
+  '=                           Petr Schreiber, 2007                            =
+  '=============================================================================
+
+
+  Uses "TBGL"
+
+  ' -- More randomness for random numbers
+  RANDOMIZE timer                      
+  
+  ' -- First we will prepare some random star positions
+  type tStars
+    x as double
+    y as double
+    z as double
+  end type
+  %MaxStars = 300 
+  DIM Star(%MaxStars) As tStars
+  
+  DIM i AS LONG    
+  FOR i = 1 TO %MaxStars
+    GenerateNewStar ( i )            ' We will create some x,y,z coords for stars
+  NEXT
+  
+  dim hWnd as dword
+  ' -- Creates window and returns handle by which we can identify it
+  hWnd = TBGL_CreateWindowEx("Classic Space Flight Effect. Stars: " & %MaxStars & " - press ESC to quit", 640, 480, 32, %TBGL_WS_WINDOWED)   
+  TBGL_ShowWindow                 ' Shows the window
+  
+  dim FrameRate as double
+  TBGL_ResetKeyState() ' -- Resets status of all keys 
+  
+  while tbgl_isWindow(hWnd)
+
+    ' We must keep in mind, that it will run
+    ' on different PCs. So we must assure the
+    ' constant speed of movement - by scaling movements
+    ' to framerate 
+    FrameRate = tbgl_GetFrameRate
+    
+    TBGL_ClearFrame               ' Prepares clear frame
+    TBGL_Camera 0,0,5,0,0,0       ' Setups camera to look from 0,0,5 to 0,0,0
+
+    TBGL_BeginPoly %GL_Lines      ' Starts polygon definition based on 2 vertex lines
+
+      For i = 1 to %MaxStars  
+
+        TBGL_Color rnd(0, 255),rnd(0, 255),rnd(0, 255)      ' Sets RGB color
+        TBGL_Vertex Star(i).x,Star(i).y,Star(i).z           ' Adds vertex
+
+        TBGL_Color 0,0,0
+        TBGL_Vertex Star(i).x,Star(i).y,Star(i).z-5
+
+        Star(i).z += 20/FrameRate                           ' Stars fly at 20 units per second
+        If Star(i).z > 5 Then GenerateNewStar(i)            ' If it is behind viewer, then reborn
+
+      Next 
+
+    TBGL_EndPoly                  ' Ends polygon definition
+
+    TBGL_DrawFrame                ' Swaps the buffers - displays rendered image
+    
+    If TBGL_GetWindowKeyState( hWnd, %VK_ESCAPE) Then Exit While 
+
+  wend
+
+  TBGL_DestroyWindow               ' Closes OpenGL window
+
+  sub GenerateNewStar( index As long ) As Long
+
+    Star(index).x = rndf(-25, 25)
+    Star(index).y = rndf(-25, 25)
+    Star(index).z = rndf(-30, -60)
+    
+  End sub
+
+
+
+
+
+

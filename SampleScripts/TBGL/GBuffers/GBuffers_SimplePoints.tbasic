@@ -1,0 +1,81 @@
+'
+' Simple example of rendering big amount of points using GBuffers
+' Petr Schreiber, 2010
+'
+
+Uses "TBGL"
+
+%w = 512
+%h = 512 
+%total = %w * %h
+
+Function Main()
+  Local hWnd      As DWord
+  Local FrameRate As Double
+  
+  ' -- Create and show window
+  hWnd = TBGL_CreateWindowEx("GBuffers with points - press ESC to quit", %w, %h, 32, %TBGL_WS_WINDOWED Or %TBGL_WS_CLOSEBOX Or %TBGL_WS_DONTSIZE) 
+  TBGL_ShowWindow  
+  
+  TBGL_BackColor 255,255,255
+
+  ' -- Create 2D point buffer
+  Local gbPoints As DWord = TBGL_GBufferCreate(%TBGL_POINTS, %TBGL_2D)
+  
+  ' -- Arrays with data
+  Local VertexA(%total) As TBGL_tVector2F
+  Local ColorA(%total)  As TBGL_tRGB   
+  Local x, y, i As Long
+  For x = 1 To %w
+    For y = 1 To %h
+      Incr i
+      VertexA(i).x = x
+      VertexA(i).y = y
+    Next
+  Next  
+  
+  ' -- Bind the data to GBuffer
+  TBGL_GBufferDefineFromArray(gbPoints, %TBGL_Dynamic, %total, VertexA(1), ColorA(1))
+  
+  Local mode As Ext = 1    
+  
+  ' -- Resets status of all keys 
+  TBGL_ResetKeyState()
+
+  ' -- Main loop
+  While TBGL_IsWindow(hWnd) 
+    FrameRate = TBGL_GetFrameRate
+         
+    TBGL_ClearFrame
+      ' -- 2D rendering mode
+      TBGL_RenderMatrix2D(1,1,%w+1, %h+1) 
+
+      ' -- Render all points in one go                            
+      tbgl_GBufferRender(gbPoints) 
+                                      
+      ' -- Change few of them                                      
+      mode = CYCLE_Next(mode, 1, 4, 0.01)  
+      For x = 1 To 3000
+        i = Rnd(1, %total)                          
+        Select Case Int(mode)
+          Case 1
+            ColorA(i).R += Rndf(16, 32)
+          Case 2
+            ColorA(i).G += Rndf(16, 32)
+          Case 3
+            ColorA(i).B += Rndf(16, 32)          
+        End Select
+      Next      
+    TBGL_DrawFrame 
+
+    ' -- ESCAPE key to exit application
+    If TBGL_GetWindowKeyState(hWnd, %VK_ESCAPE) Then Exit While 
+
+  Wend    
+         
+  ' -- Destroying the buffer is not necessary,
+  ' -- the garbage collector will take care of it
+
+  ' -- Destroy window
+  TBGL_DestroyWindow
+End Function 

@@ -1,0 +1,45 @@
+Uses "iComplex"
+Uses "Console"
+
+Dim z   As tComplex
+Dim a   As tComplex
+Dim b   As tComplex
+
+a = iComplex_Set(-3,  4)
+b = iComplex_Set( 2, -5)
+z  = iComplex_Add(a, b)
+PrintL "a = " & iComplex_ToString(a)
+PrintL "b = " & iComplex_ToString(b)
+PrintL "ADD----------------------------"
+PrintL "z = " & iComplex_ToString(z)
+PrintL
+
+a = iComplex_Set(0,  3)
+b = iComplex_Set(2, -4)
+z  = iComplex_Sub(a, b)
+PrintL "a = " & iComplex_ToString(a)
+PrintL "b = " & iComplex_ToString(b)
+PrintL "SUB----------------------------"
+PrintL "z = " & iComplex_ToString(z)
+PrintL
+
+a = iComplex_Set(1,  1)
+b = iComplex_Set(2, -3)
+z  = iComplex_Mul(a, b)
+PrintL "a = " & iComplex_ToString(a)
+PrintL "b = " & iComplex_ToString(b)
+PrintL "MUL----------------------------"
+PrintL "z = " & iComplex_ToString(z)
+PrintL
+
+z = iComplex_Set(Log(2.3), 0)
+PrintL "z = " & iComplex_ToString(z)
+PrintL "TANH---------------------------"
+z = iComplex_TanH(z)
+PrintL "z = " & iComplex_ToString(z)
+PrintL
+
+PrintL "-------------------------------------------"
+PrintL "Press a key to continue"
+WaitKey
+  

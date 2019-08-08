@@ -1,0 +1,431 @@
+Uses "console"
+Uses "UI"
+
+Begin ControlID
+  '%ID_OPEN   
+  %ID_EXIT    
+  '%ID_OPTION1 
+  '%ID_OPTION2 
+  '%ID_HELP    
+  '%ID_ABOUT   
+  '%ID_OK      
+  '%ID_CANCEL  
+  '%ID_TEXT   
+End ControlID
+
+Console_SetScreenBufferSize(150, 30)
+Console_ShowWindow(%CONSOLE_SW_MAXIMIZE)  
+Console_SetTitle("Windows events")
+
+'---Bright cyan text on a blue background
+Long cBrightCyanBGBlue  = %CONSOLE_FOREGROUND_BLUE | %CONSOLE_FOREGROUND_GREEN | %CONSOLE_FOREGROUND_INTENSITY | %CONSOLE_BACKGROUND_BLUE
+Long cBrightRed         = %CONSOLE_FOREGROUND_RED | %CONSOLE_FOREGROUND_INTENSITY
+
+Long lColorOK   = cBrightCyanBGBlue
+Long lColorNoOK = cBrightRed
+
+
+'----------------------------------------------------------
+' Experiment on how to handle CallBacks using a class window
+'
+' Trick is to store into a dialog user slot (for example 1)
+' a pointer to Me, in order to get it during dialog callback:
+'   Dialog Set User hDlg, 1, VarPtr(Me)
+'----------------------------------------------------------
+Type cWindow
+  Static WinNumber As Long  '---Used to globally count Windows
+
+  nWin            As Long         '---Window number  
+  hWnd            As Long         '---Window handle
+  msgCount        As Long         '---Used to count number of messages fired for each window
+
+  lPosX           As Long
+  lPosY           As Long
+  lWidth          As Long
+  lHeight         As Long
+    
+  IsAttached      As Long
+  IsAttachedWith  As DWord
+  IsAttachedWhere As Long
+
+  lastCBHNDL      As Long
+  lastCBMSG       As Long
+  lastCBWPARAM    As Long
+  lastCBLPARAM    As Long
+  
+  SetOnTop        As Function
+  Create          As Function     '---Create a new window
+  CenterTo        As Function     '---Center window on screen
+  LocateTo        As Function     '---Locate window
+  SizeTo          As Function     '---Resize window
+  WinProc         As Function     '---Window callback
+  
+End Type
+
+Type cWindow_Main Extend cWindow
+  MenuAdd         As Function     '---
+  AttachWith      As Function     '---
+  
+End Type
+
+
+
+'----------------------------------------------------------
+Function cWindow.SetOnTop()
+'----------------------------------------------------------
+  Dialog Set TopMost Me.hWnd, %HWND_TOP
+End Function
+
+
+'----------------------------------------------------------
+Function cWindow.Create(  ByVal sTitle As String, 
+                          ByVal x As Long, 
+                          ByVal y As Long, 
+                          ByVal lWidth As Long, 
+                          ByVal lHeight As Long) As Long
+'----------------------------------------------------------
+  Local hDlg As Long
+
+  '---Increment window number
+  Me.WinNumber += 1
+  Me.nWin = Me.WinNumber
+  
+  sTitle = Using$(sTitle, Me.nWin)
+
+  '---Create a new window
+  Dialog New Pixels, 0, sTitle,
+                              x,
+                              y,
+                              lWidth, 
+                              lHeight, 
+                              %WS_CLIPCHILDREN      Or _
+                              %WS_CLIPSIBLINGS      Or _
+                              %WS_OVERLAPPEDWINDOW  ,  _
+                              0 _
+                              To hDlg
+
+  Me.hWnd = hDlg
+
+  '---Store into a dialog user slot a pointer to Me, in order to get it during dialog callback
+  Dialog Set User hDlg, 1, VarPtr(Me)
+  
+  '---Show new window and assign it callback function
+  
+  Dialog Show Modeless Me.hWnd, Call Me.WinProc
+  'Dialog Show Modal Me.hWnd, Call Me.WinProc
+  '  Do
+  '    Dialog DoEvents 0 To Count
+  '  Loop While Count
+
+End Function
+
+'----------------------------------------------------------
+Function cWindow.CenterTo()
+'----------------------------------------------------------
+  Long Screen_Width
+  Long Screen_Height
+  Long cWindow_Width
+  Long cWindow_Height
+  
+  Dialog  Get Size Me.hWnd  To cWindow_Width, cWindow_Height
+  Desktop Get Size          To Screen_Width , Screen_Height
+
+  Dialog Set Loc Me.hWnd, (Screen_Width - cWindow_Width)/2 , (Screen_Height - cWindow_Height)/2
+
+End Function
+
+'----------------------------------------------------------
+Function cWindow.SizeTo(ByVal w As Long, ByVal h As Long)
+'----------------------------------------------------------
+  Dialog Set Size Me.hWnd, w, h
+End Function
+
+'----------------------------------------------------------
+Function cWindow.LocateTo(ByVal x As Long, ByVal y As Long)
+'----------------------------------------------------------
+  Dialog Set Loc Me.hWnd, x, y
+End Function
+
+'----------------------------------------------------------
+Function cWindow_Main.AttachWith(ByVal hWnd As Long, ByVal lWhere As Long)
+'----------------------------------------------------------
+  Local lPosX, lPosY As Long
+  Local lPosW, lPosH As Long
+
+  If hWnd Then
+    Me.IsAttached       = %TRUE
+    Me.IsAttachedWith   = hWnd
+    Me.IsAttachedWhere  = lWhere
+
+      If Me.IsAttached Then
+        Select Case Me.IsAttachedWhere
+          Case 1 '---left
+            lPosX = Dialog_GetX(Me.hWnd) - Dialog_GetW(Me.IsAttachedWith)
+            lPosY = Dialog_GetY(Me.hWnd)
+            lPosW = Dialog_GetW(Me.IsAttachedWith)
+            lPosH = Dialog_GetH(Me.hWnd)
+        End Select
+
+        Dialog Set Loc  Me.IsAttachedWith, lPosX, lPosY 
+        Dialog Set Size Me.IsAttachedWith, lPosW, lPosH 
+      End If
+
+  Else
+    Me.IsAttached       = %FALSE
+    Me.IsAttachedWith   = %NULL
+    Me.IsAttachedWhere  = %NULL
+  End If
+End Function
+
+'----------------------------------------------------------
+Function cWindow_Main.MenuAdd()
+'----------------------------------------------------------
+    Local hMenu   As Long
+    Local hPopup1 As Long
+
+    '---Create a top-level menu:
+    MENU New Bar To hMenu
+    '---Create a popup menu
+    MENU New Popup To hPopup1
+    '---Add a top-level menu item with a popup menu:
+    MENU Add Popup,  hMenu, "&File", hPopup1, %MF_ENABLED
+    '---Add menu items to popup menu
+    MENU Add String, hPopup1, "&Exit", %ID_EXIT, %MF_ENABLED
+
+    '---Attach menu to a window handle
+    MENU Attach hMenu, Me.hWnd
+End Function
+
+'----------------------------------------------------------
+CallBack Function cWindow.WinProc() As Long
+'----------------------------------------------------------
+  '---Sorry: no way to use "me" inside a callback.
+  '---Callbacks are fired directly by Window OS and I've not found a way to pass
+  '---to it what "Me" represents
+  
+  '---A possible way is to set a dialog user data storing a pointer to Me and than loading at runtime
+  '---inside window callback Like this:
+    Local pMe As cWindow At Dialog_GetUser(CBHNDL, 1)
+  '---
+
+  Local lPosX, lPosY As Long
+  Local lPosW, lPosH As Long
+  
+  pMe.lastCBHNDL    = CBHNDL
+  pMe.lastCBMSG     = CBMSG
+  pMe.lastCBWPARAM  = CBWPARAM
+  pMe.lastCBLPARAM  = CBLPARAM
+  
+  '---Increment message counter  
+  pMe.msgCount += 1
+'Print pMe.nWin, pMe.msgCount, "In CallBack"
+
+  Select Case CBMSG
+    Case %WM_INITDIALOG
+      PrintMessage pMe, "%WM_INITDIALOG", lColorOK
+    Case %WM_ACTIVATEAPP
+      PrintMessage pMe, "%WM_ACTIVATEAPP", lColorOK
+    Case %WM_ERASEBKGND
+      PrintMessage pMe, "%WM_ERASEBKGND", lColorOK
+    
+    Case %WM_SIZE
+      PrintMessage pMe, "%WM_SIZE", lColorOK
+
+      '[breakpoint] <Any note here. Breakpoint will be set to line following this statement>
+      If pMe.IsAttached Then
+        Select Case pMe.IsAttachedWhere
+          Case 1 '---left
+            lPosW = Dialog_GetW(pMe.IsAttachedWith)
+            lPosH = Dialog_GetH(CBHNDL)
+        End Select
+        Dialog Set Size pMe.IsAttachedWith, lPosW, lPosH 
+        'PrintL "New position", Dialog_GetX(CBHNDL), Dialog_GetW(pMe.IsAttachedWith), Dialog_GetY(CBHNDL), lPosX, lPosY 
+      End If
+    Case %WM_SIZING
+      PrintMessage pMe, "%WM_SIZING", lColorOK
+    
+    Case %WM_QUERYOPEN
+      PrintMessage pMe, "%WM_QUERYOPEN", lColorOK
+
+    Case %WM_MOVE
+      PrintMessage pMe, "%WM_MOVE", lColorOK
+
+      '[breakpoint] <Any note here. Breakpoint will be set to line following this statement>
+      If pMe.IsAttached Then
+      
+        Select Case pMe.IsAttachedWhere
+          Case 1 '---left
+            lPosX = Dialog_GetX(CBHNDL) - Dialog_GetW(pMe.IsAttachedWith)
+            lPosY = Dialog_GetY(CBHNDL)
+        End Select
+        
+        Dialog Set Loc pMe.IsAttachedWith, lPosX, lPosY 
+        'PrintL "New position", Dialog_GetX(CBHNDL), Dialog_GetW(pMe.IsAttachedWith), Dialog_GetY(CBHNDL), lPosX, lPosY 
+      End If
+      
+    Case %WM_MOVING
+      PrintMessage pMe, "%WM_MOVING", lColorOK
+
+    Case %WM_KILLFOCUS
+      PrintMessage pMe, "%WM_KILLFOCUS", lColorOK
+    Case %WM_SETFOCUS
+      PrintMessage pMe, "%WM_SETFOCUS", lColorOK
+
+    Case %WM_GETMINMAXINFO
+      PrintMessage pMe, "%WM_GETMINMAXINFO", lColorOK
+
+    Case %WM_IME_SETCONTEXT
+      PrintMessage pMe, "%WM_IME_SETCONTEXT", lColorOK
+    Case %WM_IME_NOTIFY
+      PrintMessage pMe, "%WM_IME_NOTIFY", lColorOK
+
+    Case %WM_GETDLGCODE
+      PrintMessage pMe, "%WM_GETDLGCODE", lColorOK
+
+    Case %WM_LBUTTONUP
+      PrintMessage pMe, "%WM_LBUTTONUP", lColorOK
+    Case %WM_LBUTTONDOWN
+      PrintMessage pMe, "%WM_LBUTTONDOWN", lColorOK
+    Case %WM_LBUTTONDBLCLK
+      PrintMessage pMe, "%WM_LBUTTONDBLCLK", lColorOK
+    Case %WM_RBUTTONUP
+      PrintMessage pMe, "%WM_RBUTTONUP", lColorOK
+    Case %WM_RBUTTONDOWN
+      PrintMessage pMe, "%WM_RBUTTONDOWN", lColorOK
+    Case %WM_RBUTTONDBLCLK
+      PrintMessage pMe, "%WM_RBUTTONDBLCLK", lColorOK
+
+    Case %WM_CONTEXTMENU
+      PrintMessage pMe, "%WM_CONTEXTMENU", lColorOK
+
+    Case %WM_GETICON
+      PrintMessage pMe, "%WM_GETICON", lColorOK
+    Case %WM_NCPAINT
+      PrintMessage pMe, "%WM_NCPAINT", lColorOK
+
+    Case %WM_SHOWWINDOW
+      PrintMessage pMe, "%WM_SHOWWINDOW", lColorOK
+                            
+    Case %WM_MOUSEMOVE
+      PrintMessage pMe, "%WM_MOUSEMOVE", lColorOK
+    Case %WM_NCHITTEST
+      PrintMessage pMe, "%WM_NCHITTEST", lColorOK
+    Case %WM_SETCURSOR
+      PrintMessage pMe, "%WM_SETCURSOR", lColorOK
+    Case %WM_NCMOUSEMOVE
+      PrintMessage pMe, "%WM_NCMOUSEMOVE", lColorOK
+    Case %WM_NCMOUSELEAVE
+      PrintMessage pMe, "%WM_NCMOUSELEAVE", lColorOK
+    Case %WM_MOUSEACTIVATE            
+      PrintMessage pMe, "%WM_MOUSEACTIVATE", lColorOK
+    Case %WM_NCLBUTTONDOWN
+      PrintMessage pMe, "%WM_NCLBUTTONDOWN", lColorOK
+    Case %WM_NCLBUTTONUP
+      PrintMessage pMe, "%WM_NCLBUTTONUP", lColorOK
+    Case %WM_WINDOWPOSCHANGING
+      PrintMessage pMe, "%WM_WINDOWPOSCHANGING", lColorOK
+    Case %WM_WINDOWPOSCHANGED
+      PrintMessage pMe, "%WM_WINDOWPOSCHANGED", lColorOK
+    Case %WM_CAPTURECHANGED
+      PrintMessage pMe, "%WM_CAPTURECHANGED", lColorOK
+
+    Case %WM_ENTERSIZEMOVE
+      PrintMessage pMe, "%WM_ENTERSIZEMOVE", lColorOK
+    Case %WM_EXITSIZEMOVE
+      PrintMessage pMe, "%WM_EXITSIZEMOVE", lColorOK
+    
+    Case %WM_SYSCOMMAND
+      PrintMessage pMe, "%WM_SYSCOMMAND", lColorOK
+    
+    Case %WM_KEYDOWN
+      PrintMessage pMe, "%WM_KEYDOWN", lColorOK
+    Case %WM_KEYUP
+      PrintMessage pMe, "%WM_KEYUP", lColorOK
+    Case %WM_CHAR
+      PrintMessage pMe, "%WM_CHAR", lColorOK
+
+
+    Case %WM_COMMAND
+      PrintMessage pMe, "%WM_COMMAND", lColorOK
+
+      Select Case CBCTL
+        Case %ID_EXIT
+          Dialog End CBHNDL
+      End Select
+      
+    Case %WM_NCACTIVATE
+      PrintMessage pMe, "%WM_NCACTIVATE", lColorOK
+
+    Case %WM_NCCALCSIZE
+      PrintMessage pMe, "%WM_NCCALCSIZE", lColorOK
+    Case %WM_CTLCOLORDLG
+      PrintMessage pMe, "%WM_CTLCOLORDLG", lColorOK
+    Case %WM_ENTERIDLE
+      PrintMessage pMe, "%WM_ENTERIDLE", lColorOK
+    Case %WM_MENUSELECT
+      PrintMessage pMe, "%WM_MENUSELECT", lColorOK
+    Case %WM_INITMENUPOPUP
+      PrintMessage pMe, "%WM_INITMENUPOPUP", lColorOK
+    Case %WM_PAINT
+      PrintMessage pMe, "%WM_PAINT", lColorOK
+    Case %WM_INITMENU
+      PrintMessage pMe, "%WM_INITMENU", lColorOK
+    Case %WM_ENTERMENULOOP
+      PrintMessage pMe, "%WM_ENTERMENULOOP", lColorOK
+    Case %WM_EXITMENULOOP
+      PrintMessage pMe, "%WM_EXITMENULOOP", lColorOK
+    Case %WM_UNINITMENUPOPUP
+      PrintMessage pMe, "%WM_UNINITMENUPOPUP", lColorOK
+    
+    Case Else
+      'PrintL pMe.nWin, pMe.msgCount, VBTAB, "other", "CBHNDL", CBHNDL, "CBMSG", CBMSG, "CBWPARAM", CBWPARAM, "CBLPARAM", CBLPARAM In lColorNoOK
+      PrintMessage pMe, "other", lColorNoOK
+
+  End Select
+'PrintL " / Out CallBack"
+  
+End Function
+
+Function PrintMessage(  pMe As cWindow,
+                        ByVal sMSG As String, 
+                        ByVal lColor As Long)
+
+  PrintL pMe.nWin, pMe.msgCount, sMsg, 
+        "CBHNDL",   pMe.lastCBHNDL, 
+        "CBMSG",    pMe.lastCBMSG, 
+        "CBWPARAM", pMe.lastCBWPARAM, 
+        "CBLPARAM", pMe.lastCBLPARAM In lColor
+
+End Function
+
+
+'----------------------------------------------------------
+Function Main() As Long
+'----------------------------------------------------------
+  
+  Dim MainWindow  As cWindow_Main
+  Dim wTool       As cWindow
+  
+  MainWindow.Create("cWindow [#]", 0, 0, 640, 480)
+  MainWindow.MenuAdd
+  '---Sleep 2000
+  MainWindow.LocateTo(100, 100)
+  '---Sleep 2000
+  MainWindow.SizeTo(800, 600)
+  '---Sleep 2000
+  MainWindow.CenterTo
+
+  wTool.Create("cWindow [#]", 100, 100, 200, 400)
+  wTool.SetOnTop
+  
+  '---Attach this window to another
+  MainWindow.AttachWith(wTool.hWnd, 1)
+  
+  '---Because we create windows in modeless way, we need
+  '---to have a loop
+  While IsWindow(MainWindow.hWnd) 'Or IsWindow(MyWindow2.hWnd)
+    DoEvents
+  Wend
+  
+End Function
+ 

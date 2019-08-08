@@ -1,0 +1,20 @@
+
+uses  "OXYGEN"
+
+dim v1,v2  as long 
+
+o2_buf 1 : o2_asmo " mov eax,[esp+4] : mov ecx,[esp+8] : rol eax,cl : ret 8 "
+declare function ROL (byval v as long, byval n as long ) as long at o2_buf 1
+
+
+o2_buf 2 : o2_asmo " mov eax,[esp+4] : mov ecx,[esp+8] : ror eax,cl : ret 8 "
+declare function ROR (byval v as long, byval n as long ) as long at o2_buf 2
+
+
+if len(o2_error) then msgbox 0,o2_error()+o2_view (src) : stop
+
+v1=ROR 1,2
+v2=ROL 1,2
+
+msgbox 0,"&h"+hex$(v1)+$cr+"&h"+hex$(v2)
+

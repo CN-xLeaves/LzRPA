@@ -1,0 +1,37 @@
+
+'-----------------------------------------
+'EXTERN BLOCKS
+'=========================================
+
+ 
+Uses "oxygen"
+Dim c,src As String
+dim v as long
+src="
+
+
+###
+
+extern stdcall lib "kernel32.dll"
+  declare function QueryPerformanceCounter(lpPerformanceCount as quad) as sys
+  declare function QueryPerformanceFrequency(lpPerformanceFrequency as quad) as sys
+end extern
+
+dim as quad ct1,ct2,fr
+QueryPerformanceCounter   ct1
+QueryPerformanceFrequency fr
+QueryPerformanceCounter   ct2
+
+###
+
+print "Freq " fr "  Count " str(ct2-ct1) "  time " str((ct2-ct1)/fr)
+
+"
+'msgbox 0,O2_prep src+o2_error
+O2_asmo src
+if Len(O2_ERROR) Then
+  msgbox 0,O2_ERROR
+else
+  o2_exec
+end if
+

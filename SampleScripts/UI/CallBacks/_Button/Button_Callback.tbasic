@@ -1,0 +1,119 @@
+  '------------------------------------------------------------------------------
+  ' Program to show dialogs and buttons callbacks
+  '------------------------------------------------------------------------------
+  
+  uses "UI"
+
+  '---Constant declarations
+  Begin ControlID
+    %ID_Button_01   
+    %ID_Button_02
+  End ControlID
+
+  '------------------------------------------------------------------------------
+  ' Program start point
+  '------------------------------------------------------------------------------
+  FUNCTION Main() as long
+    local hDlg    AS DWORD   '---Used to store window handle of main dialog
+
+    '---Create a new dialog
+      hDlg = Dialog_New Pixels, 0, "thinBasic test button callback", -1, -1, 300, 200, _
+                                                    %WS_DLGFRAME  | _
+                                                    %DS_CENTER    | _
+                                                    %WS_CAPTION   | _
+                                                    %WS_SYSMENU   | _
+                                                    %WS_OVERLAPPEDWINDOW
+
+    '---Set window minimum size
+      Dialog Set Minsize hDlg, 300, 200
+
+    '---Show dialog in modal mode
+    '---cbDialog function is the callback function handling dialog events
+    '---Application control will pass to dialog callback till dialog will exists 
+      Dialog_Show Modal hDlg, Call cbDialog
+
+    '---If execution comes here it means main dialog as been destroyed
+'      printl "---Application finished. Press a key to end---"
+      'waitkey
+    
+  END FUNCTION 
+
+  '------------------------------------------------------------------------------
+  ' Callback procedure for main window
+  '------------------------------------------------------------------------------
+  CallBack Function cbDialog() As Long
+
+    'printl CBHNDL, CBCTL, CBCTLMSG, CBLPARAM, CBWPARAM
+    
+    select case cbmsg
+      
+      case %WM_CREATE
+ 
+      case %WM_INITDIALOG
+        '---Add controls
+        control add button, cbhndl, %ID_Button_01, "I'm the button 1"    , 100,  50, 100, 35, %BS_NOTIFY | %WS_TABSTOP | %BS_DEFAULT, call cbButton
+        control add button, cbhndl, %ID_Button_02, "I'm the button 2"    , 100, 100, 100, 35, %BS_NOTIFY | %WS_TABSTOP, call cbButton
+ 
+      Case %WM_COMMAND
+ 
+      case %WM_SIZE     '---The WM_SIZE message is sent to a window after its size has changed.
+
+      case %WM_SIZING   '---The WM_SIZING message is sent to a window that the user is resizing.
+
+      Case %WM_MOVING
+
+      case %WM_MOVE
+        
+      case %WM_DESTROY
+        '---Do whatever needed just before dialog is destroyed.
+
+    end select
+
+  END FUNCTION
+
+  '------------------------------------------------------------------------------
+  ' Callback procedure for button control
+  '------------------------------------------------------------------------------
+  callback function cbButton() as long
+
+    If CBMSG = %WM_COMMAND Then
+ 
+      select case CBCTLMSG
+        case %BN_CLICKED
+          select case CBCTL
+            case %ID_Button_01
+              MsgBox CBHNDL, "Button 1 clicked"
+            case %ID_Button_02
+              MsgBox CBHNDL, "Button 2 clicked"
+          end select
+        case %BN_DISABLE
+          select case CBCTL
+            case %ID_Button_01
+'              printl time$, "Button 1 disable"
+            case %ID_Button_02
+'              printl time$, "Button 2 disable"
+          end select
+        case %BN_KILLFOCUS
+          select case CBCTL
+            case %ID_Button_01
+'              printl time$, "Button 1 kill focus"
+            case %ID_Button_02
+'              printl time$, "Button 2 kill focus"
+          end select
+        case %BN_SETFOCUS
+          Select Case CBCTL
+            case %ID_Button_01
+'              printl time$, "Button 1 set focus"
+            case %ID_Button_02
+'              printl time$, "Button 2 set focus"
+          end select
+      end select
+
+      '---If button callback does not return %TRUE, message is passed
+      '---to parent window
+      function = %TRUE
+
+    end if    
+  end function
+  
+        

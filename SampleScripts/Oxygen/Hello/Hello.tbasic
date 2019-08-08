@@ -1,0 +1,5 @@
+' THE HELLO PROGRAM
+
+uses "oxygen"
+o2_basic " print `Hello!` "
+o2_exec

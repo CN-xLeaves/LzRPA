@@ -1,0 +1,59 @@
+
+'-------------------------------------------
+' USING PUSHAD AND POPAD TO USE BASIC INSIDE
+' AN ASM SEQUENCE OF INSTRUCTIONS
+'===========================================
+
+'NB: OXYGEN BASIC REQUIRES THE EBX EBP AND ESI 
+'REGISTERS TO BE LEFT UNALTERED
+
+
+
+uses "oxygen"
+dim src as string
+
+ 
+src = "
+  #basic
+
+  '------------------------------------
+  function fun(byval v as long) as long
+  '====================================
+  
+                  'ASSEMBLY CODE MUST NOT OVERWRITE THE ESI & EBX REGISTERS
+                  'AS THESE ARE NEEDED BY OXYGEN BASIC
+  
+  mov ecx,3       'NUMBER OF LOOPS
+  edx=v           'VALUE TO PROCESS
+  #view           'LIST VIEWING WINDOW 
+                  ;==========
+  (
+    dec ecx       'DOWNCOUNT
+    jl exit       'JUMP OVER NEXT CLOSING BRACKET
+    imul edx,edx  'SQUARE
+    pushad        'SAVE ALL REGISTERS
+    '---------
+    v=edx         'DO SOME BASIC ..
+    print `nextvalue : ` V
+    '---------
+    popad         'RESTORE REGISTERS
+    repeat        'LOOP BACK TO THE PREVIOUS OPENING BRACKET
+  )
+                  ;==========
+  #endv           'END LIST VIEWING WINDOW
+  function=v
+ 
+  end function
+ 
+  
+  fun 2
+  "
+  
+msgbox 0,o2_view src 
+o2_basic src
+if len(o2_error) then
+  msgbox 0, o2_error : stop
+end if
+o2_exec
+ 
+ 

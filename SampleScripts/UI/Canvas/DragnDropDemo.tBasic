@@ -1,0 +1,312 @@
+Uses "UI"
+
+'------------------------------------------------------------
+' A few variations:
+' ----------------
+%GW_Redraw  = 1                             ' 1 => Prepare new Canvas_and REDRAW at end of loop (smoother dragging)
+                                            ' 0 => Draw each time when called
+%hoverAtEnd = 1                             ' 1 => Draw hover color when circle is dropped
+                                            ' 0 => Original circle when dropped
+%showTrace  = 1                             ' 1 => Show the rim only while dragging
+                                            ' 0 => Do not show the trace
+'------------------------------------------------------------
+
+TYPE GWData
+    hWin            AS DWORD
+    hDC             AS DWORD
+    x               AS LONG
+    y               AS LONG
+    w               AS LONG
+    h               AS LONG
+    caption         AS STRING * 16
+    clearColor      AS LONG
+END TYPE
+
+TYPE CircleData
+    x               AS SINGLE
+    y               AS SINGLE
+    deltax          AS SINGLE
+    deltay          AS SINGLE
+    r               AS SINGLE
+    rimColor        AS LONG
+    backColor       AS LONG
+    hoverColor      AS LONG
+END TYPE
+
+GLOBAL GW   AS GWData
+GLOBAL c    AS CircleData
+
+'------------------------------------------------------------
+Function Main () As Long
+'------------------------------------------------------------
+
+    LOCAL grstat            AS LONG
+    Local z                 As String
+    Local b                 As String
+    LOCAL nBtn              AS LONG
+    LOCAL xMouse, oldxM     AS SINGLE           ' When used in a SUB, the old- variables must be STATIC
+    LOCAL yMouse, oldyM     AS SINGLE
+    LOCAL xCircle, yCircle  AS SINGLE
+    LOCAL clicked, pressed  AS LONG
+    LOCAL hover, oldHover   AS LONG
+    LOCAL drag              AS LONG
+
+    ' Preset button
+    b = "  Left  "
+    nBtn = %VK_LBUTTON                                          ' = 1
+
+    ' Initialize Canvas_WINDOW
+    GW.x            = 50
+    GW.y            = 50
+    GW.w            = 800
+    GW.h            = 400
+    GW.caption      = "Drag-n-Drop"
+    GW.clearColor   = %RGB_LIGHTGREEN
+    
+    DrawGW
+
+    ' Initialize the circle data
+    c.x             = 150
+    c.y             = 150
+    c.r             =  50
+    c.rimColor      = %RGB_YELLOW
+    c.backColor     = %RGB_BLUE
+    c.hoverColor    = %RGB_LIGHTGRAY
+    DrawCircle(c.backColor)
+
+    DO
+        GW.hDC = Canvas_GetDC
+        If GW.hDC = 0 Then Exit Do                            ' Leave loop when GW gets closed externally
+
+        ' Check for pressed keys to change mouse button
+        grstat = Canvas_Instat
+        IF ISTRUE grstat THEN
+            z = Canvas_Inkey
+            If z = $ESC Then Exit Do
+
+            Select Case UCase$(z)
+                CASE "L"
+                    b = "  LEFT  "
+                    nBtn = %VK_LBUTTON      ' = 1
+                CASE "M"
+                    b = "MIDDLE"
+                    nBtn = %VK_MBUTTON      ' = 4
+                CASE "R"
+                    b = " RIGHT "
+                    nBtn = %VK_RBUTTON      ' = 2
+            End Select
+        End If
+            Canvas_SetPos (10, 10) : Canvas_Printl "Press L, M, R to select the Left, Middle or Right button.  Press ESC to quit."
+            Canvas_SetPos (10, 30) : Canvas_Printl "Use the " + b + " mouse button for drag-and-drop"
+        'END IF
+
+        ' Check coordinates and status of selected mouse button
+        GWInMouse(GW.hWin, nBtn, clicked, pressed, xMouse, yMouse)
+
+        ' Draw circle with hover color when mouse coordinates are within circle. This is independent of selected mouse button!
+        hover = CheckHover(xMouse, yMouse)
+        IF hover <> oldHover AND drag = 0 THEN                  ' Change hoverstate only before dragging
+            IF hover = 1 AND clicked = 0 THEN                   ' Only draw hover color, when mouse button is up
+                DrawCircle(c.hoverColor)                        ' => for dragging the button has to be pressed while over the circle
+            ELSE
+                DrawCircle(c.backColor)
+                hover = 0                                       ' Reset hover in case the mouse came into the circle while pressed ...
+            END IF
+            oldHover = hover                                    ' Remember the hover state for deciding on a change
+        END IF
+
+        ' Check, if  mouse button is down in circle
+        IF pressed = 1 THEN                                     ' 1 => down
+            ' In circle but not yet dragging
+            IF hover = 1 AND drag = 0 THEN
+                c.deltax = xMouse - c.x                         ' Keep the "button down" position in circle
+                c.deltay = yMouse - c.y
+                drag = 1
+            END IF
+
+            ' Now dragging ...
+            IF drag = 1 THEN
+                ' Only redraw when mouse has been moved
+                IF xMouse <> oldxM OR yMouse <> oldyM THEN
+                    xCircle = xMouse - c.deltax                         ' New circle center
+                    yCircle = yMouse - c.deltay
+                    ' Don't move circle completely out of the GW (arbitrary factor /2 to keep circle also in corners)
+                    IF xCircle <= - c.r/2 OR xCircle >= GW.w + c.r/2 OR _
+                       yCircle <= - c.r/2 Or yCircle >= GW.h + c.r/2 THEN
+                       Iterate Do'Exit If
+                    End If
+                    EraseCircle                                         ' Erase old circle when moved ...
+                    c.x = xCircle                                       ' Now set new coordinates
+                    c.y = yCircle
+                    IF %showTrace = 1 THEN DrawCircle(GW.clearColor)    ' ... and draw only the rim
+                    oldxM = xMouse                                      ' Remember the coordinates
+                    oldyM = yMouse
+                END IF
+            END IF      ' drag = 1
+
+        ELSEIF drag = 1 THEN                                            ' clicked = 0
+            ' Button released: End of dragging. Circle dropped. Decide if you want to see the hovered circle
+            IF %hoverAtEnd = 1 THEN
+                DrawCircle(c.hoverColor)
+                oldHover = 1
+            ELSE
+                DrawCircle(c.backColor)
+            END IF
+            drag = 0
+        END IF      ' clicked = -1
+
+        IF %GW_Redraw = 1 THEN Canvas_REDRAW
+    LOOP
+
+END FUNCTION
+
+'------------------------------------------------------------
+'------------------------------------------------------------
+Sub DrawGW()
+
+    GW.hWin = Canvas_Window Trim$(GW.caption), GW.x, GW.y, GW.w, GW.h
+    IF %GW_Redraw = 1 THEN
+        Canvas_ATTACH GW.hWin, 0, REDRAW
+    ELSE
+        Canvas_ATTACH GW.hWin, 0
+    END IF
+    Canvas_CLEAR GW.clearColor                                 ' GW.clearColor is also needed for erasing the circle ...
+    Canvas_COLOR %RGB_BLACK, GW.clearColor                     ' For text
+    Canvas_WIDTH 3                                             ' Rim is half in and half outside of radius
+
+END SUB ' DrawGW
+
+'------------------------------------------------------------
+' Allow different background colors
+'------------------------------------------------------------
+Function DrawCircle(ByVal backColor As Long) As Long
+
+    Canvas_Ellipse c.x - c.r, c.y - c.r, c.x + c.r, c.y + c.r, c.rimColor, backColor
+
+END FUNCTION
+
+'------------------------------------------------------------
+' Draw all of the circle with the Canvas_CLEAR color
+'------------------------------------------------------------
+Function EraseCircle() As Long
+
+    Canvas_Ellipse c.x - c.r, c.y - c.r, c.x + c.r, c.y + c.r, GW.clearColor, GW.clearColor
+
+END FUNCTION
+
+'------------------------------------------------------------
+' Is mouse cursor inside GW and inside circle?
+'------------------------------------------------------------
+Function CheckHover(ByVal xm As Long, ByVal ym As Long) As Long
+
+    Canvas_SetPos (10, 50) : Canvas_Print "Mouse cursor: "
+    IF xm < 0 OR xm > GW.w OR ym < 0 OR ym > GW.h THEN
+        Canvas_Printl "Outside GW"
+        EXIT FUNCTION
+    ELSE
+        Canvas_Printl xm & " " & ym & " " & $SPC(8)
+    END IF
+
+    IF (xm - c.x)^2 + (ym - c.y)^2 <= c.r^2 THEN FUNCTION = 1
+
+END FUNCTION
+
+'------------------------------------------------------------
+' Detect mouse events of all three mouse buttons: down, clicked once or twice.
+' The mouse coordinates are returned with every call.
+
+' Input:    hGW            =  Handle of GW
+'           nBtn           =  Identify button 1 = %VK_LBUTTON (Left), 4 = %VK_MBUTTON (Middle), 2 = %VK_RBUTTON (Right)
+'
+' Output:   clicked        =  0 => No event detected
+'                             1 => One click
+'                             2 => Double click
+'           btndown        =  0 => Button is up
+'                             1 => Button is held down
+'           xMouse         =  x coordinate of mouse cursor in pixels
+'                          = -1 if outside the selected GW
+'           yMouse         =  y coordinate of mouse cursor in pixels
+'                          = -1 if outside the selected GW
+'------------------------------------------------------------
+Sub GWInMouse  (ByVal hGW As DWord, _
+                ByVal nBtn As Long, _
+                ByRef clicked As Long, _
+                ByRef btnDown As Long, _
+                ByRef xMouse As Single, _
+                ByRef yMouse As Single)
+
+
+    Local hFg           As DWord        ' Handle of foreground window
+    Local lpPoint       As POINTAPI     ' Pointer type defined in Win32Api
+    Local k             As Long         ' Key status
+    Static lastDown     As Long         ' State of mouse button after last call
+    Static nDown        As Long         ' Counter for mouse button down
+    Static startTime    As Double       ' Store GetTickCount value
+
+    ' Which GW has the focus?
+    Do
+        hFg = Win_GetForeground()
+    Loop Until hFg <> 0                                         ' When switching to a PB GW, the handle gets 0 before returning hGW
+
+    ' Check, if in correct GW
+    If hFg <> hGW Then
+        clicked = 0
+        btndown = 0
+        xMouse = -1                                             ' Outside the current GW
+        yMouse = -1
+
+    Else
+        ' Read cursor position in any case
+        Win_GetCursorPos(lpPoint)
+        Win_ScreenToClient(hGW, lpPoint)                            ' Convert to relative cursor coordinates of the selected client GW
+        xMouse = lpPoint.x
+        yMouse = lpPoint.y
+
+        ' Which button is to be checked?
+        Select Case nBtn
+            Case %VK_LBUTTON, %VK_MBUTTON, %VK_RBUTTON          ' Only those 3 are allowed
+
+                ' Check status of selected mouse button
+                k = GetAsyncKeyState(nBtn)
+                btnDown =  Bit(k, 15)
+
+                ' Set clicked depending on last status
+                If lastDown = 1 Then
+                    ' Reset clicked in any case
+                    clicked = 0
+                    If btnDown = 0 Then lastDown = 0
+
+                Else
+                    If btnDown = 1 Then
+                        ' Reset click counter when the DoubleClickTime period is over
+                        If GetTickCount - startTime > WIN_GetDoubleClickTime Then nDown = 0
+
+                        ' Count the new click
+                        Incr nDown
+                        lastDown = 1                            ' Remember button down
+
+                        ' Check number of clicks during DoubleClickTime
+                        Select Case nDown
+                            Case 1
+                                clicked = 1
+                                startTime = GetTickCount        ' Start DoubleClickTime now
+                            Case 2
+                                clicked = 2
+                            Case Else                           ' More than 2 clicks are ignored
+                                clicked = 0
+                        End Select
+
+                    Else
+                        ' No action => no event
+                        clicked = 0
+                        lastDown = 0
+                    End If      ' btnDown
+
+                End If      ' lastDown
+
+        End Select      ' nBtn
+
+    End If      ' hFg <> hGW
+
+End Sub 'GWInMouse
+'------------------------------------------------------------

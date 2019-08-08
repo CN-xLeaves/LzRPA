@@ -1,0 +1,71 @@
+'
+' Test of proportion preservation in case of oddly shaped viewports
+'
+
+Uses "TBGL" 
+
+' -- Create and show window
+Dim hWnd As Dword  = TBGL_CreateWindowEx("Oddly shaped viewports preserving proportions - press ESC to quit", 640, 480, 32, %TBGL_WS_WINDOWED or %TBGL_WS_CLOSEBOX) 
+TBGL_ShowWindow 
+
+TBGL_UseLighting %TRUE
+TBGL_UseLightSource %GL_LIGHT0, %TRUE
+
+tbgl_SetLightParameter %GL_LIGHT0, %TBGL_LIGHT_POSITION, 15, 10, 15, 1
+
+DIM i AS DOUBLE
+DIM FrameRate AS DOUBLE
+
+' -- Resets status of all keys 
+TBGL_ResetKeyState()
+
+' -- Main loop
+While TBGL_IsWindow(hWnd) 
+  FrameRate = TBGL_GetFrameRate
+
+  TBGL_ClearFrame   
+  
+
+  TBGL_Viewport(0, 0, 0.5, 0.5)
+    tbgl_ClearFrame  
+    tbgl_renderMatrix3D(%TBGL_VIEWPORT)
+    
+    TBGL_Camera 15, 15, 15, 0, 0, 0
+    tbgl_color 255, 128, 0
+    TBGL_Sphere 1
+    
+    tbgl_color 255, 0, 0
+    tbgl_box 100, 100, 100
+
+  TBGL_Viewport(0.5, 0, 0.5, 1)
+    tbgl_resetmatrix
+    tbgl_renderMatrix3D(%TBGL_VIEWPORT)
+    
+    TBGL_Camera 15, 15, 15, 0, 0, 0
+    tbgl_color 0, 255, 128
+    TBGL_Sphere 1
+    
+    tbgl_color 0, 255, 0
+    tbgl_box 100, 100, 100    
+
+  TBGL_Viewport(0, 0.6125, 0.5, 0.25)
+    tbgl_resetmatrix
+    tbgl_renderMatrix3D(%TBGL_VIEWPORT)
+    
+    TBGL_Camera 15, 15, 15, 0, 0, 0
+    tbgl_color 128, 0, 255
+    TBGL_Sphere 1
+    
+    tbgl_color 0, 0, 255
+    tbgl_box 100, 100, 100    
+  
+
+  TBGL_DrawFrame 
+
+  ' -- ESCAPE key to exit application
+  If TBGL_GetWindowKeyState(hWnd, %VK_ESCAPE) Then Exit While 
+
+Wend 
+
+TBGL_DestroyWindow
+ 

@@ -1,0 +1,46 @@
+' =========================================================================================
+' Same as EXXML_nextSibling but using the XMLDOMNodeChildNodes_get_item wrapper function.
+' =========================================================================================
+
+uses "Console"
+
+#default declare Checkduplicates    %TRUE
+#default declare CheckMissing       %TRUE
+
+#INCLUDE "%APP_INCLUDEPATH%\TB_XML60.INC"
+
+' ========================================================================================
+' Main
+' ========================================================================================
+FUNCTION MAIN() as long
+
+   Local pXmlDoc    As DWord
+   Local pRootNode  As DWord
+   Local pCurrNode  As DWord
+   Local pNextNode  As DWord
+
+   pXmlDoc = XmlCreateObject($PROGID_Msxml2DOMDocument)
+   IXMLDOMDocument_put_async pXmlDoc, %FALSE
+
+   IXMLDOMDocument_load pXmlDoc, "books.xml"
+   IF XmlParseError_get_errorCode(pXmlDoc) <> 0 THEN
+      console_writeline "You have error " & XmlParseError_get_reason(pXmlDoc)
+   ELSE
+      pRootNode = IXMLDOMDocument_get_documentElement(pXmlDoc)
+      pCurrNode = XMLDOMNodeChildNodes_get_item(pRootNode, 0)
+      pNextNode = IXMLDOMNode_get_nextSibling(pCurrNode)
+      console_writeline IXMLDOMNode_get_xml(pNextNode)
+   END IF
+
+   '---Cleanup
+   XmlRelease pNextNode
+   XmlRelease pCurrNode
+   XmlRelease pRootNode
+   XmlRelease pXmlDoc
+   
+   console_writeline "--- Press any key to finish ---"
+   console_WAITKEY
+
+END FUNCTION
+
+Main

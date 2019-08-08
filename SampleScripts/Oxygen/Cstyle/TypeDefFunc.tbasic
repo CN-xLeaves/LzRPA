@@ -1,0 +1,30 @@
+
+'-----------------------------------------
+'Typedef and function pointers
+'=========================================
+
+ 
+Uses "oxygen"
+Dim src As String
+dim v as long
+src="
+
+basic
+
+
+long f1(long v) {return v+1}
+long f2(long v) {return v+2}
+
+
+typedef long(*ftype) (long v)
+
+ftype f3=&f2#long
+
+print "  "f1(3) "   "  f2(3) "   " f3(3)
+
+"
+
+'MsgBox 0,O2_prep src ': Stop
+O2_ASMO src
+If Len(O2_ERROR) Then MsgBox 0, O2_ERROR
+O2_EXEC

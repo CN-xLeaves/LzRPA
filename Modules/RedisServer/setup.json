@@ -1,0 +1,8 @@
+{
+    "Keyword1": "RedisServer_Run RedisServer_ForceClose RedisServer_IsRun",
+    "Keyword2": null,
+    "Keyword3": null,
+    "RelyFile": ["redis_server.exe", "redis.conf"],
+    "PackFile": null,
+    "RelyCode": "boot.tbs"
+}

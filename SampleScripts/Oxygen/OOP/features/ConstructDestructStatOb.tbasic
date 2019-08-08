@@ -1,0 +1,80 @@
+uses "oxygen"
+dim src as string
+' 
+'
+'--------------------------------------------------
+'CONSTRUCTOR AND DESTRUCTOR FOR NON-DYNAMIC OBJECTS
+'==================================================
+
+'The methods are the same but the create and
+'clear macros are used instead of new and del
+
+src ="
+  #basic
+
+  '------
+  def create
+  '======
+    dim as %1 %2 :  %2.new
+  end def
+
+
+  '--------
+  def clear
+  '========
+    %1.del
+  end def
+
+
+'  '------
+'  def new
+'  '======
+'    dim as %1 byref %2 : &%2 = getmemory sizeof %1 : %2.new
+'  end def
+'
+'  '--------
+'  def del
+'  '========
+'    %1.del : freemeory &%1
+'  end def
+
+
+ 
+  '---------
+  class clss
+  '=========
+    '
+    private va as long
+    '
+    method new()
+      print `new`
+    end method
+    '
+    method del()
+      print `del`
+    end method
+    '
+    method v(byval a as long)
+      va=a
+    end method
+    
+    method v() as long
+      method=va
+    end method
+    
+  end class 'clss
+
+
+  'TEST
+  '
+  create clss obj
+  obj.v=42 : print obj.v
+  clear obj
+  '
+  
+  "
+ 
+'msgbox 0,o2_prep src+$cr+o2_error 
+o2_basic src
+o2_exec
+  

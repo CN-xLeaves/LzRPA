@@ -1,0 +1,59 @@
+Uses "TBASS", "UI", "FILE"
+
+function Main()
+  DIM sFile   AS STRING   '---filename to load
+  DIM sMusic  as STRING   '---Music File storage
+  DIM Channel AS DWORD    '---Audio channel to use
+
+ 
+  ' Setup output for the default device
+  ' n = TBASS_Init (Device, Frequency, Flags, Win, clsID)
+  IF TBASS_Init(-1, 44100, 0, 0, 0) = 0 THEN
+    msgbox 0, "Can't initialize device. Program aborted"
+    stop
+  end if  
+
+  ' Set the volume level
+  TBASS_SetVolume(50)
+
+  ' Now ask which file to load
+  sFile = OpenStreamFile(0)
+
+  ' Check if file exists
+  if file_exists(sFile) = %FALSE then
+    MsgBox 0, "File " & sFile & $CRLF & "does not exist."
+  else
+    ' Load the Sample into memory
+    sMusic = FILE_LOAD(sFile)
+    ' File does exist now load music from memory
+    Channel = TBASS_MUSICLoad(%TBASS_TRUE, sMusic, 0, 0, %TBASS_SAMPLE_LOOP, 0 )
+    IF Channel = 0 THEN
+      ' whatever it is, it isn't playable
+      MSGBOX 0, "Can't play the file " & sFile
+    else
+      ' Valid File now set it to play
+      TBASS_ChannelPlay(Channel, %TBASS_TRUE)
+      MSGBOX 0, "Click me to stop playback"
+      TBASS_MUSICFree(Channel)
+    ENDIF
+  ENDIF
+
+  ' Clearup TBASS
+  TBASS_Free
+    
+end function
+
+'---Open file function used to load music file
+function OpenStreamFile(byval hDlg as long) as string
+LOCAL sFile   as string
+LOCAL sFilter as string
+
+'  sFilter  = "MP3, MP2, MP1, OGG, WAV, AIFF   (audio files) |*.MP3;*.MP2;*.MP1;*.OGG;*.WAV;*.AIFF|"
+  sFilter += "MO3, IT, XM, S3M, MTM, MOD, UMX (music files) |*.MO3;*.IT;*.XM;*.S3M;*.MTM;*.MOD;*.UMX|"
+  sFilter += "All Files (*.*)|*.*"
+  sFile = Dialog_OpenFile(hDlg, "Open a stream audio file", DIR_GetCurrent, sFilter, "MP3", _
+                            %OFN_FILEMUSTEXIST OR %OFN_HIDEREADONLY or %OFN_ENABLESIZING)
+  function = sFile
+end function
+
+

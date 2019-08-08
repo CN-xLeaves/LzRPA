@@ -1,0 +1,8 @@
+uses "COM"
+
+dim hDeskTop as dword
+
+hDeskTop = COM_CreateObject("Shell.Application")
+COM_CallMethod(hDeskTop, "ToggleDesktop", 0, 0, 0)
+
+COM_Release(hDeskTop)

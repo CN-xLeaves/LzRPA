@@ -1,0 +1,33 @@
+
+'------------------------------
+'MID COMMAND - patching strings
+'==============================
+
+
+uses "oxygen"
+dim src as string
+ 
+src ="
+  basic
+  b="-----"
+  mid b,2,"12"
+  mid (b,2+1)="23"
+  print b
+  "
+ 
+
+
+
+ 
+'file_save ( "t.txt", o2_prep src )
+'msgbox 0, o2_prep src
+
+o2_asmo src
+if len(o2_error) then
+  msgbox 0, o2_error : stop
+end if
+
+o2_exec
+
+'msgbox 0,"tb ok"
+ 

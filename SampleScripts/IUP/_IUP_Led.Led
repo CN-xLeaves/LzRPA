@@ -1,0 +1,113 @@
+# ==============================================================================
+#cardfile
+# ==============================================================================
+btn_prior = BUTTON[SIZE = 50x15]("<< Prior",NULL)
+btn_next =  BUTTON[SIZE = 50x15]("Next >>",NULL)
+btn_find =   BUTTON[SIZE = 50x15]("Find",NULL)
+btn_add  =   BUTTON[SIZE = 50x15]("Add",NULL)
+btn_update =  BUTTON[SIZE = 50x15]("Update",NULL)
+btn_delete =  BUTTON[SIZE = 50x15]("Delete",NULL)
+btn_print =  BUTTON[SIZE = 50x15]("Print",NULL)
+btn_cancel = BUTTON[SIZE = 50x15]("Dismiss",NULL)
+# ==============================================================================
+id_index = LABEL[]("0 / 0")
+entry_company = TEXT[EXPAND = HORIZONTAL](NULL)
+entry_last = TEXT[EXPAND = HORIZONTAL](NULL)
+entry_first = TEXT[EXPAND = HORIZONTAL](NULL)
+entry_add1 = TEXT[EXPAND = HORIZONTAL](NULL)
+entry_add2 = TEXT[EXPAND = HORIZONTAL](NULL)
+entry_add3 = TEXT[EXPAND = HORIZONTAL](NULL)
+entry_city = TEXT[EXPAND = HORIZONTAL](NULL)
+entry_state = TEXT[SIZE = 120x](NULL)
+entry_zip = TEXT[SIZE = 80x](NULL)
+cbo_country = LIST[DROPDOWN=YES, SIZE=100x,VALUE=1](NULL)
+entry_phone = TEXT[SIZE=70x](NULL)
+entry_fax = TEXT[SIZE=70x](NULL)
+entry_email = TEXT[EXPAND = HORIZONTAL](NULL)
+entry_www = TEXT[EXPAND = HORIZONTAL](NULL)
+entry_comments = TEXT[MULTILINE=YES, EXPAND=YES](NULL)
+# ==============================================================================
+
+cardfile = DIALOG[ USERSIZE = 750x563, TITLE = "Card File", RASTERSIZE = 750x563]
+(
+    VBOX[MARGIN = 5x5]
+    (
+        HBOX[GAP = 5]
+        (
+            FILL(),
+            LABEL[TITLE = " Record No."](""),id_index
+        ),
+        FRAME[TITLE = Company]
+        (
+             entry_company
+        ),
+        HBOX[GAP = 5]
+        (
+            FRAME[TITLE = "Last Name"]
+            (
+                entry_last
+            ),
+            FRAME[TITLE = "First Name"]
+            (
+                entry_first
+            )
+        ),
+        FRAME[TITLE = "Address"]
+        (
+            VBOX[GAP = 5]
+            (
+                entry_add1,
+                entry_add2,
+                entry_add3
+            )
+        ),
+        HBOX[GAP = 5]
+        (
+            FRAME[TITLE = "City"]
+            (
+                entry_city
+            ),
+            FRAME[ TITLE = "State / Province"]
+            (
+                 entry_state
+            ),
+            FRAME[TITLE = "Zip or Postal Code"]
+            (
+                entry_zip
+            ),
+            FRAME[TITLE = "Country"]
+            (
+                 cbo_country
+            )
+        ),
+        HBOX[GAP = 5]
+        (
+            FRAME[TITLE = "Phone"]
+            (
+                entry_phone
+            ),
+            FRAME[TITLE = "Fax"]
+            (
+                entry_fax
+            ),
+            FRAME[TITLE = "Email"]
+            (
+                entry_email
+            ),
+            FRAME[TITLE = "www"]
+            (
+                entry_www
+            )
+        ),
+        FRAME[TITLE = "Comments"]
+        (
+            TEXT[EXPAND = YES,MULTILINE = YES,NAME = entry_comments](do_nothing)
+        ),
+        HBOX[GAP = 10]
+        (
+            FILL(),
+            btn_prior,btn_next,btn_find,btn_add,btn_update,btn_delete,btn_print,btn_cancel,
+            FILL()
+        )
+    )
+)

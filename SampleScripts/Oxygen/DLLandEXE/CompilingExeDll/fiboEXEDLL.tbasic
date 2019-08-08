@@ -1,0 +1,148 @@
+'----------------
+'DLL WITH CONSOLE
+'----------------
+
+uses "oxygen"
+
+
+dim as string src="
+
+  basic
+
+
+  'ONE OF THESE OR NONE:
+  '---------------------
+  '#define exe
+  #define dll
+
+  #ifdef dll
+    #file "fibo.dll"
+  #endif
+
+  #ifdef exe
+    #file "fibo.exe"
+  #endif
+
+
+  library "KERNEL32.DLL"
+  declare FUNCTION GetCommandLine ALIAS `GetCommandLineA`     () AS DWORD
+  declare FUNCTION AllocConsole ALIAS "AllocConsole"          () AS LONG
+  declare FUNCTION GetStdHandle ALIAS "GetStdHandle"          (BYVAL handle AS DWORD) AS DWORD
+  declare FUNCTION WriteConsole ALIAS "WriteConsoleA"         (BYVAL hConsoleOutput AS DWORD, lpBuffer AS ASCIIZ, BYVAL nNumberOfCharsToWrite AS LONG, lpNumberOfCharsWritten AS LONG, BYVAL lpReserved AS LONG) AS LONG
+  declare FUNCTION ReadConsole ALIAS "ReadConsoleA"           (BYVAL hConsoleInput AS DWORD, BYVAL lpBuffer AS DWORD, BYVAL nNumberOfCharsToRead AS LONG, lpNumberOfCharsRead AS LONG, pInputControl AS ANY) AS LONG
+  declare FUNCTION ReadConsoleInput ALIAS "ReadConsoleInputA" (BYVAL hConsoleInput AS DWORD, BYVAL lpBuffer AS DWORD, BYVAL nNumberOfCharsToRead AS LONG, lpNumberOfCharsRead AS LONG) AS LONG
+  declare FUNCTION SetConsoleTitle  ALIAS "SetConsoleTitleA"  (lpConsoleTitle AS ASCIIZ) AS LONG
+  library ""
+
+  %STD_INPUT_HANDLE  = -10
+  %STD_OUTPUT_HANDLE = -11
+  %STD_ERROR_HANDLE  = -12
+
+
+  AllocConsole()
+
+  dim consIn AS LONG,consOut AS LONG,consErr AS LONG
+
+  ConsIn =GetStdHandle (%STD_INPUT_HANDLE)
+  ConsOut=GetStdHandle (%STD_OUTPUT_HANDLE)
+  ConsErr=GetStdHandle (%STD_ERROR_HANDLE)
+
+  dim as string bufin,bufout,s
+  dim as long buflen,bufrit
+
+  dim as string tab=chr 9
+  dim as string cr =chr(13)+chr(10)
+
+  bufin=nuls 1000
+
+
+' BOOL WINAPI WriteConsole(
+'   __in        HANDLE hConsoleOutput,
+'   __in        const VOID *lpBuffer,
+'   __in        DWORD nNumberOfCharsToWrite,
+'   __out       LPDWORD lpNumberOfCharsWritten,
+'   __reserved  LPVOID lpReserved
+' );
+
+
+' BOOL WINAPI ReadConsole(
+'   __in      HANDLE hConsoleInput,
+'   __out     LPVOID lpBuffer,
+'   __in      DWORD nNumberOfCharsToRead,
+'   __out     LPDWORD lpNumberOfCharsRead,
+'   __in_opt  LPVOID pInputControl
+' );
+
+
+  SetConsoleTitle "Oxygen BASIC"
+
+  '--------------------------
+  function output(s as string)
+  '==========================
+    bufout=s
+    buflen=len(bufout)
+    WriteConsole ConsOut,bufout,buflen,bufrit,0
+  end function
+
+  '-------------------------------------
+  function input (s as string) as string
+  '=====================================
+    if len(s) then output s
+    ReadConsole consin,*bufin,len(bufin),bufrit,0
+    function=left bufin,bufrit
+  end function
+
+
+
+
+
+
+  '---------------------------------------------------
+  FUNCTION fibonacci(byval sequence as Dword) as Dword
+  '===================================================
+    IF sequence < 2 THEN
+      FUNCTION = sequence
+    Else
+      FUNCTION = fibonacci(sequence - 1) + fibonacci(sequence - 2)
+    END IF
+  END FUNCTION
+
+
+
+  '------------------------------------------------------------------------
+  function fibo alias "fibonacci" (byval sequence as Dword) as Dword export
+  '========================================================================
+    output "Calculating fibo..."
+    v=fibonacci(sequence)
+    output cr cr "Fibonacci(" str(sequence) ")=" str(v) cr
+    s=input cr "Press Return key to exit"
+  end function
+
+
+  #ifdef dll
+
+  'WHEN DLL IS UNLOADED:
+
+'  '--------------------
+'  sub finish() external
+'  '====================
+'    terminate
+'  end sub
+
+  #else
+
+  'FOR EXE OR EMBEDDED CODE
+
+  v=val(input "Enter Fibo sequence value 1..40    ")
+  fibo(v)
+
+  #endif
+
+
+"
+
+o2_asmo src
+if len(o2_error) then msgbox 0,o2_error : stop
+o2_exec
+msgbox 0,"ok"
+

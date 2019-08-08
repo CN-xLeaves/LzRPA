@@ -1,0 +1,109 @@
+  '=============================================================================
+  '=                                 Viewports                                 =
+  '=                                                                           =
+  '=                           Petr Schreiber, 2007                            =
+  '=============================================================================
+
+  Uses "TBGL"
+
+  dim hWnd as dword
+
+  Dim Tempo As Single
+  %SCENE = 1
+
+  hWnd = TBGL_CreateWindowex("Viewports demo - press ESC to quit", 640, 480, 32, %TBGL_WS_WINDOWED)    ' Creates OpenGL window
+  TBGL_ShowWindow                     ' Shows the window
+
+  TBGL_UseLightSource %GL_LIGHT0, %TRUE   ' We want use light source %GL_LIGHT0
+  TBGL_UseLighting %TRUE                  ' We want to use lighting generally
+
+    TBGL_NewList %SCENE               ' We will render the scene just once, then wi'll just call list
+
+      TBGL_PushMatrix
+
+      TBGL_Color 0,128,0
+
+      TBGL_BeginPoly %GL_QUADS
+        TBGL_Normal 0,1,0
+        TBGL_Vertex -1,0,-1
+        TBGL_Vertex -1,0, 1
+        TBGL_Vertex  1,0, 1
+        TBGL_Vertex  1,0,-1
+      TBGL_EndPoly
+
+      TBGL_Translate 0,0.5,0
+      TBGL_Color 255,128,0
+      TBGL_Sphere 0.5 
+
+      TBGL_PopMatrix
+
+    TBGL_EndList
+    
+  TBGL_ResetKeyState()        ' Resets key status before keypress checking
+
+  while tbgl_isWindow(hWnd)
+
+    TBGL_ClearFrame                   ' Prepares clear frame
+    TBGL_Viewport 0,0,0.5,0.5
+    TBGL_Camera 0,2,5,0,0,0           ' Setups camera to ~front-view
+
+      TBGL_CallList %SCENE 
+
+    tbgl_ResetMatrix
+    TBGL_Viewport 0.5,0,0.5,0.5
+    TBGL_Camera 5,2,0,0,0,0         ' Setups camera to ~left-view
+
+      TBGL_CallList %SCENE 
+
+    tbgl_ResetMatrix
+    TBGL_Viewport 0,0.5,0.5,0.5
+    TBGL_Camera 2,2,2,0,0,0         ' Setups camera to ~top-view
+
+      TBGL_CallList %SCENE 
+
+    tbgl_ResetMatrix
+    TBGL_Viewport 0.5,0.5,0.5,0.5
+    TBGL_Camera 1,1,1,0,0,0         ' Setups camera to ~top-view
+
+      TBGL_CallList %SCENE 
+
+
+    ' Here we draw viewport edges
+    TBGL_ResetMatrix
+    
+    TBGL_UseLighting %FALSE
+    
+    TBGL_Viewport 0,0,1,1           ' Standard "whole-screen" viewport
+    TBGL_UseDepth %FALSE
+    
+    TBGL_LineWidth 3                ' 3 pixels
+    TBGL_Color 255,255,255          ' White lines
+
+    TBGL_BeginPoly %GL_LINES
+      TBGL_Vertex 0, 1,-1
+      TBGL_Vertex 0,-1,-1
+
+      TBGL_Vertex  1, 0,-1
+      TBGL_Vertex -1, 0,-1
+
+    TBGL_EndPoly
+
+    TBGL_UseDepth %TRUE
+    
+    TBGL_UseLighting %TRUE
+    
+    TBGL_DrawFrame                ' Swaps the buffers - displays rendered image
+    
+    if tbgl_GetWindowKeyState( hwnd, %VK_ESCAPE) then EXIT WHILE
+    
+  wend
+
+  TBGL_DestroyWindow              ' Closes OpenGL window
+
+
+
+
+
+
+
+

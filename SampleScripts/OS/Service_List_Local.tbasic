@@ -1,0 +1,19 @@
+' Service sample
+uses "OS"
+
+' Shows a list of active service
+Display("Active", %SERVICE_ACTIVE)
+
+' Shows a list of inactive service
+Display("Inactive", %SERVICE_INACTIVE)
+
+'------------------------------------------------------------------------------------------------------------
+sub Display(sTxt as string, ServiceStatus as long)
+dim sServiceList as string
+dim sSeparator as string = ";"
+
+    sServiceList = OS_ServiceGetList(sSeparator, %SERVICE_WIN32, ServiceStatus, %SERVICE_INFO_DISPLAY_NAME)
+    sServiceList = replace$(sServiceList, sSeparator, $CRLF)
+    msgbox 0, sServiceList, %MB_OK, sTxt & " Service List"
+
+end sub

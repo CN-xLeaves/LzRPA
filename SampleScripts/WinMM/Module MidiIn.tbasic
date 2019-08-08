@@ -1,0 +1,242 @@
+
+'********************************************************************
+' Midi In Demo
+' Démo de capture des entrées midi. Pour tester ça vous devez avoir
+' Clavier Midi correctement connecté sur le port midi (manette)
+' de votyre carte son.
+' (C)2003 Olivier RISACHER
+' olivier@risacher.com http://www.rature.com
+'--------------------------------------------------------------------
+' Module de tous les outils de gestion du midi IN
+'********************************************************************  
+
+' flags used with waveOutOpen(), waveInOpen(), midiInOpen(), and
+' midiOutOpen() to specify the type of the dwCallback parameter.
+'%CALLBACK_TYPEMASK = &H70000           ' callback type mask
+'%CALLBACK_NULL     = &H0               ' no callback
+'%CALLBACK_WINDOW   = &H10000           ' dwCallback is a DWORD
+'%CALLBACK_TASK     = &H20000           ' dwCallback is a DWORD
+'%CALLBACK_FUNCTION = &H30000           ' dwCallback is a FARPROC
+'%CALLBACK_THREAD   = %CALLBACK_TASK    ' thread ID replaces 16 bit task
+'%CALLBACK_EVENT    = &H50000           ' dwCallback is an EVENT Handle
+'%MIDI_IO_STATUS    = &H20
+
+
+'%MM_MIM_OPEN         = &H3C1           ' MIDI input
+'%MM_MIM_CLOSE        = &H3C2
+'%MM_MIM_DATA         = &H3C3
+'%MM_MIM_LONGDATA     = &H3C4
+'%MM_MIM_ERROR        = &H3C5
+'%MM_MIM_LONGERROR    = &H3C6 
+
+'Type MIDIHDR
+'    lpData          As Asciiz Ptr     ' pointer to locked data block
+'    dwBufferLength  As DWord          ' length of data in data block
+'    dwBytesRecorded As DWord          ' used for input only
+'    dwUser          As DWord          ' for client's use
+'    dwFlags         As DWord          ' assorted flags (see defines)
+'    lpNext          As DWord          ' reserved for driver
+'    reserved        As DWord          ' reserved for driver
+''#IF (%WINVER >= &H0400)
+'    dwOffset        As DWord          ' Callback offset into buffer
+'    dwReserved(7)   As DWord          ' Reserved for MMSYSTEM
+''#EndIf
+'End Type
+
+'-------------------------------------------------------------------------------------------- 
+'Type MIDIINCAPS
+'       wMid As Integer
+'       wPid As Integer
+'       vDriverVersion As Long
+'       szPname As Asciiz * 32   ' Product name in a null-terminated string.
+'       wTechnology As Integer
+'       wVoices As Integer
+'       wNotes As Integer
+'       wChannelMask As Integer
+'       dwSupport As Long
+'End Type 
+
+'Api d'inizializzazione
+'Declare Function midiInGetNumDevs Lib "winmm.dll" Alias "midiInGetNumDevs" () As Byte
+'Declare Function midiInGetDevCaps Lib "winmm.dll" Alias "midiInGetDevCapsA" (ByVal uDeviceID As Long, lpCaps As MIDIINCAPS, ByVal uSize As Long) As Long
+
+'Api d'utilizzo
+'potrebbero tornare tutti long
+'Declare Function midiInOpen             Lib "WINMM.DLL" Alias "midiInOpen" (lphMidiIn As DWord, ByVal uDeviceID As DWord, ByVal dwCallback As DWord, ByVal dwInstance As DWord, ByVal dwFlags As DWord) As DWord
+'Declare Function MidiIn_PrepareHeader    Lib "WINMM.DLL" Alias "midiInPrepareHeader" (ByVal hMidiIn As DWord, lpMidiInHdr As MIDIHDR, ByVal uSize As DWord) As DWord
+'Declare Function MidiIn_UnPrepareHeader  Lib "WINMM.DLL" Alias "midiInUnprepareHeader" (ByVal hMidiIn As DWord, lpMidiInHdr As MIDIHDR, ByVal uSize As DWord) As DWord
+'Declare Function midiInClose            Lib "WINMM.DLL" Alias "midiInClose" (ByVal hMidiIn As DWord) As DWord
+'Declare Function MidiIn_AddBuffer        Lib "WINMM.DLL" Alias "midiInAddBuffer" (ByVal hMidiIn As DWord, lpMidiInHdr As MIDIHDR, ByVal uSize As DWord) As DWord
+'Declare Function MidiIn_Reset            Lib "WINMM.DLL" Alias "midiInReset" (ByVal hMidiIn As DWord) As DWord
+'Declare Function MidiIn_Start            Lib "WINMM.DLL" Alias "midiInStart" (ByVal hMidiIn As DWord) As DWord
+'Declare Function midiIn_Stop             Lib "winmm.dll" Alias "midiInStop" (ByVal hMidiIn As Long) As Long
+'Declare Function midiIn_GetID            Lib "winmm.dll" Alias "midiInGetID" (ByVal hMidiIn As Long, lpuDeviceID As Long) As Long
+Declare Function midiInMessage          Lib "winmm.dll" Alias "midiInMessage" (ByVal hMidiIn As Long, ByVal msg As Long, ByVal dw1 As Long, ByVal dw2 As Long) As Long
+
+
+Dim hMidiIn          As Long          'HMIDIIN
+Dim midiInErr        As Long          'return code
+Dim MidiInConnection As Boolean = FALSE 
+
+Dim  ptMidiInHdr1    As MIDIHDR At 0
+Dim  ptMidiInHdr2    As MIDIHDR At 0
+Dim  ptMidiInHdrRet  As MIDIHDR At 0
+Dim  hdrDummy        As MIDIHDR  
+Dim  lBuffSize       As Long = 384    'dimensione buffer ingresso
+   
+Static lBuffRet      As Long
+Static lInreset      As Long
+Dim    lcount        As Long          'per contare le finestre attive
+ 
+'Dim  sStatus        As String * 2
+'Dim  sNote          As String * 2
+'Dim  sVelo          As String * 2   
+ 
+'Const CALLBACK_FUNCTION = &H30000    'riferimento alla funzione
+'
+'Function MidiIn_Event(ByVal MidiInHandle As Long, ByVal Message As Long, ByVal Instance As Long, ByVal dw1 As Long, ByVal dw2 As Long) As Long
+'    'If dw1 > 255 : Pour ne prendre en compte que les touches appuyées et pas le tempo
+'    If dw1 > 255 Then      'forse togliere
+'      'Form1.TextCallbackIN.Text = dw1  
+'      PrintL "Ricevuto:" & dw1
+'    End If
+'    'Attention n'effectuez aucun traitement ici mais par exemple dans le text1_Change
+'    'comme dans mon exemple. en effet ça risaquerai de se planter non pas lors de
+'    'l'interprétation mais à l'exécution après la compilation (pour une raison inconnue) ;)
+'End Function
+
+
+'********** ROUTINE DI ALTO LIVELLO ************
+
+Function init_MIDI_IN(DeviceIn As Byte) As Long
+   
+   If DeviceIn > MidiIn_GetNumDevs() Then
+       MsgBox NULL,"Indice device MidiIn errato"   
+       Exit Function    
+   End If
+   
+   If MidiInConnection = TRUE Then  
+      MsgBox NULL,"Invocata apertura MidiIn(" & DeviceIn & ") ma il device è già aperto "   
+      midiOutClose hMidiIn 
+      Exit Function
+   End If 
+    
+  'midiInErr = midiInOpen(hMidiIn, DeviceIn, CBHNDL, 0, %CALLBACK_WINDOW Or %MIDI_IO_STATUS) 
+   midiInErr = midiIn_Open(hMidiIn, DeviceIn, hDlg, 0, %CALLBACK_WINDOW Or %MIDI_IO_STATUS)
+   CheckResult(midiInErr,"midiIn_Open") 
+    
+   If midiInErr <> 0 And IsFalse(hMidiIn) Then lBuffRet = 3 : Exit Function                
+   '''MsgBox NULL,"Device MidiIn(" & DeviceIn & ") creato con successo!"  
+  
+   ptMidiInHdr1 = HEAP_Alloc(Len(hdrDummy))
+   ptMidiInHdr2 = HEAP_Alloc(Len(hdrDummy))
+
+   'prepare Midi header1
+   ptMidiInHdr1.lpdata          = HEAP_Alloc(lBuffSize)
+   ptMidiInHdr1.dwbufferlength  = lBuffSize
+   ptMidiInHdr1.dwbytesrecorded = 0
+   ptMidiInHdr1.dwUser          = 1 'indicates buffer number
+   ptMidiInHdr1.dwFlags         = 0
+
+   'prepare Midi header2
+   ptMidiInHdr2.lpdata          = HEAP_Alloc(lBuffSize)
+   ptMidiInHdr2.dwbufferlength  = lBuffSize
+   ptMidiInHdr2.dwbytesrecorded = 0
+   ptMidiInHdr2.dwUser          = 2 'indicates buffer number
+   ptMidiInHdr2.dwFlags         = 0
+   
+   'Prepara Header MidiIn
+   midiInErr = midiInPrepareHeader(hMidiIn,  ptMidiInHdr1, Len(hdrDummy)) 
+   If midiInErr <> 0 Then  midiIn_Close hMidiIn : CheckResult(midiInErr, "midiInPrepareHeader")
+   midiInErr = midiInPrepareHeader(hMidiIn,  ptMidiInHdr2, Len(hdrDummy))
+   If midiInErr <> 0 Then  midiIn_Close hMidiIn : CheckResult(midiInErr, "midiInPrepareHeader2")
+   
+   'Aggiunge buffer MidiIn
+   midiInErr = midiInAddBuffer(hMidiIn, ptMidiInHdr1, Len(hdrDummy))   
+   CheckResult(midiInErr,"midiInAddBuffer")        
+   midiInErr = midiInAddBuffer(hMidiIn, ptMidiInHdr2, Len(hdrDummy))
+   CheckResult(midiInErr,"midiInAddBuffer2")  
+   
+   'Avvio MidiIn
+   midiInErr = midiInStart(hMidiIn) 
+   CheckResult(midiInErr,"midiInStart") 
+     
+   If midiInErr <> 0 Then Exit Function   
+   '''MsgBox NULL,"Device MidiIn(" & DeviceIn & ") aperto con successo!"
+
+   MidiInConnection=TRUE
+   Return midiInErr
+End Function
+
+Function end_MIDI_IN() As Long  
+   
+   If MidiInConnection = FALSE Then  
+      MsgBox NULL,"Invocata chiusura MidiIn ma il device non è aperto "   
+      Exit Function
+   End If 
+   
+   lInReset = %TRUE
+   midiInErr = midiInReset(hMidiIn)    
+   CheckResult(midiInErr,"midiInReset")            
+   midiInErr = midiInStop(hMidiIn)    
+   CheckResult(midiInErr,"midiInStop") 
+      
+   midiInErr = midiInUnprepareHeader(hMidiIn, ptMidiInHdr1, Len(hdrDummy)) 
+   CheckResult(midiInErr,"midiInUnprepareHeader")   
+   midiInErr = midiInUnprepareHeader(hMidiIn, ptMidiInHdr2, Len(hdrDummy))
+   CheckResult(midiInErr,"midiInUnprepareHeader2")  
+   
+   midiInErr = HEAP_Free(ptMidiInHdr1.lpdata)  
+   midiInErr = HEAP_Free(ptMidiInHdr1)  
+   midiInErr = HEAP_Free(ptMidiInHdr2.lpdata) 
+   midiInErr = HEAP_Free(ptMidiInHdr2) 
+     
+'   While lBuffRet <> 3
+'      Dialog DoEvents 1 To lCount
+'   Wend
+ 
+   midiInErr = midiIn_Close(hMidiIn)   
+   CheckResult(midiInErr,"midiIn_Close")
+                   
+   If midiInErr <> 0 Then Exit Function               
+   '''MsgBox NULL,"Device MidiIn chiuso con successo!" 
+
+   MidiInConnection = FALSE
+   Return midiInErr
+End Function
+
+
+Sub CheckResult(midiErr As Byte, FunctionName$ As String)
+   ' check midi functions for errors  
+   Dim Message$ As String
+   Message$ = ""
+   
+   Select Case midiInErr
+      Case 1 : Message$ = "unspecified error"
+      Case 2 : Message$ = "device ID out of range"
+      Case 3 : Message$ = "driver failed enable"
+      Case 4 : Message$ = "device already allocated"
+      Case 5 : Message$ = "device handle is invalid"
+      Case 6 : Message$ = "no device driver present"
+      Case 7 : Message$ = "memory allocation error"
+      Case 8 : Message$ = "function isn't supported"
+      Case 9 : Message$ = "error value out of range"
+      Case 10 : Message$ = "invalid flag passed"
+      Case 11 : Message$ = "invalid parameter passed"
+      Case 12 : Message$ = "handle being used simultaneously on another thread (eg callback)"
+      Case 13 : Message$ = "specified alias not found"
+      Case 14 : Message$ = "bad registry database"
+      Case 15 : Message$ = "registry key not found"
+      Case 16 : Message$ = "registry read error"
+      Case 17 : Message$ = "registry write error"
+      Case 18 : Message$ = "registry delete error"
+      Case 19 : Message$ = "registry value not found"
+      Case 20 : Message$ = "driver does not call DriverCallback"
+      Case 21 : Message$ = "more data to be returned"
+   End Select
+   
+   If Message$ <> "" Then
+      MsgBox NULL, "Errore (" & midiInErr & ") in " & FunctionName$ & CRLF & Message$, %MB_ICONERROR, "Error"
+   End If
+End Sub
+

@@ -1,0 +1,407 @@
+uses "oxygen"
+
+'---------------------------
+'thinBasic Modules in Oxygen
+'===========================
+
+dim src as string
+
+
+src = "
+
+  #file "thinBasic_z.dll"
+
+  'Uncomment for built-in runtime libray
+  '$ dll
+  '$ filename "thinBasic_O2Test.dll"
+  '#include "..\..\inc\RTL32.inc"
+
+  extern lib "thinBasic_oxygen.dll"
+
+  declare o2_asmo  (byval s as string)
+  declare o2_basic (byval s as string)
+  declare o2_buf   (byval n as long) as long
+  declare o2_errno () as long
+  declare o2_error () as string
+  declare o2_exec  (optional byval p as long) as long
+  declare o2_get   () as string
+  declare o2_len   () as long
+  declare o2_prep  (byval srcBSTR as string) as string
+  declare o2_put   (byval c as string)
+  declare o2_view  (byval srcBSTR as string) as string
+
+  end extern
+
+
+  include "MinThinCore.inc"
+
+
+  '
+  def AddMoreConstructs
+  '======================
+  static string d,d2
+  sys p
+  '
+  'd="xyzclass"
+  'sys p=thinbasic_class_add(d,0)
+  'string Classs="z_class", Creates="_create",Destroys="_Destroy"
+  'if p then
+  '  thinBasic_Class_AddMethod p, Creates,   thinBasic_ReturnNumber,   @z_ObjectCreate
+  '  thinBasic_Class_AddMethod p, Destroys,  thinBasic_ReturnNumber,   @z_ObjectDestroy
+  'end if
+  'print "xyzClass Add? "
+  '
+  'd="z_test"
+  'thinBasic_LoadSymbol d,   thinBasic_ReturnCodeLong,   @z_test,  1
+  '
+  '
+  'd="declare sub z_test()"
+  'p=thinBasic_DeclareFunction d,@z_test
+  'print d
+  '
+  'd="declare sub z_test2()"
+  'p=thinBasic_DeclareFunction d,@z_test
+  'print d
+  '
+  d2= ucase "type vector"+cr+"x as single"+cr+"y as single"+cr+"end type"
+  print d2
+  p=thinBasic_AddUDT d2
+  d2= ucase "type vector2"+cr+"x as single"+cr+"y as single"+cr+"end type"
+  print d2
+  p=thinBasic_AddUDT d2
+  '
+  end def
+
+
+  string s=error
+  if s then print s
+
+  end extern
+  
+
+
+  'GLOBALS
+  '=======
+
+  string cr=chr(13)+chr(10)
+  string tab=chr(9)
+  string quo=chr(34)
+
+
+
+  function GetWord (string s, sys*i) as string
+  '===========================================
+  sys a,b,c
+  do
+    a=asc s,i
+    if a=39 'skip comments
+      i=instr i,s,chr(13)
+      if i=0 then i=1+len s
+      continue do
+    end if
+    if (a=0)or(a>32) then exit do
+    i++
+  end do
+  b=i
+  do
+    a=asc s,i
+    if a=34
+      do
+        i++
+        c=asc(s,i)
+        if c=a then i++ : exit do
+        if c=0 then exit do 
+      end do
+    elseif a<48 
+      exit do
+    end if
+    i++
+  end do
+  return lcase mid s,b,i-b
+  end function
+
+
+  Sub Append(string *s,w,sys *i)
+  '==============================
+  sys lw=len w
+  sys ls=len s
+  if i+lw>ls then s+=space 4000
+  mid s,i+1,w
+  i+=lw
+  end sub
+
+
+  Sub PreCompile (string *s, *zlist)
+  '=================================
+  sys a,b,c,d,e,i,j,k,m,n,cp,cn,cmf,dcl
+  string list,clist,flist,wc,wk,wt,wn,rt,chd
+  indexbase 1
+  b=1
+  '
+  'itr all host methods together defined before other methods
+  '
+  do
+    a=instr(b,s,"#host")
+    if a=0 then exit do
+    d=a
+    b=a+5
+    c=a+5
+    e=instr(b,s,cr) '#host line
+    if e=0 then e=len(s)+1
+    b=e+2 'start of prototype
+    wt=getword(s,c)
+    '
+    if wt="declare" then
+      dcl=1 : m=1
+    elseif left(wt,16)="thinbasic_return" then
+      rt=wt : m=1 'the return type used by methods
+    end if
+    '
+    if m then
+      wt=getword(s,c) : m=0
+    end if
+    '
+    wn=getword(s,c)
+    mid s,d,space e-d 'blank #host line
+    a=2+instr(c,s,cr) 'end of prototype line
+    '
+    if wt="class" then
+      '
+      if chd then
+        'append prior class
+        append clist,chd+left(list,i), j
+        i=0 'new list
+      end if 
+      wc=wn : cn=0 : cmf=1
+      chd="wn="+quo+wn+quo+cr+
+      "cp=thinBasic_Class_Add wn,0"+cr
+      '
+    elseif wt="method" then
+      '
+      d=b-8
+      mid s,d,cr+mid s,b,a-b 'shunt line back
+      a-=8
+      if wn="_create" then
+        wk="_gm_"
+      else
+        wk="_dr_"
+      end if
+      mid s,a+2,wk+cr 'insert dereferencing macro
+      cn++
+      '
+      if wn="_class" then
+        chd="wn="+quo+wc+quo+cr+
+        "cp=thinBasic_Class_Add wn,"+wc+"_table["+str(cn)+"]"+cr
+        cmf=2
+      else
+        if rt="" then rt="0"
+        append list, "wn="+quo+wn+quo+cr+
+        "thinBasic_Class_AddMethod cp,wn,"+
+        rt+","+wc+"_table["+str(cn)+"]"+cr, i
+      end if
+      '
+    elseif wt="sub" or wt="function" then
+      '
+      if dcl then
+        append flist, "wn="+quo+"declare "+mid(s,b,a-b-2)+quo+cr+
+        "thinBasic_DeclareFunction wn,@"+wn+cr, k
+      else
+        if rt="" then rt="0"
+        append flist, "wn="+quo+wn+quo+cr+
+        "thinBasic_LoadSymbol wn,"+rt+",@"+wn+",1"+cr, k
+      end if
+      '
+    end if
+    rt="" 'clear return type
+    dcl=0 'clear declare flag
+    n++   'tally for stats
+    b=a   'continue from next line
+  end do
+  append clist,chd+left(list,i), j
+  zlist="sys fp,cp"+cr+"string wc,wn"+cr+cr+
+  left(clist,j)+cr+left(flist,k)+"fp=@finish"+cr
+  end sub
+
+  extern
+
+  sys ReleaseProg
+    
+
+  '-----------------------
+  function z_run () as sys
+  '=======================
+    sys a
+    sys pp = thinBasic_CheckOpenParens_Optional
+    string src="",links=""
+    double d
+    '
+    d=thinBasic_parseString(src)
+    if pp Then thinBasic_CheckCloseParens_Mandatory
+    '
+    precompile src,links
+    '
+    'head and tail script
+    '
+    src=
+    "include MinThinCore.inc"+cr+
+    "def _dr_ @this=?this"+cr+
+    "def _gm_ ?this=getmemory sizeof this : @this=?this"+cr+
+    "extern"+cr+
+    "sub finish()"+cr+"  terminate"+cr+"end sub"+cr+
+    src+cr+"end extern"+cr+links+cr
+    '
+    'compile and execute (to set up links)
+    '
+    o2_asmo(src)
+    if o2_errno then
+      print o2_error
+      'invoke TB run time errors
+    else
+      a=o2_exec 0
+      ReleaseProg=a 'first procedure 'finish()'
+    end if
+    return a   
+  end function
+
+/*
+  
+  '----------------------------
+  function z_greet () as string
+  '============================
+    sys pp = thinBasic_CheckOpenParens_Optional
+    string s=""
+    double d
+    d=thinBasic_parseString(s)
+    if pp Then thinBasic_CheckCloseParens_Mandatory
+
+    function=`Hello ` s
+    
+  end function  
+
+
+  '-------------------------
+  function z_cubed () as ext
+  '=========================
+    sys pp = thinBasic_CheckOpenParens_Optional
+    ext e
+    thinBasic_parseNumber(e)
+    if pp Then thinBasic_CheckCloseParens_Mandatory
+    function=e^3
+  end function  
+
+
+  function z_ObjectCall(sys *pObject,lAction,optional Ext*RetValNum, String*RetValString,sys recurse) as sys
+  '=========================================================================================================
+  string mth
+  sys dot
+  do
+    mth=thinbasic_GetUnknownToken 0
+    print mth
+    dot=thinbasic_CheckPoint_Optional
+    if dot=0 then exit do   
+  end do
+  print "Action" tab lAction
+  '
+  select lAction
+  '-------------
+  case Class_Action_None
+  case Class_Action_Get
+  case Class_Action_Set
+  case Class_Action_Constructor
+  case Class_Action_Destructor
+  '
+  end select
+  
+  end function
+
+  function z_ObjectCreate(sys *pObject) as ext
+  '===========================================
+  print "create"
+  pObject=getmemory 64
+  end function
+
+  function z_ObjectDestroy(sys *pObject) as ext
+  '============================================
+  print "destroy"
+  freememory pObject
+  pObject=0
+  end function
+
+  '------------------------
+  function z_test () as sys
+  '========================
+  print "z_test okay"
+  end function
+
+*/
+
+  '----------------------------------------------------------------------------------------------  
+  function LoadLocalSymbols Cdecl alias `LoadLocalSymbols` (BYVAL sPath AS STRING) AS Long export
+  '==============================================================================================
+
+    string Runs="z_run" ', Greets="z_greet", Cubeds="z_cubed", evalus="z_evalue"
+    'string Classs="z_class", Creates="_create",Destroys="_Destroy"
+    '
+    thinBasic_LoadSymbol Runs,     thinBasic_ReturnCodeLong, @z_run,    1 '1= force overwrite
+    'thinBasic_LoadSymbol Greets,   thinBasic_ReturnString,   @z_greet,  1
+    'thinBasic_LoadSymbol Cubeds,   thinBasic_ReturnNumber,   @z_cubed,  1
+    '
+    'sys p
+    'p=thinBasic_Class_Add  Classs, @z_ObjectCall
+    'if p then
+    '  thinBasic_Class_AddMethod p, Creates,   thinBasic_ReturnNumber,   @z_ObjectCreate
+    '  thinBasic_Class_AddMethod p, Destroys,  thinBasic_ReturnNumber,   @z_ObjectDestroy
+    'end if
+    '
+    'AddMoreConstructs
+    '
+  end function
+
+  '--------------------------------------------------------------------------------------------------
+  function UnLoadLocalSymbols Cdecl ALIAS `UnLoadLocalSymbols` (BYVAL sPath AS STRING) AS Long export
+  '==================================================================================================
+  if ReleaseProg then call ReleaseProg
+  end function
+
+'  
+'not necessary except when you need to free additional
+' resources just before the DLL is unloaded.
+'
+'  '--------------------
+'  sub finish() external
+'  '====================
+'
+'    terminate
+'    'freelibs
+'    'freestrings
+'    'freestatics
+'
+'  end sub
+
+   end extern
+  
+  "
+
+'     #####          ######          ######          ######          ###        
+'    ########       #########       #########       #########       #####      
+'   ##      ##      ##      ##      ##      ##      ##      ##      ##        
+'   ##      ##      ##      ##      ##      ##      ##      ##      ##        
+'  ##      ##      ##      ##      ##      ##      ##      ##      ##         
+'   ##      ##      ##      ##      ##      ##      ##      ##      ##        
+'   ##      ##      ##      ##      ##      ##      ##      ##      ##        
+'   ##      ##########      ##########      ##########      ##########
+'   #         ######          ######          ######          ###### 
+'
+'
+
+  'msgbox 0,o2_prep src
+  o2_asmo src
+  
+
+  if len(o2_error) then
+    msgbox 0, o2_error()
+  else
+    'msgbox 0,"COMPILED OK"
+  end if
+
+

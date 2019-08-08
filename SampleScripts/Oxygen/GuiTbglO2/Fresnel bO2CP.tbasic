@@ -1,0 +1,320 @@
+   
+  Uses "math" , "UI" ,  "Oxygen"  , "eval" , "TBGL"
+ 
+ 
+  
+Type Vector3
+  x As Single
+  y As Single
+  z As Single
+End Type 
+      
+      
+Dim As Long    i , j , it  , nr_coor    
+Dim As Vector3 cov(500000) 
+Dim As Double  vala , valb
+Dim As String  s , fora ,forb , src
+Dim as long    pCompute, pFinish
+
+Const e As Double Value Exp(1)
+Const fi As Double Value (1 + Sqr(5))/2
+Const pi2 As Double Value Pi+Pi
+ 
+Eval_SetNumber ("e",e)
+Eval_SetNumber ("fi",fi)    
+
+src=" 
+
+  def included include `%%APP_IncludePath%%\thinbasic_%1.inc`
+  included gl
+  'included glu
+  'included wgl
+  'included glext
+
+  'includepath `gl`  
+  'include once `thinbasic_wgl.inc`
+  'include `opengl32.inc`
+
+
+
+Type Vector3 single x,y,z
+
+Dim as Vector3 *cov
+Dim as long   nr_coor
+Dim as long   i
+dim as double vala 
+dim as double valb 
+dim as double pi2 = pi+pi
+dim as double x , y , z , nz , n , m , mz
+    
+
+ 
+
+macro theta()
+  n=mod(n+pi2*vala,pi2)
+end macro
+
+macro thetaz()
+  nz=mod(nz+pi2*valb,pi2)
+end macro
+  
+macro phi ()
+   m = Mod(n+m,pi2)
+   mz= Mod(nz+mz,pi2) 
+   x=x+Cos(m)
+   y=y+Sin(m)
+   z=z+(Sin(mz)/4)
+End macro 
+
+sub comp() 
+x=0 : y=0 : z=0 : n=0 
+m=0 : nz = 0 : mz=0
+Vector3 c at @cov
+For i=1 To nr_coor
+     theta()
+     thetaz()
+     phi()
+     c = {x,y,z}
+     @c+=sizeof cov
+Next 
+end sub
+ 
+      
+Sub center(member) 'x:0   y:1  z:2
+ Dim As Double mini , maxi , center
+ mini=100000
+ maxi=-100000
+ float c at @cov+member*4
+ For i=1 To nr_coor
+  If c > maxi Then maxi = c
+  If c < mini Then mini = c
+  @c+=sizeof cov
+ Next
+ @c=@cov+member*4   
+ center= (maxi+mini)/2
+ For i=1 To nr_coor
+   c=c-center
+   @c+=sizeof cov
+ Next
+ End Sub 
+ 
+ sub compute(Vector3*c,long *n,double *va,*vb) link #pCompute
+    @cov=@c
+    Nr_Coor=n
+    ValA=va
+    ValB=vb
+    comp()
+    center 0 'x
+    center 1 'y
+    center 2 'z
+    Vector3 c at @cov
+    for i=1 to Nr_Coor
+    glVertex3fv cast(float) c 'pass whole vector byref
+    @c+=sizeof c
+    next
+ end sub
+
+ sub finish() link #pFinish
+    terminate
+ end sub  
+    
+"  
+
+ 
+ 
+
+O2_Basic src
+If O2_Errno Then
+  MsgBox 0,O2_Error
+  Stop
+Else
+  O2_Exec
+End If
+
+declare sub O2Compute(cov as Vector3,nr_coor as long,valA as double,valB as Double) at pCompute
+declare sub O2Finish() at  pFinish
+
+
+ 
+ 
+   
+   
+  
+
+ 
+
+' -- ID numbers of controls
+Begin ControlID
+  %lCanvas 
+  %bstart 
+  %t1
+  %t2
+  %t3 
+  %itt
+  %lb1
+  %lb2
+  %lb3
+  %lb4
+  
+  %myTimer 
+End ControlID
+
+Begin Const
+  %MAIN_WIDTH   = 900
+  %MAIN_HEIGHT  = 900
+
+  %timeOut      = 20   ' -- Determines graphics refresh rate in milliseconds
+End Const
+
+Function Main()
+
+  Global hDlg As DWord
+
+  Dialog New Pixels, 0, "FRESNEL FRACTALS 3D",-1,-1, %MAIN_WIDTH, %MAIN_HEIGHT, _
+                                     %WS_POPUP Or %WS_VISIBLE Or _
+                                     %WS_CLIPCHILDREN Or %WS_CAPTION Or _
+                                     %WS_SYSMENU Or %WS_MINIMIZEBOX Or %WS_MAXIMIZEBOX Or %WS_THICKFRAME, 0 To hDlg
+    
+    ' -- Place controls here
+    Control Add Label, hDlg, %lCanvas, "", 5, 5, %MAIN_WIDTH-10, %MAIN_HEIGHT-80
+      Control Set Color hDlg, %lCanvas, %BLACK, %BLACK
+      Control Set Resize hDlg, %lCanvas, 1, 1, 1, 1    
+
+     
+    Control Add Button, hDlg, %bstart, "StarT", %MAIN_WIDTH-105, %MAIN_HEIGHT-30, 100, 25 
+ 
+    Control Add Label,hDlg,%lb1,"For I",5,%main_height-66,40,25
+    Control Add Textbox, hDlg,%t1,"sqr(333)",35,%main_height-70,80,25
+    Control Add Label,hDlg,%lb2,"For II",225,%main_height-66,40,25  
+    Control Add Textbox, hDlg,%t2,"e",265,%main_height-70,80,25   
+ 
+    Control Add Label,hDlg,%lb4,"#it",225,%main_height-26,16,25  
+    Control Add Textbox, hDlg,%itt,"160000",265,%main_height-30,126,25 
+    
+    For i=%t1 To %itt
+     Control Set Color hDlg,i,%RGB_BLUE,%RGB_LIGHTCYAN
+    Next 
+     
+    Control Set Resize hDlg, %bstart, 0, 1, 0, 1 
+   
+    
+    For i=%t1 To %lb4
+     Control Set Resize hDlg, i , 1 , 0 , 0 , 1
+    Next 
+     
+ 
+   
+    Dialog Set Minsize hDlg, 320, 230
+    Dialog Show Modal hDlg, Call dlgCallback
+    O2Finish()
+    
+End Function   
+ 
+CallBack Function dlgCallback()
+  Static hCtrl As DWord
+  
+  Select Case CBMSG
+    
+    Case %WM_INITDIALOG
+      Dialog Set Timer CBHNDL, %myTimer, %timeOut, %NULL
+      Control Handle CBHNDL, %lCanvas To hCtrl
+      
+      ' -- Init OpenGL
+      TBGL_BindCanvas(hCtrl)     
+      
+     
+
+    Case %WM_SIZE, %WM_SIZING
+      TBGL_UpdateCanvasProportions(hCtrl)
+      RenderMyImage(hCtrl)
+
+    Case %WM_TIMER
+      RenderMyImage(hCtrl)
+
+    Case %WM_CLOSE 
+      TBGL_ReleaseCanvas(hCtrl)      
+      Dialog Kill Timer CBHNDL, %myTimer  
+ 
+      
+    Case %WM_COMMAND
+      Select Case CBCTL
+        
+        Case %bstart
+          If CBCTLMSG = %BN_CLICKED Then    
+             Control Get Text  hDlg,%itt To s
+             nr_coor=Val(s)
+           
+             Control Get Text hDlg,%t1 To fora
+             Control Get Text hDlg,%t2 To forb  
+             
+             vala=Eval_Math(fora)
+             valb=Eval_Math(forb)
+                
+        
+             TBGL_NewList 1
+             TBGL_BeginPoly %GL_POINTS
+             '
+             'will compute then pass the vertexes to Opengl
+             '
+             O2Compute cov(1),Nr_Coor,ValA,ValB
+             '
+             TBGL_EndPoly   
+             TBGL_EndList  
+               
+           
+          EndIf 
+          
+        
+          
+      End Select
+      
+  End Select
+End Function
+
+Function RenderMyImage( hCtrl As DWord )
+  Static As Double   Framerate , p , q  , vp  
+
+  If TBGL_CanvasBound(hCtrl) Then
+
+    FrameRate = TBGL_GetFrameRate
+
+     TBGL_ClearFrame
+     
+      TBGL_RenderMatrix3D  
+      TBGL_Camera(0, 400+vp, 260, 0 , 0 , 0)   
+      TBGL_SetDrawDistance 3200
+      TBGL_Rotate p,0,1,0  
+      TBGL_Rotate q,1,0,0 
+      TBGL_Translate 0,0,0
+     
+      TBGL_Color(60,190,40) 
+      TBGL_CallList 1
+    
+      TBGL_DrawFrame 
+  
+          
+    If TBGL_GetWindowKeyState(hDlg, %VK_UP) Then q += 0.6   
+    If TBGL_GetWindowKeyState(hDlg, %VK_DOWN) Then q -= 0.6           
+    If TBGL_GetWindowKeyState(hDlg, %VK_LEFT) Then p += 0.6   
+    If TBGL_GetWindowKeyState(hDlg, %VK_RIGHT) Then p -= 0.6   
+    
+    If TBGL_GetWindowKeyState(hDlg, %VK_PGUP) Then vp += 3
+    If TBGL_GetWindowKeyState(hDlg, %VK_PGDN) Then vp -= 3
+     
+ 
+ 
+            
+   
+    
+  End If  
+End Function
+
+
+ 
+ 
+ 
+ 
+ 
+   
+   
+ 

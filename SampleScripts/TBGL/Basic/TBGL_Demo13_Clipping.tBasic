@@ -1,0 +1,121 @@
+  '=============================================================================
+  '=                                 Clipping                                  =
+  '=                                                                           =
+  '=                           Petr Schreiber, 2007                            =
+  '=============================================================================
+
+  Uses "TBGL"
+
+  dim hWnd as dword
+  %SCENE = 1
+
+  hWnd = TBGL_CreateWindowex("Clipping planes - press ESC to quit", 640, 480, 32, %TBGL_WS_WINDOWED)  ' Creates OpenGL window
+  TBGL_ShowWindow                   ' Shows the window
+
+  TBGL_LoadBMPFont App_SourcePath+"Textures\tbgl_font.bmp"
+
+  tbgl_UseLightSource %GL_LIGHT0, %TRUE  ' We want use light source %GL_LIGHT0
+  tbgl_UseLighting %TRUE                 ' We want to use lighting generally
+
+  TBGL_ResetKeyState()      ' Resets key status before keypress checking
+
+  while tbgl_iswindow(hWnd)
+
+    TBGL_ClearFrame                 ' Prepares clear frame
+
+    TBGL_Camera 1.5,2,4,1.5,0,0     ' Setups camera
+
+
+    ' First we will draw unclipped object
+    TBGL_Color 255,0,128      
+
+    TBGL_PushMatrix      
+    TBGL_Translate 1.5, 1, 0
+    TBGL_Rotate GetTickCount/10,1,1,1
+    TBGL_Sphere 0.25
+    TBGL_Torus 0.02, 0.375
+    TBGL_PopMatrix 
+
+    ' Here are the clipped objects
+    TBGL_Color 255,128,0
+
+    TBGL_PushMatrix
+    TBGL_Rotate GetTickCount/10,0,1,0
+    TBGL_SetupClipPlane %GL_CLIP_PLANE0, -1, 0, 0, 0  ' This will setup clipping plane equation
+    TBGL_UseClipPlane %GL_CLIP_PLANE0, %TRUE          ' This will enable plane 0 to work
+
+    TBGL_Sphere 0.25
+    TBGL_Torus 0.02, 0.375
+    TBGL_PopMatrix 
+   
+
+    TBGL_Color 128,255,0
+
+    TBGL_Translate 1, 0, 0
+    TBGL_PushMatrix
+    TBGL_Rotate GetTickCount/10,1,0,0
+    TBGL_SetupClipPlane %GL_CLIP_PLANE0, 0, -1, 0, 0  ' We will "recycle" the plane again ...
+
+    TBGL_Sphere 0.25
+    TBGL_Torus 0.02, 0.375
+    TBGL_PopMatrix 
+
+
+    TBGL_Color 0, 255,128
+   
+    TBGL_Translate 1, 0, 0
+    TBGL_PushMatrix
+    TBGL_Rotate GetTickCount/10,0,1,0
+    TBGL_SetupClipPlane %GL_CLIP_PLANE0, 0, 0, -1, 0
+
+    TBGL_Sphere 0.25
+    TBGL_Torus 0.02, 0.375
+    TBGL_PopMatrix
+
+
+    TBGL_Color 0,128,255
+
+    TBGL_Translate 1, 0, 0
+    TBGL_PushMatrix
+    TBGL_Rotate GetTickCount/10,0,1,0
+    TBGL_SetupClipPlane %GL_CLIP_PLANE0, -1, -1, -1, 0
+
+    TBGL_Sphere 0.25
+    TBGL_Torus 0.02, 0.375
+    TBGL_PopMatrix
+
+    TBGL_UseClipPlane %GL_CLIP_PLANE0, %FALSE  ' We don't want to use plane anymore
+
+    TBGL_ResetMatrix
+    tbgl_UseLighting %FALSE
+
+    TBGL_Color 255,0,128 
+    TBGL_PrintBMP "Unclipped model", 0, 10, %TBGL_ALIGN_CENTER
+
+    TBGL_Color 255,128,0 
+    TBGL_PrintBMP "-1,0,0,0", 0, 18, %TBGL_ALIGN_LEFT
+
+    TBGL_Color 128,255,0 
+    TBGL_PrintBMP "0,-1,0,0", -4, 19, %TBGL_ALIGN_CENTER
+
+    TBGL_Color 0,255,128 
+    TBGL_PrintBMP "0,0,-1,0", 18, 20
+
+    TBGL_Color 0,128,255 
+    TBGL_PrintBMP "-1,-1,-1,0", 0, 21, %TBGL_ALIGN_RIGHT
+    tbgl_UseLighting %TRUE
+    TBGL_DrawFrame                  ' Swaps the buffers - displays rendered image
+    
+    if tbgl_GetWindowKeyState( hWnd, %VK_ESCAPE) then exit while
+    
+
+  wend
+
+  TBGL_DestroyWindow                ' Closes OpenGL window
+
+
+
+
+
+
+

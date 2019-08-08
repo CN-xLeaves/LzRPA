@@ -1,0 +1,16 @@
+uses "Console"
+
+dim CZ AS double
+CZ = 0.6
+CZ = CZ - 0.6
+
+PRINTL str$(CZ)+" ( should be 0, is not )", str$(cz - 0.6)
+
+dim CZ2 AS EXT
+CZ2 = 0.6
+CZ2 = CZ2 - 0.6
+
+PRINTL STR$(CZ2)+" ( should be 0, yes it is :) )"
+
+WaitKey
+ 

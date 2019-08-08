@@ -1,0 +1,61 @@
+
+'------------------------
+'MEASURING EXECUTION TIME
+'========================
+ 
+ 
+uses "oxygen"
+ 
+dim src as string  
+ 
+src = "
+  
+  DECLARE FUNCTION QueryPerformanceCounter LIB `KERNEL32.DLL` ALIAS `QueryPerformanceCounter` (lpPerformanceCount AS QUAD) AS LONG
+  DECLARE FUNCTION QueryPerformanceFrequency LIB `KERNEL32.DLL` ALIAS `QueryPerformanceFrequency` (lpFrequency AS QUAD) AS LONG
+
+  dim as quad t1,t2,fr
+
+  QueryPerformanceCounter t1
+  
+  dim i,e
+  
+  e=1E8 'NUMBER OF LOOPS
+  
+  '-------------------
+  'CODE BEING MEASURED
+  '===================
+  '
+  for i=1 to e
+  next
+
+/*
+  mov ecx,e
+  mov eax,1
+  (
+  cmp eax,ecx
+  jg exit
+  inc eax
+  repeat
+  )
+  mov i,eax
+*/
+  
+ '===================
+  
+  
+  QueryPerformanceCounter t2
+  QueryPerformanceFrequency fr
+  
+  print `Loops: ` e ` Exec time: ` str((t2-t1)/fr)
+  
+  
+" 
+'msgbox 0,o2_view src 
+o2_basic src
+if len(o2_error) then
+  msgbox 0, o2_error : stop
+end if
+o2_exec
+ 
+ 
+ 

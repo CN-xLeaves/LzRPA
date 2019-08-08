@@ -1,0 +1,51 @@
+  USES "UI"
+  USES "FILE"
+
+  Begin ControlID
+    %ID_TextBox1 
+    %ID_TextBox2
+    %ID_TextBox3
+    %ID_TextBox4
+    %ID_TextBox5
+    %ID_Url
+  End ControlID
+    
+  function Main()  
+    DIM hDlg    AS LONG
+    
+    DIALOG NEW 0, "TextBox example", -1, -1, 195, 250, _
+                                                  %WS_DLGFRAME OR %DS_CENTER OR %WS_CAPTION OR %WS_SYSMENU, _
+                                                  0 TO hDlg
+
+    CONTROL ADD TEXTBOX , hDlg, %ID_TextBox1, "Text box: left allign"  , 5,  15, 185, 15, %WS_BORDER OR %WS_TABSTOP                  , %WS_EX_CLIENTEDGE
+    CONTROL ADD TEXTBOX , hDlg, %ID_TextBox2, "Text box: center allign", 5,  30, 185, 15, %WS_BORDER OR %WS_TABSTOP OR %ES_CENTER    , %WS_EX_CLIENTEDGE
+    CONTROL ADD TEXTBOX , hDlg, %ID_TextBox3, "Text box: right allign" , 5,  45, 185, 15, %WS_BORDER OR %WS_TABSTOP OR %ES_RIGHT     , %WS_EX_CLIENTEDGE
+    CONTROL ADD TEXTBOX , hDlg, %ID_TextBox4, "Text box: read only"    , 5,  60, 185, 15, %WS_BORDER OR %WS_TABSTOP OR %ES_READONLY  , %WS_EX_CLIENTEDGE
+
+
+    CONTROL ADD TEXTBOX , hDlg, %ID_TextBox5, "" , 5,  75, 185, 100, %WS_BORDER      OR _
+                                                                     %WS_TABSTOP     OR _
+                                                                     %ES_WANTRETURN  OR _
+                                                                     %ES_MULTILINE   OR _
+                                                                     %ES_AUTOHSCROLL OR _
+                                                                     %ES_AUTOVSCROLL OR _
+                                                                     %WS_VSCROLL     OR _
+                                                                     %WS_HSCROLL, _
+                                                                     %WS_EX_CLIENTEDGE
+
+    CONTROL ADD "TBURL32", hDlg, %ID_Url, "http://www.thinbasic.com;http://www.thinbasic.com", 5, 210, 185, 14, %WS_VISIBLE OR %WS_CHILD
+    
+    '---This will load current script into control number 50
+    CONTROL SET TEXT hDlg, %ID_TextBox5, FILE_LOAD(App_SourceName)
+    
+    '---Show dialog in MODAL
+    DIALOG SHOW MODAL hDlg, call dlgCallback
+  end function
+  
+  callback function dlgCallback() as long
+  
+    select case cbMsg
+      case %WM_CLOSE
+    end select  
+  
+  end function

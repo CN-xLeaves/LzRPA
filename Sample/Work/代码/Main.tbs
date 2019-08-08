@@ -1,0 +1,55 @@
+
+
+
+' ---------------------------------------------------------------------
+'  LzRPA 的任务是通过多进程实现的，功能上对标其他编程语言的多线程功能
+' ---------------------------------------------------------------------
+
+
+
+Function Main() As Long
+    
+    TracePrint "主进程已启动"
+    
+    TracePrint "设置变量 a 的数据为 1234"
+    G.SetVal("a", 1234)
+    
+    TracePrint "变量 a 的值为 " & G.GetVal("a")
+    
+    ' 创建第一个任务，保存任务句柄 (之后控制任务时会使用)
+    Dim Work1 As Long = Work_Create("Proc1", "参数")
+    
+    ' 创建第二个任务
+    Work_Create("Proc2", "参数222222")
+    
+    ' 五秒后暂停第一个任务（任务弹窗将无法操作或不再弹窗）
+    Delay 5000
+    Work_Pause(Work1)
+    
+    ' 再过五秒恢复第一个任务（任务弹窗可以继续操作）
+    Delay 5000
+    Work_Resume(Work1)
+    
+    ' 再过五秒将第一个任务结束掉（任务不会再没完没了的弹窗了）
+    Delay 5000
+    Work_Stop(Work1)
+    
+End Function
+
+
+
+' 第一个任务执行的代码
+Function Work_Proc1(ByVal sParam As String) As Long
+	TracePrint "第一类工作进程创建：" & sParam
+	Do
+		MsgBox "我不停的弹出来，你气不气？"
+    Loop
+End Function
+
+
+
+' 第二个任务执行的代码
+Function Work_Proc2(ByVal sParam As String) As Long
+	TracePrint "第二类工作进程创建：" & sParam
+	TracePrint "访问变量 a : " & G.GetVal("a")
+End Function

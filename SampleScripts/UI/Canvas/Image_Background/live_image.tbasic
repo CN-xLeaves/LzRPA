@@ -1,0 +1,209 @@
+' 
+' Quick and dirty approach on adding "masked" image
+' to existing canvas  
+'
+' Petr Schreiber, 2011
+'
+ 
+Uses "UI"
+
+Dim a, b As Integer
+' -- ID numbers of controls
+Begin ControlID
+  %cCanvas
+  %bSetRed 
+  %bSetGreen 
+  %bClose
+  
+  %label1
+  %label2
+  %IDC_TIMER      = 100
+  %TIMER_DELAY    = 10     ' Timer delay (in milliseconds, not very accurate below about 100)
+
+End ControlID                
+
+' -- Create dialog here
+Function Main()
+  Local hDlg As DWord
+  
+  Local sImageBackground As String = APP_SourcePath+"Image_Background.bmp"
+  Local nWidth, nHeight As Long
+  
+  Canvas_BitmapGetFileInfo(sImageBackground, nWidth, nHeight)
+
+  ' -- We will use dialog specified in pixels
+  Dialog New Pixels, 0, "Masked image test",-1,-1, nWidth, nHeight, _
+                %WS_POPUP Or %WS_VISIBLE Or %WS_CAPTION Or %WS_SYSMENU Or %WS_MINIMIZEBOX To hDlg
+  
+  ' -- Place controls here
+  Control Add Canvas, hDlg, %cCanvas, "", 0, 0, nWidth, nHeight
+  Canvas_Attach(hDlg, %cCanvas, TRUE)
+    ' -- Make sure coordinate system is per pixel
+    Canvas_Scale Pixels
+    ' -- Render image
+    Canvas_BitmapRender(sImageBackground)
+  Canvas_Redraw      
+
+  Control Add Label , hDlg, %LABEL1, ""      ,  5,nHeight-150, 120, 23, %WS_CHILD Or %WS_VISIBLE Or %WS_BORDER Or %SS_CENTERIMAGE Or %SS_CENTER
+  Control Add Label , hDlg, %LABEL2, ""      ,  5,nHeight-200, 120, 23, %WS_CHILD Or %WS_VISIBLE Or %WS_BORDER Or %SS_CENTERIMAGE Or %SS_CENTER
+ 
+  Control Add Button, hDlg, %bSetRed, "show red", 5, nHeight-28, 120, 23, Call cbSetLightRed
+  Control Add Button, hDlg, %bSetGreen, "show green", 5, nHeight-100, 120, 23, Call cbSetLightGreen
+  
+  ' -- Set initial light  
+  RenderImageToExistingCanvasWithMaskedColor(hDlg, %cCanvas, APP_SourcePath+"cgreen.bmp",200, 25, Rgb(255, 0, 255))
+
+  Control Add Button, hDlg, %bClose, "Click to close", nWidth-125, nHeight-28, 120, 23, Call cbCloseButton
+ 
+  Dialog Show Modal hDlg, Call cbDialog
+
+End Function
+
+' -- Callback for dialog
+CallBack Function cbDialog()
+
+  Static TimerValue As Double       ' -- Will be used to calculate timer values
+  Static activeGreenLight As Long = 1
+
+  ' -- Test for messages
+  Select Case Callback_Message
+
+    Case %WM_INITDIALOG
+      ' -- Put code to be executed after dialog creation here
+      Dialog Set Timer Callback_Handle, %IDC_TIMER, %TIMER_DELAY
+
+    Case %WM_TIMER
+      ' -- Increment and set the test value...    
+      TimerValue += 0.01 
+      Control Set Text Callback_Handle, %LABEL1, Format$(TimerValue, "#0.00")
+      If TimerValue > 0.4 Then 
+        'beep
+        TimerValue = 0 
+        a = a + 1
+        
+        ' -- Swapping color
+        activeGreenLight = activeGreenLight XOR 1
+        If activeGreenLight Then
+          RenderImageToExistingCanvasWithMaskedColor(Callback_Handle, %cCanvas, APP_SourcePath+"cgreen.bmp",200, 25, Rgb(255, 0, 255))
+        Else
+          RenderImageToExistingCanvasWithMaskedColor(Callback_Handle, %cCanvas, APP_SourcePath+"cred.bmp", 200, 25, Rgb(255, 0, 255))
+        End If
+      End If
+  
+    Case %WM_CLOSE
+      ' -- Put code to be executed before dialog end here
+      Dialog Kill Timer Callback_Handle, %IDC_TIMER
+
+  End Select
+
+End Function
+ 
+' -- Callback for close button
+CallBack Function cbCloseButton()
+
+  If Callback_Message = %WM_COMMAND Then
+    If Callback_Control_Message = %BN_CLICKED Then
+      ' -- Closes the dialog 
+      Dialog End Callback_Handle
+    End If
+  End If
+
+End Function   
+
+' -- Callback for close button
+CallBack Function cbSetLightRed()
+
+  If Callback_Message = %WM_COMMAND Then
+    If Callback_Control_Message = %BN_CLICKED Then
+            
+      ' You specify:
+      ' Target dialog
+      ' Target canvas
+      ' Bitmap name
+      ' Position X
+      ' Position Y
+      ' Transparent color      
+      RenderImageToExistingCanvasWithMaskedColor(Callback_Handle, %cCanvas, APP_SourcePath+"cred.bmp", 200, 25, Rgb(255, 0, 255))
+    End If
+  End If
+
+End Function         
+
+CallBack Function cbSetLightGreen()
+
+  If Callback_Message = %WM_COMMAND Then
+    If Callback_Control_Message = %BN_CLICKED Then
+            
+      ' You specify:
+      ' Target dialog
+      ' Target canvas
+      ' Bitmap name
+      ' Position X
+      ' Position Y
+      ' Transparent color      
+'      RenderImageToExistingCanvasWithMaskedColor(Callback_Handle, %cCanvas, APP_SourcePath+"Mice.bmp", 150+Rnd(-25,25), 25+Rnd(-25,25), Rgb(255, 0, 255))
+      RenderImageToExistingCanvasWithMaskedColor(Callback_Handle, %cCanvas, APP_SourcePath+"cgreen.bmp",200, 25, Rgb(255, 0, 255))
+    End If
+  End If
+
+End Function         
+
+' -- This function renders masked image to existing canvas control
+' -- P.S. Yes, we know the candidate for function with longest name this year :)
+Type tRGBA
+  R As Byte
+  G As Byte
+  B As Byte
+  A As Byte  
+End Type
+
+Function RenderImageToExistingCanvasWithMaskedColor( hDlg As DWord, targetCanvas As Long, sImage As String, xPos As Long, yPos As Long, maskedColorRGB As Long)
+  Dim idDummyCanvas As Long = 32000
+  Dim idDummyXPos As Long = 32000
+  Dim idDummyYPos As Long = 32000
+  Dim x, y, nWidth, nHeight As Long
+  Dim sBitmap As String
+  Dim maskedColorBGR As Long = maskedColorRGB
+  
+  ' -- We get bitmap dimensions
+  Canvas_BitmapGetFileInfo(sImage, nWidth, nHeight)
+  
+  ' -- Render it to dummy canvas control
+  Control Add Canvas hDlg, idDummyCanvas, "", idDummyXPos, idDummyYPos, nWidth, nHeight
+  Canvas_Attach(hDlg, idDummyCanvas, TRUE) 
+    Canvas_BitmapRender(sImage)
+    sBitmap = Canvas_BitmapGet(nWidth, nHeight)
+  Canvas_Redraw                   
+  ' -- Remove dummy canvas control
+  Control Kill hDlg, idDummyCanvas 
+  
+  ' -- Convert specified RGB to BGR
+  Dim pixelColor As tRGBA At VarPtr(maskedColorBGR)
+  pixelColor.a = pixelColor.r
+  pixelColor.r = pixelColor.b
+  pixelColor.b = pixelColor.a 
+  pixelColor.a = 0   
+  Dim pixelColorLong As Long
+  
+  ' -- Overlay array of BGR values packed to LONG over bitmap
+  Dim imagePixels(nWidth, nHeight) As Long At StrPtr(sBitmap)
+  
+  ' -- And copy it to our target control pixel-by-pixel
+  Canvas_Attach(hDlg, targetCanvas, TRUE) 
+    For x = 1 To nWidth
+      For y = 1 To nHeight
+        
+        ' -- Masked color? Then we are not interested
+        If imagePixels(x, y) = maskedColorBGR Then Iterate For
+        pixelColorLong = imagePixels(x, y) 
+        SetAt(pixelColor, VarPtr(pixelColorLong))
+                    
+        ' -- Otherwise we copy this pixel
+        Canvas_SetPixel(xPos+x-1, yPos+y-1, Rgb(pixelColor.B, pixelColor.G, pixelColor.R))
+              
+      Next
+    Next  
+  Canvas_Redraw 
+  Dialog Redraw hDlg                                              
+
+End Function

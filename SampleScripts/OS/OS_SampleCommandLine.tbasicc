@@ -1,0 +1,40 @@
+uses "Console" 
+uses "OS"
+
+DIM NumberOfCommands  AS LONG
+DIM Count             AS LONG
+
+'---Returns the number of commands specified
+NumberOfCommands = os_getcommands
+
+'---Some header
+console_write("The following are the passed parameters (param 1 is always script name):" & $CRLF)
+console_write(REPEAT$(79, "-") & $CRLF)
+
+'---Show all parameters
+FOR Count = 0 TO NumberOfCommands
+  console_Write( FORMAT$(Count, "00") & " [" & os_getcommand(Count) & "]" & $CRLF)
+NEXT
+
+'---If only 1 param then exit
+IF NumberOfCommands <= 1 THEN
+  Console_Write( "Only 1 parameter, program stopped. Press a key to Continue" & $CRLF)
+  Console_WaitKey
+  STOP
+END IF
+
+'---If more than 1 param, execute something ...
+FOR Count = 1 TO NumberOfCommands
+  SELECT CASE UCASE$(os_getcommand(Count))
+    CASE "COMPUTERNAME"
+      Console_Write(os_getcommand(Count) & ": " & OS_GetComputerName & $CRLF)
+      
+    CASE "USERNAME"
+      Console_Write(os_getcommand(Count) & ": " & OS_GetUserName & $CRLF)
+      
+  END SELECT
+NEXT
+
+Console_Write( "Press a key to Continue" & $CRLF)
+Console_WaitKey
+

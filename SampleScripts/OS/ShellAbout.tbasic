@@ -1,0 +1,3 @@
+Uses "OS"
+
+OS_ShellAbout ( 0, "This is custom title", "After MS copyright","Very, very interesting text here", 0)

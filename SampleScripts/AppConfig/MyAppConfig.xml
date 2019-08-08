@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AppConfig>
+	<!--this is a comment-->
+
+	<AppVersion>1.0.0</AppVersion>
+
+	<AppData>
+		<Author_Name>Eros Olmi</Author_Name>
+		<Author_eMail>support@thinbasic.com</Author_eMail>
+		<Author_WebSite>https://www.thinbasic.com</Author_WebSite>
+	</AppData>
+
+	<AppFiles>
+		<File1>NameFile1.txt</File1>
+		<File2>NameFile2.txt</File2>
+	</AppFiles>
+
+	<Buffers>
+		<Buffer1><![CDATA[some stuff]]></Buffer1> <!-- Comment -->
+	</Buffers>
+
+	<DB>
+		<ConnectionString>Provider=SQLNCLI11;Server=myServerAddress;Database=myDataBase;Uid=myUsername;Pwd=myPassword;</ConnectionString>
+		<tblCust>tCustomers</tblCust>
+		<tblItems>tItems</tblItems>
+	</DB>
+	
+</AppConfig>

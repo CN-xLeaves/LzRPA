@@ -1,0 +1,7 @@
+uses "LAN"
+
+' Open the Connection dialog
+LAN_ConnectDialog
+
+' Open the Disconnect dialog
+LAN_DisconnectDialog

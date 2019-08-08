@@ -1,0 +1,111 @@
+Uses "UI"
+
+' -- ID numbers of controls
+Begin ControlID
+  %cCanvasDB 
+  %bModifyBitmap
+  %bClose 
+End ControlID
+
+Type BGRA
+  B As Byte
+  G As Byte
+  R As Byte
+  A As Byte
+End Type
+
+' -- Create dialog here
+FUNCTION Main()
+  LOCAL hDlg AS DWORD
+
+  Dialog NEW 0, "Managing canvas bitmap",-1,-1, 200, 140, _
+                                    %WS_POPUP Or %WS_VISIBLE Or _
+                                     %WS_CLIPCHILDREN Or %WS_CAPTION OR _
+                                     %WS_SYSMENU Or %WS_MINIMIZEBOX, 0 To hDlg
+  
+  ' -- Place controls here
+  dim cx, cy as long
+  dialog pixels hDlg, 200, 200 to units cx, cy
+  Control ADD CANVAS, hDlg, %cCanvasDB, "", 5, 5, cx, cy
+  
+  Control ADD BUTTON, hDlg, %bModifyBitmap, "Redraw", 10+cx, 5, 50, 14, Call bModifyBitmapProc    
+  Control ADD BUTTON, hDlg, %bClose, "Close", 10+cx, cy+5-14, 50, 14, Call bCloseProc
+ 
+  DIALOG SHOW MODAL hDlg, CALL dlgProc
+
+END FUNCTION
+
+' -- Callback for dialog
+CALLBACK FUNCTION dlgProc()
+
+  ' -- Test for messages
+  SELECT CASE CBMSG
+    Case %WM_INITDIALOG
+      CANVAS_Attach(CBHNDL, %cCanvasDB, %FALSE)
+        DrawGraphics()     
+      CANVAS_Redraw
+     
+    CASE %WM_CLOSE
+    ' -- Put code to be executed before dialog end here
+
+  END SELECT
+
+END FUNCTION
+ 
+' -- Callback for close button
+CallBack Function bCloseProc()
+
+  If CBMSG = %WM_COMMAND Then       
+    If CBCTLMSG = %BN_CLICKED Then
+      ' -- Closes the dialog 
+      DIALOG END CBHNDL
+    END IF
+  END IF
+
+End Function
+
+CallBack Function bModifyBitmapProc()
+
+  If CBMSG = %WM_COMMAND Then       
+    If CBCTLMSG = %BN_CLICKED Then
+
+      CANVAS_Attach(CBHNDL, %cCanvasDB, %TRUE)
+        DrawGraphics()      
+
+      Dim w, h As Long, s As String
+      s = Canvas_BitmapGet(w, h)   
+      
+      Dim Bits(w, h) As BGRA At STRPTR(s)
+      Dim x, y As Long
+      
+      Dim grey As Byte = Rnd(128,255)
+      For x = 1 To w
+        For y = 1 To h
+          If Mod(y, 2) = 1 Then 
+            Bits(x, y).B = grey
+            Bits(x, y).G = grey
+            Bits(x, y).R = grey
+          End If
+        Next
+      Next          
+       
+      Canvas_BitmapSet(s, w, h)        
+      CANVAS_Redraw
+      
+      Dialog SET TEXT CBHNDL, Format$(w)+"x"+Format$(h)+","+Str$(Len(s))+" bytes total"
+      
+    End If
+  End If
+
+End Function
+
+      
+SUB DrawGraphics()
+    
+  CANVAS_Color RGB(128, 255, 0), RGB(0, 0, 0)
+  Canvas_Clear(rgb(0,0,0))
+  CANVAS_Scale PIXELS
+  Canvas_Line ((0,0), (200, 200), rgb(255,0,0))
+  Canvas_Line ((200,0), (0, 200), rgb(255,0,0))
+
+END SUB

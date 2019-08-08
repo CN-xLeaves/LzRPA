@@ -1,0 +1,105 @@
+  '---Basic info about memory occupation
+  '---Version 2.0 - visual presentation, updated every second !
+
+  uses "UI"
+
+  DIM hDlg AS DWORD
+  dim Msg, wparam,lparam as dword
+
+  TYPE MEMORYSTATUS
+    dwLength        AS DWORD
+    dwMemoryLoad    AS DWORD
+    dwTotalPhys     AS DWORD
+    dwAvailPhys     AS DWORD
+    dwTotalPageFile AS DWORD
+    dwAvailPageFile AS DWORD
+    dwTotalVirtual  AS DWORD
+    dwAvailVirtual  AS DWORD
+  END TYPE
+
+  DECLARE function GlobalMemoryStatus LIB "KERNEL32.DLL" ALIAS "GlobalMemoryStatus" (byref lpBuffer AS MEMORYSTATUS) as long
+  DECLARE FUNCTION KillTimer LIB "USER32.DLL" ALIAS "KillTimer" (BYVAL hWnd AS DWORD, BYVAL nIDEvent AS LONG) AS LONG
+  DECLARE FUNCTION SetTimer  LIB "USER32.DLL" ALIAS "SetTimer"  (BYVAL hWnd AS DWORD, BYVAL nIDEvent AS LONG, BYVAL uElapse AS DWORD, BYVAL lpTimerFunc AS LONG) AS LONG
+
+  global lpBuffer AS MEMORYSTATUS
+
+  %ID_TIMER   = 1000
+    
+  %PROG_BAR_1 = 1001
+  %PROG_BAR_2 = 1002
+  %PROG_BAR_3 = 1003
+
+  global hProgress1 as dword
+  global hProgress2 as dword
+  global hProgress3 as dword
+  
+  DIALOG NEW 0, "Memory guardian", 0, 0, 210, 100, _
+                                            %WS_DLGFRAME  OR %WS_CAPTION OR %WS_SYSMENU, _
+                                            %WS_EX_TOPMOST TO hDlg  
+
+  CONTROL ADD LABEL, hDlg, 1000,"Physical memory", 5, 5, 200, 14
+  CONTROL ADD "msctls_progress32", hDlg, %PROG_BAR_1, "", 5,  20, 200, 10, %WS_CHILD OR %WS_VISIBLE OR %PBS_SMOOTH  
+  CONTROL HANDLE hDlg, %PROG_BAR_1 TO hProgress1
+
+  CONTROL ADD LABEL, hDlg, 2000,"Virtual memory", 5, 35, 200, 14
+  CONTROL ADD "msctls_progress32", hDlg, %PROG_BAR_2, "", 5,  50, 200, 10, %WS_CHILD OR %WS_VISIBLE OR %PBS_SMOOTH  
+  CONTROL HANDLE hDlg, %PROG_BAR_2 TO hProgress2
+  
+  CONTROL ADD LABEL, hDlg, 3000,"Total load", 5, 65, 200, 14  
+  CONTROL ADD "msctls_progress32", hDlg, %PROG_BAR_3, "", 5,  80, 200, 10, %WS_CHILD OR %WS_VISIBLE OR %PBS_SMOOTH  
+  CONTROL HANDLE hDlg, %PROG_BAR_3 TO hProgress3
+
+  GlobalMemoryStatus (lpBuffer)
+
+  SetTimer hDlg, %ID_TIMER, 1000, %NULL  
+
+  ProgressBar_SetRange    (hDlg, %PROG_BAR_1, 0, lpBuffer.dwTotalPhys)
+  ProgressBar_SetPos      (hDlg, %PROG_BAR_1, 50)
+  ProgressBar_SetBarColor (hDlg, %PROG_BAR_1, rgb(0,128,0)) 
+  ProgressBar_SetBkColor  (hDlg, %PROG_BAR_1, rgb(128,0,0)) 
+  
+  ProgressBar_SetRange    (hDlg, %PROG_BAR_2, 0, lpBuffer.dwTotalVirtual)
+  ProgressBar_SetPos      (hDlg, %PROG_BAR_2, 25)
+  ProgressBar_SetBarColor (hDlg, %PROG_BAR_2, rgb(0,128,0)) 
+  ProgressBar_SetBkColor  (hDlg, %PROG_BAR_2, rgb(128,0,0)) 
+
+  ProgressBar_SetRange    (hDlg, %PROG_BAR_3, 0, 100)
+  ProgressBar_SetPos      (hDlg, %PROG_BAR_3, 25)
+  ProgressBar_SetBarColor (hDlg, %PROG_BAR_3, rgb(0,128,0)) 
+  ProgressBar_SetBkColor  (hDlg, %PROG_BAR_3, rgb(128,0,0)) 
+  
+  DIALOG SHOW modeless hDlg
+
+
+  while isWindow(hDlg)
+    Msg = GetMessage(hDlg, wParam, lParam)        
+  
+    select case Msg
+      case %WM_INITDIALOG
+
+
+      CASE %WM_TIMER        
+        GlobalMemoryStatus (lpBuffer) 
+        ProgressBar_SetPos  (hDlg, %PROG_BAR_1, lpBuffer.dwAvailPhys)               
+        ProgressBar_SetPos  (hDlg, %PROG_BAR_2, lpBuffer.dwAvailVirtual)                       
+        ProgressBar_SetPos  (hDlg, %PROG_BAR_3, 100-lpBuffer.dwMemoryLoad)                               
+        
+        control set text hDlg, 1000, "Free physical memory ( "+format$(lpBuffer.dwAvailPhys/1024/1024, "0")+" of "+format$(lpBuffer.dwTotalPhys/1024/1024, "0")+" MB )"
+        control set text hDlg, 2000, "Free virtual memory ( "+format$(lpBuffer.dwAvailVirtual/1024/1024, "0")+" of "+format$(lpBuffer.dwTotalVirtual/1024/1024, "0")+" MB )"        
+        control set text hDlg, 3000, "Total free load ( "+format$(100-lpBuffer.dwMemoryLoad, "0")+" % )"        
+        
+      CASE %WM_SYSCOMMAND
+
+        SELECT CASE wParam
+            
+          CASE %SC_CLOSE
+            EXIT WHILE
+
+        END SELECT
+        
+  END SELECT    
+ 
+  wend  
+  
+  KillTimer hDlg, %ID_TIMER
+  DIALOG END hDlg

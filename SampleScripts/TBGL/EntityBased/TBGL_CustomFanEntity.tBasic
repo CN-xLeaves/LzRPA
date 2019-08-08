@@ -1,0 +1,123 @@
+'===============================================================================
+'=                       Defining custom type of entity                        =
+'=                  (custom graphic representation + control)                  =
+'=                                                                             =
+'=                            Petr Schreiber, 2009                             =
+'===============================================================================
+
+Uses "TBGL"
+
+BEGIN CONST
+  ' -- Scene IDs
+  %sScene  = 1
+ 
+  ' -- Entity IDs 
+  %eCamera = 1
+  %eLight  
+  %eFan1       
+  %eFan2       
+END CONST 
+
+FUNCTION Main()
+  LOCAL hWnd As DWORD
+  GLOBAL FrameRate AS DOUBLE
+  
+  ' -- Create and show window
+  hWnd = TBGL_CreateWindowEx("Use F1,F2 to control left fan, use F11,F12 to control right fan", 640, 480, 32, %TBGL_WS_WINDOWED or %TBGL_WS_CLOSEBOX) 
+  TBGL_ShowWindow 
+
+  ' -- Create scene
+  TBGL_SceneCreate(%sScene)
+
+  ' -- Create basic entities
+  ' -- Create camera to look from 0, 2, 7 to 0, 0, 0 
+  TBGL_EntityCreateCamera(%sScene, %eCamera)
+    TBGL_EntitySetPos(%sScene, %eCamera, 0, 2, 7)
+    TBGL_EntitySetTargetPos(%sScene, %eCamera, 0, 0, 0)  
+    
+  ' -- Create point light  
+  TBGL_EntityCreateLight(%sScene, %eLight)
+    TBGL_EntitySetPos(%sScene, %eLight, 15, 10, 5)
+
+  ' -- Create something to look at
+  
+  ' -- Custom data for fan entity
+  TYPE tFanData
+    workingState AS BYTE
+  END TYPE
+  ' -- Temporary variable for filling
+  DIM FanData AS tFanData
+  
+  ' -- First fan enabled
+  FanData.workingState = 0  
+  TBGL_EntityCreateFuncSlot(%sScene, %eFan1, 0, "Fan_Render")
+    TBGL_EntitySetUserData(%sScene, %eFan1, FanData)
+    TBGL_EntitySetColor(%sScene, %eFan1, 255, 0, 0)
+    TBGL_EntitySetPos(%sScene, %eFan1, -2, 0, 0)
+
+  ' -- Second fan disabled
+  FanData.workingState = 1
+  TBGL_EntityCreateFuncSlot(%sScene, %eFan2, 0, "Fan_Render")
+    TBGL_EntitySetUserData(%sScene, %eFan2, FanData)
+    TBGL_EntitySetColor(%sScene, %eFan2, 0, 255, 0)    
+    TBGL_EntitySetPos(%sScene, %eFan2, 2, 0, 0)
+
+  ' -- Resets status of all keys 
+  TBGL_ResetKeyState() 
+
+  ' -- Main loop
+  While TBGL_IsWindow(hWnd) 
+    FrameRate = TBGL_GetFrameRate
+
+    TBGL_ClearFrame 
+
+      TBGL_SceneRender(%sScene)
+      
+    TBGL_DrawFrame 
+
+    ' -- ESCAPE key to exit application
+    If TBGL_GetWindowKeyState(hWnd, %VK_ESCAPE) Then Exit While 
+
+    IF TBGL_GetWindowKeyState(hWnd, %VK_F1) Then
+      Fan_SetWorkingState(%sScene, %eFan1, 1)
+    ELSEIF TBGL_GetWindowKeyState(hWnd, %VK_F2) Then
+      Fan_SetWorkingState(%sScene, %eFan1, 0)
+    END IF
+
+    IF TBGL_GetWindowKeyState(hWnd, %VK_F11) Then
+      Fan_SetWorkingState(%sScene, %eFan2, 1)
+    ELSEIF TBGL_GetWindowKeyState(hWnd, %VK_F12) Then
+      Fan_SetWorkingState(%sScene, %eFan2, 0)
+    END IF
+
+  Wend 
+
+  TBGL_DestroyWindow
+END FUNCTION
+
+' -- Render procedure  
+SUB Fan_Render()
+
+  DIM element AS TBGL_tEntityIdentifier AT TBGL_CallingEntity
+  ' -- Retrieve data
+  DIM Data AS tFanData AT TBGL_EntityGetUserDataPointer(element.scene, element.entity)
+
+  ' -- If in rotation state, let's turn
+  IF Data.WorkingState = 1 THEN
+    TBGL_EntityTurn(element.scene, element.entity, 0, 0, 90/FrameRate)
+  END IF
+  
+  ' -- Fan represented by two crossed thin boards
+  TBGL_Box 0.1, 2.0, 0.5
+  TBGL_Box 2.0, 0.1, 0.5      
+
+END SUB 
+
+' -- Our custom actions
+SUB Fan_SetWorkingState( scene as long, entity as long, flag AS BYTE ) 
+
+  DIM Data AS tFanData AT TBGL_EntityGetUserDataPointer(scene, entity)
+
+  Data.WorkingState = flag
+
+END SUB

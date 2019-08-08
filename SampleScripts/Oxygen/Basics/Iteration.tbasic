@@ -1,0 +1,22 @@
+'ITERATION:
+
+' APPENDING TO STRING
+
+uses "oxygen"
+dim src as string
+
+src = "
+
+  basic
+  cr=chr(13)+chr(10)
+  s="Repetition:"+cr
+  '
+  for i=1 to 10
+    s+=str(i)+cr
+  next
+  print s
+
+  "
+
+o2_basic src
+o2_exec

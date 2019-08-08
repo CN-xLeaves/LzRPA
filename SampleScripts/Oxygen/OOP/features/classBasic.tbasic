@@ -1,0 +1,45 @@
+'===================
+'CLASSES AND METHODS
+'===================
+'
+  
+Uses "oxygen","file"
+  
+dim as string src = "
+  
+ CLASS stat
+   da(100) As Double
+   dn As Long
+
+ METHOD Sum() As Double
+   Dim sys i
+   For i = 1 To dn
+     METHOD += da(i)
+   Next
+ End METHOD
+ '
+ METHOD average() As Double
+   METHOD = Sum() / dn
+ End METHOD
+ '
+ End CLASS
+  
+ '====
+ 'TEST
+ '====
+ '
+ Dim s As stat
+ s.da<=2,4,6,8,10,12,14,16,18
+ s.dn=9
+ Print "Sum: " str(s.Sum) " Average: " str (s.average)
+ "
+  
+O2_BASIC src
+  
+'msgbox 0, o2_view "o2h "+src
+  
+If Len(O2_ERROR) Then
+ MsgBox 0, O2_ERROR : Stop
+ End If
+  
+O2_EXEC

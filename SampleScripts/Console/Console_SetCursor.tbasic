@@ -1,0 +1,41 @@
+Uses "Console" 
+
+DisplayNumber()
+Console_Write("Press any key for go to col 7, row 6") 
+Console_WaitKey 
+Console_cls()
+
+DisplayNumber()
+Console_SetCursorPosition(7, 6)
+Console_Write("Press any key for go to col 10, row 10") 
+Console_WaitKey 
+Console_cls()
+
+DisplayNumber()
+Console_SetCursorPosition(10, 10)
+Console_Write("Press any key for go to col 40, row 20") 
+Console_WaitKey 
+Console_cls()
+
+DisplayNumber()
+Console_SetCursorPosition(40, 20)
+Console_Write("Press any key for go to col 22, row 24") 
+Console_WaitKey 
+Console_cls()
+
+DisplayNumber()
+Console_SetCursorPosition(22, 24)
+Console_Write("Press any key to end.") 
+Console_WaitKey 
+  
+
+Function DisplayNumber() as long
+local i as long
+
+   for i = 1 to 25
+      Console_SetCursorPosition(0, i)
+      Console_Write("Row " + format$(i, "00")) 
+   next 
+   
+
+End function

@@ -1,0 +1,46 @@
+  uses "UI"
+
+  dim sBITMAP as string = App_SourcePath + "nebe.bmp"
+
+  DECLARE FUNCTION LoadImage LIB "USER32.DLL" ALIAS "LoadImageA" (BYVAL hInst AS DWORD, byval lpsz AS ASCIIZ, BYVAL uType AS DWORD, BYVAL cxDesired AS LONG, BYVAL cyDesired AS LONG, BYVAL fuLoad AS DWORD) AS DWORD
+
+  global hImg AS long
+  function Main()
+    DIM hDlg AS DWORD
+    dim x AS DWORD, Y AS DWORD
+    DIM xx AS LONG, yy AS LONG
+    
+    DIALOG NEW 0, "thinBASIC", -1, -1, 150, 100, _
+                                              %WS_DLGFRAME OR %DS_CENTER OR %WS_CAPTION OR _
+                                              %WS_SYSMENU or %WS_CLIPCHILDREN or %WS_CLIPSIBLINGS, _
+                                              0 TO hDlg  
+
+    '..............................................................................
+    ' Load image and control
+    '..............................................................................
+    CONTROL ADD LABEL,  hDlg, 1001,"", 0, 0, 150, 100, %SS_BITMAP
+    hImg = LoadImage ( %NULL, sBITMAP, %IMAGE_BITMAP, 0, 0, %LR_LOADFROMFILE)
+    
+    CONTROL SEND        hDlg, 1001, %STM_SETIMAGE, %IMAGE_BITMAP, hImg 
+    control redraw      hDlg, 1001
+    control set resize  hDlg, 1001, 1, 1, 1, 1
+
+    CONTROL ADD LABEL,  hDlg, 1002,"thinBASIC simply rocks!", 10, 80, 130, 14, %SS_CENTER OR %SS_CENTERIMAGE
+    control set color   hDlg, 1002, rgb(0,0,0), rgb(255,128,0)
+    control set resize  hDlg, 1002, 1, 1, 0, 1
+    
+    '..............................................................................
+    DIALOG SHOW modal hDlg, call dlgCallback
+  end function
+  
+  callback function dlgCallback() as long
+  
+    select case cbMsg
+      
+      case %WM_CLOSE
+        '---Release the image handler
+        Object_Delete(hImg)
+
+    end select
+ 
+  end function

@@ -1,0 +1,125 @@
+  '----------------------------------------------------------------------------
+  '----------------------------------------------------------------------------
+  ' This script will demonstrate how to:
+  '----------------------------------------------------------------------------
+  ' Thanks to Jose Roca for his hard work on ODBC wrapper
+  '----------------------------------------------------------------------------
+
+  '---Use console module to show output
+  uses "Console"
+  uses "File"
+
+  '---IMPORTANT: include this file in order to use ODBC functionalities
+  '              inside your scripts
+  #include "%APP_INCLUDEPATH%\ODBC352.INC"
+  
+  '[breakpoint] <Any note here. Breakpoint will be set to line following this statement>
+  Dim DBName        As String
+  dim lRet          as long
+  dim DBOk          as long
+  dim DBJustCreated as long
+  DBName = app_sourcepath & "new.mdb"
+
+  '--_Check if DB exists, if not try to create
+  if file_exists(DBName) then
+    printl "DB " & dbname & " already present, will not be created"
+    DBOk = %TRUE
+  else
+    lRet = SQLConfigDataSource(0, %ODBC_ADD_DSN, "Microsoft Access Driver (*.mdb)", "CREATE_DB=" & DBName)
+    
+    if lRet then
+      printl "Creation of " & DBName & " was OK."
+      DBOk = %TRUE
+      DBJustCreated = %TRUE
+    else
+      printl "It was not possible to create " & DBName
+    end if
+  end if
+  
+
+  '---Declare needed variables
+  dim hEnv    AS DWORD      '---Environment handle
+  dim hDbc    AS DWORD      '---Connection handle
+  dim hStmt   AS DWORD      '---Statement handle
+
+  dim ConStr  AS STRING     '---Connection string
+
+
+  '---Allocates the environment handle
+  print "... allocating ODBC environment: "
+  hEnv = OdbcAllocEnv
+  IF ISFALSE hEnv THEN
+    printl("Script aborted. It was not possible to create an environment handle.")
+    Terminate(%TRUE)
+  end if
+  printl "OK"
+  
+  '---Allocates the connection handle
+  print "... allocating ODBC connection: "
+  hDbc = OdbcAllocConnect(hEnv)
+  IF ISFALSE hDbc THEN
+    printl("Script aborted. It was not possible to allocate the connection handle.")
+    Terminate(%TRUE)
+  end if
+  printl "OK"
+
+  '---Connects with the ODBC driver
+  print "... connecting to data: "
+  ConStr = "DRIVER={Microsoft Access Driver (*.mdb)}; DBQ=" & DBName & ";UID=;PWD=;"
+  OdbcOpenConnection(hDbc, ConStr)
+  IF OdbcError THEN
+    printl(OdbcGetConnectionErrorInfo(hDbc))
+    Terminate(%TRUE)
+  END IF
+  printl "OK"
+
+  '---Allocates a statement handle
+  print "... allocating statement: "
+  hStmt = OdbcAllocStmt(hDbc)
+  IF ISFALSE hDbc THEN
+    printl("Script aborted. It was not possible to allocate a new statement.")
+    Terminate(%TRUE)
+  end if
+  printl "OK"
+
+
+  '---If the DB was just created, we need to add new tables and fields
+  if DBJustCreated then
+        
+    print "... creating table MyDisks: "
+    '---Create a new table and its fields
+    OdbcExecDirect hStmt, _
+                "CREATE TABLE MyDisks " & _
+                    " (" & _
+                      " SID integer PRIMARY KEY, " & _
+                      " Title TEXT(255), " & _
+                      " Author TEXT(255) " & _
+                    " ) " & _
+                    ""
+    printl "OK"
+  else
+    printl ">>> No tables created because DB was already present on disk."
+  end if
+
+  Terminate(%False)
+
+  printl
+  printl "---All done. Press a key to stop---"
+  waitkey
+  
+  '----------------------------------------------------------------------------
+  function Terminate(optional byval TerminateWithError as long)
+  '----------------------------------------------------------------------------
+
+    'IF hStmt  THEN OdbcCloseCursor hStmt      '---Closes the cursor
+    IF hStmt  THEN OdbcCloseStmt hStmt        '---Closes the statement handle
+    IF hDbc   THEN OdbcCloseConnection hDbc   '---Closes the connection
+    IF hEnv   THEN OdbcFreeEnv hEnv           '---Frees the environment handle
+
+    if TerminateWithError then
+      stop
+    end if
+    
+  end function
+
+ 

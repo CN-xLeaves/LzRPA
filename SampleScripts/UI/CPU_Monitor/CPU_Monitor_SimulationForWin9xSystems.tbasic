@@ -1,0 +1,328 @@
+'---Simulated CPU Monitor
+
+#MINVERSION 1.8.7.0
+
+uses "UI"
+
+%CLR_INVALID         = &HFFFFFFFF  ' some Microsoft docs claim this is &HFFFF, but it's not
+
+
+' Text Alignment Options
+%TA_NOUPDATECP = 0
+%TA_UPDATECP   = 1
+
+%TA_LEFT       = 0
+%TA_RIGHT      = 2
+%TA_CENTER     = 6
+
+%TA_TOP        = 0
+%TA_BOTTOM     = 8
+%TA_BASELINE   = 24
+%TA_RTLREADING = 256
+%TA_MASK       = %TA_BASELINE + %TA_CENTER + %TA_UPDATECP + %TA_RTLREADING
+
+
+DECLARE FUNCTION PatBlt                   LIB "GDI32.DLL"     ALIAS "PatBlt"                    (BYVAL hdc AS DWORD, BYVAL x AS LONG, BYVAL y AS LONG, BYVAL nWidth AS LONG, BYVAL nHeight AS LONG, BYVAL dwRop AS DWORD) AS LONG
+DECLARE FUNCTION BitBlt                   LIB "GDI32.DLL"     ALIAS "BitBlt"                    (BYVAL hDestDC AS DWORD, BYVAL x AS LONG, BYVAL y AS LONG, BYVAL nWidth AS LONG, BYVAL nHeight AS LONG, BYVAL hSrcDC AS DWORD, BYVAL xSrc AS LONG, BYVAL ySrc AS LONG, BYVAL dwRop AS DWORD) AS LONG
+Declare Function CreatePen                Lib "GDI32.DLL"     Alias "CreatePen"                 (ByVal nPenStyle As Long, ByVal nWidth As Long, ByVal crColor As DWord) As DWord
+DECLARE FUNCTION MoveToEx                 LIB "GDI32.DLL"     ALIAS "MoveToEx"                  (BYVAL hdc AS DWORD, BYVAL x AS LONG, BYVAL y AS LONG, byval lpPoint AS dword) AS LONG
+DECLARE FUNCTION LineTo                   LIB "GDI32.DLL"     ALIAS "LineTo"                    (BYVAL hdc AS DWORD, BYVAL x AS LONG, BYVAL y AS LONG) AS LONG
+DECLARE FUNCTION SetTextColor             LIB "GDI32.DLL"     ALIAS "SetTextColor"              (BYVAL hdc AS DWORD, BYVAL crColor AS DWORD) AS DWORD
+DECLARE FUNCTION SetTextAlign             LIB "GDI32.DLL"     ALIAS "SetTextAlign"              (BYVAL hdc AS DWORD, BYVAL dwFlags AS DWORD) AS DWORD
+DECLARE FUNCTION TextOut                  LIB "GDI32.DLL"     ALIAS "TextOutA"                  (BYVAL hdc AS DWORD, BYVAL x AS LONG, BYVAL y AS LONG, byval lpString AS dword, BYVAL nCount AS LONG) AS LONG
+Declare Function KillTimer                Lib "USER32.DLL"    Alias "KillTimer"                 (ByVal hWnd As DWord, ByVal nIDEvent As Long) As Long
+DECLARE FUNCTION SetTimer                 LIB "USER32.DLL"    ALIAS "SetTimer"                  (BYVAL hWnd AS DWORD, BYVAL nIDEvent AS LONG, BYVAL uElapse AS DWORD, BYVAL lpTimerFunc AS LONG) AS LONG
+
+%IDD_Main         = 101
+%IDC_lblUsage     = 103
+%IDC_lblHistory   = 104
+%IDC_FRAME1       = 105
+%IDC_FRAME2       = 106
+
+%Timer            = 1000
+
+%MaxPoints        = 241
+
+GLOBAL MemUsageDC   AS dword
+GLOBAL hUsage       AS dword
+GLOBAL MemHistoryDC AS dword
+GLOBAL hHistory     AS dword
+GLOBAL lPoints()    AS dword
+
+GLOBAL hUsageBit    AS DWORD
+GLOBAL ctlUWidth    AS dword
+GLOBAL ctlUHeight   AS dword
+GLOBAL hHistoryBit  AS DWORD
+GLOBAL ctlHWidth    AS dword
+GLOBAL ctlHHeight   AS dword
+
+GLOBAL ps           AS paintstruct
+
+GLOBAL liOldIdleTime    AS  quad
+GLOBAL liOldSystemTime  AS  quad
+
+global lRet AS LONG
+
+global wx, hy       AS LONG
+
+'---
+'------
+
+function Main()
+  DIM hDlg AS DWORD
+  DIALOG NEW  0, "CPU Usage (emulated by random numbers)", 107, 172, 240, 60, _
+                                          %WS_POPUP         OR _
+                                          %WS_BORDER        OR _
+                                          %WS_DLGFRAME      OR _
+                                          %WS_CAPTION       OR _
+                                          %WS_SYSMENU       OR _
+                                          %WS_MINIMIZEBOX   OR _
+                                          %WS_VISIBLE       OR _
+                                          %DS_MODALFRAME    OR _
+                                          %DS_3DLOOK        OR _
+                                          %DS_NOFAILCREATE  OR _
+                                          %DS_SETFONT       ,  _
+                                          %WS_EX_WINDOWEDGE     OR _
+                                          %WS_EX_CONTROLPARENT  OR _
+                                          %WS_EX_LEFT           OR _
+                                          %WS_EX_LTRREADING     OR _
+                                          %WS_EX_RIGHTSCROLLBAR or _
+                                          %WS_EX_TOPMOST           _
+                                       TO hDlg
+
+  CONTROL ADD LABEL, hDlg, %IDC_lblUsage    , ""                  , 10, 10,  48, 42
+  CONTROL ADD LABEL, hDlg, %IDC_lblHistory  , ""                  , 69, 10, 161, 42
+  CONTROL ADD FRAME, hDlg, %IDC_FRAME1      , "CPU Usage"         ,  3,  0,  60, 55
+  CONTROL ADD FRAME, hDlg, %IDC_FRAME2      , "CPU Usage History" , 66,  0, 170, 55
+
+  DIALOG SHOW modal hDlg, call dlgCallback
+end function
+
+callback function dlgCallback() as long
+  
+  select case cbMsg
+    case %WM_INITDIALOG        
+      fn_InitDialog(cbHndl)
+      
+    CASE %WM_TIMER        
+      lRet = Query()
+      DrawCpuUsage   (cbHndl, lRet)
+      DrawCpuHistory (cbHndl, lRet)
+
+    CASE %WM_PAINT
+      Win_BeginPaint hUsage, varptr(ps)
+        bitblt ps.hdc, 0, 0, ctlUWidth, ctlUHeight, MemUsageDC, 0, 0, %SRCCOPY
+      Win_EndPaint  hUsage, varptr(ps)
+      Win_BeginPaint hHistory, VarPtr(ps)
+        bitblt ps.hdc, 0, 0, ctlHWidth, ctlHHeight, MemHistoryDC, 0, 0, %SRCCOPY
+      Win_EndPaint  hHistory, VarPtr(ps)
+      
+    CASE %WM_SIZE
+
+      DIALOG GET CLIENT cbHndl TO wx, hy
+      wx = wx - 18
+      hY = hY - 18
+      if hY > 50 then
+        CONTROL SET SIZE cbHndl, %IDC_FRAME1    ,  60, hy +13
+        CONTROL SET SIZE cbHndl, %IDC_lblUsage  ,  48, hy
+        
+        CONTROL SET SIZE cbHndl, %IDC_FRAME2    , wx - 66, hy +13
+        CONTROL SET SIZE cbHndl, %IDC_lblHistory, wx - 74, hy
+      end if
+      
+      CONTROL HANDLE    cbHndl, %IDC_lblHistory  TO hHistory
+      CONTROL GET SIZE  cbHndl, %IDC_lblHistory  TO ctlHWidth, ctlHHeight
+      DIALOG UNITS      cbHndl, ctlHWidth,ctlHHeight TO PIXELS ctlHWidth, ctlHHeight
+
+      fn_InitDialog(cbHndl)
+    
+    Case %WM_CLOSE
+      fn_DestroyDialog(cbHndl)
+  END SELECT    
+
+end function  
+
+
+function fn_InitDialog(lDlg as long)
+  dim TmpDC     AS DWORD
+  dim hBrush    AS DWORD
+
+  REDIM lPoints(%MaxPoints)
+  
+  CONTROL HANDLE    lDlg, %IDC_lblUsage  TO hUsage
+  CONTROL GET SIZE  lDlg, %IDC_lblUsage  TO ctlUWidth, ctlUHeight
+  DIALOG UNITS      lDlg, ctlUWidth, ctlUHeight TO PIXELS ctlUWidth, ctlUHeight
+
+  '---Usage mem DC
+  if hUsage = 0 then msgbox
+  TmpDC = Win_GetDC(hUsage)
+  MemUsageDC = Win_CreateCompatibleDC(TmpDC)
+  hUsageBit = Win_CreateCompatibleBitmap(TmpDC, ctlUWidth, ctlUHeight)
+  Win_SelectObject MemUsageDC,hUsageBit
+  hBrush = Win_GetStockObject(%BLACK_Brush)
+  Win_SelectObject MemUsageDC, hBrush
+  PatBlt MemUsageDC, 0, 0, ctlUWidth, ctlUHeight, %PATCOPY
+  bitblt TmpDC, 0, 0, ctlUWidth, ctlUHeight, MemUsageDC, 0, 0, %SRCCOPY
+
+  Win_ReleaseDC hUsage, TmpDC
+
+  '---History mem DC
+  CONTROL HANDLE    lDlg, %IDC_lblHistory  TO hHistory
+  CONTROL GET SIZE  lDlg, %IDC_lblHistory  TO ctlHWidth, ctlHHeight
+  DIALOG UNITS      lDlg, ctlHWidth,ctlHHeight TO PIXELS ctlHWidth, ctlHHeight
+
+  TmpDC = Win_GetDC(hHistory)
+  MemHistoryDC = Win_CreateCompatibleDC(TmpDC)
+  hHistoryBit = Win_CreateCompatibleBitmap(TmpDC, ctlHWidth, ctlHHeight)
+  Win_SelectObject MemHistoryDC,hHistoryBit
+  Win_SelectObject MemHistoryDC, hBrush
+  PatBlt MemHistoryDC, 0,0,ctlHWidth, ctlHHeight, %PATCOPY
+  bitblt TmpDC, 0,0,ctlHWidth,ctlHHeight, MemHistoryDC, 0,0,%SRCCOPY
+
+  Object_Delete hBrush
+  Win_ReleaseDC hHistory, TmpDC
+  Init
+  SetTimer  lDlg, %Timer , 200, 0
+
+end function
+
+function fn_DestroyDialog(lDlg as long)
+  killtimer lDlg , %Timer
+  Win_DeleteDC MemUsageDC
+  Win_DeleteDC MemHistoryDC
+  Object_Delete hUsageBit
+  Object_Delete hHistoryBit
+
+end function
+
+function Init()
+
+  randomize
+  
+END function
+
+FUNCTION Li2Double(byval x AS quad) AS DOUBLE
+  FUNCTION = x 
+END FUNCTION
+
+FUNCTION Query() AS LONG
+
+  FUNCTION = rnd(1,100) 
+
+END FUNCTION
+
+FUNCTION DrawCpuUsage(byval hWnd AS dword, byval lUsage AS LONG) AS LONG
+  LOCAL hPenLight AS dword
+  LOCAL hPenDark  AS dword
+  LOCAL hBrush    AS dword
+  LOCAL lLoop     AS LONG
+  LOCAL hDC       AS dword
+  LOCAL ctlWidth  AS dword, ctlHeight AS dword
+  LOCAL szStr     AS ASCIIZ * 10
+
+  IF lUsage > 100 OR lUsage < 0 THEN EXIT FUNCTION
+  
+  CONTROL GET SIZE  hWnd, %IDC_lblUsage  TO ctlWidth, ctlHeight
+  DIALOG UNITS      hWnd, ctlWidth, ctlHeight TO PIXELS ctlWidth, ctlHeight
+
+  hBrush = Win_GetStockObject(%BLACK_Brush)
+  Win_SelectObject MemUsageDC, hBrush
+  patblt MemUsageDC, 0, 0, ctlWidth, ctlHeight, %BLACKNESS
+  hDC = Win_GetDC(hUsage)
+  hPenLight = CreatePen(%PS_Solid, 1, RGB(150, 255, 100))
+  hPenDark  = CreatePen(%PS_Solid, 1, RGB( 50, 150,  50))
+  
+  FOR lLoop = 1 TO 10
+    IF (lUsage >= (100 - lLoop * 10) AND lUsage <> 0 ) THEN
+      Win_SelectObject(MemUsageDC, hPenLight)
+    ELSE
+      Win_SelectObject(MemUsageDC, hPenDark)
+    END IF
+    moveToEx MemUsageDC, 20, 10 + (lLoop * 3), 0
+    LineTo   MemUsageDC, 50, 10 + (lLoop  * 3 )
+  NEXT
+
+  szStr = TRIM$(STR$(lUsage)) & "%"
+  win_SetBkMode MemUsageDC, %TRANSPARENT
+  SetTextColor MemUsageDC, %GREEN
+  SetTextAlign MemUsageDC, %TA_CENTER
+  textout MemUsageDC, 35, 45, varptr(szStr), LEN(szStr)
+
+  BitBlt hDC, 0, 0, ctlWidth, ctlHeight, MemUsageDC, 0, 0, %SRCCOPY
+
+  Win_ReleaseDC  hUsage, hDC
+  Object_Delete hPenLight
+  Object_Delete hPenDark
+  Object_Delete hBrush
+
+  FUNCTION = 1
+
+END FUNCTION
+
+FUNCTION DrawCpuHistory(byval hWnd AS dword, byval lUsage AS LONG) AS LONG
+  LOCAL hPenLight   AS dword
+  LOCAL hPenDark    AS dword
+  LOCAL hBrush      AS dword
+  LOCAL hDC         AS dword
+  LOCAL lLoop       AS dword
+  LOCAL ctlWidth    AS dword, ctlHeight AS dword
+  LOCAL szStr       AS ASCIIZ * 10
+  global lYLine     AS dword
+  local yPos        as long
+
+  IF lUsage > 100 OR lUsage < 0 THEN EXIT FUNCTION
+
+  FOR lLoop = LBOUND(lPoints) TO UBOUND(lPoints) - 1
+    lPoints(lLoop) = lPoints(lLoop + 1)
+  NEXT
+  lPoints(UBOUND(lPoints)) = lUsage
+
+  CONTROL GET SIZE  hWnd, %IDC_lblHistory  TO ctlWidth, ctlHeight
+  DIALOG UNITS      hWnd, ctlWidth, ctlHeight TO PIXELS ctlWidth, ctlHeight
+  
+  hBrush = Win_GetStockObject(%BLACK_BRUSH)
+  Win_SelectObject MemHistoryDC, hBrush
+  PatBlt MemHistoryDC, 0, 0,ctlWidth, ctlHeight, %BLACKNESS
+  hDC = Win_GetDC(hHistory)
+
+  hPenDark  = CreatePen(%PS_Solid, 0, RGB( 50, 150,  50))
+  hPenLight = CreatePen(%PS_Solid, 0, RGB(150, 255, 100))
+
+  '---Draw horizontal lines
+  Win_SelectObject(MemHistoryDC, hPenDark)
+  FOR lLoop = 0 TO 4
+    moveToEx MemHistoryDC,   0, 13 + (lLoop * 13 ),  0
+    LineTo   MemHistoryDC, 240, 13 + (lLoop * 13 )
+  NEXT
+
+  IF lYLine = 0 THEN
+    lYLine = 9
+  ELSE
+    lYLine = lYLine - 1
+  END IF
+
+  '---Draw vertical lines
+  FOR lLoop = 0 TO 230 STEP 10
+    moveToEx MemHistoryDC, lLoop + lYLine, 68,  0
+    LineTo   MemHistoryDC, lLoop + lYLine,  0
+  NEXT
+
+
+  Win_SelectObject(MemHistoryDC,hPenLight)
+  FOR lLoop = LBOUND(lPoints) TO UBOUND(lPoints) - 1
+    yPos = 67 - 67*lPoints(lLoop)/100
+    moveToEx MemHistoryDC, lLoop    , yPos    ,  0
+    yPos = 67 - 67*lPoints(lLoop+1)/100
+    LineTo   MemHistoryDC, lLoop + 1, yPos
+  NEXT
+
+  BitBlt hDC, 0, 0, ctlWidth, ctlHeight, MemHistoryDC, 0, 0, %SRCCOPY
+
+  Win_ReleaseDC  hHistory, hDC
+  Object_Delete hPenLight
+  Object_Delete hPenDark
+  Object_Delete hBrush
+
+  FUNCTION = 1
+END FUNCTION
+

@@ -1,0 +1,40 @@
+  uses "Stat"
+
+  %ELEMENTS = 1000000
+
+  dim aData(%ELEMENTS)  as ext
+  dim sMsg              as string
+
+  dim lSum, lMin, lMax as ext
+  dim lMaxPos, lMinPos as long
+    
+  dim i as long
+
+  'Stat_Random(aData, 1, %ELEMENTS)
+
+  '---Fill the array with first %ELEMENTS natural numbers 
+  Stat_FillArray(aData, %Stat_Fill_Natural)
+
+  '---Or if you prefer fill with random data from 1 to %ELEMENTS
+  'Stat_Random(aData, 1, %ELEMENTS)
+
+  '---Now some basic stats: Sum, Min, Max
+    lSum = Stat_Sum(aData)
+    lMin = Stat_Min(aData, lMinPos)
+    lMax = Stat_Max(aData, lMaxPos)
+
+    sMsg  = "Some very simple statistical functions" & $crlf
+    sMsg += "Sum: " & $tab & lSum & $crlf
+    sMsg += "Min: " & $tab & lMin & "    ---> Min value is located at position " & lMinPos & " inside the array." & $crlf
+    sMsg += "Max: " & $tab & lMax & "    ---> Max value is located at position " & lMaxPos & " inside the array." &  $crlf
+    msgbox 0, sMsg, 0, "Total Elements considered: " & %ELEMENTS
+
+  '---Now some other stats
+    sMsg  = "Some few other statistical functions" & $crlf
+    sMsg += "MeanArithmetic: " & $tab & Stat_MeanArithmetic (aData) & $crlf
+    sMsg += "MeanGeometric:  " & $tab & Stat_MeanGeometric  (aData) & $crlf
+    sMsg += "MeanHarmonic:   " & $tab & Stat_MeanHarmonic   (aData) & $crlf
+    sMsg += "StdDeviation:   " & $tab & Stat_StdDeviation      (aData) & $crlf
+    sMsg += "StdError:       " & $tab & Stat_StdError          (aData) & $crlf
+    msgbox 0, sMsg, 0, "Total Elements considered: " & %ELEMENTS
+

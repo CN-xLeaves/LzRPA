@@ -1,0 +1,108 @@
+  '-----------------------------------------------------------
+  ' Script courtesy by zak
+  ' http://community.thinbasic.com/index.php?topic=3437
+  '-----------------------------------------------------------
+  ' Needed modules
+  '-----------------------------------------------------------
+  Uses "UI"
+
+  '-----------------------------------------------------------
+  ' Global variables
+  '-----------------------------------------------------------
+  Dim ScreenWidth     As Long = 800
+  Dim ScreenHeight    As Long = 800
+  Dim t1, t2          As Quad         '---For time measuring
+  Dim i, j            As Long         '---Loopers
+  Dim x, y, dots      As Long         '---
+  Dim turn            As Long = 0     '---
+  Dim num             As Long = 1     '---Prime number starting point
+  Dim points_per_edge As Long = 1     '---
+  Dim edgecycle       As Long = 0     '---
+ 
+  Dim hWin            As DWord        '---Handle of the canvas window
+  
+  '-----------------------------------------------------------
+  ' Main program
+  '-----------------------------------------------------------
+  hWin = Canvas_Window("primes spiral", 1, 1, ScreenWidth, ScreenHeight )
+
+  Canvas_Attach(hWin, 0, %TRUE) ' <- double buffer
+
+  timebeginperiod(1)
+  
+  '---Start timer
+  HiResTimer_Init
+  t1 = HiResTimer_Get
+
+  '---Init canvas
+  Canvas_Clear(%BLACK)
+  Canvas_Box(1, 1, ScreenWidth-1, ScreenHeight-1, 5, Rgb(255,255, 0)) 
+ 
+  '---Starting point
+  x = ScreenWidth / 2
+  y = ScreenHeight / 2
+
+  '---Main Prime number looper 
+  For i = 1 To 1400
+    Plotting()
+  Next
+
+
+  '---Ending timer
+  t2 = HiResTimer_Get
+
+  Canvas_SetPos 10, ScreenHeight - 20
+  Canvas_Color(%WHITE, %BLACK)
+  Canvas_Print "Time taken: " + Format$((t2 - t1) / 1000000, "#.000") + " second - " + _
+                dots + " dots drawn. Press a key to continue."
+
+  '---A last redraw
+  Canvas_Redraw
+
+  timeendperiod(1)
+
+  Canvas_WaitKey
+  Canvas_Window End
+ 
+  '-----------------------------------------------------------
+  Sub Plotting()
+  '-----------------------------------------------------------
+    Static IsTimeToRedraw As Long
+    
+    Incr IsTimeToRedraw
+    If Mod(IsTimeToRedraw, 20) = 0 Then Canvas_Redraw
+    
+    turn += 1
+    If turn = 5 Then turn = 1
+    edgecycle += 1
+     
+    If edgecycle = 3 Then
+      edgecycle = 1
+      points_per_edge += 1
+      'Canvas_Redraw
+    End If
+     
+    For j = 1 To points_per_edge
+      num += 1
+   
+      Select Case turn
+        Case 1
+          x = x + 1
+        Case 2
+          y = y - 1
+        Case 3
+         x = x - 1
+        Case 4
+         y = y + 1
+      End Select
+   
+      If IsPrime(num) Then
+        Canvas_Color(Rgb(0, 255, 255))
+        Canvas_SetPixel(x, y)
+        dots += 1
+      End If
+
+
+    Next
+
+  End Sub

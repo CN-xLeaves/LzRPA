@@ -1,0 +1,77 @@
+  '===============================================================================
+  '=                              TBGL 0.2.0.0 demo                              =
+  '=                          Using new bone functions                           =
+  '=                                                                             =
+  '=                            Petr Schreiber, 2007                             =
+  '===============================================================================
+  Uses "TBGL" 
+
+  Dim hWnd As Dword 
+
+  hWnd = TBGL_CreateWindowEx("Weird object with 3 bones - press ESC to quit", 640, 480, 32, 0) 
+  TBGL_ShowWindow 
+  
+  ' One model, and ridiculous 64 vertices :)
+  tbgl_m15InitModelBuffers 1, 64
+  
+  %BONE_Bottom = 1
+  %BONE_Middle = 2
+  %BONE_Top    = 3
+  
+  tbgl_m15LoadModel "Models\Cubes.m15", "Textures\", 1, 0, %TBGL_Normal_precise
+  
+  dim NumberOfVertices as long = tbgl_m15GetModelVertexcount(1) ' should be 64, but to make us sure
+  dim i as long
+  
+  ' Bottom cube is tall from 0 to 2, I want to animate just its top part
+  for i = 1 to NumberOfVertices
+    if tbgl_m15GetVertexY(1, i) < 2.1 and tbgl_m15GetVertexY(1, i) > 0.5 then TBGL_m15DefBoneAddVertex ( 1, %BONE_Bottom, i) 
+  next
+  tbgl_m15DefBoneAnchor(1, %BONE_Bottom, 0, 0, 0 )  
+  
+  ' Middle cube is tall from 2 to 3, I want to animate just its top part
+  for i = 1 to NumberOfVertices
+    if tbgl_m15GetVertexY(1, i) < 3.1 and tbgl_m15GetVertexY(1, i) > 2 then TBGL_m15DefBoneAddVertex ( 1, %BONE_Middle, i) 
+  next
+  tbgl_m15DefBoneAnchor(1, %BONE_Middle, 0, 2, 0 )  
+  
+  ' Middle cube is tall from 3 to 3.5, I want to animate just its top part
+  for i = 1 to NumberOfVertices
+    if tbgl_m15GetVertexY(1, i) < 3.6 and tbgl_m15GetVertexY(1, i) > 3 then TBGL_m15DefBoneAddVertex ( 1, %BONE_Top, i) 
+  next
+  tbgl_m15DefBoneAnchor(1, %BONE_Top, 0, 2.5, 0 )  
+  
+  ' Now comes the best part :) - new tbgl_m15SetBoneChild which substitutes bad designed tbgl_m15AddBoneTreeItem
+  tbgl_m15SetBoneChild ( 1, %BONE_Bottom, %BONE_Middle )
+  tbgl_m15SetBoneChild ( 1, %BONE_Middle, %BONE_Top )    
+
+  tbgl_UseLighting %TRUE      
+  tbgl_UseLightSource %GL_LIGHT0, 1      
+
+  TBGL_ResetKeyState() ' Resets status of all keys 
+
+  While TBGL_IsWindow(hWnd) 
+
+    TBGL_PolygonLook iif(tbgl_GetWindowKeyState(hWnd, %VK_tab), %GL_LINE, %GL_FILL)
+
+    tbgl_ClearFrame 
+    
+      tbgl_Camera 5,5,5,0,2,0
+      
+      tbgl_m15ResetBones 1
+      tbgl_m15RotBoneX 1, %BONE_Bottom, sin(GetTickcount/100)*10
+      tbgl_m15RotBoneX 1, %BONE_Middle, sin(GetTickcount/100)*20
+      tbgl_m15RotBonex 1, %BONE_Top, sin(GetTickcount/100)*30
+
+      tbgl_m15ApplyBones 1
+      
+      tbgl_m15DrawModel 1      
+
+    tbgl_DrawFrame 
+
+    If TBGL_GetWindowKeyState( hWnd, %VK_ESCAPE) Then Exit While 
+
+  Wend 
+
+  TBGL_DestroyWindow 
+   

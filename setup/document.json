@@ -1,0 +1,13 @@
+[
+	{
+		"Caption": "敬请期待 ...",
+		"Icon": "文件夹",
+		"Visible": true,
+		"Templet": "index.html",
+		"Help": {
+			"Caption": ""
+		},
+		"Child": [
+		]
+	}
+]

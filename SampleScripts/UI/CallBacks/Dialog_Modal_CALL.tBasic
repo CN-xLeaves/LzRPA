@@ -1,0 +1,110 @@
+  USES "UI"
+
+  DIM hDlg      AS LONG         '---Dialog handle
+
+  dim wx        as long         '---Used to get client width
+  dim hy        as long         '---Used to get client height
+  
+  DIM Counter   AS LONG         '---Counter to count output lines
+
+  '---Control IDs
+  %MAX_TEXTBOX = 10
+  dim ID_TEXTBOX(%MAX_TEXTBOX) as long value 10, 11, 12, 13, 14, 15, 16, 17, 18, 19
+
+  %ID_MainFrame = 50            '---Frame around
+  %ID_LBLENTER  = 60            '---Input field label
+
+  
+  '---Set starting width and height of the window
+  wx = 300
+  hy = 250
+  
+  '------------------------------------------------------------------------
+  '---Create main dialog
+  '------------------------------------------------------------------------
+  DIALOG NEW 0, "Dialog with CallBacks ! And is fast !", -1, -1, wx, hy, _
+                                                %WS_DLGFRAME          OR _
+                                                %DS_CENTER            OR _
+                                                %WS_CAPTION           OR _
+                                                %WS_SYSMENU           OR _
+                                                %WS_OVERLAPPEDWINDOW  , _
+                                                0 TO hDlg
+
+  DIALOG SET MINSIZE hDlg, wx, hy
+ 
+  '---Show dialog
+  DIALOG SHOW modal hDlg, call cbDialog
+
+
+  '------------------------------------------------------------------------
+  callback function cbDialog() as long
+  '------------------------------------------------------------------------
+    
+    select case cbmsg
+
+      case %WM_INITDIALOG
+        CONTROL ADD frame , CBHNDL, %ID_MainFrame, "Please fill relevant fields:" , 2,  2, wx - 5, hy - 50, , %WS_EX_TRANSPARENT
+        CONTROL SET RESIZE CBHNDL, %ID_MainFrame, 1, 1, 0, 0
+
+        for Counter = 1 to %MAX_TEXTBOX
+          CONTROL ADD label   , CBHNDL, 0, "Field " & Counter,  5, 50 + (Counter-1) * 15,  40, 12
+          CONTROL ADD TEXTBOX , CBHNDL, ID_TEXTBOX(Counter),  "", 55, 49 + (Counter-1) * 15, 230, 12, ,,  call TextBox_CB '<<<--The same callback for all text fields
+          CONTROL SET RESIZE CBHNDL, ID_TEXTBOX(Counter), 1, 1, 0, 0
+        next
+        
+      CASE %WM_CTLCOLOREDIT
+
+      Case %WM_COMMAND
+        Select Case CbCtl
+          Case %IDOK
+            '---<< Ok or ENTER key was pressed
+          case %IDCANCEL
+            '---<< Calcel or ESC key was pressed
+        end select
+ 
+      case %WM_SIZE
+      '  '---Real time sizing !!!!!!!!!!!!!!!
+      '  dialog get client CBHNDL to wx, hy
+      '  CONTROL set size  CBHNDL, %ID_MainFrame       ,  wx - 5, -1
+      '  for Counter = 1 to %MAX_TEXTBOX
+      '    CONTROL set size  CBHNDL, ID_TEXTBOX(Counter) ,  wx - 70, 12
+      '  next
+      case %WM_CLOSE
+
+      case %WM_DESTROY
+        '---Do whatever needed just before dialog is destroyed.
+
+      Case %WM_SYSCOMMAND
+
+        '---To prevent from closing with [X] button, uncomment following lines
+        'If (cbwParam And &HFFF0) = %SC_CLOSE Then
+        '  '---MUST return TRUE to stop the dialog being destroyed...
+        '  Function = %TRUE
+        'End If
+ 
+    end select
+
+  end function
+
+
+
+  '------------------------------------------------------------------------
+  callback function TextBox_CB() as long
+  '------------------------------------------------------------------------
+
+    '---Common to all fields
+    select case CBCTLMSG
+      case %EN_SETFOCUS
+        '---When textbox get focus, change colors
+        CONTROL SET COLOR CBHNDL, CBCTL, rgb(255, 0, 0), rgb(255, 255, 128)
+        '---Select all the text inside.
+        control send CBHNDL, CBCTL, %EM_SETSEL, 0, -1
+        return %TRUE
+      case %EN_KILLFOCUS
+        '---When the control lost its focus, change colors to standard one.
+        CONTROL SET COLOR CBHNDL, CBCTL, 0             , rgb(255, 255, 255)
+        return %TRUE
+     end select    
+  
+  end function
+  

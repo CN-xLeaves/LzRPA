@@ -1,0 +1,291 @@
+  #MINVERSION 1.8.9.0
+
+  Uses "UI"
+  Uses "FILE"
+  Uses "console"
+  
+  
+  Begin ControlID
+    %tbFileText
+    %bFind
+    %bReplace
+  End ControlID
+  
+  Global MsgFindReplace As Long
+   
+  '-------------------------------------------------------------------
+  ' Main script function
+  '-------------------------------------------------------------------
+  Function Main()
+  '-------------------------------------------------------------------
+    Dim hDlg          As DWord
+    Dim Counter       As Long 
+    Dim msg           As TAGMSG
+    Global FR_Dialog  As Long
+       
+    Dialog New Pixels, 0, "Find and Find&Replace test", -1, -1, 495, 440,
+                                                  %WS_DLGFRAME          |
+                                                  %DS_CENTER            |
+                                                  %WS_CAPTION           |
+                                                  %WS_SYSMENU           |
+                                                  %WS_OVERLAPPEDWINDOW  |
+                                                  %WS_CLIPCHILDREN      ,
+                                                  0 To hDlg
+
+    Control Add Textbox , hDlg, %tbFileText, "" , 0,  0, 495, 390, _
+                                                  %WS_CHILD             |
+                                                  %WS_VISIBLE           |
+                                                  %ES_MULTILINE         | 
+                                                  %ES_NOHIDESEL         |
+                                                  %ES_WANTRETURN        |
+                                                  %ES_LEFT              |
+                                                  %ES_AUTOVSCROLL       |
+                                                  %WS_VSCROLL
+
+    Control Add Button , hDlg, %bFind   , "Find ..."              , 100,  400, 180, 25
+    Control Add Button , hDlg, %bReplace, "Find and Replace ..."  , 300,  400, 180, 25
+
+
+    Control Set Resize hDlg, %tbFileText, 1, 1, 1, 1
+    Control Set Resize hDlg, %bFind     , 0, 1, 0, 1
+    Control Set Resize hDlg, %bReplace  , 0, 1, 0, 1
+    
+    '---This will load current script into control %tbFileText
+    Control Set Text hDlg, %tbFileText, FILE_Load(APP_SourceName)
+    
+    '---Register a special window message in order to handle Find or find&Replace
+    '---Common dialog requests
+    MsgFindReplace = WIN_RegisterWindowMessage("commdlg_FindReplace")
+    
+    '---Show dialog in MODAL state
+    Dialog Show Modeless hDlg, Call dlgCallback
+    '
+    ' Expanded SDK-style main message loop
+    ' Acquire and dispatch messages until main window is destroyed
+    '
+    While IsWindow(hDlg)
+      Win_GetMessage(msg, %NULL, %NULL, %NULL)
+      If Win_IsDialogMessage(FR_Dialog, msg) Then
+        '---Do nothing
+      Else
+          Win_TranslateMessage msg 
+          Win_DispatchMessage msg 
+      End If
+
+      '---For debugging purposes just printout message info
+      Incr counter
+      PrintL counter, "msg.Message", msg.Message
+    Wend
+    
+    PrintL "OK, ALL DONE."
+    Sleep 1000    
+  End Function 
+    
+  '-------------------------------------------------------------------
+  ' Main dialog callback function used to handle window messages
+  '-------------------------------------------------------------------
+  CallBack Function dlgCallback() As Long
+  '-------------------------------------------------------------------
+    Static Flags      As Long
+
+    '---Now test the message
+    Select Case CBMSG
+    
+      Case MsgFindReplace
+        '---Do actions in response to your input in the dialog box
+        Function = DoFindReplaceActions(CBLPARAM, CBHNDL, %tbFileText, Flags)
+         
+      Case %WM_DESTROY
+
+      Case %WM_SIZE
+          
+      Case %WM_COMMAND
+         
+        '---Check which control fired the message
+        Select Case CBCTL 
+        
+          '---User asked to open Find dialog
+          Case %bFind
+            '---If window is already open then just put it into foreground
+            If IsWindow(FR_Dialog) Then
+              Beep
+              Win_SetForeground(FR_Dialog)
+            Else
+              '---Else open find dialog
+              FR_Dialog = Dialog_Find(CBHNDL, Flags)
+            End If
+          
+          '---User asked to open Find&Replace dialog
+          Case %bReplace
+            '---If window is already open then just put it into foreground
+            If IsWindow(FR_Dialog) Then
+              Beep
+              Win_SetForeground(FR_Dialog)
+            Else
+              '---Else open find and replace dialog
+              FR_Dialog = Dialog_FindAndReplace(CBHNDL, Flags)
+            End If
+
+        End Select 
+
+    End Select 
+    
+  End Function 
+
+
+  '-------------------------------------------------------------------
+  ' Working function for Find and Find&Replace dialogs
+  '-------------------------------------------------------------------
+  Function DoFindReplaceActions  ( _
+                                  ByVal LPARAM  As Long , _
+                                  ByVal hWnd    As Long , _
+                                  ByVal Id      As Long , _
+                                  ByRef Flgs    As Long   _
+                                ) As Long
+  '-------------------------------------------------------------------
+    Global txt      As String
+    Global iPos     As Long, PrPos As Long
+    Global Match    As Long
+    Global Sel1     As Long, Sel2 As Long
+    Global PrZt     As String
+    
+    Global lpPfr    As FINDREPLACE Ptr
+    Global zt       As String
+    Global zt2      As String
+    
+
+    '---Get the pointer of FINDREPLACE structure from LParam
+    lpPfr = LPARAM
+    
+    '---Find or replace dialog is closing
+    If (lpPfr.Flags And %FR_DIALOGTERM) Then     
+        Exit Function
+    End If
+
+    '---Save flags for next call
+    Flgs = lpPfr.Flags
+    '---Get text to search for
+    zt = Peek$(Asciiz, lpPfr.lpstrFindWhat)
+    '---Get replacing text if any
+    zt2 = Peek$(Asciiz, lpPfr.lpstrReplaceWith)
+
+    Control Get Text hWnd, Id To txt ' text to search in
+    Control Send hWnd, Id, %EM_GETSEL, VarPtr(Sel1), VarPtr(Sel2)
+    iPos = Sel1 ' Set position to caret or start of selection if any
+
+    '---Find next
+    If (lpPfr.Flags And %FR_FINDNEXT) Then 
+      '---Necessary adjustment to prevent from being stuck in the same position.
+      If (Ucase$(Mid$(txt, Sel1 + 1, Sel2 - Sel1)) = PrZt And Sel2 > Sel1) Or Sel2 = Len(txt) Then
+        Incr iPos
+      End If
+      
+      '---Call finder worker function
+      Match = DoFindReplace
+      
+      '---Check results
+      If IsTrue Match Then
+          Control Send hWnd, Id, %EM_SETSEL, PrPos - 1, PrPos + Len(zt) - 1
+          Control Send hWnd, Id, %EM_SCROLLCARET, 0, 0
+          PrZt = Ucase$(Trim$(zt))
+      Else
+          MsgBox hWnd, "No match found. Restarting from the beginning of the text", %MB_ICONINFORMATION, "Find"
+          '---Restart from the beginning
+          Control Send hWnd, Id, %EM_SETSEL, 0, 0
+          Control Send hWnd, Id, %EM_SCROLLCARET, 0, 0
+      End If
+
+    '---Replace
+    ElseIf (lpPfr.Flags And %FR_REPLACE) Then
+
+      '---Call finder worker function
+      Match = DoFindReplace
+
+      '---Check results
+      If IsTrue Match Then
+        txt = LEFT$(txt, PrPos - 1) + zt2 + Mid$(txt, PrPos + Len(zt)) ' replace zt with zt2
+        Control Set Text hWnd, Id, txt     ' set changed text in textbox
+
+        Match = DoFindReplace
+
+        If IsTrue Match Then
+            Control Send hWnd, Id, %EM_SETSEL, PrPos - 1, PrPos + Len(zt) - 1
+            Control Send hWnd, Id, %EM_SCROLLCARET, 0, 0
+        Else
+            MsgBox hWnd, "No further match found", %MB_ICONINFORMATION, "Find"
+        End If
+      Else
+         MsgBox hWnd, "No match found", %MB_ICONINFORMATION, "Find"
+      End If
+
+    '---Replace all
+    ElseIf (lpPfr.Flags And %FR_REPLACEALL) Then
+
+      '---Call finder worker function
+      Match = DoFindReplace
+
+      If IsTrue Match Then
+        Do
+          txt = LEFT$(txt, PrPos - 1) + zt2 + Mid$(txt, PrPos + Len(zt))      ' replace zt with zt2
+          Match = DoFindReplace
+        Loop Until IsFalse Match                                        ' loop until no more matches
+
+        Control Set Text hWnd, Id, txt              ' set changed text in textbox
+        Control Send hWnd, Id, %EM_SETSEL, PrPos - 1, PrPos + Len(zt2) - 1 ' select last replacement
+        Control Send hWnd, Id, %EM_SCROLLCARET, 0, 0
+      Else
+        MsgBox hWnd, "No match found", %MB_ICONINFORMATION, "Find"
+      End If
+    End If
+    
+    Function = 1
+
+  End Function
+
+  '-------------------------------------------------------------------
+  ' Actual worker
+  '-------------------------------------------------------------------
+  Function DoFindReplace() As Long
+  '-------------------------------------------------------------------
+    '---Word delimiting characters. This may be modified if you so wish.
+    Static Delim    As String = "!""#¤%&/()=?`´|@£${[]}+^¨~*',;.:-_ "
+    Local  Sta      As Long
+
+    Do
+      '---Establish search direction - up or down - and start position for INSTR-search.
+      If (lpPfr.Flags And %FR_DOWN) Then
+        Sta = iPos + 1
+      Else
+        Sta = iPos - Len(txt) - 2
+      End If
+
+      If (lpPfr.Flags And %FR_MATCHCASE) Then      ' match case
+        iPos = InStr(Sta, txt, zt)
+      Else                                          ' no matching of case is necessary
+        iPos = InStr(Sta, Ucase$(txt), Ucase$(zt))
+      End If
+
+      If iPos Then                                   ' if result
+        If (lpPfr.Flags And %FR_WHOLEWORD) Then  ' check for whole word
+          ' This may seem too simple, but it works - also at the start and end of the text.
+          If  IsTrue Verify(Mid$(txt,iPos - 1, 1),Delim) Or _
+              IsTrue Verify(Mid$(txt,iPos + Len(zt), 1), Delim) Then
+              Iterate Do
+          End If
+        End If
+        ' Match found - Set previous position for next search
+        Match = %TRUE
+        PrPos = iPos
+      End If
+      
+    Loop Until IsTrue Match Or IsFalse iPos
+
+    '---Match not found - Set pos to previous position
+    If IsFalse iPos Then
+      iPos = PrPos
+      Match = %FALSE
+    End If
+    
+    Function = Match
+        
+  End Function

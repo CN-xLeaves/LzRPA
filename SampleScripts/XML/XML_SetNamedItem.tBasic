@@ -1,0 +1,59 @@
+' =========================================================================================
+' Demonstrates the use of the setNamedItem method.
+' =========================================================================================
+
+uses "Console"
+
+#default declare Checkduplicates    %TRUE
+#default declare CheckMissing       %TRUE
+
+#INCLUDE "%APP_INCLUDEPATH%\TB_XML60.INC"
+
+' ========================================================================================
+' Main
+' ========================================================================================
+FUNCTION MAIN() as long
+
+   LOCAL pXmlDoc            AS DWORD
+   LOCAL pRootNode          AS DWORD
+   LOCAL pNodePublishDate   AS DWORD
+   LOCAL pNamedNodeMap      AS DWORD
+   LOCAL pNodeBook          AS DWORD
+   LOCAL pDOMElement        AS DWORD
+   LOCAL pDOMNode           AS DWORD
+   LOCAL IID_IXMLDOMElement AS GUID
+   LOCAL vValue             AS VARIANT
+
+   pXmlDoc = XmlCreateObject($PROGID_Msxml2DOMDocument)
+   IXMLDOMDocument_put_async pXmlDoc, %FALSE
+
+   IXMLDOMDocument_load pXmlDoc, "books.xml"
+   IF XmlParseError_get_errorCode(pXmlDoc) <> 0 THEN
+      console_writeline "You have error " & XmlParseError_get_reason(pXmlDoc)
+   ELSE
+      pNodePublishDate = IXMLDOMDocument_createAttribute(pXmlDoc, "PublishDate")
+      IXMLDOMAttribute_put_value pNodePublishDate, DATE$
+      pNodeBook = IXMLDOMNode_selectSingleNode(pXmlDoc, "//book")
+      pNamedNodeMap = IXMLDOMNode_get_attributes(pNodeBook)
+      pDOMNode = IXMLDOMNamedNodeMap_setNamedItem(pNamedNodeMap, pNodePublishDate)
+      IF pDOMNode THEN XmlRelease pDOMNode
+      IID_IXMLDOMElement = $IID_IXMLDOMElement
+      pDOMElement = XmlQueryInterface(pNodeBook, IID_IXMLDOMElement)
+      IXMLDOMElement_getAttribute pDOMElement, "PublishDate", vValue
+      console_writeline vValue
+   END IF
+
+   ' cleanup
+   XmlRelease pDOMElement
+   XmlRelease pNodeBook
+   XmlRelease pNamedNodeMap
+   XmlRelease pNodePublishDate
+   XmlRelease pRootNode
+   XmlRelease pXmlDoc
+   
+   console_writeline "--- Press any key to finish ---"
+   console_WAITKEY
+
+END FUNCTION
+
+Main

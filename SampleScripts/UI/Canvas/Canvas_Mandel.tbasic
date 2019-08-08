@@ -1,0 +1,87 @@
+' Empty GUI script created on 10-25-2011 12:48:25 by largo_winch (ThinAIR)
+ 
+Uses "ui"
+Uses "GDIP"
+
+Randomize Timer
+ 
+Function Main () As Long
+    Local hwin As DWord
+    Local tmr, xmin, xmax, ymin, ymax, cx, cy, dcx, dcy, x, y, zr, zi As Double
+    Local xi, j,k, numiter, numxpix, numypix As Long
+    Local color_map() As Long
+    Local s           As String
+    Local sFileName   As String
+     
+    numxpix = 400 '800 
+    numypix = 400 '600 
+
+    TimeBeginPeriod(1)
+
+    hWin = Canvas_Window ("Canvas_colors_testing 1e_go : mandelbrot", 50, 50, numxpix, numypix)     
+
+    Canvas_Attach hwin, 0, Redraw
+    Canvas_Scale Pixels
+            
+    xmin = -.65 : xmax = -.45
+    ymin =  .52 : ymax =  .72
+    numiter = 216
+    
+    dcx = (xmax - xmin)/(numxpix - 1)
+    dcy = (ymin - ymax)/(numypix - 1)
+ 
+    ReDim color_map(216) '(6*6*6) 216
+    For xi = 1 To 6
+        For j = 1 To 6
+            For k = 1 To 6               
+                color_map(xi + 5 * j + 30 * k) = Rgb(51 * j, 51 * xi, 51 * k)                                                
+            Next
+        Next
+    Next
+
+    tmr = Timer
+    cx  = xmin    
+
+    For xi = 1 To numxpix
+        cy = ymax
+        For j = 1 To numypix
+            x = cx
+            y = cy            
+
+            For k = 1 To numiter
+              zr = pow2(x) - pow2(y) + cx 
+              zi = 2 * x * y + cy                             
+
+              If (Pow2(zr) + Pow2(zi)) > 4 Then Exit For
+
+              x = zr
+              y = zi                                
+            Next          
+            cy += dcy
+
+            Canvas_SetPixel xi, j, color_map(numiter + 2 - k)           
+
+        Next       
+        cx += dcx 
+        
+        If Not IsWindow(hWin) Then Stop
+    Next
+
+    sFileName = APP_ScriptPath & "Mandel"
+    Canvas_BitmapSave(sFileName & ".bmp")
+    GDIP_ConvertImage(sFileName & ".bmp", sFileName & ".png", "image/png")
+             
+    Canvas_Color(Rgb(255, 10, 10))
+    Canvas_SetPos(20, 120)  
+    s = Format$(("Took ##.## seconds ") + Format$(Timer - tmr) )
+    Canvas_Print s  
+
+    TimeEndPeriod(1)
+
+    Canvas_WaitKey(27)
+    Canvas_Window End
+  
+  End Function
+  
+ 
+  

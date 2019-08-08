@@ -1,0 +1,374 @@
+﻿  #minversion 1.7.5.0
+  
+  Uses "UI"
+  'Uses "console"
+
+  Begin ControlID
+    %ID_V_SPLIT
+    %ID_MenuTREE
+    %ID_VIEWPORT
+    %ID_OK
+    %ID_CANCEL
+  End ControlID
+    
+  dim hViewPort           as long
+  
+  dim hLocalFoldersDialog as long
+  dim hInboxDialog        as long
+  dim hTrashDialog        as long
+  dim hContactsDialog     as long
+  dim hOptionsDialog      as long
+  
+  dim htLocalFolders      as long
+  dim htInbox             as long
+  dim htTrash             as long
+
+  dim htContacts          as long
+  dim htOptions           as long
+  
+  global cPink              as long = rgb(255, 0, 255)  '---Color for image transparency
+
+  '---Create and load image list
+  global iList              as long = ImageList_New(icon, 16, 16, 32)
+  global Icon_FolderClose   as long = ImageList_Add masked, iList, app_sourcepath & "Icons\folder_closed16_d.bmp"   , cPink 
+  global Icon_FolderOpen    as long = ImageList_Add masked, iList, app_sourcepath & "Icons\folder_open16_h.bmp"     , cPink 
+  global Icon_Options_h     as long = ImageList_Add masked, iList, app_sourcepath & "Icons\folder_options16_h.bmp"  , cPink 
+  global Icon_Options_d     as long = ImageList_Add masked, iList, app_sourcepath & "Icons\folder_options16_d.bmp"  , cPink 
+  global Icon_Trash_h       as long = ImageList_Add masked, iList, app_sourcepath & "Icons\recycle_bin16_h.bmp"     , cPink 
+  global Icon_Trash_d       as long = ImageList_Add masked, iList, app_sourcepath & "Icons\recycle_bin16_d.bmp"     , cPink 
+  global Icon_Sent_h        as long = ImageList_Add masked, iList, app_sourcepath & "Icons\outbox_green16_h.bmp"    , cPink 
+  global Icon_Sent_d        as long = ImageList_Add masked, iList, app_sourcepath & "Icons\outbox_green16_d.bmp"    , cPink 
+  global Icon_Draft_h       as long = ImageList_Add masked, iList, app_sourcepath & "Icons\mail_drafts16_h.bmp"     , cPink 
+  global Icon_Draft_d       as long = ImageList_Add masked, iList, app_sourcepath & "Icons\mail_drafts16_d.bmp"     , cPink 
+  global Icon_Inbox_h       as long = ImageList_Add masked, iList, app_sourcepath & "Icons\inbox_plain16_h.bmp"     , cPink 
+  global Icon_Inbox_d       as long = ImageList_Add masked, iList, app_sourcepath & "Icons\inbox_plain16_d.bmp"     , cPink 
+  global Icon_Unsent_h      as long = ImageList_Add masked, iList, app_sourcepath & "Icons\unsent16_h.bmp"          , cPink 
+  global Icon_Unsent_d      as long = ImageList_Add masked, iList, app_sourcepath & "Icons\unsent16_d.bmp"          , cPink 
+  global Icon_Contacts_h    as long = ImageList_Add masked, iList, app_sourcepath & "Icons\Contacts16_h.bmp"        , cPink 
+  global Icon_Contacts_d    as long = ImageList_Add masked, iList, app_sourcepath & "Icons\Contacts16_d.bmp"        , cPink 
+                
+  '----------------------------------------------------------------------------
+  FUNCTION Main()
+  '----------------------------------------------------------------------------
+    LOCAL hDlg    AS LONG
+
+
+    DIALOG NEW pixels, %HWND_DESKTOP, "thinBasic - TreeView and ViewPort example ", 0, 0, 640, 480, _
+                                      %WS_MAXIMIZEBOX   | _
+                                      %WS_MINIMIZEBOX   | _
+                                      %WS_SYSMENU       | _
+                                      %WS_THICKFRAME    | _
+                                      %WS_CLIPCHILDREN  | _
+                                      %WS_CLIPSIBLINGS  | _
+                                      %DS_CENTER          _
+                                      TO hDlg
+
+    DIALOG SHOW modal hDlg, call cbDialog
+
+  end function
+  
+  '----------------------------------------------------------------------------
+  callback function cbDialog() as long
+  '----------------------------------------------------------------------------
+    local hItem       AS LONG
+    local cWidth      as long
+    local cHeight     as long
+    
+    SELECT CASE cbMsg
+      case %WM_INITDIALOG
+        DIALOG GET CLIENT cbhndl TO cWidth, cHeight
+        
+        CONTROL ADD TreeView, cbhndl, %ID_MenuTREE, "", 0, 0, 0, 0, _
+                                                    %WS_CHILD           | _
+                                                    %WS_VISIBLE         | _
+                                                    %TVS_HASBUTTONS     | _
+                                                    %TVS_HASLINES       | _
+                                                    %TVS_LINESATROOT    | _
+                                                    %TVS_SHOWSELALWAYS  ,  _
+                                                    %WS_EX_CLIENTEDGE, call cbTreeView
+
+        hViewPort = control add VIEWPORT, cbhndl, %ID_VIEWPORT, "", 0, 0, 0, 0
+        
+        Treeview_SetImagelist cbhndl, %ID_MenuTREE, iList
+
+          htLocalFolders = TREEVIEW_INSERTITEM cbhndl, %ID_MenuTREE, 0, %TVI_FIRST, Icon_FolderClose, Icon_FolderOpen, "Local Folders"
+            
+            htInbox   = TREEVIEW_INSERTITEM cbhndl, %ID_MenuTREE, htLocalFolders, %TVI_LAST, Icon_Inbox_d    , Icon_Inbox_h    , "Inbox"
+                        TREEVIEW_INSERTITEM cbhndl, %ID_MenuTREE, htLocalFolders, %TVI_LAST, Icon_Unsent_d   , Icon_Unsent_h   , "Unsent"
+                        TREEVIEW_INSERTITEM cbhndl, %ID_MenuTREE, htLocalFolders, %TVI_LAST, Icon_Draft_d    , Icon_Draft_h    , "Draft"
+                        TREEVIEW_INSERTITEM cbhndl, %ID_MenuTREE, htLocalFolders, %TVI_LAST, Icon_Sent_d     , Icon_Sent_h     , "Sent"
+            htTrash   = TREEVIEW_INSERTITEM cbhndl, %ID_MenuTREE, htLocalFolders, %TVI_LAST, Icon_Trash_d    , Icon_Trash_h    , "Trash"
+          Treeview_SetExpanded cbhndl, %ID_MenuTREE, htLocalFolders, %TRUE
+          Treeview_Select cbhndl, %ID_MenuTREE, htLocalFolders
+
+          htContacts  = TREEVIEW_INSERTITEM cbhndl, %ID_MenuTREE, 0, %TVI_LAST, Icon_Contacts_d , Icon_Contacts_h , "Contacts"
+          htOptions   = TREEVIEW_INSERTITEM cbhndl, %ID_MenuTREE, 0, %TVI_LAST, Icon_Options_d  , Icon_Options_h  , "Options"
+
+
+        Splitter_Create         cbhndl, %ID_V_SPLIT, %SWS_VERTICAL, 10, 10, cWidth - 20, cHeight - 80
+        Splitter_SetPanes       cbhndl, %ID_V_SPLIT, %ID_MenuTREE, %ID_VIEWPORT
+        Splitter_SetSplitPos    cbhndl, %ID_V_SPLIT, cWidth / 3
+        Splitter_SetBarSize     cbhndl, %ID_V_SPLIT, 3
+        Splitter_SetPANEMINSize cbhndl, %ID_V_SPLIT, 0
+        Splitter_SetBackColor   cbhndl, %ID_V_SPLIT, rgb(220,220,220)
+
+        Control Add Button, cbhndl, %ID_OK    , "OK"    , cWidth - 200, cHeight - 40, 80, 20
+        Control Add Button, cbhndl, %ID_Cancel, "Cancel", cWidth - 100, cHeight - 40, 80, 20
+
+        control set resize cbhndl, %ID_V_SPLIT, 1, 1, 1, 1
+        control set resize cbhndl, %ID_OK     , 0, 1, 0, 1
+        control set resize cbhndl, %ID_Cancel , 0, 1, 0, 1
+
+      case %WM_COMMAND
+        select case cbctl
+          case %ID_OK
+            '---Add code to save params
+            dialog end cbhndl
+
+          case %ID_Cancel
+            dialog end cbhndl
+
+        end select
+        
+      case %WM_DESTROY
+        ImageList_Kill(iList)
+        dialog end hInboxDialog
+
+    end select
+
+  END FUNCTION
+
+
+  '----------------------------------------------------------------------------
+  FUNCTION Dialog_LocalFolders_Create_InViewPort()
+  '----------------------------------------------------------------------------
+    LOCAL hDlg    AS LONG
+
+    DIALOG NEW pixels, hViewPort, "", 0, 0, 480, 300, %WS_CHILD or %WS_CLIPCHILDREN TO hDlg
+
+    Control Add Label , hDlg,    0, "This is the window for Local Folders", 15, 5, 255, 12
+    Control Add Button, hDlg,  100, "OK", 200, 300, 80, 20
+
+    DIALOG SHOW modeless hDlg, call cbDialog_LocalFolders
+
+    viewport_SetChild(hViewPort, hDlg, FALSE )
+    
+    function = hDlg
+  end function
+
+  '----------------------------------------------------------------------------
+  callback function cbDialog_LocalFolders() as long
+  '----------------------------------------------------------------------------
+    select case cbmsg
+      case %WM_COMMAND
+        select case cbctl
+          case 100
+            msgbox 0, "You pressed OK in Local Folders dedicated dialog!"
+        end select
+    end select
+    
+  end function
+  
+  '----------------------------------------------------------------------------
+  FUNCTION Dialog_Inbox_Create_InViewPort()
+  '----------------------------------------------------------------------------
+    LOCAL hDlg    AS LONG
+
+    DIALOG NEW pixels, hViewPort, "", 0, 0, 320, 240, %WS_CHILD or %WS_CLIPCHILDREN TO hDlg
+
+    dialog set color hDlg, 0, rgb(209, 254, 207)
+    Control Add Label, hDlg,  0, "This is the window for Inbox", 15, 5, 255, 12
+
+    DIALOG SHOW modeless hDlg', call cbDialog
+
+    viewport_SetChild(hViewPort, hDlg, %TRUE )
+    
+    function = hDlg
+  end function
+
+  '----------------------------------------------------------------------------
+  FUNCTION Dialog_Trash_Create_InViewPort()
+  '----------------------------------------------------------------------------
+    LOCAL hDlg    AS LONG
+
+    DIALOG NEW pixels, hViewPort, "", 0, 0, 640, 480, %WS_CHILD or %WS_CLIPCHILDREN TO hDlg
+
+    dialog set color hDlg, 0, rgb(255,0,0)
+
+    Control Add Label, hDlg,  0, "This is the window for Trash", 15, 5, 255, 12
+
+    DIALOG SHOW modeless hDlg', call cbDialog
+
+    viewport_SetChild(hViewPort, hDlg, %TRUE )
+    
+    function = hDlg
+  end function
+
+  '----------------------------------------------------------------------------
+  FUNCTION Dialog_Contacts_Create_InViewPort()
+  '----------------------------------------------------------------------------
+    LOCAL hDlg    AS LONG
+
+    DIALOG NEW pixels, hViewPort, "", 0, 0, 640, 480, %WS_CHILD or %WS_CLIPCHILDREN TO hDlg
+
+    dialog set color hDlg, 0, rgb(255,0,255)
+
+    Control Add Label, hDlg,  0, "This is the window for Contacts", 15, 5, 255, 12
+
+    DIALOG SHOW modeless hDlg', call cbDialog
+
+    viewport_SetChild(hViewPort, hDlg, %TRUE )
+    
+    function = hDlg
+  end function
+
+  '----------------------------------------------------------------------------
+  FUNCTION Dialog_Options_Create_InViewPort()
+  '----------------------------------------------------------------------------
+    LOCAL hDlg    AS LONG
+
+    DIALOG NEW  hViewPort, "", 0, 0, 320, 240, %WS_CHILD or %WS_CLIPCHILDREN TO hDlg
+
+    '---Some controls just to show something
+      Control Add Label     , hDlg, 0, "Example of a list of controls", 5, 5, 255, 10
+      Control Add Label     , hDlg, 0, "A window in a viewport is exactly a normal window. All kind of controls can be placed over it", 5, 15, 265, 20
+      Control Add Label     , hDlg, 0, "Group 1", 5, 40, 265, 8
+      Control Add CheckBox  , hDlg, 0, "Known contact dimensions", 15, 50, 255, 10
+      control add label     , hDlg, 0, "Major semi-axis of contact ellipse,", 15, 60, 125, 10, %WS_CHILD Or %WS_VISIBLE Or %SS_RIGHT, %WS_EX_LEFT Or %WS_EX_LTRREADING
+      control add label     , hDlg, 0, " a", 140, 60, 30, 10
+      control add label     , hDlg, 0, "=", 170, 60, 10, 10, %WS_CHILD or %WS_VISIBLE or %SS_CENTER, %WS_EX_LEFT or %WS_EX_LTRREADING
+      control add textbox   , hDlg, 0, "1.67E-3", 180, 60, 50, 10
+      control add label     , hDlg, 0, " m", 230, 60, 30, 10
+      control add label     , hDlg, 0, "Minor semi-axis of contact ellipse,", 15, 70, 125, 10, %WS_CHILD Or %WS_VISIBLE Or %SS_RIGHT, %WS_EX_LEFT Or %WS_EX_LTRREADING
+      control add label     , hDlg, 0, " b", 140, 70, 30, 10
+      control add label     , hDlg, 0, "=", 170, 70, 10, 10, %WS_CHILD or %WS_VISIBLE or %SS_CENTER, %WS_EX_LEFT or %WS_EX_LTRREADING
+      control add textbox   , hDlg, 0, "1.67E-3", 180, 70, 50, 10
+      control add label     , hDlg, 0, " m", 230, 70, 30, 10
+      control add label     , hDlg, 0, "Body of interest,", 15, 80, 125, 10, %WS_CHILD Or %WS_VISIBLE Or %SS_RIGHT, %WS_EX_LEFT Or %WS_EX_LTRREADING
+      control add label     , hDlg, 0, " body", 140, 80, 30, 10
+      control add label     , hDlg, 0, "=", 170, 80, 10, 10, %WS_CHILD or %WS_VISIBLE or %SS_CENTER, %WS_EX_LEFT or %WS_EX_LTRREADING
+      control add textbox   , hDlg, 0, "1.67E-3", 180, 80, 50, 10
+      control add label     , hDlg, 0, "", 230, 80, 30, 10
+      Control Add Label     , hDlg, 0, "Group 2", 5, 100, 265, 10
+      control add label     , hDlg, 0, "Normal load on contact,", 15, 110, 125, 10, %WS_CHILD Or %WS_VISIBLE Or %SS_RIGHT, %WS_EX_LEFT Or %WS_EX_LTRREADING
+      control add label     , hDlg, 0, " P", 140, 110, 30, 10
+      control add label     , hDlg, 0, "=", 170, 110, 10, 10, %WS_CHILD or %WS_VISIBLE or %SS_CENTER, %WS_EX_LEFT or %WS_EX_LTRREADING
+      control add textbox   , hDlg, 0, "1.67E-3", 180, 110, 50, 10
+      control add label     , hDlg, 0, " N", 230, 110, 30, 10
+      Control Add CheckBox  , hDlg, 0, "Tangential loading", 15, 120, 255, 10
+      control add label     , hDlg, 0, "Direction of friction (body 1),", 15, 130, 125, 10, %WS_CHILD Or %WS_VISIBLE Or %SS_RIGHT, %WS_EX_LEFT Or %WS_EX_LTRREADING
+      control add label     , hDlg, 0, " gama1", 140, 130, 30, 10
+      control add textbox   , hDlg, 0, "10", 180, 130, 50, 10
+      control add label     , hDlg, 0, " degree", 230, 130, 30, 10
+      control add label     , hDlg, 0, "Direction of friction (body 2),", 15, 140, 125, 10, %WS_CHILD Or %WS_VISIBLE Or %SS_RIGHT, %WS_EX_LEFT Or %WS_EX_LTRREADING
+      control add label     , hDlg, 0, " gama2", 140, 140, 30, 10
+      control add textbox   , hDlg, 0, "-170", 180, 140, 50, 10
+      control add label     , hDlg, 0, " degree", 230, 140, 30, 10
+      control add label     , hDlg, 0, "Coefficient of kinetic friction,", 15, 150, 125, 10, %WS_CHILD Or %WS_VISIBLE Or %SS_RIGHT, %WS_EX_LEFT Or %WS_EX_LTRREADING
+      control add label     , hDlg, 0, " rMu", 140, 150, 30, 10
+      control add label     , hDlg, 0, "=", 170, 150, 10, 10, %WS_CHILD or %WS_VISIBLE or %SS_CENTER, %WS_EX_LEFT or %WS_EX_LTRREADING
+      control add textbox   , hDlg, 0, "0.1", 180, 150, 50, 10
+      control add label     , hDlg, 0, "", 230, 150, 30, 10
+      Control Add CheckBox  , hDlg, 0, "Moving contact", 15, 160, 255, 10
+      control add label     , hDlg, 0, "Direction of contact motion (body 1),", 15, 170, 125, 10, %WS_CHILD Or %WS_VISIBLE Or %SS_RIGHT, %WS_EX_LEFT Or %WS_EX_LTRREADING
+      control add label     , hDlg, 0, " chi1", 140, 170, 30, 10
+      control add label     , hDlg, 0, "=", 170, 170, 10, 10, %WS_CHILD or %WS_VISIBLE or %SS_CENTER, %WS_EX_LEFT or %WS_EX_LTRREADING
+      control add textbox   , hDlg, 0, "30", 180, 170, 50, 10
+      control add label     , hDlg, 0, " degree", 230, 170, 30, 10
+      control add label     , hDlg, 0, "Direction of contact motion (body 2),", 15, 180, 125, 10, %WS_CHILD Or %WS_VISIBLE Or %SS_RIGHT, %WS_EX_LEFT Or %WS_EX_LTRREADING
+      control add label     , hDlg, 0, " chi2", 140, 180, 30, 10
+      control add label     , hDlg, 0, "=", 170, 180, 10, 10, %WS_CHILD or %WS_VISIBLE or %SS_CENTER, %WS_EX_LEFT or %WS_EX_LTRREADING
+      control add textbox   , hDlg, 0, "30", 180, 180, 50, 10
+      control add label     , hDlg, 0, " degree", 230, 180, 30, 10
+      Control Add Label     , hDlg, 0, "Group 3 Properties", 5, 200, 265, 10
+      control add label     , hDlg, 0, "Poisson's ratio (body 1),", 15, 210, 125, 10, %WS_CHILD Or %WS_VISIBLE Or %SS_RIGHT, %WS_EX_LEFT Or %WS_EX_LTRREADING
+      control add label     , hDlg, 0, " sigma1", 140, 210, 30, 10
+      control add label     , hDlg, 0, "=", 170, 210, 10, 10, %WS_CHILD or %WS_VISIBLE or %SS_CENTER, %WS_EX_LEFT or %WS_EX_LTRREADING
+      control add textbox   , hDlg, 0, "10", 180, 210, 50, 10
+      control add label     , hDlg, 0, "", 230, 210, 30, 10
+      control add label     , hDlg, 0, "Poisson's ratio (body 2),", 15, 220, 125, 10, %WS_CHILD Or %WS_VISIBLE Or %SS_RIGHT, %WS_EX_LEFT Or %WS_EX_LTRREADING
+      control add label     , hDlg, 0, " sigma2", 140, 220, 30, 10
+      control add label     , hDlg, 0, "=", 170, 220, 10, 10, %WS_CHILD or %WS_VISIBLE or %SS_CENTER, %WS_EX_LEFT or %WS_EX_LTRREADING
+      control add textbox   , hDlg, 0, "-170", 180, 220, 50, 10
+      control add label     , hDlg, 0, "", 230, 220, 30, 10
+      control add option    , hDlg, 0, "Option1", 170, 130, 10, 10
+      control add option    , hDlg, 0, "Option2", 170, 140, 10, 10
+
+    DIALOG SHOW modeless hDlg, call cbDialog_Options
+
+    viewport_SetChild(hViewPort, hDlg, %FALSE )
+    
+    function = hDlg
+  end function
+
+  '----------------------------------------------------------------------------
+  callback function cbDialog_Options() as long
+  '----------------------------------------------------------------------------
+    select case cbmsg
+      case %WM_COMMAND
+
+    end select
+
+  end function
+
+  '----------------------------------------------------------------------------
+  callback function cbTreeView() as long
+  '----------------------------------------------------------------------------
+    select case CBMSG
+      case %WM_NOTIFY
+
+        '---Check what happen
+        Select Case CBNMCODE
+
+          Case %TVN_SELCHANGEDW
+
+            '---Get handle of selected item in treeview
+            select case Treeview_GetSelect(cbhndl, CBNMID)
+              
+              case htLocalFolders
+                if hLocalFoldersDialog then
+                  viewport_SetChild(hViewPort, hLocalFoldersDialog, %FALSE )
+                else
+                  hLocalFoldersDialog = Dialog_LocalFolders_Create_InViewPort
+                end if
+
+              case htInbox
+                if hInboxDialog then
+                  viewport_SetChild(hViewPort, hInboxDialog, %TRUE )
+                else
+                  hInboxDialog = Dialog_Inbox_Create_InViewPort
+                end if
+                
+              case htTrash
+                if hTrashDialog then
+                  viewport_SetChild(hViewPort, hTrashDialog, %TRUE )
+                else
+                  hTrashDialog = Dialog_Trash_Create_InViewPort
+                end if
+
+              case htContacts
+                if hContactsDialog then
+                  viewport_SetChild(hViewPort, hContactsDialog, %TRUE )
+                else
+                  hContactsDialog = Dialog_Contacts_Create_InViewPort
+                end if
+
+              Case htOptions
+              
+                if hOptionsDialog then
+                  viewport_SetChild(hViewPort, hOptionsDialog, %FALSE )
+                else
+                  hOptionsDialog = Dialog_Options_Create_InViewPort
+                end if
+                
+              case else  
+                '---Clear view port
+                viewport_SetChild(hViewPort, 0, %FALSE )
+            end select
+            
+        end select
+    end select
+
+  end function
+  
+ 

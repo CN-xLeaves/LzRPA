@@ -1,0 +1,892 @@
+
+'-----------------------------------------
+'Using OXYGEN to genererate dynmic objects
+'Based on TBGL Examples by Petr Schreiber
+'
+'06 April 2009
+'26 Jan   2013
+'Charles Pegge
+'=========================================
+
+Uses "TBGL", "OXYGEN","FILE"
+
+#include "thinbasic_gl.inc"
+
+  %MAXPARTICLES = 48  ' Reduce this number to increase speed, optimal nuber for nice effect is 48
+  
+  Type tParticles
+    X      As Single
+    Y      As Single
+    Z      As Single
+    SIZE   As Single
+    Speed  As Single
+    AngleZ As Single
+    Fade   As Single
+    R      As Single
+    G      As Single
+    B      As Single    
+  End Type
+
+
+
+  Type VertexArrayObject
+  '...
+  pvt As Long 'VIRTUAL FUNCTION TABLE POINTER
+  n   As Long   'VERTICES
+  v   As String 'VERTEX  ARRAY
+  w   As String 'NORMAL  ARRAY
+  c   As String 'COLOR   ARRAY
+  t   As String 'TEXCOOR ARRAY
+  tex As String 'TEXTURE
+  
+  pv As Long 'VERTEX POINTER
+  pw As Long 'NORMAL POINTER
+  pc As Long 'COLOR  POINTER
+  pt As Long 'TEXCOR POINTER
+  '
+  End Type
+
+
+
+  Dim i As Long
+  Dim f As Single
+  Dim Particle(%MAXPARTICLES) As tParticles    ' Particle data...
+  Dim FrameRate As Double
+
+
+'
+'  ##       ##
+'  # #     # #
+'  #  #   #  #
+'  #   # #   #
+'  #    #    #
+'  #         #
+'  #         #
+'
+'----------------
+Function Main()
+'================
+' ##############
+'  ############
+'    ########
+'       ##
+
+  Local hWnd As DWord
+  Local va As VertexArrayObject
+
+  '------------------------
+  'OXYGEN COMPILED SECTION
+  '=======================
+
+  Local p0,p1,p2,p3,p4,p5,p6,p7,p8,p9 As Long
+  Local src As String
+
+
+  src="
+
+  '
+  'VERTEX ARRAY OBJECT (sync with thinBasic counterpart)
+  '
+  '
+  def included include `%%APP_IncludePath%%\thinbasic_%1.inc`
+  included gl
+  'included glu
+  'included wgl
+  'included glext
+
+  'includepath `gl`  
+  'include once `thinbasic_wgl.inc`
+  'include `opengl32.inc`
+
+  Type tParticles
+    X      As Single
+    Y      As Single
+    Z      As Single
+    SIZE   As Single
+    Speed  As Single
+    AngleZ As Single
+    Fade   As Single
+    R      As Single
+    G      As Single
+    B      As Single    
+  End Type
+
+  Type VertexArrayObject
+  n   As Long    'VERTICES
+  v   As bstring 'VERTEX  ARRAY
+  w   As bstring 'NORMAL  ARRAY
+  c   As bstring 'COLOR   ARRAY
+  t   As bstring 'TEXCOOR ARRAY
+  tex As bstring 'TEXTURE ARRAY
+  '
+  pv As Long 'VERTEX POINTER
+  pw As Long 'NORMAL POINTER
+  pc As Long 'COLOR  POINTER
+  pt As Long 'TEXCOR POINTER
+  '
+  End Type
+  
+  Type Point2D
+  x As Single
+  y As Single
+  End Type
+
+  Type Point3D
+  x As Single
+  y As Single
+  z As Single
+  End Type
+
+  Type RGBColor
+  r As Single
+  g As Single
+  b As Single
+  End Type
+  
+
+
+  'RANDOMISER
+  '==========
+  '
+  Dim seed As Long=0x12345678
+  '
+  Function Rnd() As Single
+    '
+    Static As Single f, d=1/0x7fffffff
+    mov eax,seed
+    rol eax,7
+    imul eax,eax,13
+    mov seed,eax
+    push eax
+    fild DWord [esp]
+    ADD esp,4
+    fmul DWord d
+    fstp DWord f
+    Function=f
+  End Function
+
+
+  'COLOR RANDOMISER
+  '================
+  '
+  Function hrnd() As Single
+    Function=Abs(Rnd)
+  End Function
+
+
+  'COORDINATE RANDOMISER
+  '=====================
+  '
+  Function grnd() As Single
+    Function=8*Rnd
+  End Function
+ 
+  'BUILD VERTEX ARRAY OBJECT
+  '=========================
+  '
+  sub allocate_vertices(va As VertexArrayObject, ByVal n As Long) link #p6
+    '  
+    'REPLACE BSTRINGS AND ARRAY POINTERS
+    '-----------------------------------
+    Dim q = n*12
+    frees va.v
+    frees va.w
+    frees va.c
+    frees va.t
+    frees va.tex
+    va.v=news q
+    va.w=news q
+    va.c=news q
+    va.t=news q
+    va.tex=news 0x40000 ' max 256*256*4 RGBA texture
+    va.n=0
+    va.pv=?va.v
+    va.pw=?va.w
+    va.pc=?va.c
+    va.pt=?va.t
+  End Sub
+
+  
+  macro lenbuffer(le,s)
+    le=?s : If le Then le-=4 : le=*le
+  End macro
+
+
+
+'  ===================
+'  |  |  |  |  |  |  | >> VERTEX COORDS
+'  -------------------
+'  |  |  |  |  |  |  | >> NORMAL COORDS
+'  -------------------
+'  |  |  |  |  |  |  | >> TEXTURE COORDS
+' ====================
+'  |  |  |  |  |  |  | >> COLORS
+' ====================
+'
+'
+
+Sub ArrayBuffer_Render(va As VertexArrayObject) link #p3
+========================================================
+
+  'ENABLE ARRAYS
+  '-------------
+
+  glEnableClientState GL_VERTEX_ARRAY        ' -- Vertices
+  glEnableClientState GL_NORMAL_ARRAY        ' -- Vertices
+  glEnableClientState GL_TEXTURE_COORD_ARRAY ' -- Vertices
+  glEnableClientState GL_COLOR_ARRAY         ' -- Colors
+  
+  'RENDER
+  '------
+  
+  glVertexPointer   3, GL_FLOAT, 0, va.pv
+  glNormalPointer   GL_FLOAT, 0, va.pw
+  glTexCoordPointer 2, GL_FLOAT, 0, va.pt
+  glColorPointer    3, GL_FLOAT, 0, va.pc
+
+  glDrawArrays      GL_QUAD_STRIP, 0, va.n
+
+  'DISABLE ARRAYS
+  '--------------
+  
+  glDisableClientState GL_COLOR_ARRAY
+  glDisableClientState GL_TEXTURE_COORD_ARRAY
+  glDisableClientState GL_NORMAL_ARRAY 
+  glDisableClientState GL_VERTEX_ARRAY
+
+End Sub
+
+
+Sub MakeTexture(ByVal TexNum As Long ,ByVal PixelArray As Long, ByVal xSize As Long, ByVal ySize As Long )
+==========================================================================================================
+  '
+  glBindTexture GL_TEXTURE_2D, texNum
+  glTexParameteri GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR
+  glTexParameteri GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR '_MIPMAP_LINEAR ' _MIPMAP_LINEAR
+  glTexImage2D GL_TEXTURE_2D, 0, 4, xSize, ySize, 0, GL_RGBA, GL_UNSIGNED_BYTE, PixelArray
+  '
+End Sub
+
+
+Sub texture1(va As vertexArrayObject, ByVal n As Long) link #p5
+'===============================================================
+  *va.tex=>
+    0,  0,  0, 0,
+    0, -1, 0x88ffffff, 0,
+    0, 0x88ffffff, -1, 0,
+    0,  0,  0, 0
+  MakeTexture n, ?va.tex, 4, 4
+End Sub
+
+
+Function geom(va As VertexArrayObject) As Single  link #p4
+'=========================================================
+  '
+  'TEST PIECE
+  '
+  Static a,s As Long
+  '
+  If Not s Then
+    s=1
+  End If
+  '
+  '
+  texture1 va,3
+  glpushmatrix
+  glscalef 9,9,9
+  'glenable / gldisable gl_texture_2d
+  '
+  glcolor4f .7,.2,1,1
+  glBindTexture GL_TEXTURE_2D,3
+
+  glbegin GL_QUADS
+  '
+  gltexcoord2f 0,0 : glnormal3f   0,0,1 : glvertex3f -1,-1, 0
+  gltexcoord2f 1,0 : glnormal3f   0,0,1 : glvertex3f  1,-1, 0
+  gltexcoord2f 1,1 : glnormal3f   0,0,1 : glvertex3f  1, 1, 0
+  gltexcoord2f 0,1 : glnormal3f   0,0,1 : glvertex3f -1, 1, 0
+
+  glend
+  glpopmatrix
+  '
+  End Function
+
+
+
+'---------
+'LANDSCAPE
+'=========
+  
+'                                        #     # #
+'                                       # #     #
+'           ###                         ###  #  ##
+'          #   ##                        #   #  #
+'        ##      ######       ##################################
+'########              ########
+
+  Function landscape(ByVal a As Single) As Single  link #p1
+  '========================================================
+  
+  End Function
+
+
+
+
+  Sub morph(ByVal n As Single,sm As Single,smm As Single)
+  '======================================================
+  
+    Static As Single aa,nn, st=.0004
+    If nn<=0 Then nn=n
+    '
+    'MORPH
+    '-----
+
+    aa=aa*(0.9375) + (n-nn )*0.0605 'SMOOTH BY AVERAGING
+
+
+    sm+=st*aa 'TIMESCALE
+    nn=n
+    '
+    'sm=sm+st*10 'auto
+    '
+    If sm<.2 Then sm=.2 : st=-st
+    If sm>1  Then sm=1 : st=-st
+    '
+    'FEEDBACK
+    '--------
+    '
+    If st>0 Then smm=0.2 Else smm=1-sm
+    '
+  End Sub
+
+
+
+
+  
+  '#################
+  '#################
+  '      ###
+  '      ###
+  '      ###
+  '      ###
+  '      ###
+  '      ###
+  '     #####
+  '   ###   ###
+  '  ##       ##
+  '  ##       ##
+  '  ##       ##
+  '   ###   ###
+  '     #####
+
+  'TORUS
+
+  Function DrawTorus(va As VertexArrayObject, ByVal n As Single) As Single  link #p2
+  '=================================================================================
+  '
+  glClearColor 0.15, 0.15, 0.3, 0.0
+  glClear GL_COLOR_BUFFER_BIT
+
+    Static As Single,
+  
+    twopi          = PI()*2,
+    torus_major    = 1.5,
+    torus_minor    = 0.5,
+    torus_major_res= 32,
+    torus_minor_res= 32
+
+    Static As Long i,j,k,q,r,sc,su,sv,sw
+    '
+    'CHECK / ALLOCATE BUFFER SPACE
+    '
+    q=2200 * SIZEOF Point3D
+    lenbuffer(r,va.w)
+    If r<q Then allocate_vertices va,2200
+    '
+    'MAP VERTICES, NORMALS,TEXTURE & COLOR ONTO BUFFERS
+    '
+    sv=?va.v  : sw=?va.w : sc=?va.c : su=?va.t
+    '
+    Dim as Point3D  vec at sv , nrm at sw
+    'Dim as Point3D  nrm at sw
+    Dim as Point2D  tex at su
+    Dim as RGBColor col at sc
+    Dim as sys cn=0
+    
+ 
+    Static As Single,
+    a, b, s, t, x, y, z, nx, ny, nz, gscale,
+    tmc,tmd,tme, rc,gc,bc, sm=1,smm
+    '
+    '
+    'PLOT TORUS INTO VERTICES ETC
+    '----------------------------
+    '
+    seed=0x12345678 ' RANDOMISER
+    '
+    '
+    'QUAD_STRIPS
+    '
+    For i = 0 To TORUS_MINOR_RES-1
+      '
+      'SET COLOR OF RINGS
+      '
+      'rc=.5*hrnd : gc=.4*hrnd : bc=.9*hrnd
+      rc=.99*hrnd : gc=.74*hrnd : bc=.9*hrnd
+      'rc=1 : gc=1 : bc=1
+      '
+      '
+      'EACH MAJOR RING
+      '
+      For j = 0 To TORUS_MAJOR_RES
+        '
+        'EACH PAIR OF QUAD VERTICES
+        '
+        For k = 1 To 0 Step -1
+          '
+          inc cn
+          s = Mod( i+k,TORUS_MINOR_RES + 0.5) 'ANGLE STEP AROUND MINOR
+          t = Mod(j,TORUS_MAJOR_RES)          'ANGLE STEP AROUND MAJOR
+          '
+          'CALCULATE POINT ON SURFACE
+          '--------------------------
+
+
+          '
+          tmd=s*twopi/TORUS_MINOR_RES           'STEP AROUND MINOR
+          tme=t*twopi/TORUS_MAJOR_RES           'STEP AROUND MAJOR
+          tmc=TORUS_MAJOR+TORUS_MINOR * Cos tmd 'COMBINE
+          '
+          x = 4*tmc * Cos tme
+          y = sm*15*TORUS_MINOR * Sin tmd 'CYLINDRICAL DEPTH
+          z = 4*tmc * Sin tme
+          '
+          'CALCULATE SURFACE NORMAL
+          '------------------------
+          '
+          a  = TORUS_MAJOR * Cos tme
+          nx = x-a
+          ny = -y
+          a  = TORUS_MAJOR * Sin tme
+          nz = z-a
+          '
+          'SCALING OF NORMALS
+          '
+          gscale = 1 / Sqr( nx*nx + ny*ny + nz*nz )
+          '
+          'PLOT INTO ARRAYS
+          '----------------
+          '
+          vec(cn)={x,y,z}    'VERTEX
+          nrm(cn)={nx*gscale,ny*gscale,nz*gscale} 'NORMAL
+          col(cn)={rc,gc,bc} 'COLOR
+          '
+        Next
+        '
+        'PLOT TEXTURE COORDS
+        '-------------------
+        '
+        y=j/32
+        tex(cn)={0,y,1,y}
+      Next
+    Next
+    '
+    va.n=cn
+    
+    morph n,sm,smm
+    Function=smm
+    '
+  End Function
+
+  Function DrawParticle (particle As tparticles) As Long  link #p7
+  '===============================================================
+    Static angleX,angleZ As Single
+
+    glPushMatrix   
+    glTranslatef particle.x, particle.y, particle.z
+    glColor4f 1,.5,.0,.7-Particle.y/2 ' The particle will fade out
+    Particle.angleZ+=Rnd()*1
+    glscalef 1, Particle.angleZ*.0004+1, 1 'itr
+    glRotatef Particle.angleZ, 0, 0, 1
+    glBegin %GL_QUADS
+      glTexCoord2f 0,1 : glVertex3f -Particle.SIZE, Particle.SIZE,0
+      glTexCoord2f 1,1 : glVertex3f  Particle.SIZE, Particle.SIZE,0
+      glTexCoord2f 1,0 : glVertex3f  Particle.SIZE,-Particle.SIZE,0
+      glTexCoord2f 0,0 : glVertex3f -Particle.SIZE,-Particle.SIZE,0    
+    glend
+    glPopMatrix   
+  End Function
+
+
+  
+'  
+' ##############
+' ##############
+' ###
+' ###
+' ###
+' ############
+' ############
+' ###
+' ###
+' ###
+' ###
+' ###
+' ###
+'
+Sub finish() link #p0
+'====================
+  'handled by TBGL?
+  'glDeleteTextures 100, 1
+  '
+  terminate
+End Sub
+
+"
+
+  'COMPILE & INITIALISE
+  '--------------------
+
+  'file_save ("t.txt",o2_view src)
+  'MSGBOX 0,O2_prep SRC
+  O2_BASIC src
+  If Len(O2_ERROR) Then
+    MsgBox 0,"Oxygen Error: " + $crlf + O2_ERROR : Stop
+  End If
+  O2_EXEC
+
+  Declare Sub OXYGEN_finish() At p0
+  Declare Function landscape     (ByVal a As Single) As Single At p1
+  Declare Function build_torus   (va As VertexArrayObject, ByVal n As Single) As Single At p2
+  Declare Sub ArrayBuffer_Render (va As VertexArrayObject) At p3
+  Declare Function geom          (va As VertexArrayObject) As Single At p4
+  Declare Sub texture1           (va As VertexArrayObject, ByVal n As Long) At p5
+  Declare Sub allocate_vertices  (va As VertexArrayObject, ByVal n As Long) At p6
+  Declare Function DrawParticle  (particle As tparticles) As Long At p7
+
+
+
+'     #####          ######          ######          ######          ######          ######         
+'    ########       #########       #########       #########       #########       #########      
+'   ##      ##      ##      ##      ##      ##      ##      ##      ##      ##      ##      ##      
+'   ##      ##      ##      ##      ##      ##      ##      ##      ##      ##      ##      ##      
+'  ##      ##      ##      ##      ##      ##      ##      ##      ##      ##      ##      ##      
+'   ##      ##      ##      ##      ##      ##      ##      ##      ##      ##      ##      ##      
+'   ##      ##      ##      ##      ##      ##      ##      ##      ##      ##      ##      ##      
+'   ##      ##########      ##########      ##########      ##########      ##########      ##
+'   #         ######          ######          ######          ######          ######    #### 
+'
+'
+
+
+
+'------------
+'TBGL SECTION
+'============
+
+  allocate_vertices va,2200
+  
+  ' -- Create and show window
+  hWnd = TBGL_CREATEWINDOWEX("Vertex Array Demo", 640, 480, 32, %TBGL_WS_WINDOWED Or %TBGL_WS_CLOSEBOX) 
+  TBGL_SHOWWINDOW
+  '
+
+ 
+  '
+  'PREPARE PARTICLES
+  '-----------------
+
+
+  '#################
+  '#################
+  '      ###
+  '      ###
+  '      ###
+  '      ###
+  '      ###
+  '     #####
+  '   TEXTURES
+
+
+  TBGL_USETEXTURING %TRUE 
+  texture1 va,1
+  TBGL_BINDTEXTURE 1                        ' We will use texture 1 in all parts of program
+  TBGL_BLENDFUNC %GL_SRC_ALPHA , %GL_ONE    ' This kind of blending is affected by tbgl_ColorAlpha
+  TBGL_USEBLEND %TRUE
+  
+  InitParticles                             ' First we will initialize all particles
+
+  
+  
+  '###
+  '###       \|/
+  '###      --*--
+  '###       /|\
+  '###
+  '###
+  '###
+  '###
+  '###
+  '################
+  'LIGHTING OPTIONS
+  '################
+  '
+  '
+  '
+  TBGL_USELIGHTSOURCE %GL_LIGHT0, %TRUE   ' We want use light source %GL_LIGHT0
+  TBGL_SETLIGHTPARAMETER %GL_LIGHT0, %TBGL_LIGHT_AMBIENT, .25, .25, .25, 1
+  TBGL_SETLIGHTPARAMETER %GL_LIGHT0, %TBGL_LIGHT_DIFFUSE, 1, 1, 1, 1
+  'TBGL_SetLightParameter %GL_LIGHT0, %TBGL_LIGHT_SPECULAR, 1, 1, 1, 1
+  TBGL_SETLIGHTPARAMETER %GL_LIGHT0, %TBGL_LIGHT_POSITION, 100, 100, 100, 0 'FROM FRONT UPPER RIGHT
+  '
+
+
+  '
+  'PREPARE CONTROLS
+  '----------------
+  '
+  '
+
+  Dim angleX,angleY,anglaX,anglaY As Single
+  Dim sc,sca,sx,sy,sz As Single
+  sc=1 : sx=1 : sy=1 : sz=1 
+  Dim mx,my,ax,ay As Long
+  Dim phase,gtc As Single
+
+
+
+   '   ##############
+   '  #              #
+   ' #               ###
+   ' #                #
+   ' #                #
+   ' #             #######
+   ' #             #     #
+   ' #             #######
+   ' #                #
+   ' #  '==========   #
+   ' #  'FRAME LOOP   #
+   ' #  '==========   #
+   ' #                #
+   '  #              #
+   '   ##############
+
+  '
+  '
+  While TBGL_ISWINDOW(hWnd)
+    '
+    'MEASURE REALTIME
+    '----------------
+    '
+    gtc=GetTickCount
+    '
+    'BUILD DYNAMIC OBJECTS
+    '---------------------
+    '
+    phase=build_torus va,gtc
+    '
+    FrameRate = TBGL_GETFRAMERATE
+    '
+    'tbgl_setWindowTitle(hWnd, "Vertices:"+STR$(va.n)+", FPS:"+FORMAT$(FrameRate, "#.00"))
+    TBGL_SETWINDOWTITLE(hWnd, "Bellows  Demo: PSVA10")
+  
+    TBGL_CLEARFRAME 
+    TBGL_RESETMATRIX
+
+    TBGL_CAMERA 15, 15, 15, 0, 0, 0 ' VIEWER XYZ OBJECT XYZ
+
+
+    '
+    'RENDER FIERY PARTICLES
+    '----------------------
+    '
+    
+   
+    f=phase*10
+    TBGL_USETEXTURING %TRUE 
+    'TBGL_BindTexture 3
+    glBindTexture %GL_TEXTURE_2D, 1
+    TBGL_USEBLEND %TRUE
+    TBGL_PUSHMATRIX
+    TBGL_TRANSLATE 0,0,-7
+    TBGL_SCALE f,f,f
+    '
+    RenderParticles
+    '
+    TBGL_POPMATRIX
+    'TBGL_UseTexturing %false 
+    TBGL_USEBLEND %FALSE
+       
+    
+    '
+    'RENDER VERTEX ARRAY OBJECT
+    '--------------------------
+    
+    TBGL_USELIGHTING %TRUE
+    TBGL_SCALE sc, sc, sc ' size
+    TBGL_ROTATE angleY, 0.0, 1.0, 0.0  ' Rotation
+    TBGL_ROTATE angleX, 1.0, 0.0, 0.0  ' Rotation
+    ArrayBuffer_Render va
+    'TBGL_UseLighting %FALSE
+    
+    
+    '
+    'CONVENTIONAL RENDER
+    '-------------------
+    '
+    f=landscape 1
+    TBGL_USEBLEND %TRUE
+    'f=geom va
+
+
+
+
+
+    ' ##############
+    ' #\    |  *  /#
+    ' # \   |    / #
+    ' #  \  |   /  #
+    ' ##############  
+    
+    TBGL_DRAWFRAME
+    
+
+
+    '                                    ######
+    'CONTROL BY MOUSE    ===============#--*  #
+    '----------------                    ######
+    '
+    'ROTATE
+    '
+    If TBGL_MOUSEGETLBUTTON Then 
+      mx=TBGL_MOUSEGETPOSX
+      my=TBGL_MOUSEGETPOSY
+      angleX=my-ay+anglaX
+      angleY=mx-ax+anglaY
+    Else
+      If TBGL_MOUSEGETRBUTTON=0 Then
+        ax=TBGL_MOUSEGETPOSX
+        ay=TBGL_MOUSEGETPOSY
+        anglaY=angleY
+        anglaX=angleX
+      End If
+    End If
+    '
+    'SCALE
+    '
+    If TBGL_MOUSEGETRBUTTON Then 
+      mx=TBGL_MOUSEGETPOSX
+      my=TBGL_MOUSEGETPOSY
+      sc=sca+(ay-my)*.01
+      If sc<.1 Then sc=.1
+    Else
+      sca=sc
+    End If
+    
+
+    '                                      ###########
+    'CONTROL BY KEYBOARD    ===============# ¬¬¬¬¬¬` #
+    '-------------------                   ###########
+    '
+    ' -- ESCAPE key to exit application
+  
+    If TBGL_GETWINDOWKEYSTATE(hWnd, %VK_ESCAPE) Then Exit While 
+
+  Wend
+  
+  
+  
+  'RELEASE SUBSYSTEMS
+  '------------------
+
+  OXYGEN_finish
+  TBGL_DESTROYWINDOW
+
+End Function 
+
+
+' ##########
+' #
+' #      ##  #  ###
+' ###### # # #  #  #
+' #      #  ##  ###
+' #
+' ##########
+'
+
+
+
+
+
+
+
+
+ 
+'
+'--------------
+'TBGL FUNCTIONS
+'==============
+
+ 
+'  ########     #              ##          #
+'  ##     ##       #       ##  ##  ##
+'  ##      ## PARTICLES>>> ##      ##     ##
+'  ##     ##                         ##  ##
+'  ########    ##                    #
+'  ##          ##
+'  ##
+'  ##
+'  ##
+'
+
+  ' This function serves ti initialize all particles
+  '-------------------------------------------------
+  '
+  '--------------------------------
+  Function InitParticles( ) As Long
+  '================================
+    '
+    For i = 1 To %MAXPARTICLES
+      BornParticle(i)
+    Next  
+  End Function
+
+
+
+  ' This will prepare one particle
+  '================================
+  '
+  '---------------------------------------------
+  Function BornParticle( index As Long ) As Long
+  '=============================================
+
+    Particle(index).x    = Rndf(-0.05, 0.05)
+    Particle(index).y    = 0
+    Particle(index).z    = -%MAXPARTICLES*.1 / index
+    Particle(index).SIZE = Rndf(0.25,0.25)
+    Particle(index).Speed= Rndf(0.5,1.5)
+    Particle(index).AngleZ= Rndf(0,359)
+    
+  End Function
+
+
+
+  ' This is the core of simple particle module
+  ' ... particles will change position and size
+  '============================================
+  '
+  '----------------------------------
+  Function RenderParticles () As Long
+  '==================================
+    For i = 1 To %MAXPARTICLES
+
+      Particle(i).SIZE += 0.1/ FrameRate
+      Particle(i).x    += 0.1/ FrameRate
+      Particle(i).y     = Particle(i).y + ( Particle(i).Speed / FrameRate )
+      
+      If Particle(i).y > 2 Then BornParticle(i)     
+      DrawParticle Particle(i)
+   Next  
+  End Function
+
+

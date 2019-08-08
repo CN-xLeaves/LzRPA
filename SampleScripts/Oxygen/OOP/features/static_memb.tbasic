@@ -1,0 +1,45 @@
+
+'--------------
+'STATIC MEMBERS
+'==============
+
+'as an alternative to global variables
+
+
+
+uses "oxygen","file"
+dim src as string
+
+src = "
+   
+   class myStateVariables
+      static msgs as string
+   end class
+
+
+   sub init_myStateVariables
+     dim as myStateVariables oo : oo.msgs=`hello`
+   end function
+ 
+   sub test_myStateVariables
+     dim as myStateVariables g
+     print g.msgs
+   end function
+
+   init_myStateVariables
+   test_myStateVariables
+       
+
+  "
+
+
+
+o2_asmo src
+
+'msgbox 0, o2_prep src
+
+if len(o2_error) then
+  msgbox 0, o2_error : stop
+end if
+
+o2_exec

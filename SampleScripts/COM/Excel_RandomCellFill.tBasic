@@ -1,0 +1,91 @@
+uses "COM"
+
+%Max_Param  =   3
+
+dim pXlApp    as dword
+dim pXlBooks  as dword
+dim pXlSheet  as dword
+
+dim vParam(%Max_Param)  as variant
+dim vRetVal             as variant
+
+dim RetVal    as long
+dim nRow      as long
+dim nCol      as long
+
+%MaxRows = 100
+%MaxCols = 20
+
+dim T1, T2 as double
+
+'---Try to create an Excel application reference
+pXlApp = COM_CreateObject("Excel.Application", RetVal)
+
+'---If OK we will procede
+IF COM_Succeeded(RetVal) THEN
+
+  '---Try to set excel visible
+  vParam(1) = 1
+  if COM_Succeeded(COM_SetProperty(pXlApp, "Visible", 1, vParam)) then
+
+    '---OK, we got it
+    msgbox 0, "Now Excel should be visible!"
+
+    '---Now add a new workbook ...
+    if COM_Succeeded(COM_GetProperty(pXlApp, "Workbooks", vRetVal)) then
+
+      pXlBooks = vRetVal
+      if COM_Succeeded(COM_CallMethod(pXlBooks, "Add", 0, 0, 0)) then
+        msgbox 0, "A new workbook should be added!"
+      else
+        msgbox 0, "Add workbook fails"
+      end if
+
+      '--- ... now get the active sheet and change it's name
+      if COM_Succeeded(COM_GetProperty(pXlApp, "ActiveSheet", vRetVal)) then
+
+        pXlSheet = vRetVal
+        vParam(1) = "ThinBASIC"
+        if COM_Succeeded(COM_SetProperty(pXlSheet, "Name", 1, vParam)) then
+
+          msgbox 0, "ActiveSheet name should be changed!"
+          T1 = timer
+          randomize
+          '--- Fill a suqre region with random numbers
+          For nRow = 1 To %MaxRows
+            For nCol = 1 To %MaxCols
+              vParam(1) = nRow
+              vParam(2) = nCol
+              vParam(3) = rnd(1, 20000)
+              COM_SETPROPERTY(pXlSheet, "Cells", 3, vParam)
+
+            next
+          next
+          T2 = timer
+
+          msgbox 0, "Filled " & str$(%MaxRows * %MaxCols) & " cells in " & format$(T2 - T1, "#0.000") & " seconds"
+          
+          '--- Exit from Excel
+          if COM_Succeeded(COM_CallMethod(pXlApp, "Quit", 0, 0, 0)) then
+            msgbox 0, "OK script finished. Quit method executed. Excel should ask to save or not the sheet. Up to you." 
+          end if
+        end if
+      end if
+    end if
+    
+  else 
+    msgbox 0, "Visible fails"
+  end if
+  
+END IF
+
+'--- Time to release the allocated interface objects
+if isfalse(COM_Succeeded(COM_Release(pXlSheet))) then
+  msgbox 0, "ActiveSheet release fails"
+end if
+if isfalse(COM_Succeeded(COM_Release(pXlBooks))) then
+  msgbox 0, "Workbooks release fails"
+end if
+if isfalse(COM_Succeeded(COM_Release(pXlApp))) then
+  msgbox 0, "Excel application release fails"
+End If

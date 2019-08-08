@@ -1,0 +1,69 @@
+'
+'------------------------
+'PUBLIC PROTECTED PRIVATE
+'========================
+
+'blocks of elements can be designated with these attributes
+'as well as individual elements
+'
+'
+uses "oxygen","file"
+dim s as string
+s="
+
+  '-------
+  class io
+  '=======
+    
+  
+  public
+  
+    a as long
+    b as long
+    
+  protected
+  
+    c as long
+    d as long
+  
+  
+  private iva as long
+  
+  
+  public
+   
+    method getv() as long
+      method=this.iva
+    end method
+  
+    method setv(v as long)
+      this.iva=v
+    end method
+
+  private  
+  
+    method x()
+    end method
+     
+    method y()
+    end method
+
+    method z()
+    end method
+
+  end class
+
+  #recordof io
+
+  dim o as io
+  
+  o.setv 42
+  print `Answer: ` str o.getv
+
+"
+
+o2_basic s
+if len(o2_error) then msgbox 0,o2_error : stop
+'msgbox 0,o2_prep s
+'file_save ("t.txt",o2_prep s)
+o2_exec

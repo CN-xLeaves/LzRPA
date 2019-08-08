@@ -1,0 +1,23 @@
+'
+'--------------
+'COMPACT LAYOUT
+'==============
+
+uses "oxygen","file"
+dim s as string
+s="
+  class io
+    a as long, iva as long
+    method getv() as long  : method=this.iva : end method
+    method setv(v as long) : this.iva=v : end method   
+    method x() : /* ... */ : end method
+  end class
+
+  dim ob as io : ob.setv 42 : print `Answer: ` str ob.getv
+
+"
+
+'msgbox 0,o2_prep s
+'file_save ("t.txt",o2_prep s)
+o2_basic s : if len(o2_error) then msgbox 0,o2_error : stop
+o2_exec

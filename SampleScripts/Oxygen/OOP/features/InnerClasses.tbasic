@@ -1,0 +1,59 @@
+
+'-------------
+'INNER CLASSES
+'=============
+
+
+uses "oxygen","file"
+dim src as string
+ 
+src = "
+   
+  class MARTIAN
+  
+    class body
+      heads as long
+      arms as  long
+      legs as  long
+      '
+      method move()
+        print `body moves!`
+      end method
+      '
+    end class
+    
+    'THESE ARE GLOBAL TO THE MARTIAN CLASS ONLY
+    
+    dim as string tab=chr 9    
+    dim as body b
+    
+    b.heads=2 : b.arms=4 : b.legs=8
+    
+    method show()
+    print `
+    MARTIAN BODY
+    heads` tab str(b.heads) `
+    arms`  tab str(b.arms ) `
+    legs`  tab str(b.legs ) `
+    `
+    b.move
+    
+    end method
+    
+  end class
+   
+    
+  dim as martian m
+  
+  m.show
+
+   
+  terminate
+  "
+'file_save ( "t.txt", o2_prep src )
+o2_basic src
+if len(o2_error) then
+  msgbox 0, o2_error : stop
+end if
+o2_exec
+ 

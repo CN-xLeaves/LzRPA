@@ -1,0 +1,41 @@
+﻿{
+  "Project": {
+    "Description": "大漠插件使用范例",
+    "AppPath": "发布目录",
+    "Icon": "标准应用"
+  },
+  "Status": {
+    "ProjExpand": true,
+    "FileExpand": true,
+    "LibsExpand": true
+  },
+  "Build": {
+    "File": "大漠插件使用范例.exe",
+    "Icon": "资源\\app.icon",
+    "ProcessName": "LzBot",
+    "Comments": "Power By LzRPA",
+    "CompanyName": "xywhsoft",
+    "FileDescription": "LzBot Application",
+    "LegalCopyright": "Copyright 2019 All right reserved",
+    "LegalTrademarks": "LzRPA",
+    "ProductName": "LzBot Application",
+    "ProductVersion": "1.0.0.0",
+    "UseFileVersion": true,
+    "OriginalFilename": "LzBot.exe",
+    "FileVersion1": 1,
+    "FileVersion2": 0,
+    "FileVersion3": 0,
+    "FileVersion4": 4,
+    "FileVersionAutoAdd": 2
+  },
+  "Library": [
+    "dm3.1233"
+  ],
+  "File": [
+    {
+      "Path": "代码\\Main.tbs",
+      "Open": true
+    }
+  ],
+  "BootCode": ""
+}

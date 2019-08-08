@@ -1,0 +1,4 @@
+
+Function Main() As Long
+    MsgBox("Hello World")
+End Function

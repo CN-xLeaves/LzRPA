@@ -1,0 +1,23 @@
+
+
+Dim MyVariantVar(100) As Variant = "ABC123"
+dim ItemToChange as long = 10
+
+msgbox 0, "MyVariant value       before: " & $TAB & MyVariantVar(ItemToChange) & $crlf & _
+          "MyVariant type code   before: " & $TAB & VariantVT(MyVariantVar(ItemToChange)) & $CRLF & _
+          "MyVariant type decode before: " & $TAB & VariantVT$(MyVariantVar(ItemToChange))
+
+FillIt1(MyVariantVar)
+
+msgbox 0, "MyVariant value       after : " & $TAB & MyVariantVar(ItemToChange) & $crlf & _
+          "MyVariant type code   after : " & $TAB & VariantVT(MyVariantVar(ItemToChange)) & $crlf & _
+          "MyVariant type decode after : " & $TAB & VariantVT$(MyVariantVar(ItemToChange))
+
+
+Function FillIt1(v1() As Variant)
+    FillIt2(v1)
+End Function
+
+Function FillIt2(v2() As Variant)
+    v2(ItemToChange) = 123 As Long
+End Function

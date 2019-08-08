@@ -1,0 +1,73 @@
+'
+' SmartSplash
+' Eros Olmi & Petr Schreiber, 2014
+'
+
+Uses "UI"
+
+#MINVERSION 1.9.11.0             
+
+Type SmartSplash
+  hSlpash          As DWord
+  idSplashListview As Long
+  idSplashProgress As Long
+  
+  Create      As Function
+  Close       As Function
+  SetRange    As Function
+  SetPos      As Function
+  AddInfo     As Function
+  StillAlive  As Function    
+End Type  
+
+Function SmartSplash.Create(ByVal hParent As Long)
+
+  Me.idSplashListview = %WM_USER + 1
+  Me.idSplashProgress = %WM_USER + 2
+   
+  Dialog New Pixels, hParent, "Wait while loading resources ...", -1, -1, 450, 250,
+                                                                      %WS_DLGFRAME          | _
+                                                                      %DS_CENTER            | _
+                                                                      %WS_CAPTION           | _
+                                                                      %WS_SYSMENU             _
+                                                                      To Me.hSlpash
+ 
+ 
+  Control Add Listview  , Me.hSlpash, Me.idSplashListview , "", 5,   5, 440, 220, %WS_CHILD Or %WS_VISIBLE
+    ListView_SetView      Me.hSlpash, Me.idSplashListview, %LV_VIEW_DETAILS
+    ListView_InsertColumn Me.hSlpash, Me.idSplashListview, 1, 110, "Step", %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_LEFT
+    ListView_InsertColumn Me.hSlpash, Me.idSplashListview, 2, 310, "Info", %LVCF_FMT | %LVCF_TEXT | %LVCF_WIDTH, %LVCFMT_LEFT
+ 
+ 
+  Control Add ProgressBar , Me.hSlpash, Me.idSplashProgress , "", 5, 235, 440,  10, %WS_CHILD Or %WS_VISIBLE
+    
+  '---Show dialog
+  Dialog Show Modeless Me.hSlpash
+   
+End Function
+ 
+ 
+Function SmartSplash.Close() As Long
+  Dialog End Me.hSlpash
+End Function
+ 
+ 
+Function SmartSplash.SetRange(ByVal lMin As Long, ByVal lMax As Long) As Long
+  ProgressBar_SetRange Me.hSlpash, Me.idSplashProgress, lMin, lMax
+End Function
+ 
+ 
+Function SmartSplash.SetPos(ByVal lPos As Long) As Long
+  ProgressBar_SetPos Me.hSlpash, Me.idSplashProgress, lPos
+  DoEvents
+End Function
+ 
+ 
+Function SmartSplash.AddInfo(ByVal sText As String) As Long
+  ListView_InsertItem Me.hSlpash, Me.idSplashListview, 1, sText
+  DoEvents
+End Function
+                     
+Function SmartSplash.StillAlive() As Long
+  Function = IsWindow(Me.hSlpash)
+End Function

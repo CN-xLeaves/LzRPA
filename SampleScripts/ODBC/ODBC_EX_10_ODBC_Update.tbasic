@@ -1,0 +1,96 @@
+'----------------------------------------------------------------------------
+'----------------------------------------------------------------------------
+' This script will demonstrate how to:
+' - create a new ODBC environment
+' - connect to a DB
+' - update a record using a prepared statement
+'----------------------------------------------------------------------------
+' Thanks to Jose Roca for his hard work on ODBC wrapper
+'----------------------------------------------------------------------------
+
+'---Use console module to show output
+Uses "console"
+Uses "UI"
+
+'[!] Include this file in order to use ODBC inside your scripts
+#include "%APP_INCLUDEPATH%\ODBC352.INC"
+
+
+  '[breakpoint] START script
+  Dim hEnv    As DWord      '---Environment handle
+  Dim hConn   As DWord      '---Connection handle
+  Dim ConStr  As String 
+
+  PrintL "---Odbc Update test---"
+  PrintL "---ODBC: Allocates the environment handle---"
+  hEnv = OdbcAllocEnv
+  If IsFalse hEnv Then
+    Console_WriteLine("Script aborted. It was not possible to create an environment handle.")
+    Terminate(%TRUE)
+  End If
+
+  PrintL "---Allocates the connection handle---"
+  hConn = OdbcAllocConnect(hEnv)
+  If IsFalse hConn Then
+    Console_WriteLine("Script aborted. It was not possible to allocate the connection handle.")
+    Terminate(%TRUE)
+  End If
+
+  PrintL "---Connects with the ODBC driver---"
+  ConStr = "DRIVER={Microsoft Access Driver (*.mdb)}; DBQ=biblio.mdb;UID=;PWD=;"
+
+  OdbcOpenConnection(hConn, ConStr)
+  If OdbcError Then
+    Console_Write(OdbcGetConnectionErrorInfo(hConn))
+    Terminate(%TRUE)
+  End If
+
+    
+  PrintL "---Updating ... UPDATE Authors SET Author='thinBasic' WHERE Au_ID=999"
+  '[breakpoint] Start first update
+    ODBC_Update(hConn, "UPDATE Authors SET Author='thinBasic' WHERE Au_ID=999")
+    
+  PrintL "---Updating ... UPDATE Authors SET Author='William Shakespeare' WHERE Au_ID=999"
+  '[breakpoint] Start second update
+    ODBC_Update(hConn, "UPDATE Authors SET Author='William Shakespeare' WHERE Au_ID=999")
+    
+  Terminate
+  
+  PrintL "---Press a key to finish---" 
+  WaitKey
+
+  '----------------------------------------------------------------------------
+  ' Generic update. Pass into txtSql a complete UPDATE ... SQL command
+  '----------------------------------------------------------------------------
+  Function ODBC_Update(ByVal hConn As DWord, ByVal txtSql As String) As Long
+  '----------------------------------------------------------------------------
+    Dim hRec As DWord
+    
+    '---Allocates a statement handle
+    hRec = OdbcAllocStmt(hConn)
+    If IsFalse hRec Then
+      Exit Function
+    End If
+    
+    '[breakpoint] Start first updating
+    OdbcPrepare(hRec, txtSql)
+    OdbcExecute(hRec)
+    Function = OdbcRowCount(hRec)
+
+    If hRec  Then OdbcCloseCursor hRec      '---Closes the cursor
+    If hRec  Then OdbcCloseStmt hRec        '---Closes the statement handle
+        
+  End Function
+
+  '----------------------------------------------------------------------------
+  Function Terminate(Optional ByVal lForceStop As Long)
+  '----------------------------------------------------------------------------
+  
+    If hConn  Then OdbcCloseConnection hConn  '---Closes the connection
+    If hEnv   Then OdbcFreeEnv hEnv           '---Frees the environment handle
+  
+    If lForceStop then
+      Stop
+    End If
+  
+  End Function

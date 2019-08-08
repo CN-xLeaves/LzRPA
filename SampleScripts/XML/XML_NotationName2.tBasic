@@ -1,0 +1,54 @@
+' ========================================================================================
+' Demonstrates the use of the notationName property.
+' ========================================================================================
+
+uses "Console"
+
+#default declare Checkduplicates    %TRUE
+#default declare CheckMissing       %TRUE
+
+#INCLUDE "%APP_INCLUDEPATH%\TB_XML60.INC"
+
+' ========================================================================================
+' Main
+' ========================================================================================
+FUNCTION MAIN() as long
+
+   LOCAL pXmlDoc            AS DWORD
+   LOCAL pRootNode          AS DWORD
+   LOCAL pEntity            AS DWORD
+   LOCAL pNamedNodeMap      AS DWORD
+   LOCAL pDocType           AS DWORD
+   LOCAL pDomNode           AS DWORD
+   LOCAL IID_IXMLDOMEntity  AS GUID
+
+   pXmlDoc = XmlCreateObject($PROGID_Msxml2DOMDocument)
+   IXMLDOMDocument_put_async pXmlDoc, %FALSE
+   IXMLDOMDocument2_setProperty pXmlDoc, "ProhibitDTD", %FALSE
+
+   IXMLDOMDocument_load(pXmlDoc, "doment1.xml")
+   IF XmlParseError_get_errorCode(pXmlDoc) <> 0 THEN
+      console_writeline "You have error " & XmlParseError_get_reason(pXmlDoc)
+   ELSE
+      pDocType = IXMLDOMDocument_get_doctype(pXmlDoc)
+      pNamedNodeMap = IXMLDOMDocumentType_get_entities(pDocType)
+      pDOMNode = IXMLDOMNamedNodeMap_nextNode(pNamedNodeMap)
+      IID_IXMLDOMEntity = $IID_IXMLDOMEntity
+      pEntity = XmlQueryInterface(pDOMNode, IID_IXMLDOMEntity)
+      console_writeline IXMLDOMEntity_get_notationName(pEntity)
+   END IF
+
+   ' cleanup
+   XmlRelease pDomNode
+   XmlRelease pNamedNodeMap
+   XmlRelease pDocType
+   XmlRelease pEntity
+   XmlRelease pRootNode
+   XmlRelease pXmlDoc
+   
+   console_writeline "--- Press any key to finish ---"
+   console_WAITKEY
+
+END FUNCTION
+
+Main

@@ -1,0 +1,57 @@
+[Info]
+Description=DEP:[Dependancy file for thinBundle automatic dependancies discover]
+DateTime=2019/06/14 22:45:44
+
+[ThinBASIC]
+FullName=C:\thinBasic\ThinBasic.exe
+Name=ThinBasic.exe
+Path=C:\thinBasic\
+
+[Script]
+FullName=C:\thinBasic\SampleScripts\Bundle\Application.tbasic
+Name=Application.tbasic
+Path=C:\thinBasic\SampleScripts\Bundle\
+Version_Major=0
+Version_Minor=0
+Version_Revision=0
+Version_Build=0
+
+[Application]
+Name=.\MyFirstApplication
+Icon=C:\thinBasic\SampleScripts\Bundle\Application2.ico
+ExeName=C:\thinBasic\SampleScripts\Bundle\MyFirstApplication.exe
+ExeType=Console
+
+[Resources]
+Comments=Test script for testing thinBundle
+CompanyName=ThinBASIC
+FileDescription=Test script for testing thinBundle
+FileVersion=1.3.0.12
+InternalName=
+LegalCopyright=Copyright 2014 All right reserved
+LegalTrademarks=Legal Trademarks can be found on the web site
+OriginalFilename=
+PrivateBuild=
+ProductName=Application
+ProductVersion=1.3.0.1232
+SpecialBuild=
+
+[Options]
+ObfuscateMainScript=
+CompressAllFiles=
+AskBeforeExtract=
+DeleteAfterRun=
+ActivateVerboseMode=
+ActivateIsolation=
+
+[Modules]
+1=C:\thinBasic\Lib\thinBasic_Console.DLL
+Items=1
+
+[Includes]
+Items=0
+
+[Files]
+1=DB1;C:\thinBasic\SampleScripts\Bundle\MyFirstApplication_DB.accdb;.\DB\MyFirstApplication_DB.accdb;11010
+2=;C:\thinBasic\SampleScripts\Bundle\MyFirstApplication_Excel.xlsx;.\XLSX\MyFirstApplication_Excel.xlsx;11011
+Items=2

@@ -1,0 +1,46 @@
+'
+'----------------------------------
+'OOP AND POINTERS
+'==================================
+ 
+Uses "oxygen"
+Dim src As String
+
+src="
+ 
+  basic
+
+  cr=chr(13) chr(10)
+  results="Oxygen OOP Tests:" cr cr
+   
+###
+  class Test
+  {
+    private
+      int id
+
+    public
+      method init(id) { this.id=id }
+      method foo      { results+= "foo ID " id cr }
+      method bar      { results+= "bar ID " id cr }
+  }
+###
+  test t1 : t1.init 1
+  test t2 : t2.init 2
+
+  call &test.foo &t1
+  call &test.foo &t2
+  call &test.bar &t1
+  call &test.bar &t2
+
+  print results
+
+  "
+
+'MsgBox 0,O2_PREP src ': Stop
+O2_ASMO src
+If Len(O2_ERROR) Then
+  MsgBox 0, "Error: "+O2_ERROR
+Else
+ O2_EXEC
+End If

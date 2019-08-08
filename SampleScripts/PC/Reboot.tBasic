@@ -1,0 +1,15 @@
+Uses "PC"
+
+Function Main () As Long  
+
+  PC_ShutDown($PC_SD_MY_PC, "ThinBASIC launched reboot", %PC_SD_REBOOT, 60, %PC_SD_DONOT_FORCE)
+	
+  MsgBox(0, "Just press OK to cancel the reboot", %MB_ICONINFORMATION Or %MB_OK)
+
+  PC_PreventShutDown($PC_SD_MY_PC)
+
+End Function
+
+
+
+

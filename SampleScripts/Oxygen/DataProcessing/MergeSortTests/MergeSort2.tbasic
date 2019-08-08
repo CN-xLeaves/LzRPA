@@ -1,0 +1,240 @@
+
+#include "SortTest.inc"
+
+src="
+
+#basic
+
+'-------------------------------------
+' CALLBACK FUNCTION TO MAKE THE CHOICE
+'=====================================
+
+' choose between first and second or abort the sorting process
+' this is called by the bisort function
+'
+' Parameters:
+' first   index number for data element
+' second  index number for data element
+'
+' Return:
+' 1 for first choice 2 for second choice 0 to abort the bisort function
+'
+
+'VARIOUS IMPLEMENTATIONS:
+
+'-----------------------------------------------------------------
+function ChooseWhichB (byval first, byval second) as long callback
+'=================================================================
+   dim as bstr rs at #rs
+   if rs(first) > rs(second) then function=1 
+end function
+
+'---------------------------------------------------------
+function ChooseWhichA (byval first, byval second) callback
+'=========================================================
+###
+  'ASM USING DIRECT STRING COMPARE
+  '-------------------------------
+  mov ecx,#rs : mov eax,first : mov edx,second 
+  comparestr [ecx+edx*4-4], [ecx+eax*4-4] 'DIRECT BSTRING COMPARE
+  ( : mov eax,0 : jle exit : inc eax : ) 
+###
+end function
+
+
+jmp fwd continue_main 'RAW ASM CODE SECTION
+
+'-----------
+ChooseWhichC:
+'===========
+  mov ecx,#rs : mov eax,[esp+4] : mov edx,[esp+8] 'FIRST AND SECOND INDICES 
+  comparestr [ecx+edx*4-4], [ecx+eax*4-4] 'DIRECT BSTRING COMPARE
+  ( : mov eax,0 : jle exit : inc eax : )
+  ret 8
+
+'---------------
+comparestringsA:
+'===============            '
+  mov edx,[esp+8]  '
+  mov ecx,[esp+4]  '
+  cmp edx,0        ' test null ptr
+  jz cmpnok1       '
+  mov edx,[edx-4]  '
+  '
+  cmpnok1:         '
+  '
+  cmp ecx,0        ' test null ptr
+  jz cmpnok2       '
+  mov ecx,[ecx-4]  '
+  '
+  cmpnok2:         '
+  '
+  cmp edx,0        ' test zero length
+  jz cmpnok        '
+  cmp ecx,0        ' test zero length
+  jz cmpnok        '
+  cmp edx,ecx      '
+  cmovl ecx,edx    ' select least length
+  mov edx,[esp+8]  '
+  mov edi,[esp+4]  '
+  (                ' compare each char
+    mov al,[edx]   ' from L string 
+    cmp al,[edi]   ' from R string
+    jnz cmpok      '
+    inc edx        '
+    inc edi        '
+    dec ecx        '
+    jge repeat     '
+  )                '
+                   ' tie break: which string is longer
+  mov edx,[esp+8]  '
+  mov edx,[edx-4]  ' get  Llength
+  mov ecx,[esp+4]  '
+  mov ecx,[ecx-4]  ' get R length
+  '
+  cmpnok: 
+  '        '
+  cmp edx,ecx      ' null ptrs, null lengths or tie breaks
+  '
+  cmpok:           ' flags hold result
+  '
+  ret 8            '
+
+ 
+'-----------
+ChooseWhich:
+'===========
+  mov ecx,#rs : mov eax,[esp+4] : mov edx,[esp+8] 'FIRST AND SECOND INDICES 
+  call comparestringsA [ecx+edx*4-4], [ecx+eax*4-4] 'DIRECT BSTRING COMPARE
+  ( : mov eax,0 : jle exit : inc eax : )
+  ret 8
+
+.continue_main
+
+
+
+'###########
+' MERGE SORT
+'###########
+
+
+'
+' requires an index array of twice the number of elements
+' 
+' parameters
+' 1 p    pointer to index array
+' 2 sz   size of index array in elements
+' 3 cbk  address of Choosing function for callback
+
+' Return:
+' 0
+'
+'----------------------------------------------------
+function sortmb(byval dp, byval sz, byval cb) as long
+'====================================================
+
+'   dp ' pointer to base of data index array
+'   sz ' pointer to number of elements to sort
+'   cb ' pointer to comparator callback function
+dim a  ' comparator flag
+dim c  ' chooser index
+dim e  ' end of  upper buffer block
+dim g  ' element counter
+dim i  ' first selector
+dim j  ' second selector
+dim k  ' target index
+dim n  ' number of elements
+dim q  ' flag for toggling source/target buffer blocks
+dim bi ' boundary for fist selector
+dim bj ' boundary for second selector
+dim st ' start of source buffer
+dim en ' end of source buffer
+    
+dim dd at dp
+'
+'INITIAL
+'-------
+'
+n=*sz : e=n+n
+st=1 : g=n+1
+'  
+do
+  if g>n then
+    if st>=n then exit do
+    '
+    'SWAP SOURCE SOURCE INDEX BLOCK AND TARGET INDEX BLOCK
+    '
+    q=1-q                           ' TOGGLE
+    if q then                       '
+      k=n+1 : i=1 : en=n            ' TARGET UPPER BUFFERE
+    else                            '
+      k=1 : i=n+1 : en=e            ' TARGET LOWER BUFFER
+    end if                          '
+    '                               '
+    j=i+st : bi=j : bj=bi+st        ' SET BLOCKS BASE AND MOUNDARIES
+    if bj>en then bj=en+1           ' LIMIT TO MAX ELEMENTS
+    shl st,1                        ' DOUBLE NEXT STRIDE
+    g=1 
+  end if
+  '
+  if i>=bi then                     ' IBLOCK USED UP
+    if j>=bj then                   ' JBLOCK ALSO USED UO
+      i=bj : bi+=st : bj+=st : j=bi ' NEXT BLOCK PAIR
+      if bj>en then bj=en+1         ' BOUNDARY LIMIT
+      if bi>en then bi=en+1         ' BOUNDARY LIMIT
+      continue do
+    else                            ' ONLY IBLOCK USED UP
+      c=j : inc j
+    end if
+  elseif j>=bj then                 ' ONLY JBLOCK USED UP
+     c=i : inc i
+  else                              ' COMPARE IBLOCK AND JBLOCK ELEMENT
+    declare function choose(sys a,sys b) at cb
+    a=choose dd(i),dd(j)           ' CHOOSE WHICH ELEMENT IS TRANSFERRED
+    if a then c=j : inc j else c=i : inc i
+  end if    
+  '
+  dd(k)=dd(c)                       ' TRANSFER THE CHOSEN ELEMENT INDEX
+  inc k : inc g                     ' NEXT
+end do
+
+'TRANSFER SHUTTLE BUFFER TO START IF NECESSARY
+
+if q then for i=1 to n : dd(i)=dd(i+n) : next 'TRANSFER TO LOWER BUFFER
+
+end function
+
+
+
+#include "SortReport.inc"  
+
+"
+'msgbox 0,o2_prep src
+msgbox 0,sz+"    words ready to sort"
+
+o2_basic src
+
+if len(o2_error) then
+  msgbox 0,"Error:"+$cr+o2_error
+  stop
+end if
+
+
+o2_exec
+
+
+'------------
+' SAVE RESULT
+'============
+
+stop
+
+dim a as long, f as long
+f=file_open ("t.txt","output")
+for i=1 to sz
+ a=ri(i)
+ file_LinePrint (f,str$(i)+$tab+str$(a)+$tab+rs(a))
+next
+file_close(f)
+ 
+'msgbox 0,"okay"

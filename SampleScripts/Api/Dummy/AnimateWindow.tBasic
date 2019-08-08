@@ -1,0 +1,42 @@
+uses "UI"
+
+' -- Win32 function
+'DECLARE FUNCTION AnimateWindow LIB "USER32.DLL" ALIAS "AnimateWindow" (BYVAL hWnd AS DWORD, BYVAL dwTime AS DWORD, BYVAL dwFlags AS DWORD) AS LONG
+
+begin const
+  %ID_BLEND         = 1000
+end const
+
+Function Main()                          
+
+  DIM hwnd      AS Dword
+  
+  DIALOG NEW 0, "Sample window", -1, -1, 180, 180, _
+                %WS_DLGFRAME OR %DS_CENTER OR %WS_CAPTION OR %WS_SYSMENU TO hwnd    
+  
+  CONTROL ADD BUTTON, hwnd, %ID_BLEND, "Blend", 10, 10, 160, 100
+
+  Dialog Show Modal hwnd, Call dlgCallback
+  
+end function  
+
+callback function dlgCallback() as long
+
+  SELECT CASE Callback_Message
+      
+    CASE %WM_COMMAND
+
+      SELECT CASE Callback_Control
+
+        CASE %ID_BLEND
+'          If Callback_Control_Message = %BN_CLICKED Then
+'          Beep
+'            DIALOG SHOW STATE Callback_Handle, %SW_HIDE 
+'            AnimateWindow(Callback_Handle, 300, %AW_BLEND)
+'            Dialog Show State Callback_Handle, %SW_SHOW
+'          end if
+          
+      END SELECT
+  END SELECT
+  
+End Function

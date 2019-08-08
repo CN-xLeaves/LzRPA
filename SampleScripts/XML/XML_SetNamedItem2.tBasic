@@ -1,0 +1,52 @@
+' =========================================================================================
+' Same as EXXML_setNamedItem but using the XMLDOMNodeAttributes_setNamedItem and
+' XMLDOMNodeElement_getAttribute wrapper functions.
+' =========================================================================================
+
+uses "Console"
+
+#default declare Checkduplicates    %TRUE
+#default declare CheckMissing       %TRUE
+
+#INCLUDE "%APP_INCLUDEPATH%\TB_XML60.INC"
+
+' ========================================================================================
+' Main
+' ========================================================================================
+FUNCTION MAIN() as long
+
+   LOCAL pXmlDoc          AS DWORD
+   LOCAL pRootNode        AS DWORD
+   LOCAL pNodePublishDate AS DWORD
+   LOCAL pNodeBook        AS DWORD
+   LOCAL pDOMNode         AS DWORD
+   LOCAL vValue           AS VARIANT
+
+   pXmlDoc = XmlCreateObject($PROGID_Msxml2DOMDocument)
+   IXMLDOMDocument_put_async pXmlDoc, %FALSE
+
+   IXMLDOMDocument_load pXmlDoc, "books.xml"
+   IF XmlParseError_get_errorCode(pXmlDoc) <> 0 THEN
+      console_writeline "You have error " & XmlParseError_get_reason(pXmlDoc)
+   ELSE
+      pNodePublishDate = IXMLDOMDocument_createAttribute(pXmlDoc, "PublishDate")
+      IXMLDOMAttribute_put_value pNodePublishDate, DATE$
+      pNodeBook = IXMLDOMNode_selectSingleNode(pXmlDoc, "//book")
+      pDOMNode = XMLDOMNodeAttributes_setNamedItem(pNodeBook, pNodePublishDate)
+      IF pDOMNode THEN XmlRelease pDOMNode
+      XMLDOMNodeElement_getAttribute pNodeBook, "PublishDate", vValue
+      console_writeline vValue
+   END IF
+
+   ' cleanup
+   XmlRelease pNodeBook
+   XmlRelease pNodePublishDate
+   XmlRelease pRootNode
+   XmlRelease pXmlDoc
+   
+   console_writeline "--- Press any key to finish ---"
+   console_WAITKEY
+
+END FUNCTION
+
+Main

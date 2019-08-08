@@ -1,0 +1,14 @@
+dim MyArray(10, 100) as string = "???"
+
+function FillIt(a() as string)
+  dim MaxNum  as long value ubound(a(2))
+  dim Count   as long
+  
+  for Count = 1 to MaxNum
+    a(1, Count) = "The number is " & Count
+  next
+end function
+
+msgbox 0, MyArray(1, 100)
+FillIt(MyArray)
+msgbox 0, MyArray(1, 100)

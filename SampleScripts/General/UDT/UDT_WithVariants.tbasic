@@ -1,0 +1,15 @@
+type VUDT
+  items(10) as variant
+end type
+
+dim test as VUDT
+
+test.items(1) = 1
+test.items(2) = "two"
+test.items(2) += "&two"
+
+test.items(3) = 3
+test.items(3) += 3
+
+msgbox 0, test.items(1) + $CRLF + test.items(2) + $CRLF + test.items(3)
+ 

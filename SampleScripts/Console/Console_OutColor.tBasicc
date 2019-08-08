@@ -1,0 +1,54 @@
+  uses "Console"
+
+  '-------------------------------------------------------------------------
+  'Initial SetUp
+  '-------------------------------------------------------------------------
+
+  CONSOLE_box(1,1,50,22,24,17,"[Color sample]",15,%Console_BOX_FLAG_3DON)
+
+
+  DIM P     AS LONG
+  DIM X     AS LONG
+  DIM y     AS LONG
+  DIM s     AS LONG
+  DIM Head  AS STRING
+  DIM Key   AS STRING
+
+
+  'FOR Y = 1 TO 5
+  '  CONSOLE_Box(60 + Y, 5 + Y, 10, 5, 24, 17, "", 15, %Console_BOX_FLAG_3DOFF)
+  'NEXT
+
+
+
+  FOR Y = 0 TO 15
+    FOR X = 0 TO 15
+
+      IF Y = 0 THEN
+        Head = STR$(x)
+        IF LEN(Head) > 1 THEN
+          Console_Printat(LEFT$(Head, 1), 10 + x * 2, 3, 7)
+        END IF
+        Console_Printat(RIGHT$(Head,1), 10 + x * 2, 4, 7) 
+      END IF
+
+      Console_Printat(FORMAT$(y * 16), 5, 5 + y, 7)
+      Console_Printat("X", 10 + x * 2, 5 + y, Y * 16 + x) 
+
+    NEXT
+  NEXT
+
+  Console_Printat("Press ESC to exit. Program will timeout within 10 secs.", 1, 25, 7)
+
+  WHILE INSTR(Key, "[ESC]") = 0 AND INSTR(Key, "[TIMEOUT]") = 0
+    Key = Console_WaitKey(10)
+    Console_Printat(key + REPEAT$(80 - LEN(Key), " "), 1, 25, 7)
+  WEND
+  
+  
+  Console_Cls
+  
+
+
+
+

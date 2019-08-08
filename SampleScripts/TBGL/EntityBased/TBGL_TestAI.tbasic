@@ -1,0 +1,161 @@
+'
+' Test of hovercraft AI
+' Petr Schreiber and ISAWHIM, started on 09-26-2008
+'
+ 
+Uses "TBGL"
+ 
+BEGIN CONST
+  ' -- Scene IDs
+  %sScene  = 1
+ 
+  ' -- Entity IDs 
+  %eCamera = 1
+  %eLight
+  %eHovercraft
+  %eWayPointStart
+END CONST
+ 
+GLOBAL FrameRate AS DOUBLE
+ 
+FUNCTION Main()
+  LOCAL hWnd As DWORD
+  
+  ' -- Create and show window
+  hWnd = TBGL_CreateWindowEx("Test for hovercraft elemental AI", 800, 600, 32, %TBGL_WS_WINDOWED or %TBGL_WS_CLOSEBOX) 
+  TBGL_ShowWindow 
+ 
+  ' -- Create scene
+  TBGL_SceneCreate(%sScene)
+ 
+  ' -- Create basic entities
+  ' -- Create camera to look from 15, 15, 15 to 0, 0, 0 
+  TBGL_EntityCreateCamera(%sScene, %eCamera)
+    TBGL_EntitySetPos(%sScene, %eCamera, 0, 0, 30)
+    TBGL_EntitySetTargetPos(%sScene, %eCamera, 0, 0, 0)  
+    
+  ' -- Create point light  
+  TBGL_EntityCreateLight(%sScene, %eLight)
+    TBGL_EntitySetPos(%sScene, %eLight, 15, 10, 5)
+ 
+  TBGL_NewList 1
+    TBGL_UseLighting %FALSE
+    TBGL_BeginPoly %GL_TRIANGLES
+      TBGL_Vertex -0.07, -0.14
+      TBGL_Vertex  0.07, -0.14
+      TBGL_Vertex  0.00,  0.14
+    TBGL_ENDPOLY
+    TBGL_UseLighting %TRUE    
+  TBGL_EndList
+  
+  ' -- Create something to look at
+  TYPE tHoverCraft
+    nextWayPoint AS LONG
+    numWayPoint  AS LONG
+    tolerance    AS double ' -- Tolerance to reach waypoint
+    minSpeed     AS double 
+    maxSpeed     AS double 
+    steerFactor  AS double 
+  END TYPE
+  dim HoverInfo as tHoverCraft
+  
+  LOCAL x AS LONG
+  FOR x = %eHovercraft + 30 TO %eHovercraft + 330
+  TBGL_EntityCreateDLSlot(%sScene, x, 0, 1)
+    TBGL_EntitySetColor(%sScene, x, RND(0,255), RND(0,255), RND(0,255))
+    ' -- Assign data to it
+    with HoverInfo
+      .nextWayPoint = %eWayPointStart
+      .numWayPoint  = 21
+      .tolerance    = 0.7
+      .minSpeed     = RND(100,150)*0.01
+      .maxSpeed     = RND(400,450)*0.01
+      .steerFactor  = RND(20,40)*0.01
+    END WITH
+    TBGL_EntitySetUserData(%sScene, x, HoverInfo)
+  next
+ 
+  local i as long
+  for i = %eWayPointStart to %eWayPointStart + 21
+    TBGL_EntityCreateBox(%sScene, i, 0, 0.2, 0.2, 1)  
+      TBGL_EntitySetColor(%sScene, i, 255, 128, 0)  
+  next    
+  
+  ' -- Hardcoded waypoints
+  TBGL_EntitySetPos(%sScene, %eWayPointStart+0, -2, 2, 0)
+  TBGL_EntitySetPos(%sScene, %eWayPointStart+1, 0, 6, 0)
+  TBGL_EntitySetPos(%sScene, %eWayPointStart+2, 4, 8, 0)
+  TBGL_EntitySetPos(%sScene, %eWayPointStart+3, 6, 5, 0)
+  TBGL_EntitySetPos(%sScene, %eWayPointStart+4, 10, 0, 0)
+  TBGL_EntitySetPos(%sScene, %eWayPointStart+5, 13, 1, 0)
+  TBGL_EntitySetPos(%sScene, %eWayPointStart+6, 14, 6, 0)
+  TBGL_EntitySetPos(%sScene, %eWayPointStart+7, 13, 8, 0)
+  TBGL_EntitySetPos(%sScene, %eWayPointStart+8, 8, 11, 0)
+  TBGL_EntitySetPos(%sScene, %eWayPointStart+9, -6, 10, 0)
+  TBGL_EntitySetPos(%sScene, %eWayPointStart+10, -12, 8, 0)
+  TBGL_EntitySetPos(%sScene, %eWayPointStart+11, -13, 6, 0)
+  TBGL_EntitySetPos(%sScene, %eWayPointStart+12, -10, 3, 0)
+  TBGL_EntitySetPos(%sScene, %eWayPointStart+13, -7, 1, 0)
+  TBGL_EntitySetPos(%sScene, %eWayPointStart+14, -8, -3, 0)
+  TBGL_EntitySetPos(%sScene, %eWayPointStart+15, -10, -6, 0)
+  TBGL_EntitySetPos(%sScene, %eWayPointStart+16, -8, -8, 0)
+  TBGL_EntitySetPos(%sScene, %eWayPointStart+17, -1, -9, 0)
+  TBGL_EntitySetPos(%sScene, %eWayPointStart+18, 11, -10, 0)
+  TBGL_EntitySetPos(%sScene, %eWayPointStart+19, 12, -8, 0)
+  TBGL_EntitySetPos(%sScene, %eWayPointStart+20, 11, -6, 0)
+  TBGL_EntitySetPos(%sScene, %eWayPointStart+21, 3, -2, 0)
+ 
+  ' -- Resets status of all keys 
+  TBGL_ResetKeyState() 
+
+  LOCAL z AS LONG
+ 
+  ' -- Main loop
+  While TBGL_IsWindow(hWnd) 
+    FrameRate = TBGL_GetFrameRate
+ 
+    TBGL_ClearFrame
+
+    ' NOTE: Pointer offset from track-points
+    FOR z = %eHovercraft + 30 TO %eHovercraft + 330
+      HoverCraft_AI(z)
+    NEXT
+      'HoverCraft_AI(%eHovercraftMedium)
+      'HoverCraft_AI(%eHovercraftLazy)
+      TBGL_SceneRender(%sScene)
+      
+    TBGL_DrawFrame 
+ 
+    ' -- ESCAPE key to exit application
+    If TBGL_GetWindowKeyState(hWnd, %VK_ESCAPE) Then Exit While 
+ 
+  Wend 
+ 
+  TBGL_DestroyWindow
+END FUNCTION
+ 
+Sub HoverCraft_AI( entity AS LONG )
+  local hoverData AS tHoverCraft ptr
+  
+  ' -- Retrieve data from entity
+  hoverData = TBGL_EntityGetUserDataPointer(%sScene, entity)
+  
+  ' -- Get angle and distance to next waypoint
+  LOCAL angle AS DOUBLE     = TBGL_EntityGetAngleXY(%sScene, entity, hoverData.nextWayPoint, %TBGL_Y) ' -- The front part is on Y axis
+  local distance as double  = TBGL_EntityGetDistance(%sScene, entity, hoverData.nextWayPoint)
+    
+  ' -- Move according to parametrization  
+  TBGL_EntityTurn(%sScene, entity, 0, 0, (hoverData.steerFactor*(min(hoverData.minSpeed+(distance*9), hoverData.maxSpeed*3))*angle)/FrameRate)
+  TBGL_EntityPush(%sScene, entity, 0, min(hoverData.minSpeed+(distance*9), hoverData.maxSpeed)/FrameRate, 0)
+  
+  ' -- Check for next waypoints
+  IF distance < hoverData.tolerance then
+    if hoverData.nextWayPoint <  %eWayPointStart+hoverData.numWayPoint then 
+      incr hoverData.nextWayPoint
+    else  
+      hoverData.nextWayPoint = %eWayPointStart
+    END IF  
+  END IF  
+  
+END SUB
+ 

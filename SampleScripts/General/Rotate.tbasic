@@ -1,0 +1,8 @@
+
+DIM s AS STRING
+
+s = ROTATE$("ANANAS", 2)
+MSGBOX 0, s ' -- This would show "SANANA"
+
+s = ROTATE$("ANANAS", -1)
+MSGBOX 0, s ' -- This would show "NANASA"

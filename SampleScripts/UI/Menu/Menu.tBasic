@@ -1,0 +1,109 @@
+  uses "UI"
+
+  Begin ControlID
+    %ID_OPEN   
+    %ID_EXIT    
+    %ID_OPTION1 
+    %ID_OPTION2 
+    %ID_HELP    
+    %ID_ABOUT   
+
+    %ID_OK      
+    %ID_CANCEL  
+    %ID_TEXT   
+  End ControlID
+
+  '--------------------------------------------------
+  FUNCTION Main() AS LONG
+  '--------------------------------------------------
+    LOCAL hDlg    AS long
+    LOCAL lResult AS LONG
+    LOCAL hMenu   AS long
+    LOCAL hPopup1 AS long
+    LOCAL hPopup2 AS long
+
+    '---First create a top-level menu:
+    MENU NEW BAR TO hMenu
+
+    '---Add a top-level menu item with a popup menu:
+    MENU NEW POPUP TO hPopup1
+    MENU ADD POPUP,  hMenu, "&File", hPopup1, %MF_ENABLED
+    MENU ADD STRING, hPopup1, "&Open", %ID_OPEN, %MF_CHECKED or %MF_GRAYED
+    MENU ADD STRING, hPopup1, "-",      0, 0
+    MENU ADD STRING, hPopup1, "&Exit", %ID_EXIT, %MF_ENABLED
+
+
+    '---Now we can add another item to the menu that will bring up a sub-menu.  First we obtain a new popup menu handle to distinuish it from the first popup menu:
+    MENU NEW POPUP TO hPopup2
+
+    '---Now add a new menu item to the first menu. This item will bring up the sub-menu when selected:
+    MENU ADD POPUP,  hPopup1, "&More Options", hPopup2, %MF_ENABLED
+
+    '---Now we will define the sub menu:
+    MENU ADD STRING, hPopup2, "Option &1", %ID_OPTION1, %MF_ENABLED
+    MENU ADD STRING, hPopup2, "Option &2", %ID_OPTION2, %MF_ENABLED
+
+    '---Finally, we'll add a second top-level menu and popup.  For this popup, we can reuse the first popup variable:
+    MENU NEW POPUP TO hPopup2
+    MENU ADD POPUP,  hMenu, "&Help", hPopup2, %MF_ENABLED
+    MENU ADD STRING, hPopup2, "&Help", %ID_HELP, %MF_ENABLED
+    MENU ADD STRING, hPopup2, "-",      0, 0
+    MENU ADD STRING, hPopup2, "&About", %ID_ABOUT, %MF_ENABLED
+
+
+    '---Create a new dialog template
+    DIALOG NEW 0, "What is your name?", -1, -1, 160, 70, _
+                                                %WS_DLGFRAME OR %DS_CENTER OR %WS_CAPTION OR %WS_SYSMENU OR %WS_OVERLAPPEDWINDOW, _
+                                                0 TO hDlg
+
+    '---Attach menu to dialog          
+    MENU ATTACH hMenu, hDlg
+
+    '' ** Display the dialog
+'    DIALOG SHOW modal hDlg call dlgCallback
+
+    DIALOG SHOW MODELESS hDlg, CALL dlgCallback
+    LOCAL Count as long
+    DO
+      DIALOG DOEVENTS TO Count
+    LOOP UNTIL Count = 0
+
+  end function
+  
+  '--------------------------------------------------
+  callback function dlgCallback() as long
+  '--------------------------------------------------
+
+    local UserName as string
+
+    select case cbmsg
+        
+      case %WM_INITDIALOG  '---Message fired at the very beginning when dialog is initialized
+        '---Add relevant controls
+        CONTROL ADD TEXTBOX , cbhndl, %ID_TEXT, "", 14,  12, 134, 12, 0
+        Control Add Button  , CBHNDL, %ID_OK, "OK", 34, 32, 40, 14, %BS_DEFAULT
+        CONTROL ADD BUTTON  , cbhndl, %ID_CANCEL, "Cancel", 84, 32, 40, 14, 0
+
+        
+      case %WM_Command
+        select case cbctl
+          case %ID_EXIT, %ID_CANCEL
+            dialog end cbhndl
+            
+          case %ID_OK
+            CONTROL GET TEXT cbhndl, %ID_TEXT TO UserName
+            if UserName = "" then
+              msgbox cbhndl, "Please, specify a name", %MB_ICONEXCLAMATION
+            else
+              msgbox cbhndl, "Hello " & UserName
+            end if
+
+          case %ID_ABOUT
+            msgbox 0, "Command About"
+            
+        end select
+
+    end select
+
+  END FUNCTION
+

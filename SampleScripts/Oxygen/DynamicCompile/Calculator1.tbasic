@@ -1,0 +1,20 @@
+'
+'CALCULATOR
+'
+'
+'-------------------------
+'JIT COMPILE AN EXPRESSION
+'AND EXECUTE
+'=========================
+uses "oxygen"
+
+dim q as string
+do
+  q=inputbox$ "Enter An Expression: ","CALCULATOR",q
+  if q="" then exit do
+  o2_basic " print str "+q
+  if len(o2_error) then msgbox 0,o2_error
+  o2_exec
+loop
+
+ 

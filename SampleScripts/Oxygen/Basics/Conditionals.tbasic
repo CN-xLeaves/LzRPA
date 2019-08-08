@@ -1,0 +1,47 @@
+
+
+'CONDITIONALS
+'
+
+uses "oxygen","file"
+dim src as string
+
+src = "
+  basic
+
+  t=`a=1 : b=2
+  `
+  s=t
+
+  a=1 : b=2
+  
+  'SINGLE LINE FORMAT
+  
+  if a>b then s+=`A>B` else s+=`A<=B`
+  
+  print s
+
+  'MULTI-LINE FORMAT
+  
+  s=t
+
+  if a>b then
+    s+=`A>B`
+  elseif a=b then
+    s+=`A=B`
+  else
+    s+=`A<B`
+  end if
+  
+  print s
+      
+  "
+o2_asmo src
+
+'msgbox 0, o2_view src
+
+if len(o2_error) then
+  msgbox 0, o2_error : stop
+end if
+
+o2_exec

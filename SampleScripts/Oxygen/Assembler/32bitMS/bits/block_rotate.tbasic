@@ -1,0 +1,81 @@
+
+uses  "OXYGEN"
+
+dim src as string
+dim s as string
+
+src= "
+ push edi
+ mov ecx,[esp+12]
+ (
+   dec ecx
+   jl exit
+   mov edi,[esp+8]
+   mov edi,[edi]
+   mov edx,[edi-4] ' length
+   mov eax,edx
+   (
+   dec edx ' does not affect carry flag
+   jl exit ' start with the final byte and work back
+   rcr byte [edi+edx],1 ' rotate carry right
+   repeat
+   )
+   ' insert final carried bit 
+   (
+   jae exit ' no carry
+   cmp eax,0
+   jle exit ' null string
+   or byte [edi+eax-1],0x80
+   )
+   repeat
+ )
+ pop edi
+ ret 4 
+ "
+
+o2_buf 1 : o2_asmo src : declare sub RORSN ( s as string, byval n as long ) at o2_buf 1
+
+src= "
+ push edi
+ mov ecx,[esp+12]
+ (
+   dec ecx
+   jl exit
+   mov edi,[esp+8]
+   mov edi,[edi]
+   mov edx,[edi-4] ' length
+   mov eax,edx
+   (
+   dec edx ' does not affect carry flag
+   jl exit
+   rcl byte [edi],1 ' rotate carry left
+   inc edi
+   repeat
+   )
+   ' insert final carried bit 
+   (
+   jae exit ' no carry
+   cmp eax,0
+   jle exit ' null string
+   sub edi,eax
+   or byte [edi],0x1
+   )
+   repeat
+ )
+ pop edi
+ ret 4 
+ "
+
+o2_buf 2 : o2_asmo src : declare sub ROLSN ( s as string, byval n as long ) at o2_buf 2
+
+
+
+if len(o2_error) then msgbox 0,o2_error()+o2_view (src) : stop
+
+s="bit rotate the whole string one place to the right"
+
+RORSN s,5
+ROLSN s,5
+
+msgbox 0,s
+

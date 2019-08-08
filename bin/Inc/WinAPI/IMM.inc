@@ -1,0 +1,959 @@
+'------------------------------------------------------------------------------
+'
+'  IMM.inc -- Common includes for the IMM (Input Method Manager).
+'
+'  Copyright (c) 2003-2011 PowerBASIC, Inc.
+'  Portions Copyright (c) Microsoft Corporation
+'  All Rights Reserved.
+'
+'  Last updated 02 May 2011
+'
+'------------------------------------------------------------------------------
+'  from imm.h of 14 Jul 2009
+'------------------------------------------------------------------------------
+
+
+#INCLUDE THIS ONCE
+
+%IMM_INC = 1
+
+#INCLUDE "SdkDdkVer.inc"
+#INCLUDE "WinUser.inc"
+
+
+'MACRO HIMC=DWORD
+'MACRO HIMCC=DWORD
+
+TYPE COMPOSITIONFORM
+    dwStyle      AS DWORD
+    ptCurrentPos AS POINT
+    rcArea       AS RECT
+END TYPE
+
+
+TYPE CANDIDATEFORM
+    dwIndex      AS DWORD
+    dwStyle      AS DWORD
+    ptCurrentPos AS POINT
+    rcArea       AS RECT
+END TYPE
+
+
+TYPE CANDIDATELIST
+    dwSize        AS DWORD
+    dwStyle       AS DWORD
+    dwCount       AS DWORD
+    dwSelection   AS DWORD
+    dwPageStart   AS DWORD
+    dwPageSize    AS DWORD
+    dwOffset(0)   AS DWORD
+END TYPE
+
+TYPE REGISTERWORDA
+    lpReading AS ASCIIZ PTR
+    lpWord    AS ASCIIZ PTR
+END TYPE
+
+TYPE REGISTERWORDW
+    lpReading AS WSTRINGZ PTR
+    lpWord    AS WSTRINGZ PTR
+END TYPE
+
+#IF %DEF(%UNICODE)
+TYPE REGISTERWORD
+    REGISTERWORDW
+END TYPE
+#ELSE
+TYPE REGISTERWORD
+    REGISTERWORDA
+END TYPE
+#ENDIF
+
+#IF (%WINVER >= &H040A)
+
+TYPE RECONVERTSTRING
+    dwSize            AS DWORD
+    dwVersion         AS DWORD
+    dwStrLen          AS DWORD
+    dwStrOffset       AS DWORD
+    dwCompStrLen      AS DWORD
+    dwCompStrOffset   AS DWORD
+    dwTargetStrLen    AS DWORD
+    dwTargetStrOffset AS DWORD
+END TYPE
+
+#ENDIF  ' (%WINVER >= &H040A)
+
+%STYLE_DESCRIPTION_SIZE = 32
+
+TYPE STYLEBUFA
+    dwStyle       AS DWORD
+    szDescription AS ASCIIZ * %STYLE_DESCRIPTION_SIZE
+END TYPE
+
+TYPE STYLEBUFW
+    dwStyle       AS DWORD
+    szDescription AS WSTRINGZ * %STYLE_DESCRIPTION_SIZE
+END TYPE
+
+#IF %DEF(%UNICODE)
+TYPE STYLEBUF
+    STYLEBUFW
+END TYPE
+#ELSE
+TYPE STYLEBUF
+    STYLEBUFA
+END TYPE
+#ENDIF
+
+
+#IF (%WINVER >= &H040A)
+
+%IMEMENUITEM_STRING_SIZE = 80
+
+TYPE IMEMENUITEMINFOA
+    cbSize        AS DWORD
+    fType         AS DWORD
+    fState        AS DWORD
+    wID           AS DWORD
+    hbmpChecked   AS DWORD
+    hbmpUnchecked AS DWORD
+    dwItemData    AS DWORD
+    szString      AS ASCIIZ * %IMEMENUITEM_STRING_SIZE
+    hbmpItem      AS DWORD
+END TYPE
+
+TYPE IMEMENUITEMINFOW
+    cbSize        AS DWORD
+    fType         AS DWORD
+    fState        AS DWORD
+    wID           AS DWORD
+    hbmpChecked   AS DWORD
+    hbmpUnchecked AS DWORD
+    dwItemData    AS DWORD
+    szString      AS WSTRINGZ * %IMEMENUITEM_STRING_SIZE
+    hbmpItem      AS DWORD
+END TYPE
+
+#IF %DEF(%UNICODE)
+TYPE IMEMENUITEMINFO
+    IMEMENUITEMINFOW
+END TYPE
+#ELSE
+TYPE IMEMENUITEMINFO
+    IMEMENUITEMINFOA
+END TYPE
+#ENDIF
+
+TYPE IMECHARPOSITION
+    dwSize      AS DWORD
+    dwCharPos   AS DWORD
+    pt          AS POINT
+    cLineHeight AS DWORD
+    rcDocument  AS RECT
+END TYPE
+
+DECLARE FUNCTION IMCENUMPROC (BYVAL h AS DWORD, BYVAL l AS LONG) AS LONG
+
+#ENDIF  ' %WINVER >= &H040A
+
+
+
+' prototype of IMM API
+
+DECLARE FUNCTION ImmInstallIMEA LIB "IMM32.DLL" ALIAS "ImmInstallIMEA" _
+    (lpszIMEFileName AS ASCIIZ, lpszLayoutText AS ASCIIZ) AS DWORD
+
+DECLARE FUNCTION ImmInstallIMEW LIB "IMM32.DLL" ALIAS "ImmInstallIMEW" _
+    (lpszIMEFileName AS WSTRINGZ, lpszLayoutText AS WSTRINGZ) AS DWORD
+
+#IF %DEF(%UNICODE)
+DECLARE FUNCTION ImmInstallIME LIB "IMM32.DLL" ALIAS "ImmInstallIMEW" _
+    (lpszIMEFileName AS WSTRINGZ, lpszLayoutText AS WSTRINGZ) AS DWORD
+#ELSE
+DECLARE FUNCTION ImmInstallIME LIB "IMM32.DLL" ALIAS "ImmInstallIMEA" _
+    (lpszIMEFileName AS ASCIIZ, lpszLayoutText AS ASCIIZ) AS DWORD
+#ENDIF
+
+DECLARE FUNCTION ImmGetDefaultIMEWnd LIB "IMM32.DLL" _
+    ALIAS "ImmGetDefaultIMEWnd" (BYVAL hwnd AS DWORD) AS DWORD
+
+DECLARE FUNCTION ImmGetDescriptionA LIB "IMM32.DLL" _
+    ALIAS "ImmGetDescriptionA" _
+    (BYVAL hkl AS DWORD, lpsz AS ASCIIZ, BYVAL uBufLen AS DWORD) AS DWORD
+
+DECLARE FUNCTION ImmGetDescriptionW LIB "IMM32.DLL" _
+    ALIAS "ImmGetDescriptionW" _
+    (BYVAL hkl AS DWORD, lpsz AS WSTRINGZ, BYVAL uBufLen AS DWORD) AS DWORD
+
+#IF %DEF(%UNICODE)
+DECLARE FUNCTION ImmGetDescription LIB "IMM32.DLL" _
+    ALIAS "ImmGetDescriptionW" _
+    (BYVAL hkl AS DWORD, lpsz AS WSTRINGZ, BYVAL uBufLen AS DWORD) AS DWORD
+#ELSE
+DECLARE FUNCTION ImmGetDescription LIB "IMM32.DLL" _
+    ALIAS "ImmGetDescriptionA" _
+    (BYVAL hkl AS DWORD, lpsz AS ASCIIZ, BYVAL uBufLen AS DWORD) AS DWORD
+#ENDIF
+
+DECLARE FUNCTION ImmGetIMEFileNameA LIB "IMM32.DLL" _
+    ALIAS "ImmGetIMEFileNameA" _
+    (BYVAL hkl AS DWORD, lpStr AS ASCIIZ, BYVAL uBufLen AS DWORD) AS DWORD
+
+DECLARE FUNCTION ImmGetIMEFileNameW LIB "IMM32.DLL" _
+    ALIAS "ImmGetIMEFileNameW" _
+    (BYVAL hkl AS DWORD, lpStr AS WSTRINGZ, BYVAL uBufLen AS DWORD) AS DWORD
+
+#IF %DEF(%UNICODE)
+DECLARE FUNCTION ImmGetIMEFileName LIB "IMM32.DLL" _
+    ALIAS "ImmGetIMEFileNameW" _
+    (BYVAL hkl AS DWORD, lpStr AS WSTRINGZ, BYVAL uBufLen AS DWORD) AS DWORD
+#ELSE
+DECLARE FUNCTION ImmGetIMEFileName LIB "IMM32.DLL" _
+    ALIAS "ImmGetIMEFileNameA" _
+    (BYVAL hkl AS DWORD, lpStr AS ASCIIZ, BYVAL uBufLen AS DWORD) AS DWORD
+#ENDIF
+
+DECLARE FUNCTION ImmGetProperty LIB "IMM32.DLL" ALIAS "ImmGetProperty" _
+    (BYVAL hkl AS DWORD, BYVAL dwIndex AS DWORD) AS DWORD
+
+DECLARE FUNCTION ImmIsIME LIB "IMM32.DLL" ALIAS "ImmIsIME" _
+    (BYVAL hkl AS DWORD) AS LONG
+
+DECLARE FUNCTION ImmSimulateHotKey LIB "IMM32.DLL" ALIAS "ImmSimulateHotKey" _
+    (BYVAL hwnd AS DWORD, BYVAL dwHotKeyID AS DWORD) AS LONG
+
+DECLARE FUNCTION ImmCreateContext LIB "IMM32.DLL" ALIAS "ImmCreateContext" _
+    () AS DWORD
+
+DECLARE FUNCTION ImmDestroyContext LIB "IMM32.DLL" ALIAS "ImmDestroyContext" _
+    (BYVAL himc AS DWORD) AS LONG
+
+DECLARE FUNCTION ImmGetContext LIB "IMM32.DLL" ALIAS "ImmGetContext" _
+    (BYVAL hwnd AS DWORD) AS DWORD
+
+DECLARE FUNCTION ImmReleaseContext LIB "IMM32.DLL" ALIAS "ImmReleaseContext" _
+    (BYVAL hwnd AS DWORD, BYVAL himc AS DWORD) AS LONG
+
+DECLARE FUNCTION ImmAssociateContext LIB "IMM32.DLL" _
+    ALIAS "ImmAssociateContext" (BYVAL hwnd AS DWORD, BYVAL himc AS DWORD) _
+    AS DWORD
+
+#IF (%WINVER >= &H040A)
+DECLARE FUNCTION ImmAssociateContextEx LIB "IMM32.DLL" _
+    ALIAS "ImmAssociateContextEx" (BYVAL hwnd AS DWORD, BYVAL himc AS DWORD, _
+    BYVAL dwFlags AS DWORD) AS LONG
+#ENDIF
+
+DECLARE FUNCTION ImmGetCompositionStringA LIB "IMM32.DLL" _
+    ALIAS "ImmGetCompositionStringA" (BYVAL himc AS DWORD, _
+    BYVAL dwIndex AS DWORD, lpv AS ANY, BYVAL dwBufLen AS DWORD) AS LONG
+
+DECLARE FUNCTION ImmGetCompositionStringW LIB "IMM32.DLL" _
+    ALIAS "ImmGetCompositionStringW" (BYVAL himc AS DWORD, _
+    BYVAL dwIndex AS DWORD, lpv AS ANY, BYVAL dwBufLen AS DWORD) AS LONG
+
+#IF %DEF(%UNICODE)
+DECLARE FUNCTION ImmGetCompositionString LIB "IMM32.DLL" _
+    ALIAS "ImmGetCompositionStringW" (BYVAL himc AS DWORD, _
+    BYVAL dwIndex AS DWORD, lpv AS ANY, BYVAL dwBufLen AS DWORD) AS LONG
+#ELSE
+DECLARE FUNCTION ImmGetCompositionString LIB "IMM32.DLL" _
+    ALIAS "ImmGetCompositionStringA" (BYVAL himc AS DWORD, _
+    BYVAL dwIndex AS DWORD, lpv AS ANY, BYVAL dwBufLen AS DWORD) AS LONG
+#ENDIF
+
+DECLARE FUNCTION ImmSetCompositionStringA LIB "IMM32.DLL" _
+    ALIAS "ImmSetCompositionStringA" (BYVAL himc AS DWORD, _
+    BYVAL dwIndex AS DWORD, lpComp AS ANY, BYVAL dwCompLen AS DWORD, _
+    lpRead AS ANY, BYVAL dwReadLen AS DWORD) AS LONG
+
+DECLARE FUNCTION ImmSetCompositionStringW LIB "IMM32.DLL" _
+    ALIAS "ImmSetCompositionStringW" (BYVAL himc AS DWORD, _
+    BYVAL dwIndex AS DWORD, lpComp AS ANY, BYVAL dwCompLen AS DWORD, _
+    lpRead AS ANY, BYVAL dwReadLen AS DWORD) AS LONG
+
+#IF %DEF(%UNICODE)
+DECLARE FUNCTION ImmSetCompositionString LIB "IMM32.DLL" _
+    ALIAS "ImmSetCompositionStringW" (BYVAL himc AS DWORD, _
+    BYVAL dwIndex AS DWORD, lpComp AS ANY, BYVAL dwCompLen AS DWORD, _
+    lpRead AS ANY, BYVAL dwReadLen AS DWORD) AS LONG
+#ELSE
+DECLARE FUNCTION ImmSetCompositionString LIB "IMM32.DLL" _
+    ALIAS "ImmSetCompositionStringA" (BYVAL himc AS DWORD, _
+    BYVAL dwIndex AS DWORD, lpComp AS ANY, BYVAL dwCompLen AS DWORD, _
+    lpRead AS ANY, BYVAL dwReadLen AS DWORD) AS LONG
+#ENDIF
+
+DECLARE FUNCTION ImmGetCandidateListCountA LIB "IMM32.DLL" _
+    ALIAS "ImmGetCandidateListCountA" (BYVAL himc AS DWORD, _
+    lpdwListCount AS DWORD) AS DWORD
+
+DECLARE FUNCTION ImmGetCandidateListCountW LIB "IMM32.DLL" _
+    ALIAS "ImmGetCandidateListCountW" (BYVAL himc AS DWORD, _
+    lpdwListCount AS DWORD) AS DWORD
+
+#IF %DEF(%UNICODE)
+DECLARE FUNCTION ImmGetCandidateListCount LIB "IMM32.DLL" _
+    ALIAS "ImmGetCandidateListCountW" (BYVAL himc AS DWORD, _
+    lpdwListCount AS DWORD) AS DWORD
+#ELSE
+DECLARE FUNCTION ImmGetCandidateListCount LIB "IMM32.DLL" _
+    ALIAS "ImmGetCandidateListCountA" (BYVAL himc AS DWORD, _
+    lpdwListCount AS DWORD) AS DWORD
+#ENDIF
+
+DECLARE FUNCTION ImmGetCandidateListA LIB "IMM32.DLL" _
+    ALIAS "ImmGetCandidateListA" (BYVAL himc AS DWORD, _
+    BYVAL deIndex AS DWORD, lpCandidateList AS CANDIDATELIST, _
+    BYVAL dwBufLen AS DWORD) AS DWORD
+
+DECLARE FUNCTION ImmGetCandidateListW LIB "IMM32.DLL" _
+    ALIAS "ImmGetCandidateListW" (BYVAL himc AS DWORD, _
+    BYVAL deIndex AS DWORD, lpCandidateList AS CANDIDATELIST, _
+    BYVAL dwBufLen AS DWORD) AS DWORD
+
+#IF %DEF(%UNICODE)
+DECLARE FUNCTION ImmGetCandidateList LIB "IMM32.DLL" _
+    ALIAS "ImmGetCandidateListW" (BYVAL himc AS DWORD, _
+    BYVAL deIndex AS DWORD, lpCandidateList AS CANDIDATELIST, _
+    BYVAL dwBufLen AS DWORD) AS DWORD
+#ELSE
+DECLARE FUNCTION ImmGetCandidateList LIB "IMM32.DLL" _
+    ALIAS "ImmGetCandidateListA" (BYVAL himc AS DWORD, _
+    BYVAL deIndex AS DWORD, lpCandidateList AS CANDIDATELIST, _
+    BYVAL dwBufLen AS DWORD) AS DWORD
+#ENDIF
+
+DECLARE FUNCTION ImmGetGuideLineA LIB "IMM32.DLL" ALIAS "ImmGetGuideLineA" _
+    (BYVAL himc AS DWORD, BYVAL dwIndex AS DWORD, lpStr AS ASCIIZ, _
+    BYVAL dwBufLen AS DWORD) AS DWORD
+
+DECLARE FUNCTION ImmGetGuideLineW LIB "IMM32.DLL" ALIAS "ImmGetGuideLineW" _
+    (BYVAL himc AS DWORD, BYVAL dwIndex AS DWORD, lpStr AS WSTRINGZ, _
+    BYVAL dwBufLen AS DWORD) AS DWORD
+
+#IF %DEF(%UNICODE)
+DECLARE FUNCTION ImmGetGuideLine LIB "IMM32.DLL" ALIAS "ImmGetGuideLineW" _
+    (BYVAL himc AS DWORD, BYVAL dwIndex AS DWORD, lpStr AS WSTRINGZ, _
+    BYVAL dwBufLen AS DWORD) AS DWORD
+#ELSE
+DECLARE FUNCTION ImmGetGuideLine LIB "IMM32.DLL" ALIAS "ImmGetGuideLineA" _
+    (BYVAL himc AS DWORD, BYVAL dwIndex AS DWORD, lpStr AS ASCIIZ, _
+    BYVAL dwBufLen AS DWORD) AS DWORD
+#ENDIF
+
+DECLARE FUNCTION ImmGetConversionStatus LIB "IMM32.DLL" _
+    ALIAS "ImmGetConversionStatus" (BYVAL himc AS DWORD, _
+    lpdwConversion AS DWORD, lpdwfSentence AS DWORD) AS LONG
+
+DECLARE FUNCTION ImmSetConversionStatus LIB "IMM32.DLL" _
+    ALIAS "ImmSetConversionStatus" (BYVAL himc AS DWORD, _
+    BYVAL dwfConversion AS DWORD, BYVAL dwfSentence AS DWORD) AS LONG
+
+DECLARE FUNCTION ImmGetOpenStatus LIB "IMM32.DLL" ALIAS "ImmGetOpenStatus" _
+    (BYVAL himc AS DWORD) AS LONG
+
+DECLARE FUNCTION ImmSetOpenStatus LIB "IMM32.DLL" ALIAS "ImmSetOpenStatus" _
+    (BYVAL himc AS DWORD, BYVAL fOpen AS LONG) AS LONG
+
+#IF %DEF(%WINGDI) AND NOT %DEF(%NOGDI)
+
+DECLARE FUNCTION ImmGetCompositionFontA LIB "IMM32.DLL" _
+    ALIAS "ImmGetCompositionFontA" (BYVAL himc AS DWORD, _
+    lpLogFont AS LOGFONTA) AS LONG
+
+DECLARE FUNCTION ImmGetCompositionFontW LIB "IMM32.DLL" _
+    ALIAS "ImmGetCompositionFontW" (BYVAL himc AS DWORD, _
+    lpLogFont AS LOGFONTW) AS LONG
+
+#IF %DEF(%UNICODE)
+DECLARE FUNCTION ImmGetCompositionFont LIB "IMM32.DLL" _
+    ALIAS "ImmGetCompositionFontW" (BYVAL himc AS DWORD, _
+    lpLogFont AS LOGFONTW) AS LONG
+#ELSE
+DECLARE FUNCTION ImmGetCompositionFont LIB "IMM32.DLL" _
+    ALIAS "ImmGetCompositionFontA" (BYVAL himc AS DWORD, _
+    lpLogFont AS LOGFONTA) AS LONG
+#ENDIF
+
+DECLARE FUNCTION ImmSetCompositionFontA LIB "IMM32.DLL" _
+    ALIAS "ImmSetCompositionFontA" (BYVAL himc AS DWORD, _
+    lpLogFont AS LOGFONTA) AS LONG
+
+DECLARE FUNCTION ImmSetCompositionFontW LIB "IMM32.DLL" _
+    ALIAS "ImmSetCompositionFontW" (BYVAL himc AS DWORD, _
+    lpLogFont AS LOGFONTW) AS LONG
+
+#IF %DEF(%UNICODE)
+DECLARE FUNCTION ImmSetCompositionFont LIB "IMM32.DLL" _
+    ALIAS "ImmSetCompositionFontW" (BYVAL himc AS DWORD, _
+    lpLogFont AS LOGFONTW) AS LONG
+#ELSE
+DECLARE FUNCTION ImmSetCompositionFont LIB "IMM32.DLL" _
+    ALIAS "ImmSetCompositionFontA" (BYVAL himc AS DWORD, _
+    lpLogFont AS LOGFONTA) AS LONG
+#ENDIF
+
+#ENDIF  ' %DEF(%WINGDI) AND NOT %DEF(%NOGDI)
+
+DECLARE FUNCTION ImmConfigureIMEA LIB "IMM32.DLL" ALIAS "ImmConfigureIMEA" _
+    (BYVAL hkl AS DWORD, BYVAL hwnd AS DWORD, BYVAL dwMode AS DWORD, _
+    lpData AS ANY) AS LONG
+
+DECLARE FUNCTION ImmConfigureIMEW LIB "IMM32.DLL" ALIAS "ImmConfigureIMEW" _
+    (BYVAL hkl AS DWORD, BYVAL hwnd AS DWORD, BYVAL dwMode AS DWORD, _
+    lpData AS ANY) AS LONG
+
+#IF %DEF(%UNICODE)
+DECLARE FUNCTION ImmConfigureIME LIB "IMM32.DLL" ALIAS "ImmConfigureIMEW" _
+    (BYVAL hkl AS DWORD, BYVAL hwnd AS DWORD, BYVAL dwMode AS DWORD, _
+    lpData AS ANY) AS LONG
+#ELSE
+DECLARE FUNCTION ImmConfigureIME LIB "IMM32.DLL" ALIAS "ImmConfigureIMEA" _
+    (BYVAL hkl AS DWORD, BYVAL hwnd AS DWORD, BYVAL dwMode AS DWORD, _
+    lpData AS ANY) AS LONG
+#ENDIF
+
+DECLARE FUNCTION ImmEscapeA LIB "IMM32.DLL" ALIAS "ImmEscapeA" _
+    (BYVAL hkl AS DWORD, BYVAL himc AS DWORD, BYVAL uEscape AS DWORD, _
+    lpData AS ANY) AS LONG
+
+DECLARE FUNCTION ImmEscapeW LIB "IMM32.DLL" ALIAS "ImmEscapeW" _
+    (BYVAL hkl AS DWORD, BYVAL himc AS DWORD, BYVAL uEscape AS DWORD, _
+    lpData AS ANY) AS LONG
+
+#IF %DEF(%UNICODE)
+DECLARE FUNCTION ImmEscape LIB "IMM32.DLL" ALIAS "ImmEscapeW" _
+    (BYVAL hkl AS DWORD, BYVAL himc AS DWORD, BYVAL uEscape AS DWORD, _
+    lpData AS ANY) AS LONG
+#ELSE
+DECLARE FUNCTION ImmEscape LIB "IMM32.DLL" ALIAS "ImmEscapeA" _
+    (BYVAL hkl AS DWORD, BYVAL himc AS DWORD, BYVAL uEscape AS DWORD, _
+    lpData AS ANY) AS LONG
+#ENDIF
+
+DECLARE FUNCTION ImmGetConversionListA LIB "IMM32.DLL" _
+    ALIAS "ImmGetConversionListA" (BYVAL hkl AS DWORD, BYVAL himc AS DWORD, _
+    lpSrc AS ASCIIZ, lpCandidateList AS CANDIDATELIST, _
+    BYVAL dwBufLen AS DWORD, BYVAL uFlag AS DWORD) AS DWORD
+
+DECLARE FUNCTION ImmGetConversionListW LIB "IMM32.DLL" _
+    ALIAS "ImmGetConversionListW" (BYVAL hkl AS DWORD, BYVAL himc AS DWORD, _
+    lpSrc AS ASCIIZ, lpCandidateList AS CANDIDATELIST, _
+    BYVAL dwBufLen AS DWORD, BYVAL uFlag AS DWORD) AS DWORD
+
+#IF %DEF(%UNICODE)
+DECLARE FUNCTION ImmGetConversionList LIB "IMM32.DLL" _
+    ALIAS "ImmGetConversionListW" (BYVAL hkl AS DWORD, BYVAL himc AS DWORD, _
+    lpSrc AS ASCIIZ, lpCandidateList AS CANDIDATELIST, _
+    BYVAL dwBufLen AS DWORD, BYVAL uFlag AS DWORD) AS DWORD
+#ELSE
+DECLARE FUNCTION ImmGetConversionList LIB "IMM32.DLL" _
+    ALIAS "ImmGetConversionListA" (BYVAL hkl AS DWORD, BYVAL himc AS DWORD, _
+    lpSrc AS ASCIIZ, lpCandidateList AS CANDIDATELIST, _
+    BYVAL dwBufLen AS DWORD, BYVAL uFlag AS DWORD) AS DWORD
+#ENDIF
+
+DECLARE FUNCTION ImmNotifyIME LIB "IMM32.DLL" ALIAS "ImmNotifyIME" _
+    (BYVAL himc AS DWORD, BYVAL dwAction AS DWORD, BYVAL dwIndex AS DWORD, _
+    BYVAL dwValue AS DWORD) AS LONG
+
+DECLARE FUNCTION ImmGetStatusWindowPos LIB "IMM32.DLL" _
+    ALIAS "ImmGetStatusWindowPos" (BYVAL himc AS DWORD, lpPoint AS POINT) _
+    AS LONG
+
+DECLARE FUNCTION ImmSetStatusWindowPos LIB "IMM32.DLL" _
+    ALIAS "ImmSetStatusWindowPos" (BYVAL himc AS DWORD, lpPoint AS POINT) _
+    AS LONG
+
+DECLARE FUNCTION ImmGetCompositionWindow LIB "IMM32.DLL" _
+    ALIAS "ImmGetCompositionWindow" (BYVAL himc AS DWORD, _
+    lpCompositionForm AS COMPOSITIONFORM) AS LONG
+
+DECLARE FUNCTION ImmSetCompositionWindow LIB "IMM32.DLL" _
+    ALIAS "ImmSetCompositionWindow" (BYVAL himc AS DWORD, _
+    lpCompositionForm AS COMPOSITIONFORM) AS LONG
+
+DECLARE FUNCTION ImmGetCandidateWindow LIB "IMM32.DLL" _
+    ALIAS "ImmGetCandidateWindow" (BYVAL himc AS DWORD, _
+    BYVAL dwIndex AS DWORD, lpCandidateForm AS CANDIDATEFORM) AS LONG
+
+DECLARE FUNCTION ImmSetCandidateWindow LIB "IMM32.DLL" _
+    ALIAS "ImmSetCandidateWindow" (BYVAL himc AS DWORD, _
+    lpCandidateForm AS CANDIDATEFORM) AS LONG
+
+DECLARE FUNCTION ImmIsUIMessageA LIB "IMM32.DLL" ALIAS "ImmIsUIMessageA" _
+    (BYVAL hwnd AS DWORD, BYVAL uMsg AS DWORD, BYVAL wParam AS DWORD, _
+    BYVAL lParam AS LONG) AS LONG
+
+DECLARE FUNCTION ImmIsUIMessageW LIB "IMM32.DLL" ALIAS "ImmIsUIMessageW" _
+    (BYVAL hwnd AS DWORD, BYVAL uMsg AS DWORD, BYVAL wParam AS DWORD, _
+    BYVAL lParam AS LONG) AS LONG
+
+#IF %DEF(%UNICODE)
+DECLARE FUNCTION ImmIsUIMessage LIB "IMM32.DLL" ALIAS "ImmIsUIMessageW" _
+    (BYVAL hwnd AS DWORD, BYVAL uMsg AS DWORD, BYVAL wParam AS DWORD, _
+    BYVAL lParam AS LONG) AS LONG
+#ELSE
+DECLARE FUNCTION ImmIsUIMessage LIB "IMM32.DLL" ALIAS "ImmIsUIMessageA" _
+    (BYVAL hwnd AS DWORD, BYVAL uMsg AS DWORD, BYVAL wParam AS DWORD, _
+    BYVAL lParam AS LONG) AS LONG
+#ENDIF
+
+DECLARE FUNCTION ImmGetVirtualKey LIB "IMM32.DLL" ALIAS "ImmGetVirtualKey" _
+    (BYVAL hwnd AS DWORD) AS DWORD
+
+DECLARE FUNCTION REGISTERWORDENUMPROCA (lpszReading AS ASCIIZ, _
+    BYVAL d AS DWORD, lpszString AS ASCIIZ, lpv AS ANY) AS LONG
+
+DECLARE FUNCTION REGISTERWORDENUMPROCW (lpszReading AS WSTRINGZ, _
+    BYVAL d AS DWORD, lpszString AS WSTRINGZ, lpv AS ANY) AS LONG
+
+#IF %DEF(%UNICODE)
+DECLARE FUNCTION REGISTERWORDENUMPROC (lpszReading AS WSTRINGZ, _
+    BYVAL d AS DWORD, lpszString AS WSTRINGZ, lpv AS ANY) AS LONG
+#ELSE
+DECLARE FUNCTION REGISTERWORDENUMPROC (lpszReading AS ASCIIZ, _
+    BYVAL d AS DWORD, lpszString AS ASCIIZ, lpv AS ANY) AS LONG
+#ENDIF
+
+DECLARE FUNCTION ImmRegisterWordA LIB "IMM32.DLL" ALIAS "ImmRegisterWordA" _
+    (BYVAL hkl AS DWORD, lpszReading AS ASCIIZ, BYVAL dwStyle AS DWORD, _
+    lpszRegister AS ASCIIZ) AS DWORD
+
+DECLARE FUNCTION ImmRegisterWordW LIB "IMM32.DLL" ALIAS "ImmRegisterWordW" _
+    (BYVAL hkl AS DWORD, lpszReading AS WSTRINGZ, BYVAL dwStyle AS DWORD, _
+    lpszRegister AS WSTRINGZ) AS DWORD
+
+#IF %DEF(%UNICODE)
+DECLARE FUNCTION ImmRegisterWord LIB "IMM32.DLL" ALIAS "ImmRegisterWordW" _
+    (BYVAL hkl AS DWORD, lpszReading AS WSTRINGZ, BYVAL dwStyle AS DWORD, _
+    lpszRegister AS WSTRINGZ) AS DWORD
+#ELSE
+DECLARE FUNCTION ImmRegisterWord LIB "IMM32.DLL" ALIAS "ImmRegisterWordA" _
+    (BYVAL hkl AS DWORD, lpszReading AS ASCIIZ, BYVAL dwStyle AS DWORD, _
+    lpszRegister AS ASCIIZ) AS DWORD
+#ENDIF
+
+DECLARE FUNCTION ImmUnregisterWordA LIB "IMM32.DLL" _
+    ALIAS "ImmUnregisterWordA" _
+    (BYVAL hkl AS DWORD, lpszReading AS ASCIIZ, BYVAL dwStyle AS DWORD, _
+    lpszUnregister AS ASCIIZ) AS LONG
+
+DECLARE FUNCTION ImmUnregisterWordW LIB "IMM32.DLL" _
+    ALIAS "ImmUnregisterWordW" _
+    (BYVAL hkl AS DWORD, lpszReading AS WSTRINGZ, BYVAL dwStyle AS DWORD, _
+    lpszUnregister AS WSTRINGZ) AS LONG
+
+#IF %DEF(%UNICODE)
+DECLARE FUNCTION ImmUnregisterWord LIB "IMM32.DLL" _
+    ALIAS "ImmUnregisterWordW" _
+    (BYVAL hkl AS DWORD, lpszReading AS WSTRINGZ, BYVAL dwStyle AS DWORD, _
+    lpszUnregister AS WSTRINGZ) AS LONG
+#ELSE
+DECLARE FUNCTION ImmUnregisterWord LIB "IMM32.DLL" _
+    ALIAS "ImmUnregisterWordA" _
+    (BYVAL hkl AS DWORD, lpszReading AS ASCIIZ, BYVAL dwStyle AS DWORD, _
+    lpszUnregister AS ASCIIZ) AS LONG
+#ENDIF
+
+DECLARE FUNCTION ImmGetRegisterWordStyleA LIB "IMM32.DLL" _
+    ALIAS "ImmGetRegisterWordStyleA" (BYVAL hkl AS DWORD, _
+    BYVAL nItem AS DWORD, lpStyleBuf AS STYLEBUFA) AS DWORD
+
+DECLARE FUNCTION ImmGetRegisterWordStyleW LIB "IMM32.DLL" _
+    ALIAS "ImmGetRegisterWordStyleW" (BYVAL hkl AS DWORD, _
+    BYVAL nItem AS DWORD, lpStyleBuf AS STYLEBUFW) AS DWORD
+
+#IF %DEF(%UNICODE)
+DECLARE FUNCTION ImmGetRegisterWordStyle LIB "IMM32.DLL" _
+    ALIAS "ImmGetRegisterWordStyleW" (BYVAL hkl AS DWORD, _
+    BYVAL nItem AS DWORD, lpStyleBuf AS STYLEBUFW) AS DWORD
+#ELSE
+DECLARE FUNCTION ImmGetRegisterWordStyle LIB "IMM32.DLL" _
+    ALIAS "ImmGetRegisterWordStyleA" (BYVAL hkl AS DWORD, _
+    BYVAL nItem AS DWORD, lpStyleBuf AS STYLEBUFA) AS DWORD
+#ENDIF
+
+DECLARE FUNCTION ImmEnumRegisterWordA LIB "IMM32.DLL" _
+    ALIAS "ImmEnumRegisterWordA" (BYVAL hkl AS DWORD, _
+    BYVAL RegisterWordEnumProc AS DWORD, lpszReading AS ASCIIZ, _
+    BYVAL dwStyle AS DWORD, lpszRegister AS ASCIIZ, lpData AS ANY) AS DWORD
+
+DECLARE FUNCTION ImmEnumRegisterWordW LIB "IMM32.DLL" _
+    ALIAS "ImmEnumRegisterWordW" (BYVAL hkl AS DWORD, _
+    BYVAL RegisterWordEnumProc AS DWORD, lpszReading AS WSTRINGZ, _
+    BYVAL dwStyle AS DWORD, lpszRegister AS WSTRINGZ, lpData AS ANY) AS DWORD
+
+#IF %DEF(%UNICODE)
+DECLARE FUNCTION ImmEnumRegisterWord LIB "IMM32.DLL" _
+    ALIAS "ImmEnumRegisterWordW" (BYVAL hkl AS DWORD, _
+    BYVAL RegisterWordEnumProc AS DWORD, lpszReading AS WSTRINGZ, _
+    BYVAL dwStyle AS DWORD, lpszRegister AS WSTRINGZ, lpData AS ANY) AS DWORD
+#ELSE
+DECLARE FUNCTION ImmEnumRegisterWord LIB "IMM32.DLL" _
+    ALIAS "ImmEnumRegisterWordA" (BYVAL hkl AS DWORD, _
+    BYVAL RegisterWordEnumProc AS DWORD, lpszReading AS ASCIIZ, _
+    BYVAL dwStyle AS DWORD, lpszRegister AS ASCIIZ, lpData AS ANY) AS DWORD
+#ENDIF
+
+#IF (%WINVER >= &H040A)
+
+DECLARE FUNCTION ImmDisableIME LIB "IMM32.DLL" ALIAS "ImmDisableIME" _
+    (BYVAL idThread AS DWORD) AS LONG
+
+DECLARE FUNCTION ImmEnumInputContext LIB "IMM32.DLL" _
+    ALIAS "ImmEnumInputContext" (BYVAL idThread AS DWORD, _
+    BYVAL lpfn AS DWORD, BYVAL lParam AS LONG) AS LONG
+
+DECLARE FUNCTION ImmGetImeMenuItemsA LIB "IMM32.DLL" _
+    ALIAS "ImmGetImeMenuItemsA" (BYVAL hIMC AS DWORD, BYVAL dwFlags AS DWORD, _
+    BYVAL dwType AS DWORD, lpImeParentMenu AS IMEMENUITEMINFOA, _
+    lpImeMenu AS IMEMENUITEMINFOA, BYVAL dwSize AS DWORD) AS DWORD
+
+DECLARE FUNCTION ImmGetImeMenuItemsW LIB "IMM32.DLL" _
+    ALIAS "ImmGetImeMenuItemsW" (BYVAL hIMC AS DWORD, BYVAL dwFlags AS DWORD, _
+    BYVAL dwType AS DWORD, lpImeParentMenu AS IMEMENUITEMINFOW, _
+    lpImeMenu AS IMEMENUITEMINFOW, BYVAL dwSize AS DWORD) AS DWORD
+
+#IF %DEF(%UNICODE)
+DECLARE FUNCTION ImmGetImeMenuItems LIB "IMM32.DLL" _
+    ALIAS "ImmGetImeMenuItemsW" (BYVAL hIMC AS DWORD, BYVAL dwFlags AS DWORD, _
+    BYVAL dwType AS DWORD, lpImeParentMenu AS IMEMENUITEMINFOW, _
+    lpImeMenu AS IMEMENUITEMINFOW, BYVAL dwSize AS DWORD) AS DWORD
+#ELSE
+DECLARE FUNCTION ImmGetImeMenuItems LIB "IMM32.DLL" _
+    ALIAS "ImmGetImeMenuItemsA" (BYVAL hIMC AS DWORD, BYVAL dwFlags AS DWORD, _
+    BYVAL dwType AS DWORD, lpImeParentMenu AS IMEMENUITEMINFOA, _
+    lpImeMenu AS IMEMENUITEMINFOA, BYVAL dwSize AS DWORD) AS DWORD
+#ENDIF
+
+DECLARE FUNCTION ImmDisableTextFrameService LIB "IMM32.DLL" _
+    ALIAS "ImmDisableTextFrameService" (BYVAL idThread AS DWORD) AS LONG
+
+#ENDIF
+
+
+' wParam for WM_IME_CONTROL
+%IMC_GETCANDIDATEPOS      = &H0007
+%IMC_SETCANDIDATEPOS      = &H0008
+%IMC_GETCOMPOSITIONFONT   = &H0009
+%IMC_SETCOMPOSITIONFONT   = &H000A
+%IMC_GETCOMPOSITIONWINDOW = &H000B
+%IMC_SETCOMPOSITIONWINDOW = &H000C
+%IMC_GETSTATUSWINDOWPOS   = &H000F
+%IMC_SETSTATUSWINDOWPOS   = &H0010
+%IMC_CLOSESTATUSWINDOW    = &H0021
+%IMC_OPENSTATUSWINDOW     = &H0022
+
+
+' dwAction for ImmNotifyIME
+%NI_OPENCANDIDATE            = &H0010
+%NI_CLOSECANDIDATE           = &H0011
+%NI_SELECTCANDIDATESTR       = &H0012
+%NI_CHANGECANDIDATELIST      = &H0013
+%NI_FINALIZECONVERSIONRESULT = &H0014
+%NI_COMPOSITIONSTR           = &H0015
+%NI_SETCANDIDATE_PAGESTART   = &H0016
+%NI_SETCANDIDATE_PAGESIZE    = &H0017
+%NI_IMEMENUSELECTED          = &H0018
+
+' lParam for WM_IME_SETCONTEXT
+%ISC_SHOWUICANDIDATEWINDOW    = &H00000001
+%ISC_SHOWUICOMPOSITIONWINDOW  = &H80000000???
+%ISC_SHOWUIGUIDELINE          = &H40000000
+%ISC_SHOWUIALLCANDIDATEWINDOW = &H0000000F
+%ISC_SHOWUIALL                = &HC000000F???
+
+
+' dwIndex for ImmNotifyIME/NI_COMPOSITIONSTR
+%CPS_COMPLETE            = &H0001
+%CPS_CONVERT             = &H0002
+%CPS_REVERT              = &H0003
+%CPS_CANCEL              = &H0004
+
+' the modifiers of hot key
+%MOD_ALT                 = &H0001
+%MOD_CONTROL             = &H0002
+%MOD_SHIFT               = &H0004
+
+%MOD_LEFT                = &H8000??
+%MOD_RIGHT               = &H4000
+
+%MOD_ON_KEYUP            = &H0800
+%MOD_IGNORE_ALL_MODIFIER = &H0400
+
+' Windows for Simplified Chinese Edition hot key ID from = &H10 - = &H2F
+%IME_CHOTKEY_IME_NONIME_TOGGLE     = &H10
+%IME_CHOTKEY_SHAPE_TOGGLE          = &H11
+%IME_CHOTKEY_SYMBOL_TOGGLE         = &H12
+
+' Windows for Japanese Edition hot key ID from = &H30 - = &H4F
+%IME_JHOTKEY_CLOSE_OPEN            = &H30
+
+' Windows for Korean Edition hot key ID from = &H50 - = &H6F
+%IME_KHOTKEY_SHAPE_TOGGLE          = &H50
+%IME_KHOTKEY_HANJACONVERT          = &H51
+%IME_KHOTKEY_ENGLISH               = &H52
+
+' Windows for Traditional Chinese Edition hot key ID from = &H70 - = &H8F
+%IME_THOTKEY_IME_NONIME_TOGGLE     = &H70
+%IME_THOTKEY_SHAPE_TOGGLE          = &H71
+%IME_THOTKEY_SYMBOL_TOGGLE         = &H72
+
+' direct switch hot key ID from = &H100 - = &H11F
+%IME_HOTKEY_DSWITCH_FIRST          = &H100
+%IME_HOTKEY_DSWITCH_LAST           = &H11F
+
+' IME private hot key from = &H200 - = &H21F
+%IME_HOTKEY_PRIVATE_FIRST          = &H200
+%IME_ITHOTKEY_RESEND_RESULTSTR     = &H200
+%IME_ITHOTKEY_PREVIOUS_COMPOSITION = &H201
+%IME_ITHOTKEY_UISTYLE_TOGGLE       = &H202
+%IME_ITHOTKEY_RECONVERTSTRING      = &H203
+%IME_HOTKEY_PRIVATE_LAST           = &H21F
+
+
+' parameter of ImmGetCompositionString
+%GCS_COMPREADSTR      = &H0001
+%GCS_COMPREADATTR     = &H0002
+%GCS_COMPREADCLAUSE   = &H0004
+%GCS_COMPSTR          = &H0008
+%GCS_COMPATTR         = &H0010
+%GCS_COMPCLAUSE       = &H0020
+%GCS_CURSORPOS        = &H0080
+%GCS_DELTASTART       = &H0100
+%GCS_RESULTREADSTR    = &H0200
+%GCS_RESULTREADCLAUSE = &H0400
+%GCS_RESULTSTR        = &H0800
+%GCS_RESULTCLAUSE     = &H1000
+
+' style bit flags for WM_IME_COMPOSITION
+%CS_INSERTCHAR  = &H2000
+%CS_NOMOVECARET = &H4000
+
+
+' IME version constants
+%IMEVER_0310 = &H0003000A
+%IMEVER_0400 = &H00040000
+
+
+' IME property bits
+%IME_PROP_AT_CARET              = &H00010000
+%IME_PROP_SPECIAL_UI            = &H00020000
+%IME_PROP_CANDLIST_START_FROM_1 = &H00040000
+%IME_PROP_UNICODE               = &H00080000
+%IME_PROP_COMPLETE_ON_UNSELECT  = &H00100000
+
+
+' IME UICapability bits
+%UI_CAP_2700   = &H00000001
+%UI_CAP_ROT90  = &H00000002
+%UI_CAP_ROTANY = &H00000004
+
+' ImmSetCompositionString Capability bits
+%SCS_CAP_COMPSTR            = &H00000001
+%SCS_CAP_MAKEREAD           = &H00000002
+%SCS_CAP_SETRECONVERTSTRING = &H00000004
+
+
+' IME WM_IME_SELECT inheritance Capability bits
+%SELECT_CAP_CONVERSION = &H00000001
+%SELECT_CAP_SENTENCE   = &H00000002
+
+
+' ID for deIndex of ImmGetGuideLine
+%GGL_LEVEL   = &H00000001
+%GGL_INDEX   = &H00000002
+%GGL_STRING  = &H00000003
+%GGL_PRIVATE = &H00000004
+
+
+' ID for dwLevel of GUIDELINE Structure
+%GL_LEVEL_NOGUIDELINE = &H00000000
+%GL_LEVEL_FATAL       = &H00000001
+%GL_LEVEL_ERROR       = &H00000002
+%GL_LEVEL_WARNING     = &H00000003
+%GL_LEVEL_INFORMATION = &H00000004
+
+
+' ID for dwIndex of GUIDELINE Structure
+%GL_ID_UNKNOWN           = &H00000000
+%GL_ID_NOMODULE          = &H00000001
+%GL_ID_NODICTIONARY      = &H00000010
+%GL_ID_CANNOTSAVE        = &H00000011
+%GL_ID_NOCONVERT         = &H00000020
+%GL_ID_TYPINGERROR       = &H00000021
+%GL_ID_TOOMANYSTROKE     = &H00000022
+%GL_ID_READINGCONFLICT   = &H00000023
+%GL_ID_INPUTREADING      = &H00000024
+%GL_ID_INPUTRADICAL      = &H00000025
+%GL_ID_INPUTCODE         = &H00000026
+%GL_ID_INPUTSYMBOL       = &H00000027
+%GL_ID_CHOOSECANDIDATE   = &H00000028
+%GL_ID_REVERSECONVERSION = &H00000029
+%GL_ID_PRIVATE_FIRST     = &H00008000
+%GL_ID_PRIVATE_LAST      = &H0000FFFF
+
+
+' ID for dwIndex of ImmGetProperty
+%IGP_GETIMEVERSION = &HFFFFFFFC???   ' (DWORD)(-4)
+%IGP_PROPERTY      = &H00000004
+%IGP_CONVERSION    = &H00000008
+%IGP_SENTENCE      = &H0000000c
+%IGP_UI            = &H00000010
+%IGP_SETCOMPSTR    = &H00000014
+%IGP_SELECT        = &H00000018
+
+' dwIndex for ImmSetCompositionString API
+%SCS_SETSTR               = %GCS_COMPREADSTR OR %GCS_COMPSTR
+%SCS_CHANGEATTR           = %GCS_COMPREADATTR OR %GCS_COMPATTR
+%SCS_CHANGECLAUSE         = %GCS_COMPREADCLAUSE OR %GCS_COMPCLAUSE
+%SCS_SETRECONVERTSTRING   = &H00010000
+%SCS_QUERYRECONVERTSTRING = &H00020000
+
+' attribute for COMPOSITIONSTRING Structure
+%ATTR_INPUT               = &H00
+%ATTR_TARGET_CONVERTED    = &H01
+%ATTR_CONVERTED           = &H02
+%ATTR_TARGET_NOTCONVERTED = &H03
+%ATTR_INPUT_ERROR         = &H04
+%ATTR_FIXEDCONVERTED      = &H05
+
+' bit field for IMC_SETCOMPOSITIONWINDOW, IMC_SETCANDIDATEWINDOW
+%CFS_DEFAULT        = &H0000
+%CFS_RECT           = &H0001
+%CFS_POINT          = &H0002
+%CFS_FORCE_POSITION = &H0020
+%CFS_CANDIDATEPOS   = &H0040
+%CFS_EXCLUDE        = &H0080
+
+' conversion direction for ImmGetConversionList
+%GCL_CONVERSION        = &H0001
+%GCL_REVERSECONVERSION = &H0002
+%GCL_REVERSE_LENGTH    = &H0003
+
+#INCLUDE "ime_cmodes.inc"
+
+%IME_CMODE_SOFTKBD      = &H0080
+%IME_CMODE_NOCONVERSION = &H0100
+%IME_CMODE_EUDC         = &H0200
+%IME_CMODE_SYMBOL       = &H0400
+%IME_CMODE_FIXED        = &H0800
+%IME_CMODE_RESERVED     = &HF0000000???
+
+' bit field for sentence mode
+%IME_SMODE_NONE          = &H0000
+%IME_SMODE_PLAURALCLAUSE = &H0001
+%IME_SMODE_SINGLECONVERT = &H0002
+%IME_SMODE_AUTOMATIC     = &H0004
+%IME_SMODE_PHRASEPREDICT = &H0008
+%IME_SMODE_CONVERSATION  = &H0010
+%IME_SMODE_RESERVED      = &H0000F000
+
+
+' style of candidate
+%IME_CAND_UNKNOWN = &H0000
+%IME_CAND_READ    = &H0001
+%IME_CAND_CODE    = &H0002
+%IME_CAND_MEANING = &H0003
+%IME_CAND_RADICAL = &H0004
+%IME_CAND_STROKE  = &H0005
+
+' wParam of report message WM_IME_NOTIFY
+%IMN_CLOSESTATUSWINDOW    = &H0001
+%IMN_OPENSTATUSWINDOW     = &H0002
+%IMN_CHANGECANDIDATE      = &H0003
+%IMN_CLOSECANDIDATE       = &H0004
+%IMN_OPENCANDIDATE        = &H0005
+%IMN_SETCONVERSIONMODE    = &H0006
+%IMN_SETSENTENCEMODE      = &H0007
+%IMN_SETOPENSTATUS        = &H0008
+%IMN_SETCANDIDATEPOS      = &H0009
+%IMN_SETCOMPOSITIONFONT   = &H000A
+%IMN_SETCOMPOSITIONWINDOW = &H000B
+%IMN_SETSTATUSWINDOWPOS   = &H000C
+%IMN_GUIDELINE            = &H000D
+%IMN_PRIVATE              = &H000E
+
+' wParam of report message WM_IME_REQUEST
+%IMR_COMPOSITIONWINDOW      = &H0001
+%IMR_CANDIDATEWINDOW        = &H0002
+%IMR_COMPOSITIONFONT        = &H0003
+%IMR_RECONVERTSTRING        = &H0004
+%IMR_CONFIRMRECONVERTSTRING = &H0005
+%IMR_QUERYCHARPOSITION      = &H0006
+%IMR_DOCUMENTFEED           = &H0007
+
+' error code of ImmGetCompositionString
+%IMM_ERROR_NODATA  = -1
+%IMM_ERROR_GENERAL = -2
+
+
+' dialog mode of ImmConfigureIME
+%IME_CONFIG_GENERAL          = 1
+%IME_CONFIG_REGISTERWORD     = 2
+%IME_CONFIG_SELECTDICTIONARY = 3
+
+
+' flags for ImmEscape
+%IME_ESC_QUERY_SUPPORT        = &H0003
+%IME_ESC_RESERVED_FIRST       = &H0004
+%IME_ESC_RESERVED_LAST        = &H07FF
+%IME_ESC_PRIVATE_FIRST        = &H0800
+%IME_ESC_PRIVATE_LAST         = &H0FFF
+
+%IME_ESC_SEQUENCE_TO_INTERNAL = &H1001
+%IME_ESC_GET_EUDC_DICTIONARY  = &H1003
+%IME_ESC_SET_EUDC_DICTIONARY  = &H1004
+%IME_ESC_MAX_KEY              = &H1005
+%IME_ESC_IME_NAME             = &H1006
+%IME_ESC_SYNC_HOTKEY          = &H1007
+%IME_ESC_HANJA_MODE           = &H1008
+%IME_ESC_AUTOMATA             = &H1009
+%IME_ESC_PRIVATE_HOTKEY       = &H100a
+%IME_ESC_GETHELPFILENAME      = &H100b
+' style of word registration
+%IME_REGWORD_STYLE_EUDC       = &H00000001
+%IME_REGWORD_STYLE_USER_FIRST = &H80000000???
+%IME_REGWORD_STYLE_USER_LAST  = &HFFFFFFFF???
+
+
+' dwFlags for ImmAssociateContextEx
+%IACE_CHILDREN        = &H0001
+%IACE_DEFAULT         = &H0010
+%IACE_IGNORENOCONTEXT = &H0020
+
+' dwFlags for ImmGetImeMenuItems
+%IGIMIF_RIGHTMENU = &H0001
+
+' dwType for ImmGetImeMenuItems
+%IGIMII_CMODE      = &H0001
+%IGIMII_SMODE      = &H0002
+%IGIMII_CONFIGURE  = &H0004
+%IGIMII_TOOLS      = &H0008
+%IGIMII_HELP       = &H0010
+%IGIMII_OTHER      = &H0020
+%IGIMII_INPUTTOOLS = &H0040
+
+' fType of IMEMENUITEMINFO structure
+%IMFT_RADIOCHECK = &H00001
+%IMFT_SEPARATOR  = &H00002
+%IMFT_SUBMENU    = &H00004
+
+' fState of IMEMENUITEMINFO structure
+%IMFS_GRAYED    = %MFS_GRAYED
+%IMFS_DISABLED  = %MFS_DISABLED
+%IMFS_CHECKED   = %MFS_CHECKED
+%IMFS_HILITE    = %MFS_HILITE
+%IMFS_ENABLED   = %MFS_ENABLED
+%IMFS_UNCHECKED = %MFS_UNCHECKED
+%IMFS_UNHILITE  = %MFS_UNHILITE
+%IMFS_DEFAULT   = %MFS_DEFAULT
+
+' type of soft keyboard
+' for Windows Traditional Chinese Edition
+%SOFTKEYBOARD_TYPE_T1 = &H0001
+' for Windows Simplified Chinese Edition
+%SOFTKEYBOARD_TYPE_C1 = &H0002

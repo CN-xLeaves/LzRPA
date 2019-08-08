@@ -1,0 +1,52 @@
+
+'=======================
+'NAMED PARAMETER PASSING
+'=======================
+
+uses "oxygen"
+dim src as string
+
+src = "
+
+  basic
+
+  cr=chr 13
+  so="FLEXIBLE PARAMETER PASSING FOR FUNCTION f()" cr cr
+
+  '---------
+  function f
+  '=========
+  (
+    byval a=1 as long, 'DEFAULT VALUE 1
+    byval b=2 as long  'DEFAULT VALUE 2
+  )
+  as long
+  '
+  so+=  "a=" a "  b=" b cr
+  '
+  return a+b
+  '
+  end function
+
+
+  f           'ALL DEFAULT VALUES ARE USED
+  f()         'ALL DEFAULT VALUES ARE USED
+  f(a=3)      'DEFAULT B VALUE USED
+  f(b=4)      'DEFAULT A VALUE IS USED
+  f(a=5,b=6)  'NO DEFAULT VALUES ARE USED
+  f(b=6,a=5)  'AND PARAMS CAN BE SPECIFIED IN ANY ORDER
+
+  print so
+
+"
+
+
+
+o2_asmo src
+
+'msgbox 0, o2_prep src
+if len(o2_error) then
+  msgbox 0, o2_error : stop
+end if
+o2_exec
+

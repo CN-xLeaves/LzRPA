@@ -1,0 +1,152 @@
+
+'-----------------------------------------
+'EXTERN BLOCKS
+'=========================================
+
+ 
+Uses "oxygen"
+Dim c,src As String
+dim v as long
+src="
+
+
+#basic
+
+
+  #define NULL     byval 0
+  #define FALSE    0
+  #define TRUE     1
+  #define IGNORE   0           'Ignore signal
+  #define INFINITE 0xFFFFFFFF  'Infinite timeout
+
+  #define __in
+  #define __out
+  #define __in_opt
+  #define __out_opt
+  #define __in_ecount(nCount)
+
+  #define MAX_THREADS 3
+
+  'Sample custom data structure for threads to use.
+  'This is passed by void pointer so it can be any data type
+  'that can be passed using a single void pointer (LPVOID).
+
+  type dtype
+    val1 as sys
+    val2 as sys
+  end type
+
+  typedef sys   SIZE_T
+  typedef void  *LPVOID, *HANDLE, *LPSECURITY_ATTRIBUTES, *LPTHREAD_START_ROUTINE
+  typedef dword *LPDWORD
+
+  '================================
+  extern stdcall lib "kernel32.dll"
+  '================================
+
+
+  HANDLE CreateThread
+  (
+    __in_opt  LPSECURITY_ATTRIBUTES lpThreadAttributes,
+    __in      SIZE_T dwStackSize,
+    __in      LPTHREAD_START_ROUTINE lpStartAddress,
+    __in_opt  LPVOID lpParameter,
+    __in      DWORD dwCreationFlags,
+    __out_opt LPDWORD lpThreadId
+  )
+
+
+  DWORD WaitForMultipleObjects
+  (
+    __in DWORD nCount,
+    __in_ecount(nCount) CONST HANDLE *lpHandles,
+    __in BOOL bWaitAll,
+    __in DWORD dwMilliseconds
+  )
+
+
+
+  BOOL CloseHandle
+  (
+    __in HANDLE hObject
+  )
+
+
+  end extern
+
+  #define MAX_THREADS 3
+
+  sys counter
+
+  '-------------------------------------------------
+  function MyThreadFunction( sys p ) as sys external
+  '=================================================
+    inc counter
+    return 0 
+  end function 
+
+  '--------------
+  function main()
+  '==============
+
+    dtype  tdata[MAX_THREADS]
+    sys    dwThreadIdArray[MAX_THREADS]
+    handle hThreadArray[MAX_THREADS]
+    dim as sys i
+
+    'Create MAX_THREADS worker threads.
+    for i=1 to MAX_THREADS
+    {
+      'Generate unique data for each thread to work with.
+
+      tdata[i].val1=i
+      'tdata[i].val2=i+100
+###
+      'Create the thread to begin execution on its own.
+
+      hThreadArray[i] =
+      CreateThread
+      ( 
+        NULL,                    'default security attributes
+        0,                       'use default stack size  
+        & MyThreadFunction,      'thread function name
+        tdata[i],                'argument to thread function 
+        0,                       'use default creation flags 
+        dwThreadIdArray[i]       'returns the thread identifier
+      )
+###
+      print "ThreadID: " dwThreadIdArray[i]
+
+      'Check the return value for success.
+      'If CreateThread fails, terminate execution. 
+      'This will automatically clean up threads and memory. 
+      '
+
+    } 'End of main thread creation loop.
+
+    'Wait until all threads have terminated.
+
+    WaitForMultipleObjects(MAX_THREADS, hThreadArray, TRUE, INFINITE)
+
+    'Close all thread handles and free memory allocations.
+
+    for i=1 to MAX_THREADS { CloseHandle( hThreadArray[i] ) }
+
+  return 0
+
+  end function
+
+  main()
+
+  print counter
+
+
+"
+'msgbox 0,O2_prep src+o2_error
+O2_asmo src
+if Len(O2_ERROR) Then
+  msgbox 0,O2_ERROR
+else
+  o2_exec
+end if
+

@@ -1,0 +1,8 @@
+{
+    "Keyword1": "Registry_KeyExists Registry_PathExists Registry_GetValue Registry_GetDWord Registry_SetValue Registry_SetDWord Registry_DelKey Registry_DelValue Registry_GetAllKeys",
+    "Keyword2": null,
+    "Keyword3": null,
+    "RelyFile": null,
+    "PackFile": null,
+    "RelyCode": "boot.tbs"
+}

@@ -1,0 +1,54 @@
+' =========================================================================================
+' Demonstrates the use of the item method (IXMLDOMNamedNodeMap).
+' The following example creates an IXMLDOMNamedNodeMap object to retrieve the attributes
+' for an element node selected using the SelectSingleNode method. It then iterates through
+' the attributes, before displaying the name and value of each attribute in the collection.
+' =========================================================================================
+
+uses "Console"
+
+#default declare Checkduplicates    %TRUE
+#default declare CheckMissing       %TRUE
+
+#INCLUDE "%APP_INCLUDEPATH%\TB_XML60.INC"
+
+' ========================================================================================
+' Main
+' ========================================================================================
+Function Main() As Long
+
+   LOCAL pXmlDoc        AS DWORD
+   LOCAL pBookNode      AS DWORD
+   LOCAL pNamedNodeMap  AS DWORD
+   LOCAL pItem          AS DWORD
+   LOCAL iLen           AS LONG
+   LOCAL i              AS LONG
+   LOCAL vValue         AS VARIANT
+
+   pXmlDoc = XmlCreateObject($PROGID_Msxml2DOMDocument)
+   IXMLDOMDocument_put_async pXmlDoc, %FALSE
+
+   IF ISTRUE IXMLDOMDocument_load(pXmlDoc, "books.xml") THEN
+      pBookNode = IXMLDOMDocument_selectSingleNode(pXmlDoc, "//book")
+      pNamedNodeMap = IXMLDOMNode_get_attributes(pBookNode)
+      iLen = IXMLDOMNamedNodeMap_get_length(pNamedNodeMap)
+      FOR i = 0 TO iLen - 1
+         pItem = IXMLDOMNamedNodeMap_get_item(pNamedNodeMap, i)
+         console_writeline "Attribute name: " & IXMLDOMNode_get_nodeName(pItem)
+         IXMLDOMDocument_get_nodeValue(pItem, vValue)
+         console_writeline "Attribute value: " & vValue
+         XmlRelease pItem
+      NEXT
+   END IF
+
+   ' cleanup
+   XmlRelease pNamedNodeMap
+   XmlRelease pBookNode
+   XmlRelease pXmlDoc
+
+   console_writeline "--- Press any key to finish ---"
+   console_WAITKEY
+
+END FUNCTION
+
+

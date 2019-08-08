@@ -1,0 +1,2527 @@
+
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<!-- Sitemap 1.0 -->
+</HEAD>
+<BODY>
+<UL>
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="!= (operators)">
+<param name="Local" value="operators.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="#alert">
+<param name="Local" value="a35alert.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="#asm">
+<param name="Local" value="a35asm.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="#autodim">
+<param name="Local" value="a35autodim.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="#basic">
+<param name="Local" value="a35basic.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="#byref">
+<param name="Local" value="a35byref.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="#byval">
+<param name="Local" value="a35byval.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="#case">
+<param name="Local" value="a35case.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="#cpu">
+<param name="Local" value="a35cpu.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="#def">
+<param name="Local" value="a35def.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="#define">
+<param name="Local" value="a35define.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="#elif">
+<param name="Local" value="a35elif.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="#else">
+<param name="Local" value="a35else.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="#elseif">
+<param name="Local" value="a35elseif.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="#endif">
+<param name="Local" value="a35endif.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="#endv">
+<param name="Local" value="a35endv.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="#error">
+<param name="Local" value="a35error.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="#fi">
+<param name="Local" value="a35fi.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="#file">
+<param name="Local" value="a35file.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="#fpu">
+<param name="Local" value="a35fpu.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="#if">
+<param name="Local" value="a35if.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="#ifdef">
+<param name="Local" value="a35ifdef.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="#ifndef">
+<param name="Local" value="a35ifndef.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="#include">
+<param name="Local" value="a35include.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="#lookahead">
+<param name="Local" value="a35lookahead.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="#minormajor">
+<param name="Local" value="a35minormajor.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="#noinit">
+<param name="Local" value="a35noinit.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="#noprec">
+<param name="Local" value="a35noprec.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="#o2h">
+<param name="Local" value="a35o2h.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="#o2path">
+<param name="Local" value="a35o2path.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="#pragma">
+<param name="Local" value="a35pragma.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="#undef">
+<param name="Local" value="a35undef.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="#undefine">
+<param name="Local" value="a35undefine.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="#unique">
+<param name="Local" value="a35unique.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="#view">
+<param name="Local" value="a35view.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="$">
+<param name="Local" value="a36.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="%">
+<param name="Local" value="a37.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="& (operators)">
+<param name="Local" value="operators.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="&& (operators)">
+<param name="Local" value="operators.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="&= (operators)">
+<param name="Local" value="operators.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="* (operators)">
+<param name="Local" value="operators.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="*= (operators)">
+<param name="Local" value="operators.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="+ (operators)">
+<param name="Local" value="operators.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="+= (operators)">
+<param name="Local" value="operators.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="- (operators)">
+<param name="Local" value="operators.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="-= (operators)">
+<param name="Local" value="operators.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="/ (operators)">
+<param name="Local" value="operators.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="/= (operators)">
+<param name="Local" value="operators.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value=":= (operators)">
+<param name="Local" value="operators.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="< (operators)">
+<param name="Local" value="operators.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="<< (operators)">
+<param name="Local" value="operators.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="<= (operators)">
+<param name="Local" value="operators.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="<= (operators)">
+<param name="Local" value="operators.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="<> (operators)">
+<param name="Local" value="operators.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="= (operators)">
+<param name="Local" value="operators.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="== (operators)">
+<param name="Local" value="operators.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="> (operators)">
+<param name="Local" value="operators.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="> (operators)">
+<param name="Local" value="operators.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value=">= (operators)">
+<param name="Local" value="operators.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value=">> (operators)">
+<param name="Local" value="operators.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="X86 CPU registers">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="\ (operators)">
+<param name="Local" value="operators.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="__int16 (primitive types)">
+<param name="Local" value="types.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="__int32 (primitive types)">
+<param name="Local" value="types.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="__int64 (primitive types)">
+<param name="Local" value="types.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="__int8 (primitive types)">
+<param name="Local" value="types.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="_mid">
+<param name="Local" value="a95mid.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="abs">
+<param name="Local" value="abs.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="acos">
+<param name="Local" value="acos.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="add (common x86 assembly instrunctions)">
+<param name="Local" value="common_asm.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="ah (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="al (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="alias">
+<param name="Local" value="alias.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="alias">
+<param name="Local" value="alias.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="and (common x86 assembly instrunctions)">
+<param name="Local" value="common_asm.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="and (operators)">
+<param name="Local" value="operators.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="and= (operators)">
+<param name="Local" value="operators.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="any (primitive types)">
+<param name="Local" value="types.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="asc">
+<param name="Local" value="asc.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="asciiz (primitive types)">
+<param name="Local" value="types.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="asin">
+<param name="Local" value="asin.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="asm">
+<param name="Local" value="asm.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="astring (primitive types)">
+<param name="Local" value="types.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="atan">
+<param name="Local" value="atan.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="atn">
+<param name="Local" value="atn.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="ax (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="basic">
+<param name="Local" value="basic.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="bh (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="bind">
+<param name="Local" value="bind.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="bl (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="block">
+<param name="Local" value="block.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="bool (primitive types)">
+<param name="Local" value="types.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="bp (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="bpl (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="bstring (primitive types)">
+<param name="Local" value="types.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="bx (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="byte (primitive types)">
+<param name="Local" value="types.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="call (common x86 assembly instrunctions)">
+<param name="Local" value="common_asm.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="case">
+<param name="Local" value="case.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="ch (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="char (primitive types)">
+<param name="Local" value="types.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="chr">
+<param name="Local" value="chr.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="cl (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="class">
+<param name="Local" value="class.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="com">
+<param name="Local" value="com.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="common x86 assembly instrunctions">
+<param name="Local" value="common_asm.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="comparestr">
+<param name="Local" value="comparestr.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="compile">
+<param name="Local" value="compile.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="const">
+<param name="Local" value="const.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="continue">
+<param name="Local" value="continue.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="copy">
+<param name="Local" value="copy.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="copy0">
+<param name="Local" value="copy0.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="copy00">
+<param name="Local" value="copy00.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="copyn">
+<param name="Local" value="copyn.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="cos">
+<param name="Local" value="cos.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="cr0 (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="cr2 (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="cr3 (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="cr4 (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="cs (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="cx (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="data">
+<param name="Local" value="data.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="dataspace">
+<param name="Local" value="dataspace.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="declare">
+<param name="Local" value="declare.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="def">
+<param name="Local" value="def.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="defs">
+<param name="Local" value="defs.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="deg">
+<param name="Local" value="deg.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="dh (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="di (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="dil (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="dim">
+<param name="Local" value="dim.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="div (common x86 assembly instrunctions)">
+<param name="Local" value="common_asm.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="dl (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="do">
+<param name="Local" value="do.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="double (primitive types)">
+<param name="Local" value="types.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="dr0 (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="dr1 (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="dr2 (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="dr3 (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="dr4 (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="dr5 (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="dr6 (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="dr7 (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="ds (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="dword (primitive types)">
+<param name="Local" value="types.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="dx (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="eax (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="ebp (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="ebx (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="ecx (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="edi (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="edx (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="else">
+<param name="Local" value="else.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="elseif">
+<param name="Local" value="elseif.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="encodingof">
+<param name="Local" value="encodingof.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="end">
+<param name="Local" value="end.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="enddo">
+<param name="Local" value="enddo.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="endif">
+<param name="Local" value="endif.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="endsel">
+<param name="Local" value="endsel.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="endwhile">
+<param name="Local" value="endwhile.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="enum">
+<param name="Local" value="enum.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="error">
+<param name="Local" value="error.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="es (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="esi (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="esp (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="exit (common x86 assembly instrunctions)">
+<param name="Local" value="common_asm.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="exit">
+<param name="Local" value="exit.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="export">
+<param name="Local" value="export.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="exposed">
+<param name="Local" value="exposed.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="extentof">
+<param name="Local" value="extentof.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="extern">
+<param name="Local" value="extern.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="external">
+<param name="Local" value="external.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="float (primitive types)">
+<param name="Local" value="types.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="for">
+<param name="Local" value="for.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="frac">
+<param name="Local" value="frac.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="freelibrary">
+<param name="Local" value="freelibrary.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="freelibs">
+<param name="Local" value="freelibs.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="freememory">
+<param name="Local" value="freememory.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="frees">
+<param name="Local" value="frees.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="freestrings">
+<param name="Local" value="freestrings.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="from">
+<param name="Local" value="from.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="fs (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="function">
+<param name="Local" value="function.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="getfile">
+<param name="Local" value="getfile.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="getmemory">
+<param name="Local" value="getmemory.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="getprocaddress">
+<param name="Local" value="getprocaddress.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="global">
+<param name="Local" value="global.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="gosub">
+<param name="Local" value="gosub.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="goto">
+<param name="Local" value="goto.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="gs (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="guidtxt">
+<param name="Local" value="guidtxt.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="guidval">
+<param name="Local" value="guidval.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="has">
+<param name="Local" value="has.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="hex">
+<param name="Local" value="hex.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="hypot">
+<param name="Local" value="hypot.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="if">
+<param name="Local" value="if.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="incl">
+<param name="Local" value="incl.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="include">
+<param name="Local" value="include.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="includepath">
+<param name="Local" value="includepath.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="indexbase">
+<param name="Local" value="indexbase.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="indexers">
+<param name="Local" value="indexers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="inherits">
+<param name="Local" value="inherits.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="instr">
+<param name="Local" value="instr.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="int (primitive types)">
+<param name="Local" value="types.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="int16_t (primitive types)">
+<param name="Local" value="types.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="int32_t (primitive types)">
+<param name="Local" value="types.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="int64_t (primitive types)">
+<param name="Local" value="types.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="int8_t (primitive types)">
+<param name="Local" value="types.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="integer (primitive types)">
+<param name="Local" value="types.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="jmp (common x86 assembly instrunctions)">
+<param name="Local" value="common_asm.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="jnz (common x86 assembly instrunctions)">
+<param name="Local" value="common_asm.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="jz (common x86 assembly instrunctions)">
+<param name="Local" value="common_asm.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="lcase">
+<param name="Local" value="lcase.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="lea (common x86 assembly instrunctions)">
+<param name="Local" value="common_asm.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="leaf">
+<param name="Local" value="leaf.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="left">
+<param name="Local" value="left.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="len">
+<param name="Local" value="len.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="lib">
+<param name="Local" value="lib.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="lib">
+<param name="Local" value="lib.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="library">
+<param name="Local" value="library.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="librarypath">
+<param name="Local" value="librarypath.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="lin">
+<param name="Local" value="lin.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="linklibs">
+<param name="Local" value="linklibs.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="load (operators)">
+<param name="Local" value="operators.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="loadlibrary">
+<param name="Local" value="loadlibrary.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="loadlibs">
+<param name="Local" value="loadlibs.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="local">
+<param name="Local" value="local.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="log">
+<param name="Local" value="log.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="log10">
+<param name="Local" value="log10.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="log2">
+<param name="Local" value="log2.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="logn">
+<param name="Local" value="logn.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="long (primitive types)">
+<param name="Local" value="types.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="ltrim">
+<param name="Local" value="ltrim.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="macro">
+<param name="Local" value="macro.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="mbox">
+<param name="Local" value="mbox.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="method">
+<param name="Local" value="method.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="methods">
+<param name="Local" value="methods.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="mid">
+<param name="Local" value="mid.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="mmx0 (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="mmx1 (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="mmx2 (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="mmx3 (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="mmx4 (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="mmx5 (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="mmx6 (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="mmx7 (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="mod">
+<param name="Local" value="mod.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="mov (common x86 assembly instrunctions)">
+<param name="Local" value="common_asm.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="mul (common x86 assembly instrunctions)">
+<param name="Local" value="common_asm.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="news">
+<param name="Local" value="news.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="next">
+<param name="Local" value="next.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="not (common x86 assembly instrunctions)">
+<param name="Local" value="common_asm.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="nuls">
+<param name="Local" value="nuls.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="o2">
+<param name="Local" value="o2.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="o2h">
+<param name="Local" value="o2h.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="of">
+<param name="Local" value="of.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="offset">
+<param name="Local" value="offset.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="offsetof">
+<param name="Local" value="offsetof.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="operation">
+<param name="Local" value="operation.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="operations">
+<param name="Local" value="operations.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="operator">
+<param name="Local" value="operator.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="operators">
+<param name="Local" value="operators.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="or (common x86 assembly instrunctions)">
+<param name="Local" value="common_asm.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="or (operators)">
+<param name="Local" value="operators.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="or= (operators)">
+<param name="Local" value="operators.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="pi">
+<param name="Local" value="pi.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="pow">
+<param name="Local" value="pow.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="primitive types">
+<param name="Local" value="types.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="print">
+<param name="Local" value="print.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="pstring (primitive types)">
+<param name="Local" value="types.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="putfile">
+<param name="Local" value="putfile.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="quad (primitive types)">
+<param name="Local" value="types.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="quote">
+<param name="Local" value="quote.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="qword (primitive types)">
+<param name="Local" value="types.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="r10 (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="r10d (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="r10l (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="r10w (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="r11 (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="r11d (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="r11l (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="r11w (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="r12 (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="r12d (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="r12l (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="r12w (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="r13 (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="r13d (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="r13l (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="r13w (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="r14 (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="r14d (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="r14l (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="r14w (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="r15 (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="r15d (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="r15l (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="r15w (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="r8 (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="r8d (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="r8l (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="r8w (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="r9 (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="r9d (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="r9l (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="r9w (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="rad">
+<param name="Local" value="rad.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="rax (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="rbp (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="rbx (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="rcx (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="rdi (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="rdx (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="read">
+<param name="Local" value="read.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="readstate">
+<param name="Local" value="readstate.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="recip">
+<param name="Local" value="recip.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="recordof">
+<param name="Local" value="recordof.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="rem">
+<param name="Local" value="rem.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="repeat (common x86 assembly instrunctions)">
+<param name="Local" value="common_asm.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="replace">
+<param name="Local" value="replace.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="restore">
+<param name="Local" value="restore.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="retn">
+<param name="Local" value="retn.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="return">
+<param name="Local" value="return.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="round">
+<param name="Local" value="round.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="rsi (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="rsp (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="rtrim">
+<param name="Local" value="rtrim.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="sal (common x86 assembly instrunctions)">
+<param name="Local" value="common_asm.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="sar (common x86 assembly instrunctions)">
+<param name="Local" value="common_asm.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="scope">
+<param name="Local" value="scope.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="select">
+<param name="Local" value="select.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="shl (common x86 assembly instrunctions)">
+<param name="Local" value="common_asm.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="short (primitive types)">
+<param name="Local" value="types.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="shr (common x86 assembly instrunctions)">
+<param name="Local" value="common_asm.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="si (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="signed">
+<param name="Local" value="signed.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="sil (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="sin">
+<param name="Local" value="sin.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="sincos">
+<param name="Local" value="sincos.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="single (primitive types)">
+<param name="Local" value="types.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="sizeof">
+<param name="Local" value="sizeof.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="skip">
+<param name="Local" value="skip.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="sp (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="space">
+<param name="Local" value="space.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="spanof">
+<param name="Local" value="spanof.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="spl (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="sqr">
+<param name="Local" value="sqr.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="sqrt">
+<param name="Local" value="sqrt.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="ss (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="st0 (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="st1 (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="st2 (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="st3 (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="st4 (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="st5 (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="st6 (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="st7 (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="static">
+<param name="Local" value="static.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="statusof">
+<param name="Local" value="statusof.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="step">
+<param name="Local" value="step.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="str">
+<param name="Local" value="str.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="strd">
+<param name="Local" value="strd.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="string">
+<param name="Local" value="string.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="struct">
+<param name="Local" value="struct.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="structureof">
+<param name="Local" value="structureof.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="sub (common x86 assembly instrunctions)">
+<param name="Local" value="common_asm.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="sub">
+<param name="Local" value="sub.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="symbols">
+<param name="Local" value="symbols.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="sys (primitive types)">
+<param name="Local" value="types.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="tan">
+<param name="Local" value="tan.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="terminate">
+<param name="Local" value="terminate.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="termsof">
+<param name="Local" value="termsof.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="that">
+<param name="Local" value="that.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="then">
+<param name="Local" value="then.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="to">
+<param name="Local" value="to.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="trunc">
+<param name="Local" value="trunc.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="type">
+<param name="Local" value="type.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="typedef">
+<param name="Local" value="typedef.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="typeof">
+<param name="Local" value="typeof.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="ucase">
+<param name="Local" value="ucase.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="uint (primitive types)">
+<param name="Local" value="types.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="uint16_t (primitive types)">
+<param name="Local" value="types.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="uint32_t (primitive types)">
+<param name="Local" value="types.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="uint64_t (primitive types)">
+<param name="Local" value="types.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="uint8_t (primitive types)">
+<param name="Local" value="types.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="union">
+<param name="Local" value="union.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="unsigned">
+<param name="Local" value="unsigned.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="val">
+<param name="Local" value="val.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="vald">
+<param name="Local" value="vald.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="var">
+<param name="Local" value="var.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="void (primitive types)">
+<param name="Local" value="types.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="wend">
+<param name="Local" value="wend.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="while">
+<param name="Local" value="while.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="with">
+<param name="Local" value="with.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="word (primitive types)">
+<param name="Local" value="types.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="writestate">
+<param name="Local" value="writestate.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="xmm0 (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="xmm1 (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="xmm10 (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="xmm11 (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="xmm12 (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="xmm13 (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="xmm14 (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="xmm15 (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="xmm2 (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="xmm3 (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="xmm4 (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="xmm5 (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="xmm6 (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="xmm7 (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="xmm8 (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="xmm9 (X86 CPU registers)">
+<param name="Local" value="x86Registers.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="xor (common x86 assembly instrunctions)">
+<param name="Local" value="common_asm.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="xor (operators)">
+<param name="Local" value="operators.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="xor= (operators)">
+<param name="Local" value="operators.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="zstring (primitive types)">
+<param name="Local" value="types.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="| (operators)">
+<param name="Local" value="operators.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="|= (operators)">
+<param name="Local" value="operators.htm">
+</OBJECT>
+
+
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="|| (operators)">
+<param name="Local" value="operators.htm">
+</OBJECT>
+
+
+</UL>
+</BODY>
+</HTML>

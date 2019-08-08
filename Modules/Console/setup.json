@@ -1,0 +1,8 @@
+{
+    "Keyword1": "Cls Print PrintL WaitKey Console_Read Console_Line Console_GetCursorX Console_GetCursorY Console_SetCursorPosition Console_GetSizeX Console_GetSizeY Console_GetTitle Console_SetTitle",
+    "Keyword2": null,
+    "Keyword3": "Console_Line_Vertical Console_Line_Horizontal",
+    "RelyFile": null,
+    "PackFile": null,
+    "RelyCode": "boot.tbs"
+}

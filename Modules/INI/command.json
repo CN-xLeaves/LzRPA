@@ -1,0 +1,366 @@
+{
+    "Caption": "INI",
+    "Remark": "配置文件",
+    "ModuleName": "INI",
+    "Icon": "公文包",
+    "Visible": true,
+    "Templet": "index.html",
+    "Help": {
+        "Caption": ""
+    },
+    "Child": [
+        {
+            "Caption": "单文件使用扩展库",
+            "Icon": "信息",
+            "Visible": true,
+            "Templet": "document.html",
+            "Help": {
+                "Caption": "扩展库使用帮助",
+                "Document": "在项目中使用扩展库功能会自动将扩展库引入项目，项目编译或运行时，自动加入扩展库依赖代码和文件。<br><br>如果您在单文件中希望使用本扩展库，则必须编写扩展库依赖代码才能调用扩展库中的函数，否则会报错，LzRPA 建议使用工程方式编写程序，但仍保留单文件使用扩展库的方法。<br><br>扩展库依赖代码：<br>&nbsp;&nbsp;Uses &quot;INI&quot;<br><br>建议将引用扩展库代码统一添加到全局代码块，也就是代码的最上面。"
+            }
+        },
+        {
+            "Caption": "INI_GetKey",
+            "Remark": "读键值",
+            "Visible": true,
+            "Function": true,
+            "InsCode": "INI_GetKey(\"文件路径\", \"小节名\", \"键名\")",
+            "Templet": "command.html",
+            "Help": {
+                "Caption": "INI_GetKey",
+                "Define": "sRet = INI_GetKey(sFile, sSection, sKey[, sDefault])",
+                "Describe": "读取配置文件中指定小节下键的值",
+                "RetType": "String",
+                "Return": "返回读取到的值",
+                "Param": [
+                    {
+                        "Caption": "sFile",
+                        "DataType": "String",
+                        "Describe": "配置文件路径",
+                        "Optional": false
+                    },
+                    {
+                        "Caption": "sSection",
+                        "DataType": "String",
+                        "Describe": "小节名",
+                        "Optional": false
+                    },
+                    {
+                        "Caption": "sKey",
+                        "DataType": "String",
+                        "Describe": "键名",
+                        "Optional": false
+                    },
+                    {
+                        "Caption": "sDefault",
+                        "DataType": "String",
+                        "Describe": "默认值，当键或小节不存在时返回这个值",
+                        "Optional": true
+                    }
+                ]
+            }
+        },
+        {
+            "Caption": "INI_SetKey",
+            "Remark": "写键值",
+            "Visible": true,
+            "Function": true,
+            "InsCode": "INI_SetKey(\"文件路径\", \"小节名\", \"键名\", \"键值\")",
+            "Templet": "command.html",
+            "Help": {
+                "Caption": "INI_SetKey",
+                "Define": "iRet = INI_SetKey(sFile, sSection, sKey, sValue)",
+                "Describe": "向配置文件中指定小节写入键值",
+                "RetType": "Integer",
+                "Return": "失败返回 0，成功返回非 0 数值",
+                "Param": [
+                    {
+                        "Caption": "sFile",
+                        "DataType": "String",
+                        "Describe": "配置文件路径",
+                        "Optional": false
+                    },
+                    {
+                        "Caption": "sSection",
+                        "DataType": "String",
+                        "Describe": "小节名",
+                        "Optional": false
+                    },
+                    {
+                        "Caption": "sKey",
+                        "DataType": "String",
+                        "Describe": "键名",
+                        "Optional": false
+                    },
+                    {
+                        "Caption": "sValue",
+                        "DataType": "String",
+                        "Describe": "写入键的值",
+                        "Optional": true
+                    }
+                ]
+            }
+        },
+        {
+            "Caption": "INI_GetSectionsList",
+            "Remark": "遍历小节",
+            "Visible": true,
+            "Function": true,
+            "InsCode": "INI_GetSectionsList(\"文件路径\")",
+            "Templet": "command.html",
+            "Help": {
+                "Caption": "INI_GetSectionsList",
+                "Define": "sRet = INI_GetSectionsList(sFile[, Separator])",
+                "Describe": "遍历配置文件中的所有小节",
+                "RetType": "String",
+                "Return": "返回所有小节的名字，使用分隔符分割",
+                "Param": [
+                    {
+                        "Caption": "sFile",
+                        "DataType": "String",
+                        "Describe": "配置文件路径",
+                        "Optional": false
+                    },
+                    {
+                        "Caption": "Separator",
+                        "DataType": "String",
+                        "Describe": "分隔符，默认使用 $CRLF",
+                        "Optional": true
+                    }
+                ]
+            }
+        },
+        {
+            "Caption": "INI_GetSectionKeyList",
+            "Remark": "遍历键",
+            "Visible": true,
+            "Function": true,
+            "InsCode": "INI_GetSectionKeyList(\"文件路径\", \"小节名\")",
+            "Templet": "command.html",
+            "Help": {
+                "Caption": "INI_GetSectionKeyList",
+                "Define": "sRet = INI_GetSectionKeyList(sFile, sSection[, Separator])",
+                "Describe": "遍历配置文件中指定小节下的所有键",
+                "RetType": "String",
+                "Return": "返回所有键的名字，使用分隔符分割",
+                "Param": [
+                    {
+                        "Caption": "sFile",
+                        "DataType": "String",
+                        "Describe": "配置文件路径",
+                        "Optional": false
+                    },
+                    {
+                        "Caption": "sSection",
+                        "DataType": "String",
+                        "Describe": "小节名",
+                        "Optional": false
+                    },
+                    {
+                        "Caption": "Separator",
+                        "DataType": "String",
+                        "Describe": "分隔符，默认使用 $CRLF",
+                        "Optional": true
+                    }
+                ]
+            }
+        },
+        {
+            "Caption": "cIniFile",
+            "Remark": "配置文件类",
+            "Icon": "类",
+            "Visible": true,
+            "InsCode": "Dim MyIni As cIniFile(\"文件路径\")",
+            "Templet": "index.html",
+            "Help": {
+                "Caption": ""
+            },
+            "Child": [
+                {
+                    "Caption": "FileName",
+                    "Remark": "文件名",
+                    "Icon": "属性",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "MyIni.FileName",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "FileName",
+                        "Define": "sRet = cIniFile.FileName<br>cIniFile.FileName = NewValue",
+                        "Describe": "设置或读取对象的 ini 文件路径",
+                        "RetType": "String",
+                        "Return": "ini 文件路径",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "GetKey",
+                    "Remark": "读键值",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "MyIni.GetKey(\"小节名\", \"键名\")",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "GetKey",
+                        "Define": "sRet = cIniFile.GetKey(sSection, sKey[, sDefault])",
+                        "Describe": "读取配置文件中指定小节下键的值",
+                        "RetType": "String",
+                        "Return": "返回读取到的值",
+                        "Param": [
+                            {
+                                "Caption": "sSection",
+                                "DataType": "String",
+                                "Describe": "小节名",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "sKey",
+                                "DataType": "String",
+                                "Describe": "键名",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "sDefault",
+                                "DataType": "String",
+                                "Describe": "默认值，当键或小节不存在时返回这个值",
+                                "Optional": true
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "SetKey",
+                    "Remark": "写键值",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "MyIni.SetKey(\"小节名\", \"键名\", \"键值\")",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "SetKey",
+                        "Define": "iRet = cIniFile.SetKey(sSection, sKey, sValue)",
+                        "Describe": "向配置文件中指定小节写入键值",
+                        "RetType": "Integer",
+                        "Return": "失败返回 0，成功返回非 0 数值",
+                        "Param": [
+                            {
+                                "Caption": "sSection",
+                                "DataType": "String",
+                                "Describe": "小节名",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "sKey",
+                                "DataType": "String",
+                                "Describe": "键名",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "sValue",
+                                "DataType": "String",
+                                "Describe": "写入键的值",
+                                "Optional": true
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Sections",
+                    "Remark": "小节集合",
+                    "Icon": "命名空间",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "MyIni.Sections(1)",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "Sections",
+                        "Define": "sRet = cIniFile.Sections(iIndex)",
+                        "Describe": "获取小节集合中某一小节的名字",
+                        "RetType": "String",
+                        "Return": "返回小节名",
+                        "Param": [
+                            {
+                                "Caption": "iIndex",
+                                "DataType": "Integer",
+                                "Describe": "小节的索引",
+                                "Optional": false
+                            }
+                        ]
+                    },
+                    "Child": [
+                        {
+                            "Caption": "Count",
+                            "Remark": "小节数量",
+                            "Icon": "属性",
+                            "Visible": true,
+                            "Function": true,
+                            "InsCode": "MyIni.Sections.Count",
+                            "Templet": "command.html",
+                            "Help": {
+                                "Caption": "Count",
+                                "Define": "sRet = cIniFile.Sections.Count",
+                                "Describe": "获取 ini 文件中所有小节的数量",
+                                "RetType": "Integer",
+                                "Return": "返回小节数量",
+                                "Param": [
+                                ]
+                            }
+                        },
+                        {
+                            "Caption": "List",
+                            "Remark": "获取小节列表",
+                            "Visible": true,
+                            "Function": true,
+                            "InsCode": "MyIni.Sections.List($CRLF)",
+                            "Templet": "command.html",
+                            "Help": {
+                                "Caption": "List",
+                                "Define": "sRet = cIniFile.Sections.List(Separator)",
+                                "Describe": "遍历配置文件中指定小节下的所有键",
+                                "RetType": "String",
+                                "Return": "返回所有键的名字，使用分隔符分割",
+                                "Param": [
+                                    {
+                                        "Caption": "Separator",
+                                        "DataType": "String",
+                                        "Describe": "分隔符，默认使用 $CRLF",
+                                        "Optional": true
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "Caption": "GetKeys",
+                    "Remark": "遍历键",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "MyIni.GetKeys(\"小节名\", $CRLF)",
+                    "Templet": "command.html",
+                    "Help": {
+                        "Caption": "GetKeys",
+                        "Define": "sRet = cIniFile.GetKeys(sSection[, Separator])",
+                        "Describe": "遍历配置文件中指定小节下的所有键",
+                        "RetType": "String",
+                        "Return": "返回所有键的名字，使用分隔符分割",
+                        "Param": [
+                            {
+                                "Caption": "sSection",
+                                "DataType": "String",
+                                "Describe": "小节名",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "Separator",
+                                "DataType": "String",
+                                "Describe": "分隔符，默认使用 $CRLF",
+                                "Optional": true
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,658 @@
+'------------------------------------------------------------------------------
+'
+'  ObjIdl.inc
+'
+'  Copyright (c) 2010-2011 PowerBASIC, Inc.
+'  Portions Copyright (c) Microsoft Corporation
+'  All Rights Reserved.
+'
+'  Last updated 02 May 2011
+'
+'------------------------------------------------------------------------------
+'  from ObjIdl.h of 14 Jul 2009
+'------------------------------------------------------------------------------
+
+#INCLUDE THIS ONCE
+
+'#INCLUDE "rpc.h"
+'#INCLUDE "rpcndr.h"
+
+'#IF NOT %DEF(%COM_NO_WINDOWS_H)
+'#INCLUDE "windows.h"
+'#INCLUDE "ole2.h"
+'#ENDIF ' COM_NO_WINDOWS_H
+
+%objidl_h = 1
+
+#INCLUDE "WinNT.inc"
+
+' header files for imported files
+#INCLUDE "Unknwn.inc"
+
+#IF (%NTDDI_VERSION >= %NTDDI_WINLH AND NOT %DEF(%WIN32_WINNT))
+%WIN32_WINNT = &H0600
+#ENDIF
+#IF (%NTDDI_VERSION >= %NTDDI_WS03 AND NOT %DEF(%WIN32_WINNT))
+%WIN32_WINNT = &H0502
+#ENDIF
+#IF (%NTDDI_VERSION >= %NTDDI_WINXP AND NOT %DEF(%WIN32_WINNT))
+%WIN32_WINNT = &H0501
+#ENDIF
+#IF (%NTDDI_VERSION >= %NTDDI_WIN2K AND NOT %DEF(%WIN32_WINNT))
+%WIN32_WINNT = &H0500
+#ENDIF
+
+TYPE COSERVERINFO
+    dwReserved1 AS DWORD
+    pwszName    AS WSTRINGZ PTR
+    pAuthInfo   AS COAUTHINFO PTR
+    dwReserved2 AS DWORD
+END TYPE
+
+
+#IF NOT %DEF(%IExternalConnection_INTERFACE_DEFINED)
+%IExternalConnection_INTERFACE_DEFINED = 1
+
+' interface IExternalConnection
+
+MACRO EXTCONN_enum=DWORD
+ENUM EXTCONN SINGULAR BITS
+    EXTCONN_STRONG  = 1
+    EXTCONN_WEAK
+    EXTCONN_CALLABLE
+END ENUM
+
+#ENDIF ' %IExternalConnection_INTERFACE_DEFINED
+
+
+
+' interface __MIDL_itf_objidl_0000_0006
+
+TYPE MULTI_QI
+    pIID AS GUID PTR  ' IID *
+    pItf AS DWORD     ' IUnknown PTR
+    hr   AS LONG      ' HRESULT
+END TYPE
+
+
+#IF NOT %DEF(%IBindCtx_INTERFACE_DEFINED)
+%IBindCtx_INTERFACE_DEFINED = 1
+
+' interface IBindCtx
+' [unique][uuid][object]
+
+TYPE BIND_OPTS
+    cbStruct            AS DWORD
+    grfFlags            AS DWORD
+    grfMode             AS DWORD
+    dwTickCountDeadline AS DWORD
+END TYPE
+
+TYPE BIND_OPTS2
+    cbStruct            AS DWORD
+    grfFlags            AS DWORD
+    grfMode             AS DWORD
+    dwTickCountDeadline AS DWORD
+    dwTrackFlags        AS DWORD
+    dwClassContext      AS DWORD
+    locale              AS DWORD  ' LCID
+    pServerInfo         AS COSERVERINFO PTR
+END TYPE
+
+TYPE BIND_OPTS3
+    cbStruct            AS DWORD
+    grfFlags            AS DWORD
+    grfMode             AS DWORD
+    dwTickCountDeadline AS DWORD
+    dwTrackFlags        AS DWORD
+    dwClassContext      AS DWORD
+    locale              AS DWORD  ' LCID
+    pServerInfo         AS COSERVERINFO PTR
+    hwnd                AS DWORD  ' HWND
+END TYPE
+
+MACRO BIND_FLAGS_enum=DWORD
+ENUM BIND_FLAGS SINGULAR
+    BIND_MAYBOTHERUSER  = 1
+    BIND_JUSTTESTEXISTENCE
+END ENUM
+
+
+#ENDIF  ' %IBindCtx_INTERFACE_DEFINED
+
+
+#IF NOT %DEF(%IMoniker_INTERFACE_DEFINED)
+%IMoniker_INTERFACE_DEFINED = 1
+
+' interface IMoniker
+' [unique][uuid][object]
+
+MACRO MKSYS_enum=LONG
+ENUM MKSYS SINGULAR
+    MKSYS_NONE
+    MKSYS_GENERICCOMPOSITE
+    MKSYS_FILEMONIKER
+    MKSYS_ANTIMONIKER
+    MKSYS_ITEMMONIKER
+    MKSYS_POINTERMONIKER
+    MKSYS_CLASSMONIKER    = 7
+    MKSYS_OBJREFMONIKER
+    MKSYS_SESSIONMONIKER
+    MKSYS_LUAMONIKER
+END ENUM
+
+MACRO MKREDUCE_enum=LONG
+ENUM MKREDUCE SINGULAR
+    MKRREDUCE_ONE         = &H00030000  ' ( 3 << 16 )
+    MKRREDUCE_TOUSER      = &H00020000  ' ( 2 << 16 )
+    MKRREDUCE_THROUGHUSER = &H00010000  ' ( 1 << 16 )
+    MKRREDUCE_ALL         = 0
+END ENUM
+
+#ENDIF  ' %IMoniker_INTERFACE_DEFINED
+
+
+#IF NOT %DEF(%IStream_INTERFACE_DEFINED)
+%IStream_INTERFACE_DEFINED = 1
+
+' interface IStream
+' [unique][uuid][object]
+
+'FSSpec is Macintosh only, defined in macos\files.h
+#IF %DEF(%MAC)
+    TYPE STATSTG
+        pwcsName          AS WSTRINGZ PTR
+        pspec             AS FSSpec PTR
+        type              AS DWORD
+        cbSize            AS QUAD  ' ULARGE_INTEGER
+        mtime             AS FILETIME
+        ctime             AS FILETIME
+        atime             AS FILETIME
+        grfMode           AS DWORD
+        grfLocksSupported AS DWORD
+        clsid             AS GUID  ' CLSID
+        grfStateBits      AS DWORD
+        reserved          AS DWORD
+    END TYPE
+#ELSE ' %MAC
+TYPE STATSTG
+    pwcsName          AS WSTRINGZ PTR
+    type              AS DWORD
+    cbSize            AS QUAD  ' ULARGE_INTEGER
+    mtime             AS FILETIME
+    ctime             AS FILETIME
+    atime             AS FILETIME
+    grfMode           AS DWORD
+    grfLocksSupported AS DWORD
+    clsid             AS GUID  ' CLSID
+    grfStateBits      AS DWORD
+    reserved          AS DWORD
+END TYPE
+
+#ENDIF ' %MAC
+
+MACRO STGTY_enum=LONG
+ENUM STGTY SINGULAR
+    STGTY_STORAGE   = 1
+    STGTY_STREAM
+    STGTY_LOCKBYTES
+    STGTY_PROPERTY
+END ENUM
+
+MACRO STREAM_SEEK_enum=LONG
+ENUM STREAM_SEEK SINGULAR
+    STREAM_SEEK_SET
+    STREAM_SEEK_CUR
+    STREAM_SEEK_END
+END ENUM
+
+MACRO LOCKTYPE_enum=DWORD
+ENUM LOCKTYPE SINGULAR BITS
+    LOCK_WRITE     = 1
+    LOCK_EXCLUSIVE
+    LOCK_ONLYONCE
+END ENUM
+
+
+#ENDIF ' %IStream_INTERFACE_DEFINED
+
+
+#IF NOT %DEF(%IStorage_INTERFACE_DEFINED)
+%IStorage_INTERFACE_DEFINED = 1
+
+' interface IStorage
+' [unique][uuid][object]
+
+TYPE RemSNB
+    ulCntStr    AS DWORD
+    ulCntChar   AS DWORD
+    rgString(0) AS WSTRING * 1  ' OLECHAR
+END TYPE
+
+
+#ENDIF ' %IStorage_INTERFACE_DEFINED
+
+
+#IF NOT %DEF(%IEnumFORMATETC_INTERFACE_DEFINED)
+%IEnumFORMATETC_INTERFACE_DEFINED = 1
+
+' interface IEnumFORMATETC
+' [unique][uuid][object]
+
+TYPE DVTARGETDEVICE
+    tdSize             AS DWORD
+    tdDriverNameOffset AS WORD
+    tdDeviceNameOffset AS WORD
+    tdPortNameOffset   AS WORD
+    tdExtDevmodeOffset AS WORD
+    tdData(0)          AS BYTE
+END TYPE
+
+TYPE FORMATETC DWORD FILL
+    cfFormat AS WORD  ' CLIPFORMAT
+    ptd      AS DVTARGETDEVICE PTR
+    dwAspect AS DWORD
+    lindex   AS LONG
+    tymed    AS DWORD
+END TYPE
+
+
+#ENDIF ' IEnumFORMATETC_INTERFACE_DEFINED
+
+
+#IF NOT %DEF(%IEnumSTATDATA_INTERFACE_DEFINED)
+%IEnumSTATDATA_INTERFACE_DEFINED = 1
+
+' interface IEnumSTATDATA
+' [unique][uuid][object]
+
+
+MACRO ADVF_enum=DWORD
+ENUM ADVF SINGULAR BITS
+    ADVF_NODATA     = 1
+    ADVF_PRIMEFIRST
+    ADVF_ONLYONCE
+    ADVFCACHE_NOHANDLER
+    ADVFCACHE_FORCEBUILTIN
+    ADVFCACHE_ONSAVE
+    ADVF_DATAONSTOP
+END ENUM
+
+TYPE STATDATA
+    formatetc    AS FORMATETC
+    advf         AS DWORD
+    pAdvSink     AS DWORD  ' IAdviseSink PTR
+    dwConnection AS DWORD
+END TYPE
+
+
+#ENDIF ' %IEnumSTATDATA_INTERFACE_DEFINED
+
+
+#IF NOT %DEF(%IAdviseSink_INTERFACE_DEFINED)
+%IAdviseSink_INTERFACE_DEFINED = 1
+
+' interface IAdviseSink
+' [unique][async_uuid][uuid][object]
+
+MACRO TYMED_enum=DWORD
+ENUM TYMED SINGULAR BITS
+    TYMED_NULL
+    TYMED_HGLOBAL
+    TYMED_FILE
+    TYMED_ISTREAM
+    TYMED_ISTORAGE
+    TYMED_GDI
+    TYMED_MFPICT
+    TYMED_ENHMF
+END ENUM
+
+TYPE RemSTGMEDIUM
+    tymed          AS DWORD
+    dwHandleType   AS DWORD
+    pData          AS DWORD
+    pUnkForRelease AS DWORD
+    cbData         AS DWORD
+    DATA(0)        AS BYTE
+END TYPE
+
+UNION uSTGMEDIUM_union
+    hBitmap       AS DWORD  ' HBITMAP
+    hMetaFilePict AS DWORD  ' HMETAFILEPICT
+    hEnhMetaFile  AS DWORD  ' HENHMETAFILE
+    hGlobal       AS DWORD  ' HGLOBAL
+    lpszFileName  AS WSTRINGZ PTR
+    pstm          AS DWORD  ' IStream PTR
+    pstg          AS DWORD  ' IStorage PTR
+END UNION
+
+TYPE uSTGMEDIUM
+    tymed          AS DWORD
+    uSTGMEDIUM_union
+    pUnkForRelease AS DWORD  ' IUnknown PTR
+END TYPE
+
+UNION GDI_OBJECT_union
+    hBitmap  AS DWORD  ' wireHBITMAP
+    hPalette AS DWORD  ' wireHPALETTE
+    hGeneric AS DWORD  ' wireHGLOBAL
+END UNION
+
+TYPE GDI_OBJECT
+    ObjectType AS DWORD
+    GDI_OBJECT_union
+END TYPE
+
+UNION userSTGMEDIUM_type_union
+    hMetaFilePict AS DWORD  ' wireHMETAFILEPICT
+    hHEnhMetaFile AS DWORD  ' wireHENHMETAFILE
+    hGdiHandle    AS GDI_OBJECT PTR
+    hGlobal       AS DWORD  ' wireHGLOBAL
+    lpszFileName  AS WSTRINGZ PTR
+    pstm          AS BYTE_BLOB PTR
+    pstg          AS BYTE_BLOB PTR
+END UNION
+
+TYPE userSTGMEDIUM_type
+    tymed AS DWORD
+    userSTGMEDIUM_type_union
+END TYPE
+
+TYPE userSTGMEDIUM
+    userSTGMEDIUM_type
+    pUnkForRelease AS DWORD  ' IUnknown PTR
+END TYPE
+
+TYPE STGMEDIUM
+    uSTGMEDIUM
+END TYPE
+
+TYPE userFLAG_STGMEDIUM
+    ContextFlags   AS LONG
+    fPassOwnership AS LONG
+    Stgmed         AS userSTGMEDIUM
+END TYPE
+
+TYPE FLAG_STGMEDIUM
+    ContextFlags   AS LONG
+    fPassOwnership AS LONG
+    Stgmed         AS STGMEDIUM
+END TYPE
+
+#ENDIF ' %IAdviseSink_INTERFACE_DEFINED
+
+
+#IF NOT %DEF(%IDataObject_INTERFACE_DEFINED)
+%IDataObject_INTERFACE_DEFINED = 1
+
+' interface IDataObject
+' [unique][uuid][object]
+
+MACRO DATADIR_enum=DWORD
+ENUM DATADIR SINGULAR
+    DATADIR_GET     = 1
+    DATADIR_SET
+END ENUM
+
+
+#ENDIF ' %IDataObject_INTERFACE_DEFINED
+
+
+#IF NOT %DEF(%IMessageFilter_INTERFACE_DEFINED)
+%IMessageFilter_INTERFACE_DEFINED = 1
+
+' interface IMessageFilter
+' [uuid][object][local]
+
+MACRO CALLTYPE_enum=LONG
+ENUM CALLTYPE SINGULAR
+    CALLTYPE_TOPLEVEL   = 1
+    CALLTYPE_NESTED
+    CALLTYPE_ASYNC
+    CALLTYPE_TOPLEVEL_CALLPENDING
+    CALLTYPE_ASYNC_CALLPENDING
+END ENUM
+
+MACRO SERVERCALL_enum=LONG
+ENUM SERVERCALL SINGULAR
+    SERVERCALL_ISHANDLED
+    SERVERCALL_REJECTED
+    SERVERCALL_RETRYLATER
+END ENUM
+
+MACRO PENDINGTYPE_enum=LONG
+ENUM PENDINGTYPE SINGULAR
+    PENDINGTYPE_TOPLEVEL    = 1
+    PENDINGTYPE_NESTED
+END ENUM
+
+MACRO PENDINGMSG_enum=LONG
+ENUM PENDINGMSG SINGULAR
+    PENDINGMSG_CANCELCALL
+    PENDINGMSG_WAITNOPROCESS
+    PENDINGMSG_WAITDEFPROCESS
+END ENUM
+
+TYPE INTERFACEINFO
+    pUnk    AS DWORD  ' IUnknown PTR
+    iid     AS GUID   ' IID
+    wMethod AS WORD
+END TYPE
+
+
+#ENDIF ' %IMessageFilter_INTERFACE_DEFINED
+
+
+#IF NOT %DEF(%IRpcChannelBuffer_INTERFACE_DEFINED)
+%IRpcChannelBuffer_INTERFACE_DEFINED = 1
+
+' interface IRpcChannelBuffer
+' [uuid][object][local]
+
+MACRO RPCOLEDATAREP=DWORD
+
+TYPE RPCOLEMESSAGE
+    reserved1          AS DWORD  ' void *
+    dataRepresentation AS RPCOLEDATAREP
+    Buffer             AS DWORD  ' void *
+    cbBuffer           AS DWORD
+    iMethod            AS DWORD
+    reserved2(4)       AS DWORD  ' void *
+    rpcFlags           AS DWORD
+END TYPE
+
+
+#ENDIF ' %IRpcChannelBuffer_INTERFACE_DEFINED
+
+
+#IF (%WIN32_WINNT >= &H0400 ) OR %DEF(%WIN32_DCOM) ' DCOM
+' This interface is only valid on Windows NT 4.0
+TYPE SChannelHookCallInfo
+    iid         AS GUID  ' IID
+    cbSize      AS DWORD
+    uCausality  AS GUID
+    dwServerPid AS DWORD
+    iMethod     AS DWORD
+    pObject     AS DWORD  ' void *
+END TYPE
+
+#ENDIF ' DCOM
+
+#IF (%WIN32_WINNT >= &H0400) OR %DEF(%WIN32_DCOM) ' DCOM
+' This interface is only valid on Windows NT 4.0
+
+#IF NOT %DEF(%IClientSecurity_INTERFACE_DEFINED)
+%IClientSecurity_INTERFACE_DEFINED = 1
+
+' interface IClientSecurity
+' [uuid][object][local]
+
+TYPE SOLE_AUTHENTICATION_SERVICE
+    dwAuthnSvc     AS DWORD
+    dwAuthzSvc     AS DWORD
+    pPrincipalName AS DWORD  ' OLECHAR PTR
+    hr             AS LONG   ' HRESULT
+END TYPE
+
+MACRO EOLE_AUTHENTICATION_CAPABILITIES_enum=DWORD
+ENUM EOLE_AUTHENTICATION_CAPABILITIES SINGULAR BITS
+    EOAC_NONE
+    EOAC_MUTUAL_AUTH
+    EOAC_SECURE_REFS
+    EOAC_ACCESS_CONTROL
+    EOAC_APPID
+    EOAC_DYNAMIC
+    EOAC_STATIC_CLOAKING
+    EOAC_DYNAMIC_CLOAKING
+    EOAC_ANY_AUTHORITY
+    EOAC_MAKE_FULLSIC
+    EOAC_REQUIRE_FULLSIC
+    EOAC_AUTO_IMPERSONATE
+    EOAC_DEFAULT
+    EOAC_DISABLE_AAA
+    EOAC_NO_CUSTOM_MARSHAL
+END ENUM
+
+%COLE_DEFAULT_PRINCIPAL = &HFFFFFFFF???   ' ( ( OLECHAR * )-1 )
+
+%COLE_DEFAULT_AUTHINFO  = &HFFFFFFFF???   ' ( ( void * )-1 )
+
+TYPE SOLE_AUTHENTICATION_INFO
+    dwAuthnSvc AS DWORD
+    dwAuthzSvc AS DWORD
+    pAuthInfo  AS DWORD  ' void *
+END TYPE
+
+TYPE SOLE_AUTHENTICATION_LIST
+    cAuthInfo AS DWORD
+    aAuthInfo AS SOLE_AUTHENTICATION_INFO PTR
+END TYPE
+
+
+#ENDIF ' %IClientSecurity_INTERFACE_DEFINED
+
+
+MACRO RPCOPT_PROPERTIES_enum=LONG
+ENUM RPCOPT_PROPERTIES SINGULAR
+    COMBND_RPCTIMEOUT   = 1
+    COMBND_SERVER_LOCALITY
+END ENUM
+
+MACRO RPCOPT_SERVER_LOCALITY_VALUES_enum=LONG
+ENUM RPCOPT_SERVER_LOCALITY_VALUES SINGULAR
+    SERVER_LOCALITY_PROCESS_LOCAL
+    SERVER_LOCALITY_MACHINE_LOCAL
+    SERVER_LOCALITY_REMOTE
+END ENUM
+
+MACRO GLOBALOPT_PROPERTIES_enum=LONG
+ENUM GLOBALOPT_PROPERTIES SINGULAR
+    COMGLB_EXCEPTION_HANDLING   = 1
+    COMGLB_APPID
+    COMGLB_RPC_THREADPOOL_SETTING
+END ENUM
+
+MACRO GLOBALOPT_EH_VALUES_enum=LONG
+ENUM GLOBALOPT_EH_VALUES SINGULAR
+    COMGLB_EXCEPTION_HANDLE
+    COMGLB_EXCEPTION_DONOT_HANDLE_FATAL
+    COMGLB_EXCEPTION_DONOT_HANDLE = %COMGLB_EXCEPTION_DONOT_HANDLE_FATAL
+    COMGLB_EXCEPTION_DONOT_HANDLE_ANY
+END ENUM
+
+MACRO GLOBALOPT_RPCTP_VALUES_enum=LONG
+ENUM GLOBALOPT_RPCTP_VALUES SINGULAR
+    COMGLB_RPC_THREADPOOL_SETTING_DEFAULT_POOL
+    COMGLB_RPC_THREADPOOL_SETTING_PRIVATE_POOL
+END ENUM
+
+
+#ENDIF  ' DCOM
+
+
+#IF NOT %DEF(%ILayoutStorage_INTERFACE_DEFINED)
+%ILayoutStorage_INTERFACE_DEFINED = 1
+
+' interface ILayoutStorage
+' [unique][uuid][object][local]
+
+TYPE StorageLayout
+    LayoutType      AS DWORD
+    pwcsElementName AS DWORD  ' OLECHAR ptr
+    cOffset         AS LARGE_INTEGER
+    cBytes          AS LARGE_INTEGER
+END TYPE
+
+#ENDIF ' %ILayoutStorage_INTERFACE_DEFINED
+
+
+
+#IF NOT %DEF(%IAsyncManager_INTERFACE_DEFINED)
+%IAsyncManager_INTERFACE_DEFINED = 1
+
+' INTERFACE IAsyncManager
+' [uuid][OBJECT][LOCAL]
+
+MACRO DCOM_CALL_STATE_enum=LONG
+ENUM DCOM_CALL_STATE SINGULAR
+    DCOM_NONE
+    DCOM_CALL_COMPLETE
+    DCOM_CALL_CANCELED
+END ENUM
+
+#ENDIF ' %IAsyncManager_INTERFACE_DEFINED
+
+
+
+#IF %DEF(%USE_COM_CONTEXT_DEF) OR %DEF(%BUILDTYPE_COMSVCS) OR %DEF(%OLE32)
+
+MACRO CPFLAGS=DWORD
+
+TYPE ContextProperty
+    policyId AS GUID
+    flags    AS CPFLAGS
+    pUnk     AS DWORD  ' IUnknown PTR
+END TYPE
+
+#ENDIF ' USE_COM_CONTEXT_DEF
+
+
+MACRO ApplicationType_enum=LONG
+ENUM ApplicationType SINGULAR
+    ServerApplication
+    LibraryApplication
+END ENUM
+
+MACRO ShutdownType_enum=LONG
+ENUM ShutdownType SINGULAR
+    IdleShutdown
+    ForcedShutdown
+END ENUM
+
+
+MACRO APTTYPEQUALIFIER_enum=LONG
+ENUM APTTYPEQUALIFIER SINGULAR
+    APTTYPEQUALIFIER_NONE
+    APTTYPEQUALIFIER_IMPLICIT_MTA
+    APTTYPEQUALIFIER_NA_ON_MTA
+    APTTYPEQUALIFIER_NA_ON_STA
+    APTTYPEQUALIFIER_NA_ON_IMPLICIT_MTA
+    APTTYPEQUALIFIER_NA_ON_MAINSTA
+END ENUM
+
+MACRO APTTYPE_enum=LONG
+ENUM APTTYPE SINGULAR
+    APTTYPE_CURRENT = -1
+    APTTYPE_STA
+    APTTYPE_MTA
+    APTTYPE_NA
+    APTTYPE_MAINSTA
+END ENUM
+
+MACRO THDTYPE_enum=LONG
+ENUM THDTYPE
+    THDTYPE_BLOCKMESSAGES
+    THDTYPE_PROCESSMESSAGES
+END ENUM
+
+MACRO APARTMENTID=DWORD

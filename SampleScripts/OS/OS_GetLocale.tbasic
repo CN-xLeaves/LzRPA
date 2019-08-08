@@ -1,0 +1,17 @@
+Uses "Console"
+Uses "OS"
+
+PrintL "OS_GetListSeparator             :", OS_GetListSeparator             
+PrintL "OS_GetNegativeSign              :", OS_GetNegativeSign              
+PrintL "OS_GetPositiveSign              :", OS_GetPositiveSign              
+PrintL "OS_GetDecimalSeparator          :", OS_GetDecimalSeparator          
+PrintL "OS_GetThousandsSeparator        :", OS_GetThousandsSeparator        
+PrintL "OS_GetCurrencyDecimalSeparator  :", OS_GetCurrencyDecimalSeparator  
+PrintL "OS_GetCurrencyThousandsSeparator:", OS_GetCurrencyThousandsSeparator
+PrintL "OS_GetCurrencySymbol            :", OS_GetCurrencySymbol            
+PrintL "OS_GetDateSeparator             :", OS_GetDateSeparator             
+PrintL "OS_GetTimeSeparator             :", OS_GetTimeSeparator             
+PrintL "OS_GetFirstDayOfWeek            :", OS_GetFirstDayOfWeek            
+PrintL "OS_GetShortDateFormat           :", OS_GetShortDateFormat           
+
+WaitKey

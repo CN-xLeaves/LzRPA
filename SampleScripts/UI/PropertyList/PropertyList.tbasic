@@ -1,0 +1,240 @@
+#minversion 1.7.5.0
+
+uses "UI"
+uses "Console"
+
+Begin ControlID
+  %IDC_PROPLIST      
+  %IDC_BUTTON_TEST
+End ControlID
+
+'----------------------------------------------------------------------------
+function Main() as long
+'----------------------------------------------------------------------------
+    local lRslt as long
+                    
+    local hDlg  as dword
+
+    Dialog New Pixels, Name "MainDialog", 0, "Property list example" , 100, 100, 350, 390, %WS_OVERLAPPEDWINDOW Or %WS_CLIPCHILDREN To hDlg
+
+    Control Add PropertyList, hdlg, %IDC_PROPLIST , ""    ,  0,  0, 350, 350, %WS_TABSTOP, Call cbPropList
+
+    Control Add Button, hDlg, %IDC_BUTTON_TEST    , "Test", 250, 360,  80,  20
+    control set resize hdlg, %IDC_PROPLIST    , 1, 1, 1, 1
+    control set resize hdlg, %IDC_BUTTON_TEST , 0, 1, 0, 1
+
+    Dialog Show Modal hDlg
+
+end function
+
+'----------------------------------------------------------------------------
+CallBack Function MainDialog() As Long
+'----------------------------------------------------------------------------
+    local Counter   as long
+    local nItems    as long
+    local pitem     as PROPERTYITEM ptr
+    local s         as string
+
+    select case cbmsg
+
+        Case %WM_INITDIALOG
+            PropertyList_ItemsSetHeight cbhndl, %IDC_PROPLIST, 20
+            InitializePropertyItems(CBHNDL, %IDC_PROPLIST)
+            
+            '[!] How to change an item at runtime
+            'pItem = PropertyList_ItemGetPtrByName(CBHNDL, %IDC_PROPLIST, "Background Color") 
+            'If Len(pItem.propName) Then
+            '  pItem.curValue  =  "RGB(0, 0, 255)"
+            '  pItem = PropertyList_ItemSetPtr(CBHNDL, %IDC_PROPLIST, pItem) 
+            'End If
+            
+        case %WM_COMMAND
+            'ListBox control notifications...
+            select case cbctl
+                                                                      
+'              case %IDC_PROPLIST
+'                select case hiwrd(cbwparam)
+'                  case %LBN_SELCHANGE, %LBN_SELCANCEL
+'                    '---We need to tell Property list about selection change
+'                    '---This trap is useful in case we need to change an object based on its properties
+'                    PropertyList_SelChange CbHndl, %IDC_PROPLIST
+'                End Select
+
+               Case %IDC_BUTTON_TEST
+                    nItems = PropertyList_ItemsGetCount(CbHndl, %IDC_PROPLIST)
+                    msgbox 0, "there are " + nItems + " properties in the list"
+                    '---work through listbox getting each property in turn,
+                    '---requesting its values & formatting them for display
+
+                    For Counter = 1 To nItems
+                        pItem = PropertyList_ItemGetPtr(CbHndl, %IDC_PROPLIST, Counter)
+                        
+                        s += "name = " + Trim$(pitem.Propname) + "," + "CurValue = " + Trim$(pitem.CurValue) + ","
+                        Select Case pitem.nitemtype
+                            Case %PIT_COMBO
+                                s += "nItemType = COMBO"
+                            Case %PIT_EDIT
+                                s += "nItemType = EDIT"
+                            Case %PIT_COLOR
+                                s += "nItemType = COLOR"
+                            Case %PIT_FONT
+                                s += "nItemType = FONT"
+                            Case %PIT_FILE
+                                s += "nItemType = FILE"
+                            Case %PIT_EDNUM
+                                s += "nItemType = NUMBER"
+                        End Select
+                        s += ",cmbitems = " + Trim$(pitem.CmbItems) + "," + "fptr = " + Str$( pitem.fptr)
+                        s += $CrLf
+                    Next
+                    msgbox 0, s
+            End Select
+            
+        case %WM_DESTROY
+          PropertyRoot_Free(PropertyList_GetPropertyRoot(CbHndl, %IDC_PROPLIST))
+          
+    End Select
+
+end function
+
+'----------------------------------------------------------------------------
+callback function cbPropList() as long
+'----------------------------------------------------------------------------
+  printl cbmsg, hex$(cbmsg), cblparam, cbwparam, cbctl, hiwrd(cbwparam)
+                  
+  select case cbmsg
+
+    case %WM_COMMAND
+
+      select case hiwrd(cbwparam)
+        case %LBN_SELCHANGE, %LBN_SELCANCEL
+          '---This trap is useful in case we need to immediately change an object based on its properties
+
+      end select
+      
+  end select
+end function
+
+'----------------------------------------------------------------------------
+function InitializePropertyItems(hDlg as long, idCtrl as long) as long
+'----------------------------------------------------------------------------
+    local pItem as propertyitem
+
+
+    pItem.propName  =  "Dialog Id"
+    pItem.curValue  =  "Test application"
+    pItem.nItemType =  %PIT_EDIT
+    pItem.cmbItems  =  ""
+    PropertyList_ItemAdd hDlg, idCtrl, varptr(pItem)
+
+    pItem.propName  =  "Control Id"
+    pItem.curValue  =  "1"
+    pItem.nItemType =  %PIT_EDIT
+    pItem.cmbItems  =  ""
+    PropertyList_ItemAdd hDlg, idCtrl, varptr(pItem)
+
+    pItem.propName  =  "Control Type"
+    pItem.curValue  =  "Label"
+    pItem.nItemType =  %PIT_COMBO
+    pItem.cmbItems  =  "Label|TextBox|CheckBox|ListBox|ListView|Button|GDIPImage|"
+    PropertyList_ItemAdd hDlg, idCtrl, varptr(pItem)
+
+    pItem.propName  =  "Visible"
+    pItem.curValue  =  "true"
+    pItem.nItemType =  %PIT_COMBO
+    pItem.cmbItems  =  "true|false|"
+    PropertyList_ItemAdd hDlg, idCtrl, varptr(pItem)
+
+    pItem.propName  =  "Background Color"
+    pItem.curValue  =  "RGB(255,255,0)"
+    pItem.nItemType =  %PIT_COLOR
+    pItem.cmbItems  =  ""
+    PropertyList_ItemAdd hDlg, idCtrl, varptr(pItem)
+
+    pItem.propName  =  "Font"
+    pItem.curValue  =  "MS San Sarif"
+    pItem.nItemType =  %PIT_FONT
+    pItem.cmbItems  =  ""
+    PropertyList_ItemAdd hDlg, idCtrl, varptr(pItem)
+
+    pItem.propName  =  "FontAtts"
+    pItem.curValue  =  ""
+    pItem.nItemType =  %PIT_RO
+    pItem.subtype   =  %PITS_FONTATTS
+    pItem.sOwner    =  "Font"
+    pItem.cmbItems  =  ""
+    PropertyList_ItemAdd hDlg, idCtrl, varptr(pItem)
+
+    pItem.propName  =  "FontSize"
+    pItem.curValue  =  "10"
+    pItem.nItemType =  %PIT_RO
+    pItem.subtype   =  %PITS_FONTSIZE
+    pItem.sOwner    =  "Font"
+    pItem.cmbItems  =  ""
+    PropertyList_ItemAdd hDlg, idCtrl, varptr(pItem)
+
+    pItem.propName  =  "FontColor"
+    pItem.curValue  =  "RGB(0,0,0)"
+    pItem.nItemType =  %PIT_RO
+    pItem.subtype   =  %PITS_FONTCOLOR
+    pItem.sOwner    =  "Font"
+    pItem.cmbItems  =  ""
+    PropertyList_ItemAdd hDlg, idCtrl, varptr(pItem)
+
+    pItem.propName  = "Text"
+    pItem.curValue  =  "Control id"
+    pItem.nItemType =  %PIT_EDIT
+    pItem.subtype   =  %PITS_NULL
+    pItem.sOwner    =  ""
+    pItem.cmbItems  =  ""
+    PropertyList_ItemAdd hDlg, idCtrl, varptr(pItem)
+
+    pItem.propName  =  "Location X"
+    pItem.curValue  =  "10"
+    pItem.nItemType =  %PIT_EDNUM
+    pItem.cmbItems  =  ""
+    PropertyList_ItemAdd hDlg, idCtrl, varptr(pItem)
+
+    pItem.propName  =  "Location Y"
+    pItem.curValue  =  "90"
+    pItem.nItemType =  %PIT_EDNUM
+    pItem.cmbItems  =  ""
+    PropertyList_ItemAdd hDlg, idCtrl, varptr(pItem)
+
+    pItem.propName  =  "Width"
+    pItem.curValue  =  "300"
+    pItem.nItemType =  %PIT_EDNUM
+    pItem.cmbItems  =  ""
+    PropertyList_ItemAdd hDlg, idCtrl, varptr(pItem)
+
+    pItem.propName  =  "Height"
+    pItem.curValue  =  "200"
+    pItem.nItemType =  %PIT_EDNUM
+    pItem.cmbItems  =  ""
+    PropertyList_ItemAdd hDlg, idCtrl, varptr(pItem)
+
+    pItem.propName  =  "Vert. Align"
+    pItem.curValue  =  "CENTER"
+    pItem.nItemType =  %PIT_COMBO
+    pItem.cmbItems  =  "CENTER|TOP|BOTTOM|"
+    PropertyList_ItemAdd hDlg, idCtrl, varptr(pItem)
+
+    pItem.propName  =  "ImageFile"
+    pItem.curValue  =  "none"
+    pItem.nItemType =  %PIT_FILE
+    pItem.cmbItems  =  "All pictures  (*.bmp,*.ico,*.jpg,*.png)|*.BMP;*.ICO;*.JPG;*.PNG|" & _
+                            "Bitmap (*.bmp)|*.BMP|" & _
+                            "Icon   (*.ico)|*.ICO|" & _
+                            "JPG    (*.JPG)|*.JPG|" & _
+                            "PNG    (*.PNG)|*.PNG|" & _
+                            ""
+    PropertyList_ItemAdd hDlg, idCtrl, varptr(pItem)
+
+    pItem.propName  =  "Crop Image to frame"
+    pItem.curValue  =  ""
+    pItem.nItemType =  %PIT_COMBO
+    pItem.cmbItems  =  "yes|no|"
+    PropertyList_ItemAdd hDlg, idCtrl, varptr(pItem)
+
+end function
+

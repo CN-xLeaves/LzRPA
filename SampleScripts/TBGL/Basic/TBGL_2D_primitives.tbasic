@@ -1,0 +1,73 @@
+  '=============================================================================
+  '=                              2D primitives                                =
+  '=                                                                           =
+  '=                          Michael Hartlef, 2009                            =
+  '=============================================================================
+
+
+Uses "TBGL" 
+
+FUNCTION Main()
+  LOCAL hWnd AS DWORD
+  LOCAL FrameRate AS DOUBLE
+
+  local i,x,y,diffx,diffy as long
+
+  ' -- Create and show window
+  hWnd = tbgl_CreateWindowEx("TBGL 2D primitive sample - press ESC to quit", 640, 480, 32, %tbgl_WS_WINDOWED or %tbgl_WS_CLOSEBOX) 
+  tbgl_ShowWindow 
+
+  'Set the position and movements vlaues for the bouncing circle
+  x = 20
+  y = 20
+  diffx=1
+  diffy=1  
+
+  ' -- Resets status of all keys 
+  tbgl_ResetKeyState()
+
+  ' -- Main loop
+  While tbgl_IsWindow(hWnd) 
+    FrameRate = tbgl_GetFrameRate
+
+    ' -- Set the resolution and the coordinate system
+    tbgl_Rendermatrix2D (0,480,640,0)
+    tbgl_ClearFrame
+
+    ' -- Draw some points
+    tbgl_color 255,255,255
+    for i = 1 to 200 
+      tbgl_point(250+rnd(1,50),50+rnd(1,50))
+    next
+
+    ' -- Draw a line
+    tbgl_color 255,0,255
+    tbgl_line(20,20,620,460)
+
+    ' -- Draw a rect, if we want it wire-like, we turn on line rendering
+    tbgl_color 255,255,0
+    tbgl_polygonlook %GL_LINE
+    tbgl_rect(10,10,630,470)
+    tbgl_polygonlook %GL_FILL    
+
+    ' -- Draw a bouncing circle approximated using ngon
+    tbgl_color 0,255,255
+    tbgl_ngon(x,y,20,60)
+    
+    ' -- calculate the new position of the circle
+    x = x + diffx
+    y = y + diffy
+    if x > 620 then diffx = -1
+    if x <  20 then diffx =  1
+    if y > 460 then diffy = -1
+    if y <  20 then diffy =  1
+
+    'Show the rendered stuff to the public :)
+    tbgl_DrawFrame 
+    ' -- ESCAPE key to exit application
+    If tbgl_GetWindowKeyState(hWnd, %VK_ESCAPE) Then Exit While 
+    
+  Wend 
+
+  tbgl_DestroyWindow
+END FUNCTION 

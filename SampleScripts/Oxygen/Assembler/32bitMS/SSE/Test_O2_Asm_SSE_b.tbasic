@@ -1,0 +1,182 @@
+
+' Floating point vector maths using SIMD instructions
+' http://download.intel.com/design/PentiumIII/sml/24504501.pdf
+' 4*4 Matrix multiply
+
+' Also includes FPU-based alternative
+
+uses "Oxygen"
+'uses "File"
+ 
+type Txyzw
+  x as single
+  y as single
+  z as single
+  w as single
+end type
+
+dim va(16),vb(16),vc(16) as single
+
+'va(1) = 1
+'va(2) = 2
+'va(3) = 4
+'va(4) = 8
+
+va(1) = 1
+va(5) = 2
+va(9) = 4
+va(13) =8
+
+dim i as long
+for i=1 to 16 : vb(i)=1 : next
+
+ 
+dim SSE_Demo as string = "
+
+  'call fpu_matrix_mul
+  'ret
+
+  ; see http://download.intel.com/design/PentiumIII/sml/24504501.pdf
+  ;--------------
+  sse_matrix_mul:
+  ;--------------
+  mov    edx,  #vb  ; src1
+  mov    ecx,  #va  ; src2
+  mov    eax,  #vc  ; dst
+  ;
+  movss  xmm0, [edx]
+  movups xmm1, [ecx]
+  shufps xmm0, xmm0, 0
+  movss  xmm2, [edx+4]
+  mulps  xmm0, xmm1
+  shufps xmm2, xmm2, 0
+  movups xmm3, [ecx+16]
+  movss  xmm7, [edx+8]
+  mulps  xmm2, xmm3
+  shufps xmm7, xmm7, 0
+  addps  xmm0, xmm2
+  movups xmm4, [ecx+32]
+  movss  xmm2, [edx+12]
+  mulps  xmm7, xmm4
+  shufps xmm2, xmm2, 0
+  addps  xmm0, xmm7
+  movups xmm5, [ecx+48]
+  movss  xmm6, [edx+16]
+  mulps  xmm2, xmm5
+  movss  xmm7, [edx+20]
+  shufps xmm6, xmm6, 0
+  addps  xmm0, xmm2
+  shufps xmm7, xmm7, 0
+  movlps [eax], xmm0
+  movhps [eax+8], xmm0
+  mulps  xmm7, xmm3
+  movss  xmm0, [edx+24]
+  mulps  xmm6, xmm1
+  shufps xmm0, xmm0, 0
+  addps  xmm6, xmm7
+  mulps  xmm0, xmm4
+  movss  xmm2, [edx+36]
+  addps  xmm6, xmm0
+  movss  xmm0, [edx+28]
+  movss  xmm7, [edx+32]
+  shufps xmm0, xmm0, 0
+  shufps xmm7, xmm7, 0
+  mulps  xmm0, xmm5
+  mulps  xmm7, xmm1
+  addps  xmm6, xmm0
+  shufps xmm2, xmm2, 0
+  movlps [eax+16], xmm6
+  movhps [eax+24], xmm6
+  mulps  xmm2, xmm3
+  movss  xmm6, [edx+40]
+  addps  xmm7, xmm2
+  shufps xmm6, xmm6, 0
+  movss  xmm2, [edx+44]
+  mulps  xmm6, xmm4
+  shufps xmm2, xmm2, 0
+  addps  xmm7, xmm6
+  mulps  xmm2, xmm5
+  movss  xmm0, [edx+52]
+  addps  xmm7, xmm2
+  shufps xmm0, xmm0, 0
+  movlps [eax+32], xmm7
+  movss  xmm2, [edx+48]
+  movhps [eax+40], xmm7
+  mulps  xmm0, xmm3
+  shufps xmm2, xmm2, 0
+  movss  xmm6, [edx+56]
+  mulps  xmm2, xmm1
+  shufps xmm6, xmm6, 0
+  addps  xmm2, xmm0
+  mulps  xmm6, xmm4
+  movss  xmm7, [edx+60]
+  shufps xmm7, xmm7, 0
+  addps  xmm2, xmm6
+  mulps  xmm7, xmm5
+  addps  xmm2, xmm7
+  movups [eax+48], xmm2
+  ret
+  ;--------------
+  
+  
+  
+
+
+  ;--------------
+  fpu_matrix_mul:
+  ;--------------
+  mov ecx,#va
+  mov edx,#vb
+  mov eax,#vc
+  
+  block:
+  ;-----
+  call column
+  call column
+  call column
+  call column
+  ret
+
+  column:
+  ;------
+  call cell
+  call cell
+  call cell
+  call cell
+  add edx,16
+  sub ecx,16
+  ret
+
+  cell: ' row A * column B
+  ;-----------------------
+  fld   dword ptr [ecx   ]
+  fmul  dword ptr [edx   ]
+  fld   dword ptr [ecx+16]
+  fmul  dword ptr [edx+04]
+  fld   dword ptr [ecx+32]
+  fmul  dword ptr [edx+08]
+  fld   dword ptr [ecx+48]
+  fmul  dword ptr [edx+12]
+  faddp st(1),st(0)
+  faddp st(1),st(0)
+  faddp st(1),st(0)
+  fstp  dword ptr [eax]
+  add   eax,4
+  add   ecx,4
+  ret
+
+
+"
+ 
+o2_asmo SSE_Demo
+if len(o2_error) then
+  msgbox 0, "Assembly error"+$CRLF+O2_Error+$CRLF+O2_View(SSE_Demo)
+else  
+  o2_exec
+  msgbox 0, STR$(vc(01))+STR$(vc(02))+STR$(vc(03))+STR$(vc(04))+$cr_
+           +STR$(vc(05))+STR$(vc(06))+STR$(vc(07))+STR$(vc(08))+$cr_
+           +STR$(vc(09))+STR$(vc(10))+STR$(vc(11))+STR$(vc(12))+$cr_
+           +STR$(vc(13))+STR$(vc(14))+STR$(vc(15))+STR$(vc(16)) '+$cr_
+  'msgbox 0,O2_View(SSE_Demo)
+  'file_save("t.txt",o2_view(SSE_Demo))
+endif

@@ -1,0 +1,56 @@
+
+
+'SELECT
+'
+
+uses "oxygen","file"
+dim src as string
+
+src = "
+
+  basic
+  
+  dim a as long, s as string
+  
+  a=3
+
+  'COMPACT FORM
+  
+  select a
+      
+  case 1 : s=`A=1`
+  case 2 : s=`A=2`
+  case 3 : s=`A=3`
+  case else : s=`A>3`
+      
+  end select
+
+
+  'GENERAL FORM
+  
+  select a
+      
+  case 1
+    s=`A=1`
+  case 2
+    s=`A=2`
+  case 3
+    s=`A=3`
+  case else
+    s=`A>3`
+      
+  end select
+
+
+  print s
+       
+  "
+o2_asmo src
+
+'msgbox 0, o2_view src
+
+if len(o2_error) then
+  msgbox 0, o2_error : stop
+end if
+
+o2_exec

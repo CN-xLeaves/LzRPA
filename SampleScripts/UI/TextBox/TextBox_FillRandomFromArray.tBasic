@@ -1,0 +1,115 @@
+  USES "UI","FILE"
+
+  Begin ControlID
+    %ID_TextBox1  = 1000
+    %ID_TextBox2
+    %ID_TextBox3
+    %ID_TextBox4
+    %ID_TextBox5
+    %ID_StatusBar
+    %ID_TIMER
+  End ControlID
+
+  global lx, ly, wx, hy AS LONG  
+  global CountEvents as long  
+  global MyText(10,10) AS STRING
+  
+  function Main()  
+    DIM hDlg    AS LONG
+    
+    DIM CountX, CountY, count AS LONG
+   
+    FOR CountX = 1 TO 10
+      FOR CountY = 1 TO 10
+        MyText(CountX, CountY) = STR$(CountX) & "/" & STR$(CountY)
+        FOR count = 1 TO rnd(100, 200)
+          MyText(CountX, CountY) += CHR$(RND(32,90))
+        NEXT
+      NEXT
+    NEXT
+    
+    DIALOG NEW 0, "Auto update text boxes ...", -1, -1, 260, 200, _
+                                                  %WS_DLGFRAME | %WS_CAPTION | %WS_SYSMENU | %WS_OVERLAPPEDWINDOW, _
+                                                  %WS_EX_TOOLWINDOW _
+                                                  TO hDlg
+
+
+    DIALOG GET SIZE   hdlg TO lx, ly
+    DIALOG GET CLIENT hdlg TO wx, hy
+
+    CONTROL ADD TEXTBOX , hDlg, %ID_TextBox1, "Text box: left allign"  , 5,  15, 250, 15, %WS_TABSTOP                  , %WS_EX_CLIENTEDGE
+    CONTROL ADD TEXTBOX , hDlg, %ID_TextBox2, "Text box: center allign", 5,  30, 250, 15, %WS_TABSTOP | %ES_CENTER    , %WS_EX_CLIENTEDGE
+    CONTROL ADD TEXTBOX , hDlg, %ID_TextBox3, "Text box: right allign" , 5,  45, 250, 15, %WS_TABSTOP | %ES_RIGHT     , %WS_EX_CLIENTEDGE
+    CONTROL ADD TEXTBOX , hDlg, %ID_TextBox4, "Text box: read only"    , 5,  60, 250, 15, %WS_TABSTOP | %ES_READONLY  , %WS_EX_CLIENTEDGE
+
+    CONTROL ADD rtf_GetClass, hDlg, %ID_TextBox5, "", 5, 75, 250, 100, _
+                                                      %WS_CHILD           | _
+                                                      %WS_CLIPCHILDREN    | _
+                                                      %WS_VISIBLE         | _
+                                                      %ES_MULTILINE       | _
+                                                      %WS_VSCROLL         | _
+                                                      %ES_AUTOVSCROLL     | _
+                                                      %ES_WANTRETURN      , _
+                                                      %WS_EX_CLIENTEDGE
+
+
+    Control Add statusbar, hDlg, %ID_StatusBar, "", %NULL, %NULL, %NULL, %NULL, %WS_CHILD | %WS_VISIBLE
+
+    '---This will load current script into control number 50
+    CONTROL SET TEXT hDlg, %ID_TextBox5, FILE_LOAD(App_SourceName)
+    
+    '---Show dialog in MODELESS state, the only managed state at the moment
+    DIALOG SHOW MODAL hDlg, call dlgCallback
+        
+  end function  
+  
+  callback function dlgCallback() as long
+    incr CountEvents
+    
+    '---Now test the message
+    SELECT CASE cbMsg
+      
+      case %wm_initdialog
+
+        CONTROL SET SIZE cbHndl, %ID_TextBox1, wx - 15,  15 
+        CONTROL SET SIZE cbHndl, %ID_TextBox2, wx - 15,  15 
+        CONTROL SET SIZE cbHndl, %ID_TextBox3, wx - 15,  15 
+        CONTROL SET SIZE cbHndl, %ID_TextBox4, wx - 15,  15 
+        CONTROL SET SIZE cbHndl, %ID_TextBox5, wx - 15, 100 
+
+        CONTROL SET reSIZE cbHndl, %ID_TextBox1    , 1, 1, 0, 0
+        CONTROL SET reSIZE cbHndl, %ID_TextBox2    , 1, 1, 0, 0
+        CONTROL SET reSIZE cbHndl, %ID_TextBox3    , 1, 1, 0, 0
+        CONTROL SET reSIZE cbHndl, %ID_TextBox4    , 1, 1, 0, 0
+        CONTROL SET reSIZE cbHndl, %ID_TextBox5    , 1, 1, 1, 1
+        
+        statusbar_settext cbHndl, %ID_StatusBar,  "Events:" & str$(CountEvents) & " - Size: " & str$(wx) & str$(hY) 
+        
+        dialog set timer cbHndl, %ID_TIMER, 50
+
+      case %wm_timer
+        FillRandom(cbHndl)
+        
+      case %wm_close 
+        dialog kill timer cbHndl,  %ID_TIMER
+
+    END SELECT
+
+  end function
+
+  FUNCTION FillRandom(hDlg as long) AS LONG
+    
+    DIM Count  AS LONG    
+    
+    FOR Count = %ID_TextBox1 TO %ID_TextBox5
+      '---Just for testing arrays, save previous control text
+      
+      CONTROL SET TEXT hDlg, Count, "[" & format$(CountEvents) & "]" & MyText(RND(1,10), RND(1, 10))
+      
+   NEXT
+
+   statusbar_settext hDlg, %ID_StatusBar, "Events:" & str$(CountEvents) 
+
+  END FUNCTION
+  
+  

@@ -1,0 +1,72 @@
+' Empty GUI script created on 06-26-2010 9:17:45 by franko lionheart (ThinAIR)
+
+Uses "ui" ',"console"
+
+Begin Const
+  %close = %WM_USER + 500
+  %canv
+  %spread = 4
+End Const
+
+
+Function Main() As Long
+ Local xsize,ysize As Long          
+ Local hdlg As Long
+ Local mygraf As Long
+ Local lenx,leny,proport,zx,zy,i,j As Long
+ xsize = 800
+ ysize = 600
+ 
+ Dialog New Pixels,0,"Circle Rectangle Illusion 3a",-1,-1,xsize,ysize,%WS_SYSMENU Or %WS_MINIMIZEBOX Or %WS_CAPTION To hDlg
+  Control Add Button, hDlg, %Close, "closeMe", 100, 556, 80, 24 Call close()   'Escape, closebutton not visible ;)
+   Control Add Canvas, hDlg, %canv, "", 0, 0, xsize, ysize, %SS_NOTIFY 
+   Control Handle hDlg,%canv To mygraf   
+   Canvas_Attach mygraf, 0      
+ 
+    lenx = xsize/4
+    zx   = xsize/2
+    zy   = ysize/2
+ 
+ Canvas_Clear(Rgb(255,255,255))                                    
+ Canvas_Scale Pixels
+ 
+ For j = ysize/2 To 1 Step -10   
+  
+  Canvas_Ellipse (zx-j,zy-j, zx+j,zy+j,0) 'rgb(0,200,250)              
+ Next
+ Canvas_Box (zx-lenx,zy-lenx, zx+lenx,zy+lenx,0,0)
+ Canvas_Redraw     
+ 
+ Dialog Show Modal hDlg Call showme()
+End Function
+
+'------------------------------------------------------------------------------
+CallBack Function showme() As Long
+ Select Case CBMSG
+  Case %WM_INITDIALOG
+      Canvas_Attach(CBHNDL, %canv, %FALSE)
+        '---        
+      Canvas_Redraw
+    
+  Case %WM_COMMAND
+   Select Case CBCTL
+    Case %IDCANCEL 
+      Dialog End CBHNDL '
+   End Select
+ End Select
+End Function
+'------------------------------------------------------------------------------
+
+CallBack Function close() As Long
+ 
+  Select Case CBMSG
+    Case %WM_COMMAND
+      If CBWPARAM = %Close Then 
+      Dialog End CBHNDL
+      End If
+    Case %WM_DESTROY
+      MsgBox 0, "close and end dialog"
+  End Select 
+End Function 
+
+'Canvas_Line 'width 1 exists ?

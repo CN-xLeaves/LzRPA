@@ -1,0 +1,193 @@
+  ' -----------------------------------------------------------------
+  '
+  ' -----------------------------------------------------------------
+
+  #minversion 1.7.0.0
+  
+  uses "UI"
+  uses "TCPUDP"       ' For internet communication
+  USES "INET"         ' To get mine IP
+
+  #include ".\UDP_Notify_Common.inc"
+  
+  Begin Const
+    %IDC_LOG                      =  100
+    %IDC_BTN_FINDSERVER
+    %IDC_BTN_DISCONNECT
+    %IDC_BTN_CLOSE    
+  End Const
+
+  dim UDP_Server_Port   as long value 5000
+  dim UDP_Port_Local    as long
+  dim UDP_File          as long
+  DIM UDP_Server_IP     as long
+  dim MySlot            as long
+  
+  
+  dim SourceIP          as long
+  dim SourcePort        as long
+  
+  dim gResult           as ext
+  dim Count             as long
+  dim gData             as tUDPInfo
+  
+  dim x, y, w, h        as integer
+  
+  '---------------------------------------------------
+  '---PROGRAM START
+  '---------------------------------------------------
+
+  '----------------------------------------------------------------------------
+  FUNCTION Main() as long
+  '----------------------------------------------------------------------------
+    local hDlg    AS DWORD    '---Used to store window handle
+    
+    '---Create a new dialog
+    DIALOG NEW 0, "UDP_Notify - Client sending data", -1, -1, 220, 200, _
+                                                  %WS_DLGFRAME | _
+                                                  %DS_CENTER | _
+                                                  %WS_CAPTION | _
+                                                  %WS_SYSMENU | _
+                                                  %WS_OVERLAPPEDWINDOW  | _
+                                                  %WS_CLIPCHILDREN, 0 TO hDlg
+    '---Set window minimum size
+      DIALOG SET MINSIZE hDlg, 80, 80
+
+    '---Show dialog
+    DIALOG SHOW modeless hDlg, call cbDialog_Proc
+
+    Do
+      DIALOG DOEVENTS 0 To Count
+    Loop While Count
+
+  END FUNCTION
+
+  '------------------------------------------------------------------------------
+  ' Callback procedure for main window
+  '------------------------------------------------------------------------------
+  callback FUNCTION cbDialog_Proc() as long
+  '------------------------------------------------------------------------------
+    static nPackets   as long
+    static Counter    as long
+
+    select case cbmsg
+      case %WM_INITDIALOG
+        '---Add controls
+        control add button      , cbhndl, %IDC_BTN_FINDSERVER , "Find Server" , 10,  10, 200,  15
+        control add button      , cbhndl, %IDC_BTN_DISCONNECT , "Disconnect"  , 10,  30, 200,  15
+        control add TEXTBOX     , cbhndl, %IDC_LOG            , ""            , 10,  50, 200, 110, %ES_READONLY | %ES_MULTILINE
+        control add button      , cbhndl, %IDC_BTN_CLOSE      , "Close"       , 10, 170, 200,  15
+
+        '---Set resize properties
+        control set resize  cbhndl, %IDC_LOG              , 1, 1, 1, 1    
+        control set resize  cbhndl, %IDC_BTN_FINDSERVER   , 1, 1, 1, 0    
+        control set resize  cbhndl, %IDC_BTN_DISCONNECT   , 1, 1, 1, 0    
+        control set resize  cbhndl, %IDC_BTN_CLOSE        , 1, 1, 0, 1    
+
+        control disable     cbhndl, %IDC_BTN_DISCONNECT
+
+                 
+      case %WM_COMMAND
+        select case cbwparam
+          case %IDC_BTN_FINDSERVER
+            '---If MySlot is Zero it means we are not connected
+            if MySlot = 0 then
+
+              '---Sending
+              UDP_File = udp_FreeFile
+
+              for counter = 5001 to 5010
+                UDP_Port_Local = Counter
+                gResult = udp_Openserver(UDP_Port_Local , UDP_File, 100)
+                if gResult = 0 then exit for
+              next
+              if gResult = 0 then
+                control appendtotop text cbhndl, %IDC_LOG, "Open UDP port " &  UDP_Port_Local & " on file " & UDP_File & $crlf
+                control appendtotop text cbhndl, %IDC_LOG, "Result: " & gResult  & $crlf
+              else
+                msgbox 0, "It was not possible to create a local connection port." & $crlf & "Program aborted"
+                dialog end
+              end if
+
+              control appendtotop text cbhndl, %IDC_LOG, "Searching for server: ... " & $crlf
+              gData.ID        = %Stamp_ID
+              gData.InfoType  = %UDT_Type_Broadcast
+                gData.InfoData.iBroadcast.ActionType  = %UDT_BroadCastType_AskServer
+                gData.InfoData.iBroadcast.hWnd        = cbhndl
+                gData.InfoData.iBroadcast.Port        = UDP_Port_Local
+                gData.InfoData.iBroadcast.sMessage    = "Hi there!"
+              udp_send(UDP_File, INET_IpToNumber("127.0.0.1"), UDP_Server_Port, gData)
+              
+              reset gData
+              gData = udp_recv(UDP_File, UDP_Server_IP)
+              if gData.InfoType  = %UDT_Type_Broadcast then
+                if gData.InfoData.iBroadcast.ActionType = %UDT_BroadCastType_ReplyFromServer then
+                  MySlot = gData.SlotID
+                  control appendtotop text cbhndl, %IDC_LOG, "Data: " & gData.InfoData.iBroadcast.sMessage & $crlf
+                  dialog redraw cbhndl
+                  control disable cbhndl, %IDC_BTN_FINDSERVER
+                  control enable cbhndl, %IDC_BTN_DISCONNECT
+                end if
+              else
+                control appendtotop text cbhndl, %IDC_LOG, "No Data: " & $crlf
+                dialog redraw cbhndl
+              end if
+            end if
+            
+          case %IDC_BTN_DISCONNECT
+            SetUp_Close(cbhndl)
+            
+          case %IDC_BTN_CLOSE
+            SetUp_Close(cbhndl)
+            dialog end cbhndl
+            
+        end select
+
+        
+      case %WM_SIZE, %WM_MOVE
+        if UDP_Server_IP then
+          dialog get loc  cbhndl to x, y
+          dialog get size cbhndl to w, h
+
+          gData.ID        = %Stamp_ID
+          gData.SlotID    = MySlot
+          gData.InfoType  = %UDT_Type_WinSize
+          
+            gData.InfoData.iWinSize.hWnd  = cbhndl
+            gData.InfoData.iWinSize.x     = x
+            gData.InfoData.iWinSize.y     = y
+            gData.InfoData.iWinSize.w     = w
+            gData.InfoData.iWinSize.h     = h
+          udp_send(UDP_File, UDP_Server_IP, UDP_Server_Port, gData)
+        end if
+        
+      CASE %WM_SYSCOMMAND
+        IF (CBWPARAM AND &HFFF0) = %SC_CLOSE THEN
+          beep
+          beep
+          function = %TRUE
+        END IF
+        
+      case %WM_DESTROY
+        '---Do whatever needed just before dialog is destroyed.
+
+    end select
+  
+
+  END FUNCTION
+
+  '----------------------------------------------------------------------------
+  '
+  '----------------------------------------------------------------------------
+  function SetUp_Close(hWnd as long) as long
+  '----------------------------------------------------------------------------
+            if MySlot then
+              control appendtotop text hWnd, %IDC_LOG, "Closing udp ..."  & $crlf
+              gResult = udp_close(UDP_File)
+              control appendtotop text hWnd, %IDC_LOG, "Result: " & gResult  & $crlf
+              dialog redraw hWnd
+              control enable hWnd, %IDC_BTN_FINDSERVER
+              control disable hWnd, %IDC_BTN_DISCONNECT
+              MySlot = 0
+            end if
+  end function

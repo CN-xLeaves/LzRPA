@@ -1,0 +1,224 @@
+
+// 默认引入的库
+USES "LzRtl"
+USES "OS"
+Uses "TCPUDP"
+
+// API 声明
+Declare Function OpenProcess Lib "kernel32.dll" Alias "OpenProcess" (ByVal dwDesiredAccess As Long, ByVal bInheritHandle As Long, ByVal dwProcessId As Long) As Long
+Declare Function ZwSuspendProcess Lib "ntdll.dll" Alias "ZwSuspendProcess" (ByVal hProcess As Long) As Long
+Declare Function ZwResumeProcess Lib "ntdll.dll" Alias "ZwResumeProcess" (ByVal hProcess As Long) As Long
+Declare Function CloseHandle Lib "kernel32.dll" Alias "CloseHandle" (ByVal hObject As Long) As Long
+Declare Sub OutputDebugString Lib "kernel32.dll" Alias "OutputDebugStringA" (ByVal hObject As ZString)
+Declare Function GetCurrentProcessId Lib "kernel32.dll" Alias "GetCurrentProcessId" () As Long
+Declare Function GetExitCodeProcess Lib "kernel32.dll" Alias "GetExitCodeProcess" (ByVal hProcess As Long, ByRef lpExitCode As Long) As Long
+
+// 常量定义
+Const PROCESS_SUSPEND_RESUME As Long = 2048
+Const PROCESS_QUERY_INFORMATION As Long = &H400
+Const STILL_ACTIVE As Long = &H103
+
+
+
+// 名称重定义
+Alias iDispatch As COM
+Alias iDispatch As Object
+Alias NewCom As CreateObject
+Alias IsComNothing As IsNothing
+Alias IsComObject As IsObject
+Alias ComObjPtr As GetObjPtr
+Alias Long As Bool
+Alias Sleep As Delay
+Alias ITERATE As Continue
+Alias TStr$ As CStr
+Alias Val As CDbl
+Alias ASCIIZ As ZString
+Alias Bin$ As Bin
+Alias Chr$ As Chr
+Alias Hex$ As Hex
+Alias Format$ As Format
+Alias Join$ As Join
+//Alias LCase$ As LCase			暂时不适用，因为 UCase 无法设置别名
+//Alias UCase$ As UCase
+//Alias MCase$ As MCase
+//Alias Left$ As Left			暂时不适用，因为 Left 无法设置别名
+//Alias Right$ As Right
+//Alias Mid$ As Mid
+Alias Trim$ As Trim
+Alias LTrim$ As LTrim
+Alias RTrim$ As RTrim
+Alias Replace$ As Replace
+Alias StrInsert$ As StrInsert
+Alias StrDelete$ As StrDelete
+Alias StrReverse$ As StrReverse
+Alias StrFormat$ As StrFormat
+Alias OS_Shell As RunApp
+Alias OS_ShellExecute As ShellExecute
+Alias OS_ProcessKillById As Work_Stop
+Alias PeekHex$ As PeekHex
+Alias PeekZ$ As PeekZ
+Alias APP_ScriptFullName As APP_ScriptFile
+Alias OS_GetCommand As GetCommand
+Alias OS_GetCommands As CommandCount
+Alias OS_CommandsGetSep As GetCommandSep
+Alias OS_CommandsSetSep As SetCommandSep
+Alias OS_CommandPresent As CommandPresent
+
+Const %Mouse_Left As Long = 0
+Const %Mouse_Right As Long = 1
+Const %Mouse_Middle As Long = 2
+
+// 类型转换函数
+Function CLng(ByVal sText As String) As Long
+	Return Int(Val(sText))
+End Function
+Function CInt(ByVal sText As String) As Long
+	Return Int(Val(sText))
+End Function
+Function CBool(ByVal varData As Variant) As Long
+	Select Case VARIANTVT(varData)
+		Case %VT_NULL, %VT_EMPTY, %VT_VOID
+			Return false
+		Case %VT_I1, %VT_I2, %VT_I4, %VT_I8, %VT_UI1, %VT_UI2, %VT_UI4, %VT_UI8, %VT_R4, %VT_R8, %VT_CY, %VT_INT, %VT_UINT
+			If varData = 0 Then
+				Return false
+			Else
+				Return true
+			End If
+		Case Else
+			Return true
+	End Select
+End Function
+
+// 释放COM对象
+Sub ReleaseObject(ByRef objCOM As iDispatch)
+	objCOM = Nothing
+End Sub
+
+// 入口点 [Main更标准]
+Function TBMain() As Long
+	// 尝试执行流程
+	Dim argc As Long = OS_GetCommands()
+	If (argc > 1) And (LCase$(OS_GetCommand(2)) = "-work") Then
+		Dim sWorkName As String = OS_GetCommand(3)
+		If sWorkName <> "" Then
+			If Function_Exists("Work_" & sWorkName) Then
+				Dim iRetVal As Long
+				Dim sWorkParam As String = Trim(OS_GetCommand(4), """")
+                // 如果存在工作线程初始化函数就调用
+                If Variable_Exists("LzBot_Thread_RedisServer_Port") Then
+                    LzBot_Thread_RedisServer_Port = CLng(OS_GetCommand(5))
+                    Call_IfExists "LzBot_Thread_Init_Work"()
+                End If
+				Call_IfExists "Work_" & sWorkName(sWorkParam) To iRetVal
+				Delay 600
+				Return iRetVal
+			Else
+				MsgBox "您创建了任务，但任务执行流程 (Work_" & sWorkName & ") 不存在！", %MB_ICONWARNING, "灵智机器人"
+				Return -1
+			End If
+		Else
+			MsgBox "缺少任务流程参数！", %MB_ICONWARNING, "灵智机器人"
+			Return -1
+		End If
+	Else
+        // 如果存在主线程初始化函数就调用
+        Call_IfExists "LzBot_Thread_Init_Main"()
+		// 转入入口点
+		Dim iRet As Long
+		Call_IfExists "Main" To iRet
+        // 如果存在主线程卸载函数就调用
+        Call_IfExists "LzBot_Thread_Unit_Main"()
+		Delay 600
+		Return iRet
+	End If
+End Function
+
+// 创建任务 [后面的函数为兼容性暂留函数]
+Function Work_Create(ByVal sWorkName As String, ByVal sParam As String) As Long
+	Dim sExecute As String = OS_ProcessGetFullPath(OS_GetCurrentProcessId())
+    Dim sCmd as String
+    If Not(APP_IsBundled) Then
+        sExecute &= " " & OS_GetCommand(1)
+    End If
+    Dim iRet As Long
+    If Variable_Exists("LzBot_Thread_RedisServer_Port") Then
+		iRet = OS_Shell(sExecute & " -work " & sWorkName & " """ & sParam & """ " & LzBot_Thread_RedisServer_Port)
+    Else
+		iRet = OS_Shell(sExecute & " -work " & sWorkName & " """ & sParam & """")
+	End If
+    Delay 60
+	Return iRet
+End Function
+Function CreateWork(ByVal sWorkName As String, ByVal sParam As String) As Long
+	Return Work_Create(sWorkName, sParam)
+End Function
+
+// 暂停任务
+Function Work_Pause(ByVal pid As Long) As Long
+	Dim hProcess As Long = OpenProcess(PROCESS_SUSPEND_RESUME, false, pid)
+	If hProcess Then
+		Function = ZwSuspendProcess(hProcess)
+		CloseHandle(hProcess)
+	End If
+End Function
+
+// 恢复任务
+Function Work_Resume(ByVal pid As Long) As Long
+	Dim hProcess As Long = OpenProcess(PROCESS_SUSPEND_RESUME, false, pid)
+	If hProcess Then
+		Function = ZwResumeProcess(hProcess)
+		CloseHandle(hProcess)
+	End If
+End Function
+
+// 暂停进程
+Function OS_ProcessPauseById(ByVal pid As Long) As Long
+	Return Work_Pause(pid)
+End Function
+
+// 恢复进程
+Function OS_ProcessResumeById(ByVal pid As Long) As Long
+	Return Work_Resume(pid)
+End Function
+
+// 进程运行状态
+Function OS_ProcessIsRunningById(ByVal pid As Long) As Bool
+	Dim hProcess As Long = OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, pid)
+	If hProcess Then
+		Dim ExitCode As Integer
+		If GetExitCodeProcess(hProcess, ExitCode) Then
+			If ExitCode = STILL_ACTIVE Then
+				Return true
+			End If
+		End If
+		CloseHandle(hProcess)
+	End If
+    Return false
+End Function
+
+// 注册 COM 组件
+Function RegCom(ByVal sPath As String) As Long
+	Declare Function DllRegisterServer Lib sPath Alias "DllRegisterServer" () As Long
+	Declare Function DllUnregisterServer Lib sPath Alias "DllUnregisterServer" () As Long
+	DllUnregisterServer()
+	Return DllRegisterServer()
+End Function
+
+// 取消注册 COM 组件
+Function UnRegCom(ByVal sPath As String) As Long
+	Declare Function DllUnregisterServer Lib sPath Alias "DllUnregisterServer" () As Long
+	Return DllUnregisterServer()
+End Function
+
+// 调试输出 [调试运行版本]
+Sub TracePrint(ByVal sText As String)
+	OutputDebugString(sText)
+	Dim iFile As Long = UDP_FreeFile
+	Dim sIP As Long = IP_FromString("127.0.0.1")
+	UDP_Open(iFile)
+	UDP_Send(iFile, sIP, 21976, "msg#" & GetCurrentProcessId() & "#" & sText)
+	UDP_Close(iFile)
+End Sub
+
+

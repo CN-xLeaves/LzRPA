@@ -1,0 +1,11 @@
+' THE DO NOTHING PROGRAM
+
+uses "oxygen"
+
+'DO NOTHING ASSEMBLY CODE
+
+o2_asmo "" : o2_exec
+
+'DO NOTHING BASIC
+
+o2_asmo "basic" : o2_exec

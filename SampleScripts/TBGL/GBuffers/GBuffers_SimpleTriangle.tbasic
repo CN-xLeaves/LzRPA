@@ -1,0 +1,85 @@
+'
+' Simple example of rendering colorful triangle with GBuffers
+' Petr Schreiber, 2010
+'
+
+Uses "TBGL"
+
+Function Main()
+  Local hWnd      As DWord
+  Local FrameRate As Double
+  
+  ' -- Create and show window
+  hWnd = TBGL_CreateWindowEx("GBuffers with triangles - press ESC to quit", 640, 480, 32, %TBGL_WS_WINDOWED Or %TBGL_WS_CLOSEBOX) 
+  TBGL_ShowWindow   
+  
+  TBGL_BackColor 255,255,255
+
+  ' -- Create 3D triangle buffer
+  Dim gbTriangle As DWord = TBGL_GBufferCreate(%TBGL_Triangles, %TBGL_3D)
+  
+  ' -- Define data for it
+  Dim VertexA(3) As TBGL_tVector3F
+  Dim ColorA(3)  As TBGL_tRGB   
+  
+  ' -- Vertices
+  VertexA(1).x = -1
+  VertexA(1).y = -1
+  VertexA(1).z = 0
+  
+  VertexA(2).x = 1
+  VertexA(2).y = -1     
+  VertexA(2).z = 0  
+  
+  VertexA(3).x = 0
+  VertexA(3).y = 1
+  VertexA(3).z = 0  
+  
+  ' -- Colors
+  ColorA(1).r = 255
+  ColorA(1).g = 128
+  ColorA(1).b = 64
+  
+  ColorA(2).r = 0
+  ColorA(2).g = 255
+  ColorA(2).b = 0  
+  
+  ColorA(3).r = 0
+  ColorA(3).g = 0
+  ColorA(3).b = 255
+  
+  ' -- Create buffer dynamically linked to the arrays above
+  TBGL_GBufferDefineFromArray(gbTriangle, %TBGL_Dynamic, 3, VertexA(1), ColorA(1))
+  
+  ' -- Resets status of all keys 
+  TBGL_ResetKeyState()
+
+  ' -- Main loop
+  While TBGL_IsWindow(hWnd) 
+    FrameRate = TBGL_GetFrameRate
+
+    TBGL_ClearFrame 
+      TBGL_Camera(0, 0, 5, 0, 0, 0)
+      
+      ' -- Turn triangle
+      TBGL_Rotate GetTickCount/100, 0, 1, 0
+                              
+      ' -- Render it                              
+      tbgl_GBufferRender(gbTriangle)   
+         
+      ' -- Modify the colors
+      ColorA(1).r = 128+Sin(GetTickCount/100)*127
+      ColorA(2).g = 128+Sin(GetTickCount/100+1)*127
+      ColorA(3).b = 128+Sin(GetTickCount/100+2)*127      
+    TBGL_DrawFrame 
+
+    ' -- ESCAPE key to exit application
+    If TBGL_GetWindowKeyState(hWnd, %VK_ESCAPE) Then Exit While 
+
+  Wend         
+  ' -- Destroying the buffer is not necessary,
+  ' -- the garbage collector will take care of it
+
+  ' -- Destroy window
+  TBGL_DestroyWindow
+End Function 

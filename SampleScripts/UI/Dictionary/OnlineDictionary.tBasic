@@ -1,0 +1,274 @@
+'------------------------------------------------------------------------------
+'Online dictionary search
+'------------------------------------------------------------------------------
+' Project: Visual Designer generated code
+' File:    
+' Created: On 02-12-2013 at 21:34:54
+'------------------------------------------------------------------------------
+
+#MINVERSION 1.9.0.0
+'---Needed thinBasic modules
+Uses "UI"
+Uses "TcpUdp"
+
+'---Controls IDs---
+Begin ControlID
+	%IDC_GROUPBOX_SERVERS
+	%IDC_COMBOBOX_SERVERS
+	%IDC_BUTTON_SERVERFETCH
+	%IDC_GROUPBOX_DICTIONARIES
+	%IDC_LISTBOX_DICTIONARY
+	%IDC_GROUPBOX_TRANSLATION
+	%IDC_EDIT_TRANSLATION
+	%IDC_STATICLABEL_SEARCH
+	%IDC_EDIT_SEARCH
+	%IDC_BUTTON_SEARCH
+End ControlID
+
+
+'------------------------------------------------------------------------------
+' Main thinBasic function
+'------------------------------------------------------------------------------
+Function Main() As Long
+
+	MainWindow_Create(%HWND_DESKTOP)
+
+End Function
+
+'------------------------------------------------------------------------------
+' Create main Window
+'------------------------------------------------------------------------------
+Function MainWindow_Create(ByVal hParent As Long) As Long
+
+	Local hDlg     As Long
+	Local lStyle   As Long
+	Local lStyleEx As Long
+	lStyle = _                          
+	        %WS_DLGFRAME          | _   
+	        %WS_CAPTION           | _   
+	        %WS_SYSMENU           | _   
+	        %WS_OVERLAPPEDWINDOW  | _   
+	        %WS_CLIPCHILDREN      | _   
+	        %WS_CLIPSIBLINGS      | _   
+	        %DS_CENTER                  
+	lStyleEx = 0                        
+
+	'---Create the main dialog
+	Dialog New Pixels, hParent, "Online Dictionary", -1, -1, 728, 467, lStyle, lStyleEx, To hDlg
+
+  '---Set the minimum size of the dialog
+  Dialog Set MinClientSize hDlg, 728, 467
+
+  '---Servers
+	Control Add Frame   , hDlg, %IDC_GROUPBOX_SERVERS, "Servers"          ,   8,   8, 360,  48, %WS_CHILD Or %WS_CLIPSIBLINGS Or %WS_VISIBLE Or %BS_GROUPBOX, %WS_EX_TRANSPARENT
+	Control Add COMBOBOX, hDlg, %IDC_COMBOBOX_SERVERS,                    ,  16,  24, 248,  24
+	Control Add Button  , hDlg, %IDC_BUTTON_SERVERFETCH, "Fetch"          , 272,  24,  88,  24, %WS_CHILD Or %WS_CLIPSIBLINGS Or %WS_TABSTOP Or %WS_VISIBLE Or %BS_PUSHBUTTON, 0
+
+  '---Dictionaries inside servers
+	Control Add Frame   , hDlg, %IDC_GROUPBOX_DICTIONARIES, "Dictionaries",   8,  64, 712, 216, %WS_CHILD Or %WS_CLIPSIBLINGS Or %WS_VISIBLE Or %BS_GROUPBOX, %WS_EX_TRANSPARENT
+	Control Add LISTBOX , hDlg, %IDC_LISTBOX_DICTIONARY,                  ,  16,  80, 696, 192, %WS_BORDER Or %WS_CHILD Or %WS_CLIPSIBLINGS Or %WS_TABSTOP Or %WS_VISIBLE Or %WS_VSCROLL Or %LBS_NOINTEGRALHEIGHT Or %LBS_NOTIFY, 0
+
+  '---Search
+	Control Add Label   , hDlg, %IDC_STATICLABEL_SEARCH, "Enter Word to Search For:" _ 
+	                                                                      ,   8, 298, 136,  24, %WS_CHILD Or %WS_CLIPSIBLINGS Or %WS_VISIBLE Or %SS_NOTIFY, %WS_EX_TRANSPARENT
+	Control Add Textbox , hDlg, %IDC_EDIT_SEARCH, ""                      , 152, 292, 440,  24, %WS_CHILD Or %WS_CLIPSIBLINGS Or %WS_TABSTOP Or %WS_VISIBLE, %WS_EX_CLIENTEDGE
+	Control Add Button  , hDlg, %IDC_BUTTON_SEARCH, "Search"              , 608, 292, 112,  24
+
+  '---Translations
+	Control Add Frame   , hDlg, %IDC_GROUPBOX_TRANSLATION, "Translations" ,   8, 320, 712, 128, %WS_CHILD Or %WS_CLIPSIBLINGS Or %WS_VISIBLE Or %BS_GROUPBOX, %WS_EX_TRANSPARENT
+	Control Add Textbox , hDlg, %IDC_EDIT_TRANSLATION, ""                 ,  16, 336, 696, 104, %WS_CHILD Or %WS_CLIPSIBLINGS Or %WS_TABSTOP Or %WS_VISIBLE Or %ES_AUTOHSCROLL Or %ES_AUTOVSCROLL Or %WS_VSCROLL Or %WS_HSCROLL Or %ES_LEFT Or %ES_MULTILINE Or %ES_WANTRETURN, %WS_EX_CLIENTEDGE
+
+
+  '---Those magic command just let programmer to set and forget automatic resizing of controls
+  '---Without this command, programmer should have to adjust resizing of controls manually inside %WM_SIZE event of parent window
+	Control Set Resize hDlg, %IDC_GROUPBOX_DICTIONARIES   , 1, 1, 1, 0
+	Control Set Resize hDlg, %IDC_LISTBOX_DICTIONARY      , 1, 1, 1, 0
+	
+	Control Set Resize hDlg, %IDC_STATICLABEL_SEARCH      , 1, 0, 0, 0
+	Control Set Resize hDlg, %IDC_EDIT_SEARCH             , 1, 1, 0, 0
+	Control Set Resize hDlg, %IDC_BUTTON_SEARCH           , 0, 1, 0, 0
+	
+	Control Set Resize hDlg, %IDC_GROUPBOX_TRANSLATION    , 1, 1, 1, 1
+	Control Set Resize hDlg, %IDC_EDIT_TRANSLATION        , 1, 1, 1, 1
+
+  '---Show main window in modal way
+	Dialog Show Modal hDlg, Call MainWindow_Proc
+
+  '---Final clean up
+
+End Function
+
+'------------------------------------------------------------------------------
+' Main WIndow CallBack handler
+'------------------------------------------------------------------------------
+CallBack Function MainWindow_Proc() As Long
+  String  sBuffer
+  String  sServer
+  String  sDictionary
+  String  sSearchText
+  Long    nDB
+  Long    lRet
+
+  '---We need to determine what kind of event has been fired
+  '---Pseudo variable CBMSG (CallBack Message) can be used to find it
+	Select Case CBMSG
+
+    '---This event is fired only once when Window is created.
+	  Case %WM_INITDIALOG
+      '---In this examplewe just need to fill server combo box
+      COMBOBOX Add CBHNDL, %IDC_COMBOBOX_SERVERS, "dict.org", "dict1.us.dict.org", "all.dict.org"
+
+'    Case %WM_NCACTIVATE
+'      If CBWPARAM = 1 Then  
+'        '---GetFocus
+'      ElseIf CBWPARAM = 0 Then
+'        '---Lost Focus
+'        Win_PostQuitMessage 0
+'        Dialog End CBHNDL
+'      End If
+      
+    '---This event is fired every time a command (button, menu, ...) is used/clicked
+	  Case %WM_COMMAND
+	     
+      '---Here we just need to get what control fired the event
+
+      '---Control ID is automagically determined using pseudo variable CBBTL (CallBack Control)
+      Select Case CBCTL
+        
+        '---OK someone clicked on Server Fetch button, so 
+        Case %IDC_BUTTON_SERVERFETCH 
+                
+          If Len(Control_GetText(CBHNDL, %IDC_COMBOBOX_SERVERS)) Then
+            Control Disable CBHNDL, %IDC_COMBOBOX_SERVERS, %IDC_BUTTON_SERVERFETCH
+              Control Set Text CBHNDL, %IDC_BUTTON_SERVERFETCH, "Fetching ..."
+              Control Set Text CBHNDL, %IDC_GROUPBOX_DICTIONARIES, "Loading dictionaries ... "
+              LISTBOX Reset CBHNDL, %IDC_LISTBOX_DICTIONARY
+              sBuffer = LoadServerDB(Control_GetText(CBHNDL, %IDC_COMBOBOX_SERVERS), nDB)
+  
+              '---Now check return number of DB
+              If nDB < 0 Then
+                '---Something not good happened
+                Control Set Text CBHNDL, %IDC_GROUPBOX_DICTIONARIES, "<!> Something went wrong. Check your internet connection or server status"
+              Else
+                LISTBOX Add CBHNDL, %IDC_LISTBOX_DICTIONARY, sBuffer Using $CRLF
+                Control Set Text CBHNDL, %IDC_GROUPBOX_DICTIONARIES, nDB & " dictionaries loaded"
+              End If
+              Control Set Text CBHNDL, %IDC_BUTTON_SERVERFETCH, "Fetch"
+            Control Enable CBHNDL, %IDC_COMBOBOX_SERVERS, %IDC_BUTTON_SERVERFETCH
+          Else
+            Control Set Text CBHNDL, %IDC_GROUPBOX_DICTIONARIES, "<!> Please select a server"
+          End If
+        
+        '---Someone clicked Search button  
+        Case %IDC_BUTTON_SEARCH
+          '---Get server
+          sServer = Control_GetText(CBHNDL, %IDC_COMBOBOX_SERVERS)
+          
+          '---Do we have something to search for?
+          sSearchText = Control_GetText(CBHNDL, %IDC_EDIT_SEARCH)
+          If Len(sSearchText) Then
+  
+            '---Do we have a server selected
+            LISTBOX Get Text CBHNDL, %IDC_LISTBOX_DICTIONARY To sDictionary
+            sDictionary = Parse$(sDictionary, $SPC, 1)
+  
+            Control Set Text CBHNDL, %IDC_BUTTON_SEARCH, "Searching ..."
+            Control Set Text CBHNDL, %IDC_GROUPBOX_TRANSLATION, EXPAND$("Searching $sSearchText in dictionary $sDictionary ...")
+            Control Set Text CBHNDL, %IDC_EDIT_TRANSLATION, ""
+            sBuffer = SearchForTerm(sServer, sDictionary, sSearchText, lRet) 
+  
+            Control Set Text CBHNDL, %IDC_EDIT_TRANSLATION, sBuffer
+  
+            Control Set Text CBHNDL, %IDC_BUTTON_SEARCH, "Search"
+  
+          Else
+            Control Set Text CBHNDL, %IDC_GROUPBOX_TRANSLATION, "<!> Please type something to search for"
+          End If
+      End Select
+
+	End Select
+	
+End Function
+
+'------------------------------------------------------------------------------
+'---Giving a server name, try to load dictionaries present on that server
+'------------------------------------------------------------------------------
+Function LoadServerDB(ByVal sName As String, ByRef nDB As Long) As String
+  Long    lResult
+  String  sBuffer
+  String  FullBuffer
+  Long    Counter
+  Long    Channel = TCP_FreeFile
+  
+  '[breakpoint] <Any note here. Breakpoint will be set to line following this statement>
+  lResult = TCP_Open(2628, sName, Channel, 5000)
+
+  If lResult <> %NULL Then
+    '---Something not good happened
+    nDB = -1
+  Else
+    '---Connection OK, now fetch dictionary list
+    lResult = TCP_Send(Channel, sBuffer)
+    sBuffer = TCP_Recv(Channel, 20000)
+    lResult = TCP_Print(Channel, "SHOW DATABASES")
+    sBuffer = TCP_LineInput(Channel)
+    nDB = Parse$(sBuffer, $SPC, 2)
+    
+    For Counter = 1 To nDB
+      sBuffer = TCP_LineInput(Channel)
+      FullBuffer += sBuffer & IIf$(Counter < nDB, $CRLF, "")
+    Next
+    lResult = TCP_Print(Channel, "QUIT")
+    
+    lResult = TCP_Close(Channel)
+    'FullBuffer = Replace$(FullBuffer, $NUL, $CRLF)
+    
+    Function = FullBuffer
+  End If
+     
+End Function
+
+'------------------------------------------------------------------------------
+'---Search for a term
+'------------------------------------------------------------------------------
+Function SearchForTerm(ByVal sServer As String , ByVal sDictionary As String, ByVal sTextToSearch As String, ByRef lRet As Long) As String
+  Long    lResult
+  String  sBuffer
+  String  FullBuffer
+  String  sInfo
+  String  sSearchCommand
+  Long    Counter
+  Long    Channel = TCP_FreeFile
+  
+  lResult = TCP_Open(2628, sServer, Channel, 10000)
+
+  If lResult <> %NULL Then
+    '---Something not good happened
+    lRet = -1
+  Else
+    sBuffer = TCP_Recv(Channel, 20000)
+    '---Connection OK, now search term
+    sSearchCommand = EXPAND$("DEFINE " & IIf$(Len(sDictionary), sDictionary, "*") & " $sTextToSearch")
+    lResult = TCP_Print(Channel, sSearchCommand)
+    Repeat
+      sBuffer = TCP_LineInput(Channel)
+      If LEFT$(sBuffer, 3) = "151" Then
+        FullBuffer &= "------------------------------" & $CRLF
+        FullBuffer &= Mid$(Trim$(sBuffer), 4) & $CRLF
+        FullBuffer &= "------------------------------" & $CRLF
+        Repeat
+          sInfo = TCP_LineInput(Channel)
+          sInfo = Replace$(sInfo, Chr$(34), Chr$(92) & Chr$(34))
+          If LEFT$(sInfo, 1) <> "." Then FullBuffer &= Trim$(sInfo) & $CRLF
+        Until LEFT$(sInfo, 1) = "."
+        FullBuffer &= $CRLF
+      End If
+    Until LEFT$(sBuffer, 3) = "250" Or Val(LEFT$(sBuffer, 3)) > 499
+ 
+    lResult = TCP_Print(Channel, "QUIT")
+    lResult = TCP_Close(Channel)
+    
+    Function = FullBuffer
+  End If
+
+End Function

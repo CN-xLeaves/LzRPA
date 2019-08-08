@@ -1,0 +1,85 @@
+'------------------------------------------------------------------------------
+'
+'  TabFlicks.inc
+'
+'  Copyright (c) 2010-2011 PowerBASIC, Inc.
+'  Portions Copyright (c) Microsoft Corporation
+'  All Rights Reserved.
+'
+'  Last updated 31 Jan 2011
+'
+'------------------------------------------------------------------------------
+'  from TabFlicks.h of 14 Jul 2009
+'------------------------------------------------------------------------------
+
+#INCLUDE THIS ONCE
+
+%FLICK_WM_HANDLED_MASK = &H1
+%NUM_FLICK_DIRECTIONS = 8
+
+MACRO FLICKDIRECTION_enum=DWORD
+ENUM FLICKDIRECTION SINGULAR
+    FLICKDIRECTION_MIN
+    FLICKDIRECTION_RIGHT = 0
+    FLICKDIRECTION_UPRIGHT
+    FLICKDIRECTION_UP
+    FLICKDIRECTION_UPLEFT
+    FLICKDIRECTION_LEFT
+    FLICKDIRECTION_DOWNLEFT
+    FLICKDIRECTION_DOWN
+    FLICKDIRECTION_DOWNRIGHT
+    FLICKDIRECTION_INVALID
+END ENUM
+
+MACRO FLICKMODE_enum=LONG
+ENUM FLICKMODE SINGULAR
+    FLICKMODE_MIN
+    FLICKMODE_OFF = 0
+    FLICKMODE_ON
+    FLICKMODE_LEARNING
+    FLICKMODE_MAX = 2
+    FLICKMODE_DEFAULT = 2
+END ENUM
+
+MACRO FLICKACTION_COMMANDCODE_enum=DWORD
+ENUM FLICKACTION_COMMANDCODE SINGULAR
+    FLICKACTION_COMMANDCODE_NULL
+    FLICKACTION_COMMANDCODE_SCROLL
+    FLICKACTION_COMMANDCODE_APPCOMMAND
+    FLICKACTION_COMMANDCODE_CUSTOMKEY
+    FLICKACTION_COMMANDCODE_KEYMODIFIER
+END ENUM
+
+TYPE FLICK_POINT
+    x AS INTEGER
+    y AS INTEGER
+END TYPE
+
+TYPE FLICK_DATA
+    iFlickActionCommandCode AS BIT * 5 IN DWORD  ' FLICKACTION_COMMANDCODE_enum
+    iFlickDirection         AS BIT * 3           ' FLICKDIRECTION_enum
+    fControlModifier        AS BIT * 1           ' BOOL
+    fMenuModifier           AS BIT * 1           ' BOOL
+    fAltGRModifier          AS BIT * 1           ' BOOL
+    fWinModifier            AS BIT * 1           ' BOOL
+    fShiftModifier          AS BIT * 1           ' BOOL
+    iReserved               AS BIT * 2
+    fOnInkingSurface        AS BIT * 1           ' BOOL
+    iActionArgument         AS INTEGER
+END TYPE
+
+MACRO SCROLLDIRECTION_enum=LONG
+ENUM SCROLLDIRECTION SINGULAR
+    SCROLLDIRECTION_UP
+    SCROLLDIRECTION_DOWN
+END ENUM
+
+MACRO KEYMODIFIER_enum=LONG
+ENUM KEYMODIFIER SINGULAR BITS
+    KEYMODIFIER_CONTROL = 1
+    KEYMODIFIER_MENU
+    KEYMODIFIER_SHIFT
+    KEYMODIFIER_WIN
+    KEYMODIFIER_ALTGR
+    KEYMODIFIER_EXT
+END ENUM

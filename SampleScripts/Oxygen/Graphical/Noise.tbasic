@@ -1,0 +1,222 @@
+' Oxygen Texture generation with procedural noise
+' Charles Pegge 2010
+'
+' Using example of rendering colored, lighted and textured shape with GBuffers
+' Petr Schreiber, 2010
+
+
+Uses "TBGL", "Oxygen"
+
+Begin Const
+  %tBricks = 1
+End Const
+
+Function Main()
+  Local i,j,k     As Long
+  Local hWnd      As DWord
+  Local FrameRate As Double
+  
+  ' -- Create and show window
+  hWnd = TBGL_CreateWindowEx("GBuffers: textured shape press ESC to quit", 640, 480, 32, %TBGL_WS_WINDOWED Or %TBGL_WS_CLOSEBOX) 
+  TBGL_ShowWindow   
+  
+  TBGL_BackColor 255,255,255,255
+  
+  ' -- Load texture
+  'TBGL_LoadTexture APP_SourcePath+"bricks.bmp", %tBricks, %TBGL_TEX_MIPMAP
+  
+
+  
+  
+  '=======
+  'TEXTURE
+  '=======   
+  
+  Dim Texture(&h40000) As tbgl_tRGBA
+  '
+  '----------------------------------------
+  'OXYGEN COMPILE & EXEC TEXTURE GENERATION
+  '----------------------------------------
+  '
+  dim src as string
+  src="
+
+  Function Noise(sys i) As Single
+  '==============================
+  Static As Single f, d=1/0x7fffffff
+  mov eax,i
+  xor eax,35353535
+  imul eax,eax
+  ror eax,17
+  imul eax,eax
+  ror eax,7
+  push eax
+  fild dWord [esp]
+  add esp,4
+  fmul dWord d
+  fstp dWord function
+  End Function
+
+  Function Noiseb(sys i) As sys
+  '============================
+  mov eax,i
+  xor eax,35353535
+  imul eax,eax
+  ror eax,17
+  imul eax,eax
+  ror eax,7
+  and eax,255
+  mov function,eax
+  End Function
+
+
+  'type rgba  r as byte, g as byte, b as byte, a as byte
+  type rgba byte r,g,b,a
+  dim axrng,x,y,r,sc,stp as double
+  dim px,py,p as long
+  dim n as long
+  dim v as long 'byte
+  dim as rgba  tex at p : p=#texture  'LINK TO THINBASIC Texture()
+  axrng=10 : sc=255 : stp=0.04
+  y=-axrng
+
+
+  for py=1 to &h200
+    x=-axrng
+    for px=1 to &h200
+      v=noiseb(n)
+      tex.r=v
+      tex.g=v
+      tex.b=v
+      n+=1
+      p+=sizeof tex 'ADVANCE TEXTURE ARRAY POINTER
+    Next
+    'y+=stp
+  Next
+  "
+  'END OF O2 SCRIPT
+  '
+  'msgbox 0,o2_prep src
+  o2_basic src
+  if o2_errno() then
+    msgbox 0,o2_error
+    stop
+  else
+    o2_exec
+  end if
+  '
+  
+  Local TexString As String = Peek$(VarPtr(Texture(1)), 65536*4*SizeOf(tbgl_tRGBA))
+  
+  ' Making BMP file from TexString variable, size 512*512, to slot #2 with 16x anisotropic filtering 
+  TBGL_MakeTexture TexString, %TBGL_DATA_RGBA, 512, 512, 2, %TBGL_TEX_ANISO, 16 
+
+  ' -- Create 3D triangle buffer
+  Dim gbQuad As DWord = TBGL_GBufferCreate(%TBGL_Quads, %TBGL_3D)
+  
+  ' -- Define data for it
+  Dim VertexA(4)    As TBGL_tVector3F
+  Dim ColorA(4)     As TBGL_tRGBA   
+  Dim NormalA(4)    As TBGL_tVector3F   
+  Dim TexCoordA(4)  As TBGL_tVector2F
+  
+  ' -- Vertices
+  VertexA(1).x = -1
+  VertexA(1).y = -1
+  VertexA(1).z =  0
+  
+  VertexA(2).x =  1
+  VertexA(2).y = -1     
+  VertexA(2).z =  0  
+  
+  VertexA(3).x =  1
+  VertexA(3).y =  1
+  VertexA(3).z =  0  
+
+  VertexA(4).x = -1
+  VertexA(4).y =  1
+  VertexA(4).z =  0  
+  
+  ' -- Normals
+  For i = 1 To 4
+    NormalA(i).x = 0
+    NormalA(i).y = 0
+    NormalA(i).z = 1
+  Next   
+  
+  ' -- Colors
+  '
+  for i=1 to 4
+    ColorA(i).r = 255
+    ColorA(i).g = 255
+    ColorA(i).b = 255      
+    ColorA(i).a = 255
+  next
+  '
+  ' -- Texture coordinates
+  For i = 1 To 4
+    TexCoordA(i).x = VertexA(i).x
+    TexCoordA(i).y = VertexA(i).y
+  Next  
+  
+  ' -- Create buffer dynamically linked to the arrays above
+  TBGL_GBufferDefineFromArray(gbQuad, %TBGL_Dynamic, 4, VertexA(1), ColorA(1), NormalA(1), TexCoordA(1))
+        
+  TBGL_UseLighting(%TRUE)
+  TBGL_UseLightSource(%GL_LIGHT0, %TRUE)                
+        
+  TBGL_UseTexturing(%TRUE)
+  TBGL_BindTexture(2)  
+  
+  'TBGL_UseAlphaTest(%TRUE)    
+  'TBGL_AlphaFunc(%TBGL_GREATER, 0.1)
+  TBGL_BlendFunc(%GL_DST_ALPHA, %GL_SRC_ALPHA)
+  TBGL_UseBlend(%TRUE)         
+  
+  ' -- Resets status of all keys 
+  TBGL_ResetKeyState()
+
+  ' -- Main loop
+  While TBGL_IsWindow(hWnd) 
+    FrameRate = TBGL_GetFrameRate
+
+    TBGL_ClearFrame 
+    TBGL_Camera(0, 0, 5, 0, 0, 0)
+
+    tbgl_pushmatrix
+    tbgl_translate 0,0,-1.5
+    tbgl_scale 2,2,1      
+    tbgl_GBufferRender(gbQuad)
+    tbgl_popmatrix
+
+
+      ' -- Modify Texture coordinates
+      '
+      For i = 1 To 4
+        TexCoordA(i).x = VertexA(i).x*(Sin(GetTickCount/400)*.25+.75)
+        TexCoordA(i).y = VertexA(i).y*(cos(GetTickCount/500)*.25+.75)
+      Next
+  
+
+      ' -- Render it 
+      '                             
+      tbgl_pushmatrix
+      tbgl_translate 0,0,-1
+      ' -- Turn
+      TBGL_Rotate GetTickCount/60, 0, 0, 1
+                              
+      tbgl_GBufferRender(gbQuad)           
+      tbgl_popmatrix
+
+    TBGL_DrawFrame 
+
+    ' -- ESCAPE key to exit application
+    If TBGL_GetWindowKeyState(hWnd, %VK_ESCAPE) Then Exit While 
+
+  Wend         
+  ' -- Destroying the buffer is not necessary,
+  ' -- the garbage collector will take care of it
+
+  ' -- Destroy window
+  TBGL_DestroyWindow
+End Function 

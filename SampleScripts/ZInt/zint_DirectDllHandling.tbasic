@@ -1,0 +1,355 @@
+'----------------------------------------------------------------------------
+' Generating barcode interacting directly to ZINT.DLL library
+' Maybe a specific module will be developed
+'----------------------------------------------------------------------------
+' References: http://www.zint.org.uk/Manual.aspx?type=p&page=5
+'----------------------------------------------------------------------------
+
+
+  Type zint_render_line
+      x       as single
+      y       as single
+      length  as single
+      width   as single
+      pNext   as DWord
+    end type
+    
+    Type zint_render_string
+      x       as single
+      y       as single
+      fsize   as single
+      width   as single
+      length  as Long
+      pText   as Byte
+      pNext   as DWord
+    end type
+    
+    Type zint_render_ring
+      x           as single
+      y           as single
+      radius      as single
+      line_width  as single
+      pNext       as DWord
+    end type
+
+    Type zint_render_hexagon
+      x           as single
+      y           as single
+      height      as single
+      pNext       as DWord
+    end type
+
+    Type zint_render
+      width       as DWord
+      height      as DWord
+      pLines      as DWord  'struct zint_render_line *lines; /* Pointer to first line */
+      pStrings    as dword  'struct zint_render_string *strings; /* Pointer to first string */
+      pRings      as DWord  'struct zint_render_ring *rings; /* Pointer to first ring */
+      phexagons   as DWord  'struct zint_render_hexagon *hexagons; /* Pointer to first hexagon */
+    end type
+
+'    struct zint_symbol {
+'        int symbology;
+'        int height;
+'        int whitespace_width;
+'        int border_width;
+'        int output_options;
+'        char fgcolour[10];
+'        char bgcolour[10];
+'        char outfile[256];
+'        float scale;
+'        int option_1;
+'        int option_2;
+'        int option_3;
+'        int show_hrt;
+'        int input_mode;
+'        int eci;
+'        unsigned char text[128];
+'        int rows;
+'        int width;
+'        char primary[128];
+'        unsigned char encoded_data[200][143];
+'        int row_height[200]; /* Largest symbol is 189 x 189 Han Xin */
+'        char errtxt[100];
+'        char *bitmap;
+'        int bitmap_width;
+'        int bitmap_height;
+'        unsigned int bitmap_byte_length;
+'        float dot_size;
+'        struct zint_render *rendered;
+'        int debug;
+'    };
+'
+    Type zint_symbol
+      symbology         as Long
+      height            as Long
+      whitespace_width  as Long
+      border_width      as Long
+      output_options    as long
+      fgcolour(10)      as Byte
+      bgcolour(10)      as byte
+      outfile           as string * 256
+      scale             as single
+      option_1          as Long
+      option_2          as Long
+      option_3          as Long
+      show_hrt          as Long
+      input_mode        as Long
+      eci               as Long
+      stext             as string * 128
+      rows              as Long
+      width             as Long
+      primary           as string * 128
+      encoded_data(200,143) as Byte
+      row_height(200)   as Long
+      errtxt            as string * 100
+      pbitmap           as dword
+      bitmap_width      as Long
+      bitmap_height     as Long
+      bitmap_byte_length  as Long
+      dot_size          as single
+      pRendered         as dword  'struct zint_render *rendered;
+      debug             as Long
+    end type
+
+
+'ZINT_EXTERN struct zint_symbol *ZBarcode_Create(void);
+DECLARE FUNCTION ZBarcode_Create LIB "zint.dll" ALIAS "ZBarcode_Create" () AS DWord
+
+'ZINT_EXTERN void ZBarcode_Clear(struct zint_symbol *symbol);
+DECLARE sub ZBarcode_Clear LIB "zint.dll" ALIAS "ZBarcode_Clear" (byval lSymbol as DWord)
+
+'ZINT_EXTERN void ZBarcode_Delete(struct zint_symbol *symbol);
+DECLARE sub ZBarcode_Delete LIB "zint.dll" ALIAS "ZBarcode_Delete" (byval lSymbol as DWord)
+'
+'ZINT_EXTERN int ZBarcode_Encode(struct zint_symbol *symbol, const unsigned char *source, int in_length);
+DECLARE FUNCTION ZBarcode_Encode LIB "zint.dll" ALIAS "ZBarcode_Encode" (byval lSymbol as DWord, byval zSource as asciiz ptr, byval in_length as Long) AS long
+
+'ZINT_EXTERN int ZBarcode_Encode_File(struct zint_symbol *symbol, char *filename);
+DECLARE FUNCTION ZBarcode_Encode_File LIB "zint.dll" ALIAS "ZBarcode_Encode_File" (byval lSymbol as DWord, byval zFileName as asciiz ptr) AS Long
+
+'ZINT_EXTERN int ZBarcode_Print(struct zint_symbol *symbol, int rotate_angle);
+DECLARE FUNCTION ZBarcode_Print LIB "zint.dll" ALIAS "ZBarcode_Print" (byval lSymbol as DWord, byval rotate_angle as Long) AS Long
+
+'ZINT_EXTERN int ZBarcode_Encode_and_Print(struct zint_symbol *symbol, unsigned char *input, int length, int rotate_angle);
+'ZINT_EXTERN int ZBarcode_Encode_File_and_Print(struct zint_symbol *symbol, char *filename, int rotate_angle);
+'
+'ZINT_EXTERN int ZBarcode_Render(struct zint_symbol *symbol, const float width, const float height);
+'
+'ZINT_EXTERN int ZBarcode_Buffer(struct zint_symbol *symbol, int rotate_angle);
+DECLARE FUNCTION ZBarcode_Buffer LIB "zint.dll" ALIAS "ZBarcode_Buffer" (byval lSymbol as DWord, byval rotate_angle as Long) AS Long
+
+'ZINT_EXTERN int ZBarcode_Encode_and_Buffer(struct zint_symbol *symbol, unsigned char *input, int length, int rotate_angle);
+'ZINT_EXTERN int ZBarcode_Encode_File_and_Buffer(struct zint_symbol *symbol, char *filename, int rotate_angle);
+'
+'ZINT_EXTERN int ZBarcode_ValidID(int symbol_id);
+DECLARE FUNCTION ZBarcode_ValidID LIB "zint.dll" ALIAS "ZBarcode_ValidID" (ByVal SymbolID as Long) AS Long
+
+'ZINT_EXTERN int ZBarcode_Version();
+DECLARE FUNCTION ZBarcode_Version LIB "zint.dll" ALIAS "ZBarcode_Version" () AS long
+
+
+' http://zint.org.uk/Manual.aspx?type=p&page=5
+
+
+Uses "UI"
+uses "console"
+
+
+' -- ID numbers of controls
+Begin ControlID
+  %cCanvasDB 
+  %bBarCode
+  %bClose 
+End ControlID
+
+Type BGRA
+  B As Byte
+  G As Byte
+  R As Byte
+  A As Byte
+End Type
+
+' -- Create dialog here
+FUNCTION Main()
+
+  Dialog NEW Pixels, Name MainWindow, 0, "thinBasic and zint lib",-1,-1, 640, 300, 
+                                                      %WS_DLGFRAME | 
+                                                      %DS_CENTER | 
+                                                      %WS_CAPTION | 
+                                                      %WS_SYSMENU | 
+                                                      %WS_OVERLAPPEDWINDOW
+  
+  ' -- Place controls here
+
+  Control ADD CANVAS, Name canBarcode, MainWindow.Handle, %cCanvasDB, "", 5, 5, 640, 200, %WS_BORDER
+  
+  Control ADD BUTTON, Name btnBarCode , MainWindow.Handle, %bBarCode , "Redraw"  ,  10, 250, 50, 25
+  Control ADD BUTTON, Name btnClose   , MainWindow.Handle, %bClose   , "Close"   , 100, 250, 50, 25
+ 
+  DIALOG SHOW MODAL MainWindow.Handle
+
+END FUNCTION
+
+' -- Callback for dialog
+CALLBACK FUNCTION MainWindow_OnCallback()
+  'printl function_name, cbmsg
+  
+END FUNCTION
+
+' -- Callback for dialog
+CALLBACK FUNCTION MainWindow_OnInit()
+
+  DIALOG SET MINSIZE CBHNDL, 300, 200
+  printl "zint Version:", ZBarcode_Version
+
+END FUNCTION
+
+' -- Callback for dialog
+CALLBACK FUNCTION MainWindow_OnSize()
+
+  canBarcode.W = MainWindow.W - 25
+  canBarcode.H = MainWindow.H - 100
+  
+  btnBarCode.Y = MainWindow.H - 75
+  btnClose.Y   = MainWindow.H - 75
+  
+  'printl "canBarcode.W", canBarcode.W
+  'printl "MainWindow.W", MainWindow.W
+  DrawBarCode(CBHNDL)
+
+END FUNCTION
+
+
+ 
+' -- Callback for close button
+CallBack Function btnClose_OnClick()
+
+  MainWindow.END
+
+End Function
+
+CallBack Function btnBarCode_OnClick()
+
+  DrawBarCode(CBHNDL)
+
+End Function
+
+
+
+function DrawBarCode(byval hWnd as Long) as Long
+  dim pSymbol as zint_symbol ptr
+  DWord   lSymbol
+  
+  string  sText   = "thinBASIC & zint rocks!" & $NUL
+
+  printl "----------------------------------------------------------"
+  
+  lSymbol = ZBarcode_Create
+  PrintL "Symbol:", lSymbol
+  pSymbol = lSymbol
+  
+  pSymbol.symbology = 20 'Code 128
+  'pSymbol.symbology = 58 'QR Code
+  'pSymbol.symbology = 71 'Data MATRIX
+  
+  pSymbol.whitespace_width = 10
+  pSymbol.height           = 50
+  'pSymbol.border_width     = 10
+
+  
+  pSymbol.outfile     = app_sourcepath & "BarCode.BMP" & $nul '---$Nul is need because library check it
+  pSymbol.input_mode  = 0 'DATA_MODE
+  
+  
+
+  'printl "BARCODE_CODE128 :", ZBarcode_ValidID(20)
+  printl "Current pSymbol.symbology", pSymbol.symbology
+  printl "ZBarcode_Encode :", ZBarcode_Encode(lSymbol, sText, 0)
+
+  printl "ZBarcode_Buffer :", ZBarcode_Buffer(lSymbol, 0)
+  printl "ZBarcode_Print  :", ZBarcode_Print(lSymbol, 0)
+
+  printl "Canvas X:", CanBarcode.X
+  printl "Canvas Y:", CanBarcode.Y
+  printl "Canvas W:", CanBarcode.W
+  printl "Canvas H:", CanBarcode.H
+  printl "pSymbol.bitmap_width", pSymbol.bitmap_width
+  printl "pSymbol.bitmap_height", pSymbol.bitmap_height
+
+  Double ScaleX = CanBarcode.W / pSymbol.bitmap_width
+  Double ScaleY = CanBarcode.H / pSymbol.bitmap_height
+  
+      
+  '---Scale to Canvas
+    if CanBarcode.W < pSymbol.bitmap_width or CanBarcode.H < pSymbol.bitmap_height Then
+      if ScaleY < ScaleX Then
+        pSymbol.scale  = (CanBarcode.H / pSymbol.bitmap_height)
+      Else
+        pSymbol.scale  = (CanBarcode.W / pSymbol.bitmap_width)
+      end If
+    end if
+    printl "Scale:", pSymbol.scale
+  
+  '---Buffer again after scaling
+  printl "ZBarcode_Buffer :", ZBarcode_Buffer(lSymbol, 0)
+  printl "ZBarcode_Print  :", ZBarcode_Print(lSymbol, 0)
+
+  '---Center Barcode in Canvas  Long StartX
+    long StartX
+    long StartY
+  
+    StartX = (CanBarcode.W - pSymbol.bitmap_width)/2
+    StartY = (CanBarcode.H - pSymbol.bitmap_height)/2
+    
+    if StartX < 0 then StartX = 1
+    if StartY < 0 then StartY = 1
+
+    printl "StartX:", StartX
+    printl "StartY:", StartY
+  
+  'Canvas_Scale(1, 1, pSymbol.bitmap_width, pSymbol.bitmap_height)
+    
+  CANVAS_Attach(hWnd, %cCanvasDB, %TRUE)
+  canvas_Clear(rgb(255, 255, 255))
+  CANVAS_Redraw
+  
+  'Canvas_BitmapLoad(app_sourcepath & "BarCode.BMP", pSymbol.bitmap_width, pSymbol.bitmap_height) 
+  
+'    long y, x, i
+'    Long red, blue, green
+'    dim nPixels = (pSymbol.bitmap_width) * (pSymbol.bitmap_height) * 4
+'    dim lColors(nPixels) as byte at pSymbol.pbitmap
+'    
+'    i = 1
+
+
+
+    Canvas_BitmapRender(app_sourcepath & "BarCode.BMP", StartX, StartY)', X2, Y2)
+
+'    for y = 1 to pSymbol.bitmap_height
+'      for x = 1 to pSymbol.bitmap_width
+'            red   = lColors(i)
+'            green = lColors(i + 1)
+'            blue  = lColors(i + 2)
+'            Canvas_SetPixel(x + StartX, y + StartY, rgb(red, green, blue) )
+'            i += 3
+'        Next
+'    Next
+'    ZBarcode_Delete(lSymbol)
+'
+  CANVAS_Redraw
+
+end Function
+
+
+
+
+
+
+
+
+
+
+
+ 

@@ -1,0 +1,17 @@
+USES "Console"
+
+DIM s AS STRING
+DIM n AS NUMBER
+
+console_writeline("Operator += with strings.")
+s = "ABC"
+console_writeline("Before: " & s)
+s += "DEF" & s
+console_writeline("After : " & s)
+
+console_writeline("Operator += with numbers.")
+n = 111
+console_writeline("Before: " & n)
+n += 111
+console_writeline("After: " & n)
+Console_WaitKey

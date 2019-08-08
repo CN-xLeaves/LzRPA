@@ -1,0 +1,83 @@
+'------------------------------------------------------------------
+' Print out any file on screen in HEX and text format
+' 
+' This script will read a file from disk and will print
+' on screen its hex decimal representation. sBufferLen bytes
+' of data will be loaded for each loop
+'------------------------------------------------------------------
+
+'---Declare modules to be used in this script
+uses "CONSOLE"
+uses "FILE"
+
+'---Define needed variables
+dim fHandle as long               '---File handle
+dim Counter as long               '---Used to count bytes
+dim Looper  as long               '---Used to loop into string buffer bytes
+dim sBuffer as string             '---Will store read data from file
+dim sChar   as string             '---Used for single byte tokenizing
+dim sLine   as string             '---Used for line our composing
+dim gFile   as string             '---File name to be loaded
+dim sBufferLen as long value 16   '---Number of bytes to be read for every line loop
+
+'---The following data is used for string replace in order to output
+'---binary strings on screen.
+dim ReplaceBinIn  as string value chr$(0 to 31) ' 0, 1, 2, ..., 29, 30, 31
+dim ReplaceBinOut as string value "................................"
+
+'---Start timers
+dim T0, T1  as double = timer
+
+'---Set file name to open
+gFile = app_path & "thinbasic.exe"
+
+'---Open file
+fHandle = file_open(gFile, "BINARY") 
+
+'---While not at end of file ...
+while FILE_EOF(fHandle) = %FALSE
+
+  '---Write byte counter in multiple of sBufferLen
+  'console_write format$(Counter, "00000000") & " "
+  console_write hex$(Counter, 8) & " "
+  
+  '---Load sBufferLen bytes in sBuffer
+  sBuffer = file_get(fHandle, sBufferLen)
+
+  '---Increment Counter by sBufferLen
+  Counter += sBufferLen
+  
+  '---Now loops for all sBufferLen bytes in order to print HEX values
+  sLine = ""
+  for Looper = 1 to sBufferLen
+    '---Get single byte
+    sChar = mid$(sBuffer, Looper, 1)
+    '---Write out ascii code in hex format
+    sLine += hex$(asc(sChar), 2) & " "
+  next
+  console_write sLine
+
+  '---Now we print out sBufferLen buffer but before to be able to print 
+  '---we have to change ascii chars from 0 to 31 with something printable
+  sBuffer = replace$(sBuffer, any ReplaceBinIn, ReplaceBinOut)
+
+  '---Now we can print it and go next line
+  console_writeline sBuffer
+  
+wend
+
+'---Close file
+file_close(fHandle)
+
+'---Set finish time
+T1 = timer
+
+'---Output some info
+console_writeline string$(79,"-")
+console_writeline "File analized: " & gFile
+console_writeline "File size: " & file_size(gFile) & " bytes"
+console_writeline "Operation performed in " & format$(T1 - T0, "#0.0000") & " seconds."
+
+'---Wait for user to press a key
+console_waitkey
+ 

@@ -1,0 +1,579 @@
+#MINVERSION 1.9.1
+  Uses "UI"
+  Uses "INI"
+  Uses "File"
+  
+  #MINVERSION 1.9.1.0
+  Randomize
+  
+  Global  nWidth, nHeight As Long
+  
+  Begin Const
+    %tFigure_None
+    %tFigure_Circle
+    %tFigure_Rect
+    %tFigure_Image
+  End Const
+  
+  Type tFigure
+    lType       As Integer
+    x           As Double
+    y           As Double
+    width       As Double
+    height      As Double
+    radius      As Double
+    lColor      As Long
+    lFillColor  As Long
+    sName       As Asciiz * 64
+    sImageName  As Asciiz * %MAX_PATH
+  End Type
+  
+  Dim Figures() As tFigure
+  
+
+  ' -- ID numbers of controls
+  Begin ControlID
+    %ID_OPEN   
+    %ID_EXIT    
+    %ID_OPTION1 
+    %ID_OPTION2 
+    %ID_HELP    
+    %ID_ABOUT   
+
+    %IDC_CANVAS
+    %IDC_STATUSBAR
+  End ControlID
+
+
+  '------------------
+  ' -- Main entry point function
+  Function Main()
+  '------------------
+    Local hMainDialog As Long
+    Local Count As Long
+    
+    '---Create main window
+    Dialog New Pixels,0,"Test Canvas: Right Click to create, Left Click to move", -1, -1, 640, 480, %WS_OVERLAPPEDWINDOW To hMainDialog
+  
+    '---Setup main window
+    MainWindow_SetUp(hMainDialog)
+      
+    '---Create main window looper and handle messages in callback function
+    Dialog Show Modeless hMainDialog, Call MainWindow_Proc
+    Do
+      Dialog DoEvents To Count
+    Loop Until Count = 0
+    
+    Figures_ToIniFile(APP_ScriptPath & "Test.ini", Figures)
+
+  End Function
+
+  '------------------
+  '--- Setup main dialog and all controls
+  Function MainWindow_SetUp(ByVal hMainWindow As Long) As Long
+  '------------------
+    Local hMenu   As Long
+    Local hPopup1 As Long
+    Local hPopup2 As Long
+  
+    '---Create top-level menu
+    MENU New Bar To hMenu
+
+    '---Attach File menu
+    MENU New Popup To hPopup1
+    MENU Add Popup,  hMenu, "&File"       , hPopup1   , %MF_ENABLED
+    MENU Add String, hPopup1, "&Open ..." , %ID_OPEN  , %MF_ENABLED
+    MENU Add String, hPopup1, "-"         , 0         , 0
+    MENU Add String, hPopup1, "&Exit"     , %ID_EXIT  , %MF_ENABLED
+
+    '---Attach Help menu
+    MENU New Popup To hPopup2
+    MENU Add Popup,  hMenu,   "&Help"     , hPopup2   , %MF_ENABLED
+    MENU Add String, hPopup2, "&Help"     , %ID_HELP  , %MF_ENABLED
+    MENU Add String, hPopup2, "-"         , 0         , 0
+    MENU Add String, hPopup2, "&About"    , %ID_ABOUT , %MF_ENABLED
+
+    '---Attach menu to dialog          
+    MENU Attach hMenu, hMainWindow
+
+  End Function
+
+  '------------------
+  Function MainWindow_Canvas_ReDraw(ByVal hMainWindow As Long) As Long
+  '------------------
+    Local Looper  As Long
+    Local lWidth  As Long
+    Local lHeight As Long
+    Local lHeight_StatusBar As Long
+    Local VirtualSize As Long
+    Local pX, pY  As Long
+    
+    Canvas_GetView pX, pY
+    
+    VirtualSize = 2
+    
+    Control Kill hMainWindow, %IDC_CANVAS
+    
+    Dialog Get Client hMainWindow To lWidth, lHeight 
+    Control Get Size hMainWindow, %IDC_STATUSBAR To lWidth, lHeight_StatusBar
+
+    Control Add Canvas, hMainWindow, %IDC_CANVAS, "", 0, 0, lWidth, lHeight - lHeight_StatusBar
+
+    '---Attach active canvas and set drawinf to buffer in order to speed up operations
+    Canvas_Attach(hMainWindow, %IDC_CANVAS, %TRUE)
+
+    Canvas_SetVirtual lWidth * VirtualSize, (lHeight - lHeight_StatusBar) * VirtualSize   
+
+    '---Make sure coordinate system is per pixel
+    Canvas_Scale Pixels 
+    
+    Canvas_Clear(Rgb(255, 255, 255))
+
+    Control Get Client hMainWindow, %IDC_CANVAS To lWidth, lHeight
+
+    
+    '---Draw horizontal lines
+      For Looper = 0 To lHeight * VirtualSize Step 5
+        Canvas_Line( (00, Looper), (lWidth * VirtualSize, Looper ), Rgb(236,236,236))
+      Next
+    '---Draw vertical lines
+      For Looper = 0 To lWidth * VirtualSize Step 5
+        Canvas_Line( (Looper, 00), (Looper, lHeight * VirtualSize), Rgb(236,236,236))
+      Next
+  
+    '---Draw all figures
+      For Looper = 1 To UBound(Figures)
+        Figure_Draw(Figures(Looper))
+      Next
+  
+    Canvas_SetView pX, pY
+
+    '---Finally redraw canvas
+    Canvas_Redraw     
+
+  End Function
+     
+  '------------------
+  ' -- Callback for dialog
+  CallBack Function MainWindow_Proc() As Long
+  '------------------
+    Local lItem             As Long
+    Local Looper            As Long
+    Local MousePosition     As POINTAPI
+    Local lWidth            As Long
+    Local lHeight           As Long
+    Local nItems            As Long
+    Local pX, pY            As Long
+    
+    Static DeltaX           As Long
+    Static DeltaY           As Long
+    Static LastFocusRect    As RECT
+    Static LastItemSelected As RECT
+    Static CMove            As Long
+    
+      ' -- Test for messages
+    Select Case CBMSG
+      Case %WM_INITDIALOG
+        Control Add Statusbar, CBHNDL, %IDC_STATUSBAR, "", , , , , %SBARS_SIZEGRIP
+        StatusBar_SetParts     CBHNDL, %IDC_STATUSBAR, 300, 540, 700, -1
+
+        '--- Initialize canvas with all needed setup
+        MainWindow_Canvas_ReDraw(CBHNDL)
+        
+      Case %WM_COMMAND
+
+        Select Case CBCTL
+          Case %ID_EXIT
+            '---Check if a file is actually opened
+            '---Chek if file has to be saved
+            Dialog End CBHNDL
+            
+          Case %ID_OPEN
+            '---Load figures from INI file
+            If Figures_FromIniFile("", Figures) Then
+              
+              '---Redraw Canvas
+              MainWindow_Canvas_ReDraw(CBHNDL)
+            End If
+                        
+          Case %ID_HELP
+            MsgBox 0, "Help handling goes here"
+          Case %ID_ABOUT
+            MsgBox 0, "About handling goes here"
+            
+        End Select
+        
+      Case %WM_SIZE
+        MainWindow_Canvas_ReDraw(CBHNDL)
+        
+      Case %WM_ERASEBKGND
+        Function = %TRUE
+        
+      Case %WM_RBUTTONDOWN
+        canvas_GetView pX, pY
+        MousePosition.x = LOINT(CBLPARAM) + pX
+        MousePosition.y = HIINT(CBLPARAM) + pY
+
+        lItem = Figures_MouseInside(MousePosition)
+        If lItem Then
+          Local h_RM_Menu As Long
+          MENU New Popup To h_RM_Menu
+          MENU Add String, h_RM_Menu, "Item # " & lItem, 0, %MF_GRAYED
+          MENU Add String, h_RM_Menu, "Type"        & $TAB & Figure_TypeToTypeName(Figures(lItem).lType     ), 0, %MF_GRAYED
+          MENU Add String, h_RM_Menu, "X"           & $TAB & Figures(lItem).x           , 0, %MF_GRAYED
+          MENU Add String, h_RM_Menu, "Y"           & $TAB & Figures(lItem).y           , 0, %MF_GRAYED
+          MENU Add String, h_RM_Menu, "width"       & $TAB & Figures(lItem).width       , 0, %MF_GRAYED
+          MENU Add String, h_RM_Menu, "height"      & $TAB & Figures(lItem).height      , 0, %MF_GRAYED
+          MENU Add String, h_RM_Menu, "radius"      & $TAB & Figures(lItem).radius      , 0, %MF_GRAYED
+          MENU Add String, h_RM_Menu, "Color"       & $TAB & Figures(lItem).lColor      , 0, %MF_GRAYED
+          MENU Add String, h_RM_Menu, "FillColor"   & $TAB & Figures(lItem).lFillColor  , 0, %MF_GRAYED
+          MENU Add String, h_RM_Menu, "Name"        & $TAB & Figures(lItem).sName       , 0, %MF_GRAYED
+          MENU Add String, h_RM_Menu, "Image Name"  & $TAB & Figures(lItem).sImageName  , 0, %MF_GRAYED
+          
+          PopUpMenu(CBHNDL, h_RM_Menu, %TPM_RIGHTBUTTON Or %TPM_RETURNCMD)
+        Else
+          '---Add new random circle
+          Dialog Get Client CBHNDL To lWidth, lHeight
+           
+          nItems = UBound(Figures)
+          Incr nItems
+          ReDim Preserve Figures(nItems)
+          Figures(nItems).ltype   = Rnd(%tFigure_Circle, %tFigure_Rect)
+          Figures(nItems).x       = MousePosition.x 
+          Figures(nItems).y       = MousePosition.y 
+          Select Case Figures(nItems).ltype
+            Case %tFigure_Circle
+              Figures(nItems).radius  = Rnd(30, 90)
+              Figures(nItems).width   = Figures(nItems).radius 
+              Figures(nItems).height  = Figures(nItems).radius 
+            Case %tFigure_Rect
+              Figures(nItems).width   = Rnd(40, 150) 
+              Figures(nItems).height  = Rnd(40, 150) 
+          End Select
+          Figures(nItems).lColor    = Rgb(0, 0, 0)
+          Figures(nItems).lFillColor  = Rgb(Rnd(0, 255), Rnd(0, 255), Rnd(0, 255))
+          MainWindow_Canvas_ReDraw(CBHNDL)
+           
+        End If
+
+     Case %WM_SETCURSOR
+        ' If mouse button is pressed, over-ride default cursor and
+        ' set "own", here cross cursor. Note - in dialogs, we must return
+        ' %TRUE to inform dialog engine we have taken charge. In SDK-style
+        ' windows, we would have had to return zero and break out.
+        If CBWPARAM = CBHNDL And HIWRD(CBLPARAM) = %WM_LBUTTONDOWN Then
+          'If Win_GetCursor <> pDlgInfo.hCur_Cross Then
+            'Win_SetCursor pDlgInfo.hCur_Cross
+            Function = %TRUE
+          'End If
+        End If
+        
+      Case %WM_LBUTTONDOWN
+        canvas_GetView pX, pY
+        MousePosition.x = LOINT(CBLPARAM) + pX
+        MousePosition.y = HIINT(CBLPARAM) + pY
+  
+        lItem = Figures_MouseInside(MousePosition)
+        If lItem Then
+          CMove = %TRUE
+          LastItemSelected = lItem
+          DeltaX = MousePosition.x - Figures(LastItemSelected).x
+          DeltaY = MousePosition.y - Figures(LastItemSelected).y
+          Select Case Figures(LastItemSelected).ltype
+            Case %tFigure_Circle
+              '---In case of cicle we have x, y referring to the center and width and height equal to radius
+              LastFocusRect.nLeft   = Figures(LastItemSelected).x    - Figures(LastItemSelected).width - pX
+              LastFocusRect.nTop    = Figures(LastItemSelected).y    - Figures(LastItemSelected).height - pY
+              LastFocusRect.nRight  = LastFocusRect.nLeft + (Figures(LastItemSelected).width ) * 2
+              LastFocusRect.nBottom = LastFocusRect.nTop  + (Figures(LastItemSelected).height) * 2
+            Case %tFigure_Rect
+              LastFocusRect.nLeft = Figures(LastItemSelected).x - pX: LastFocusRect.nRight   = LastFocusRect.nLeft + Figures(LastItemSelected).width
+              LastFocusRect.nTop  = Figures(LastItemSelected).y - pY: LastFocusRect.nBottom  = LastFocusRect.nTop  + Figures(LastItemSelected).height
+          End Select
+
+          '---Draw a focus rect outside the figure
+          DrawFocusRect(CBHNDL, LastFocusRect)
+        End If
+        
+      Case %WM_LBUTTONUP
+        canvas_GetView pX, pY
+        MousePosition.x = LOINT(CBLPARAM) + pX
+        MousePosition.y = HIINT(CBLPARAM) + pY
+
+        '---Remove the focus rect
+        If CMove Then
+          CMove = %FALSE
+          DrawFocusRect(CBHNDL, LastFocusRect)
+          If LastItemSelected <> 0 Then
+              Figures(LastItemSelected).x = MousePosition.x - DeltaX
+              Figures(LastItemSelected).y = MousePosition.y - DeltaY
+              MainWindow_Canvas_ReDraw(CBHNDL)
+          End If
+        End If
+        
+      Case %WM_MOUSEMOVE
+        canvas_GetView pX, pY
+
+        MousePosition.x = LOINT(CBLPARAM) + pX
+        MousePosition.y = HIINT(CBLPARAM) + pY
+        
+        StatusBar_SetText CBHNDL, %IDC_STATUSBAR, "Mouse pos in virtual Canvas x:" & Format$(MousePosition.x) & " " & "y=" & Format$(MousePosition.y), 1
+
+        If CMove Then
+          MousePtr 5
+          DrawFocusRect(CBHNDL, LastFocusRect)
+          Select Case Figures(LastItemSelected).ltype
+            Case %tFigure_Circle
+              '---In case of cicle we have x, y referring to the center and width and height equal to radius
+              LastFocusRect.nLeft   = MousePosition.x    - Figures(LastItemSelected).width  - DeltaX - pX
+              LastFocusRect.nTop    = MousePosition.y    - Figures(LastItemSelected).height - DeltaY - pY
+              LastFocusRect.nRight  = LastFocusRect.nLeft + (Figures(LastItemSelected).width ) * 2
+              LastFocusRect.nBottom = LastFocusRect.nTop  + (Figures(LastItemSelected).height) * 2
+            Case %tFigure_Rect
+              LastFocusRect.nLeft = MousePosition.x - DeltaX - pX: LastFocusRect.nRight   = LastFocusRect.nLeft + Figures(LastItemSelected).width
+              LastFocusRect.nTop  = MousePosition.y - DeltaY - pY: LastFocusRect.nBottom  = LastFocusRect.nTop  + Figures(LastItemSelected).height
+          End Select
+
+          DrawFocusRect(CBHNDL, LastFocusRect)
+        Else
+          lItem = Figures_MouseInside(MousePosition)
+          If lItem Then
+            StatusBar_SetText CBHNDL, %IDC_STATUSBAR, "Item " & Format$(lItem) & ": " & Figure_TypeToTypeName(Figures(lItem).lType), 2
+            MousePtr 5 'using another cursor
+          Else
+            StatusBar_SetText CBHNDL, %IDC_STATUSBAR, "", 2
+          End If
+        End If
+              
+      Case %WM_DESTROY
+
+        '---Put code to be executed before dialog end here
+        
+    End Select
+   
+  End Function
+
+  Sub DrawFocusRect(hDlg As DWord, R As RECT)
+    Local tempR As RECT
+    Local hDC As DWord
+    hDC = Win_GetDC(hDlg)
+    Win_DrawFocusRect hDC, R
+    Win_ReleaseDC hDlg, hDC
+  End Sub
+
+  '------------------
+  Function Figures_MouseInside(ByRef MousePosition As POINTAPI) As Long
+  '------------------
+    Local Looper  As Long
+    Local nItems  As Long
+    
+    nItems = UBound(Figures)
+
+    If nItems Then
+      '---Check from top to bottom
+      For Looper = nItems To 1 Step -1
+        If Figure_MouseInside(Figures(Looper), MousePosition) Then
+          Function = Looper
+          Exit For
+        End If
+      Next 
+    End If
+      
+  End Function
+  
+  
+  '------------------
+  Function Circle(ByVal x As Long, ByVal y As Long, ByVal r As Long, colr, colrFill) 
+  '------------------
+     Canvas_Ellipse(x-r, y-r, x+r, y+r, colr, colrFill)
+  End Function
+  
+  '------------------
+  ' Draw a single figure from a tFigure UDT
+  ' Parameters:
+  '   - lFigure       : a tFigure UDT
+  '------------------
+  Function Figure_Draw(ByRef lFigure As tFigure) As Long
+  '------------------
+  
+    Select Case lFigure.lType
+      Case %tFigure_None
+        '---Do nothing
+  
+      Case %tFigure_Circle
+        Circle(lFigure.x, lFigure.y, lFigure.radius, Rgb(0, 0, 0), lFigure.lFillColor)
+  
+      Case %tFigure_Rect
+        Canvas_Box(lFigure.x, lFigure.y, lFigure.x + lFigure.width, lFigure.y + lFigure.height, 0, Rgb(0, 0, 0), lFigure.lFillColor, %CANVAS_FILLSTYLE_SOLID)
+  
+      Case %tFigure_Image
+        Canvas_BitmapRender(APP_SourcePath + "Images\" + lFigure.sImageName, lFigure.x, lFigure.y, lFigure.x + lFigure.width, lFigure.y + lFigure.height)
+      
+    End Select
+    
+  End Function
+  
+  '------------------
+  ' Return %TRUE or %FALSE if mouse coordinates are inside passed figure
+  ' Parameters:
+  '   - lFigure       : a tFigure UDT
+  '   - MousePosition : mouse x, y position to be checked. Position is already window specific
+  '------------------
+  Function Figure_MouseInside(ByRef lFigure As tFigure, ByRef MousePosition As POINTAPI) As Long
+  '------------------
+    Local lDistance As Double
+    
+    Select Case lFigure.lType
+      Case %tFigure_None
+        '---Do nothing
+        
+      Case %tFigure_Circle
+        lDistance = Sqr((MousePosition.x - lFigure.x)^2 + (MousePosition.y - lFigure.y)^2)
+          
+        If lDistance <= lFigure.radius Then 
+          Function = %TRUE
+        End If
+  
+      Case %tFigure_Rect
+        If Inside(MousePosition.x, lFigure.x, lFigure.x + lFigure.width) And _
+           Inside(MousePosition.y, lFigure.y, lFigure.y + lFigure.height) Then
+           Function = %TRUE
+        End If
+  
+      Case %tFigure_Image
+        If Inside(MousePosition.x, lFigure.x, lFigure.x + lFigure.width) And _
+           Inside(MousePosition.y, lFigure.y, lFigure.y + lFigure.height) Then
+           Function = %TRUE
+        End If
+  
+    End Select
+    
+  End Function
+  
+  '------------------
+  ' Human redable figure type name from type number
+  ' Parameters:
+  '   - TypeNumber: coded figure type number
+  '------------------
+  Function Figure_TypeToTypeName(ByVal lType As Long) As String
+  '------------------
+    Select Case lType
+      Case %tFigure_None
+        Function = "None"
+      Case %tFigure_Circle
+        Function = "Circle"
+      Case %tFigure_Rect
+        Function = "Rectangle"
+      Case %tFigure_Image
+        Function = "Image"
+    End Select
+    
+  End Function
+  
+  '------------------
+  ' Figure type number from human redable figure type name
+  ' Parameters:
+  '   - TypeName : human readable type name
+  '------------------
+  Function Figure_TypeNameToType(ByVal TypeName As String) As Long
+  '------------------
+    Select Case LCase$(TypeName)
+      Case "none"
+        Function = %tFigure_None
+      Case "circle"
+        Function = %tFigure_Circle
+      Case "rectangle"
+        Function = %tFigure_Rect
+      Case "image"
+        Function = %tFigure_Image
+    End Select
+    
+  End Function
+  
+  
+  '------------------
+  ' Save all figures into an INI file
+  ' Parameters:
+  '   - IniFile : full path of the file to be saved
+  '   - lFigures: array of tFigure types
+  '------------------
+  Function Figures_ToIniFile(ByVal IniFile As String, ByRef lFigures() As tFigure) As Long
+  '------------------
+    Local nItems  As Long
+    Local Looper  As Long
+    
+    nItems = UBound(lFigures)
+
+    INI_SetKey(IniFile, "General", "NumberOfItems", nItems)
+
+    For Looper = 1 To nItems
+
+      INI_SetKey(IniFile, Looper, "Type",       Figure_TypeToTypeName(lFigures(Looper).lType))
+      INI_SetKey(IniFile, Looper, "x",          lFigures(Looper).x          )
+      INI_SetKey(IniFile, Looper, "y",          lFigures(Looper).y          )
+      INI_SetKey(IniFile, Looper, "Width",      lFigures(Looper).width      )
+      INI_SetKey(IniFile, Looper, "Height",     lFigures(Looper).height     )
+      INI_SetKey(IniFile, Looper, "Radius",     lFigures(Looper).radius     )
+      INI_SetKey(IniFile, Looper, "Color",      lFigures(Looper).lColor     )
+      INI_SetKey(IniFile, Looper, "FillColor",  lFigures(Looper).lFillColor )
+      INI_SetKey(IniFile, Looper, "Name",       lFigures(Looper).sName      )
+      INI_SetKey(IniFile, Looper, "ImageName",  lFigures(Looper).sImageName )
+    Next
+  
+  End Function
+  
+  '------------------
+  ' Load figures from an INI file and fill array of tFigure
+  ' Parameters:
+  '   - IniFile : full path of the file to be loaded
+  '   - lFigures: array of tFigure types to be filled. Array will be initialized
+  '------------------
+  Function Figures_FromIniFile(ByVal IniFile As String, ByRef lFigures() As tFigure) As Long
+  '------------------
+    Local nItems  As Long
+
+    '---If passed file name is empty then ask which file to load
+    If IniFile = "" Then
+      Dim sFilter As String
+  
+      sFilter  = "INI Files (*.INI)|*.INI|"
+      sFilter += "All Files (*.*)|*.*"
+      
+      IniFile = Dialog_OpenFile(0, _
+                                "Open a file", _
+                                APP_SourcePath, _
+                                 sFilter, _
+                                "INI", _
+                                %OFN_FILEMUSTEXIST Or %OFN_HIDEREADONLY Or %OFN_ENABLESIZING)
+            
+    End If    
+    
+    If FILE_Exists(IniFile) Then
+      '---Check how many figures are store into INI file
+      nItems = INI_GetKey(IniFile, "General", "NumberOfItems", 0)
+      
+      '---If at least one, load them
+      If nItems > 0 Then
+        '---Init array of figures
+        ReDim lFigures(nItems)
+      
+        '---Load all figures
+        For Looper As Long = 1 To nItems
+          lFigures(Looper).lType      = Figure_TypeNameToType(INI_GetKey(IniFile, Looper, "Type"))
+          lFigures(Looper).x          = INI_GetKey(IniFile, Looper, "x"          )
+          lFigures(Looper).y          = INI_GetKey(IniFile, Looper, "y"          )
+          lFigures(Looper).width      = INI_GetKey(IniFile, Looper, "Width"      )
+          lFigures(Looper).height     = INI_GetKey(IniFile, Looper, "Height"     )
+          lFigures(Looper).radius     = INI_GetKey(IniFile, Looper, "Radius"     )
+          lFigures(Looper).lColor     = INI_GetKey(IniFile, Looper, "Color"      )
+          lFigures(Looper).lFillColor = INI_GetKey(IniFile, Looper, "FillColor"  )
+          lFigures(Looper).sName      = INI_GetKey(IniFile, Looper, "Name"       )
+          lFigures(Looper).sImageName = INI_GetKey(IniFile, Looper, "ImageName"  )
+        Next
+        
+        Function = nItems
+        
+      End If
+    End If
+            
+  End Function

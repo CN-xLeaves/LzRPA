@@ -1,0 +1,567 @@
+' Formatted XPRINT
+' Purpose - Take strings in RTF_AppendText format and produce printer output
+' Use 
+' Copy this file to your script folder
+'
+' #INCLUDE ONCE %APP_SOURCEPATH%\FormattedXPRINT.tbasic - at the start of your print module
+'
+'       Start with
+' My_XPRINT_Open () - returns a numric code = %True if the spool file was opened succesfully
+'
+' My_XPRINT_AppendText (Buffer) - to print something
+'       Buffer As String - contains a string with embedded formatting (in RTF_AppendText format) to reproduce on the printer
+'       e.g. Buffer = "[FONT=Arial][size=12][space=1.25][CENTER][COLOR=0,0,256]This should give Arial 12 point, centred in blue"
+'       NOTE there are two ways to control the vertical line spacing [space=x.x] and [pspace=x.x] see below for details
+'
+'       End with
+' My_XPRINT_Close () or likely some of your print will get lost
+'
+' Also comment out or remove the test/demo code at lines 191 to 246
+'
+'       NOTE [space=x.x] & [pspace=x.x] are not valid controls for RTF_AppendText, they are an "extra" used by My_XPRINT_AppendText to work out 
+'       how far apart you want your lines to print.
+'       They both work out how much vertical space to allocate to the line. 
+'       In XPRINT, the line prints at the top of the allocated space so effectively you are setting the amount of space to leave after the line.
+'       [space=x.x] works out the space to leave based on the font and size prevailing where the [space=x.x] occurs in the string
+'       [pspace=x.x] tells [size=x] to work out the space (the largest one will be used if there are several on the line).
+'       Each remains in effect until the next [space=x.x] or [pspace=x.x] is encountered.
+'       The default (set in My_XPRINT_Open) is [pspace=1.25]
+'
+' If you want to be able to send an RTF_AppendText format string straight to My_XPRINT_AppendText without inserting "[space=1.0]" everywhere
+' just call My_XPRINT_AppendText ("[FONT=Arial][size=12][space=1.0]") (or whatever) first, to set a fixed line height without printing anything.
+' Or call My_XPRINT_AppendText ("[pspace=1.25]") to set a line height which varies automatically with the font size.
+' Or - just rely on the default.
+' Then print your formatted text.
+' The actual vertical space allocated is the Pix height of a letter "I" in whatever font and size you set, multiplied by "[space= ]" or "[pspace= ]"
+'
+
+  uses "XPRINT"
+  USES "TOKENIZER"
+ 
+
+Dim %XP_BLACK As String = "[COLOR=0, 0, 0]"
+Dim %XP_RED   As String = "[COLOR=256,0,0]"
+Dim %XP_BLUE  As String = "[COLOR=0,0,256]"
+
+' XPRINT controls
+Dim %XPC_normal = 0
+Dim %XPC_bold = 1
+Dim %XPC_italic = 2
+Dim %XPC_underline = 4 
+Dim %XPC_strikeout = 8 
+
+Type My_Print_Style
+    FP_normal As Number
+    FP_bold As Number
+    FP_italic As Number
+    FP_underline As Number
+    FP_strikeout As Number 
+End Type
+
+Dim My_XPrint_Style As My_Print_Style 
+
+Dim My_XPrint_FontName As String
+Dim My_XPrint_PointSize As Number
+Dim My_XPrint_FontStyle As Number
+Dim My_XPrint_Justify As String
+Dim My_XPrint_Color_R As Number
+Dim My_XPrint_Color_G As Number
+Dim My_XPrint_Color_B As Number
+Dim My_XPrint_BColor_R As Number
+Dim My_XPrint_BColor_G As Number
+Dim My_XPrint_BColor_B As Number
+Dim My_XPrint_CColor_R As Number
+Dim My_XPrint_CColor_G As Number
+Dim My_XPrint_CColor_B As Number  
+
+  dim ClientWidth, ClientHeight     as long
+  dim SizeWidth, SizeHeight         as long
+  dim ppiX, ppiY                    as long
+  dim mLeft, mTop, mRight, mBottom  as long
+  dim Quality                       as long
+  dim Orientation                   as long
+  dim DC                            as dword
+  dim CurrentPrinter                as string
+
+Dim PixPerPage As Number
+Dim PixPerLine As Number
+Dim PixMarginLeft As Number
+Dim PixMarginRight As Number
+Dim PixMarginTop As Number
+Dim PixMarginBottom As Number
+Dim PixUsedThisPage As Number
+Dim PixLeftThisPage As Number
+Dim PixUsedThisLine As Number
+Dim PixLeftThisLine As Number 
+Dim PixLineDepth As Number 
+Dim PixLineDepthType As String
+Dim LastpspacePixLineDepth As Number
+Dim Pspace As Number
+  
+' General Printing Controls  
+Dim %XPC_normal_Spacing As String = "[space=1.25]" ' vertical line spacing as mulpiplier of the pix height of letter "I" at the prevailing font and size
+' NOTE this is the vertical spacing that will be used irrespective of Font Size changes until you reset it
+' you MUST set the spacing before you print anything or you may get unpedictable results
+Dim %XP_Heading_Size As String = "[size=12]" 
+Dim %XP_normal_Size As String = "[size=8]"
+Dim %XP_normal_Font As String = "[FONT=Arial]"
+Dim %XP_Emphasis_Size As String = "[size=9]"
+Dim %XP_Centre As String = "[CENTER]"
+Dim %XP_Left As String = "[LEFT]"
+Dim %XP_normal As String = %XP_normal_Font & %XP_normal_Size & %XP_Left 
+Dim %XP_Heading As String = %XP_normal_Font & %XP_Heading_Size & %XP_Centre & %XP_BLACK 
+
+' Function Send_To_Printer() As Number ' remove comment to create a Function
+
+Dim Buffer As String  
+
+Function My_XPRINT_Open () As Number
+    xprint_attach ("choose", "Spool File")
+    CurrentPrinter = xprint$
+  if CurrentPrinter <> "" then
+    xprint_get(%XPRINT_GET_DC , DC)
+    xprint_get(%XPRINT_GET_CLIENT       , ClientWidth, ClientHeight)
+    xprint_get(%XPRINT_GET_SIZE         , SizeWidth  , SizeHeight  )
+    xprint_get(%XPRINT_GET_ppi          , ppiX       , ppiY        )
+    xprint_get(%XPRINT_GET_MARGIN       , mLeft, mTop, mRight, mBottom)
+    xprint_get(%XPRINT_GET_orientation  , Orientation)
+    xprint_get(%XPRINT_GET_quality      , Quality)
+
+'    xprint_font "Courier New", 10, 0
+    
+'    xprint "Selected printer: " & CurrentPrinter & $crlf
+'    xprint "DC              : " & DC & $crlf
+'    xprint "PPI             : X="     & ppiX        & "   Y="      & ppiY         & $crlf
+'    xprint "Client area     : Width=" & ClientWidth & "   Height=" & ClientHeight & $crlf
+'    xprint "Size            : Width=" & SizeWidth   & "   Height=" & SizeHeight   & $crlf
+'    xprint "Margin          : Left=" & mLeft & "   Top=" & mTop & "   Right=" & mRight & "   Bottom=" & mBottom  & $crlf
+'    xprint "Orientation     : " & Orientation  & $crlf
+'    xprint "Quality         : " & Quality  & $crlf
+
+    ' Intialise the Page
+    PixMarginLeft = mLeft
+    PixMarginRight = mRight
+    PixMarginTop = mTop
+    PixMarginBottom = mBottom
+    PixPerPage = ClientHeight - PixMarginBottom
+    PixPerLine = ClientWidth - PixMarginRight
+    PixUsedThisPage = PixMarginTop
+    PixLeftThisPage = PixPerPage
+    PixUsedThisLine = PixMarginLeft 
+    PixLeftThisLine = PixPerLine
+    
+    PixLineDepth = 0 ' user needs to supply [size= ] to say what height they want it printing 
+    PixLineDepthType = "pspace" ' default to proportional spacing
+    LastpspacePixLineDepth = 0
+    Pspace = 1.25 ' default to 1.25 line spacing
+
+' Initialise the print styles
+    My_XPrint_FontName = %XP_normal_Font
+    My_XPrint_PointSize = %XP_normal_Size
+    My_XPrint_FontStyle = %XPC_normal
+    
+    My_XPrint_Style.FP_normal = %XPC_normal
+    My_XPrint_Style.FP_bold = 0
+    My_XPrint_Style.FP_italic = 0
+    My_XPrint_Style.FP_underline = 0
+    My_XPrint_Style.FP_strikeout = 0
+    My_XPrint_Justify = "LEFT"
+
+    ' Set font to black
+    My_XPrint_Color_R = 0
+    My_XPrint_Color_G = 0
+    My_XPrint_Color_B = 0
+
+    ' Initialise Tokeriser
+    Tokenizer_Default_Char(" ", %TOKENIZER_DEFAULT_Alpha)
+    Tokenizer_Default_Char(",", %TOKENIZER_DEFAULT_Alpha)
+    Tokenizer_Default_Char(".", %TOKENIZER_DEFAULT_Alpha)
+    Return %True
+  else
+    msgbox 0, "No printer selected."
+    Return %False
+  end if
+End Function
+
+Function My_XPRINT_Close () As Number
+    xprint_formfeed
+    xprint_close 
+End Function
+
+' --------------------------------------------------------------------------------------------------------
+' Put your print requests after this line
+'
+' NOTE Right justify and centre will only work properly if the whole string will fit on a single line
+' If there is more than one linesworth in the string, the first part will be printed left justified and 
+' only the "left overs" will be right or centre justified
+Dim My_XPRINT_STATUS As Number
+    My_XPRINT_STATUS = My_XPRINT_Open ()
+    IF My_XPRINT_STATUS = %True THEN
+
+    Buffer = "[FONT=Arial][size=12][space=1.0][CENTER][COLOR=0,0,256]This should give Arial 12 point, centred in blue" & $crlf
+    My_XPRINT_AppendText (Buffer)
+    Buffer = "[FONT=Arial][size=12][space=1.0][CENTER][COLOR=0,0,256]This should give Arial 12 point, centred in blue and is a long long long line to test wrap arround at the end of the long long long line" & $crlf
+    My_XPRINT_AppendText (Buffer)
+    Buffer = "[FONT=Arial][size=12][space=1.0][CENTER][COLOR=0,0,256][B]This should give Arial 12 point, bold centred in blue[/B]" & $crlf
+    My_XPRINT_AppendText (Buffer)
+    Buffer = "[FONT=Arial][size=12][space=1.0][CENTER][COLOR=0,0,256][B]This is what happens if you embed formatting [I]codes[/I] in the middle of a centred string[/B]" & $crlf
+    My_XPRINT_AppendText (Buffer)
+    Buffer = "[FONT=Arial][size=12][space=1.5][RIGHT][COLOR=256,0,0]This should give Arial 12 point, right justified in red" & $crlf
+    My_XPRINT_AppendText (Buffer)
+    Buffer = "[FONT=Arial][size=16][space=1.25][RIGHT][COLOR=256,0,0]This should give Arial 16 point, right justified in red" & $crlf
+    My_XPRINT_AppendText (Buffer)
+    Buffer = "[FONT=Arial][size=20][space=1.5][RIGHT][COLOR=256,0,0]This should give Arial 20 point, right justified in red" & $crlf
+    My_XPRINT_AppendText (Buffer)
+    Buffer = "[FONT=Arial][size=24][space=1.5][RIGHT][COLOR=256,0,0]This should give Arial 24 point, right justified in red" & $crlf
+    My_XPRINT_AppendText (Buffer)
+    Buffer = "[FONT=Arial][size=24][space=2.5][RIGHT][COLOR=256,0,0]which goes on to the next line" & $crlf
+    My_XPRINT_AppendText (Buffer)
+    Buffer = "[FONT=Arial][size=36][space=1.5][RIGHT][COLOR=256,0,0]This should give Arial 36 point, right justified in red" & $crlf
+    My_XPRINT_AppendText (Buffer)
+    Buffer = "[FONT=Arial][size=36][space=1.5][RIGHT][COLOR=256,0,0]which goes on to the next line" & $crlf
+    My_XPRINT_AppendText (Buffer)
+    Buffer = "[FONT=Arial][size=36][space=1][RIGHT][COLOR=256,0,0]This should give Arial 36 point, right justified in red which goes on to the next line" & $crlf
+    My_XPRINT_AppendText (Buffer)
+    Buffer = "[FONT=Arial][size=12][space=1.0][RIGHT][COLOR=0,0,256][B]This is what happens if you embed formatting [I]codes[/I] in the middle of a RIGHT string[/B]" & $crlf
+    My_XPRINT_AppendText (Buffer)
+    Buffer = $crlf & "[FONT=Arial][size=10][space=1][LEFT][COLOR=0,0,0]This [B]should [/B] [I]give a blank[/I] line and then Arial 10 point, left justified in black" & $crlf
+    My_XPRINT_AppendText (Buffer)
+    Buffer = $crlf & "[FONT=Arial][size=10][space=1][LEFT][COLOR=0,0,0]This [B][I][U][S]should give[/B][/I] a blank line[/U][/S] and then Arial 10 point, left justified in black, and it's a very very very long long line that should. just keep going and going and going until somewhere it wrapps over to the next line at a word break, so lets see if it actually does" & $crlf
+    My_XPRINT_AppendText (Buffer)
+    Buffer = $crlf & "[FONT=Arial][size=10][space=1][LEFT][COLOR=0,0,0]ThisshouldgiveablanklineandthenArial10pointleftjustifiedinblackanditsaveryveryverylonglonglinethatshouldjustkeepgoingandgoingandgoinguntilsomewhereitwrappsovertothenextlineatawordbreaksoletsseeifitactuallydoesandtherearenonaturalbreakpointsintit" & $crlf
+    My_XPRINT_AppendText (Buffer)
+    Buffer = "and this line should just carry on at 1.75 spacing at 12 point"
+    My_XPRINT_AppendText (Buffer)
+    Buffer = $crlf & "[pspace=1.75][FONT=Arial][size=10][LEFT][COLOR=0,0,0]This [B][I][U][S]should give[/B][/I] a blank line[/U][/S] and then Arial 10 point, left justified in black, [size=15]now it's 15 point and it's a [size=12]now it's 12 point and it's still a very very very long long line that should. just keep going and going and going until somewhere it wrapps over to the next line at a word break, so lets see if it actually does" & $crlf
+    My_XPRINT_AppendText (Buffer)
+
+    Dim i As Number    
+    Buffer = $crlf & "[FONT=Arial][size=10][space=1][LEFT][COLOR=0,0,0]This should give a blank line and then Arial 10 point, left justified in black" & $crlf
+    For i = 1 To 50
+        My_XPRINT_AppendText (Buffer & i)    
+    Next
+    My_XPRINT_Close ()
+    END IF
+' Put your print requests before this line
+' --------------------------------------------------------------------------------------------------------
+
+Function  My_XPRINT_AppendText (Buffer As String)
+Dim pKey
+Dim CurrentPosition As Number
+Dim TempNum As Number
+Dim TempNum2 As Number
+Dim TokenMainType As Number
+Dim Token As String
+Dim PreviousToken As String
+Dim OuterToken As String
+Dim InnerToken As String
+Dim Tempstring As String
+
+Dim TestStop As Number
+    '---Init current buffer position. THIS IS IMPORTANT
+    CurrentPosition = 1
+    Token = ""
+    Do while TokenMainType <> %TOKENIZER_FINISHED
+        PreviousToken = Token ' remember the previous token
+        pKey = Tokenizer_GetNextToken(Buffer, CurrentPosition, TokenMainType, Token)
+        OuterToken = Token
+        Select Case OuterToken
+            Case "["
+                ' Begin Print control
+                pKey = Tokenizer_GetNextToken(Buffer, CurrentPosition, TokenMainType, Token)
+                InnerToken = Token
+                Select Case InnerToken
+                    Case "size"
+                        pKey = Tokenizer_GetNextToken(Buffer, CurrentPosition, TokenMainType, Token)
+                        ' throw away the "=" and get the size string
+                        pKey = Tokenizer_GetNextToken(Buffer, CurrentPosition, TokenMainType, Token)
+                        My_XPrint_PointSize = Token
+                        XPRINT_Font(My_XPrint_FontName, My_XPrint_PointSize, My_XPrint_FontStyle) 
+                        IF PixLineDepthType = "pspace" THEN
+                            TempNum2 = XPRINT_GetTextHeight ("I")
+                            LastpspacePixLineDepth = TempNum2 * Pspace
+                            IF LastpspacePixLineDepth > PixLineDepth THEN
+                                PixLineDepth = LastpspacePixLineDepth
+                            END IF    
+                        END IF
+                    Case "space"
+                        pKey = Tokenizer_GetNextToken(Buffer, CurrentPosition, TokenMainType, Token)
+                        ' throw away the "=" and get the size string
+                        Tokenizer_Default_Char(".", %TOKENIZER_DEFAULT_Numeric)
+                        pKey = Tokenizer_GetNextToken(Buffer, CurrentPosition, TokenMainType, Token)
+                        Tokenizer_Default_Char(".", %TOKENIZER_DEFAULT_Alpha)
+                        ' work out how high the line is
+                        TempNum = Token
+                        TempNum2 = XPRINT_GetTextHeight ("I")
+                        PixLineDepth = TempNum2 * TempNum
+                        PixLineDepthType = "space"
+                    Case "pspace"
+                        pKey = Tokenizer_GetNextToken(Buffer, CurrentPosition, TokenMainType, Token)
+                        ' throw away the "=" and get the size string
+                        Tokenizer_Default_Char(".", %TOKENIZER_DEFAULT_Numeric)
+                        pKey = Tokenizer_GetNextToken(Buffer, CurrentPosition, TokenMainType, Token)
+                        Tokenizer_Default_Char(".", %TOKENIZER_DEFAULT_Alpha)
+                        ' work out how high the line is
+                        Pspace = Token
+                        PixLineDepthType = "pspace"
+                    Case "FONT"
+                        pKey = Tokenizer_GetNextToken(Buffer, CurrentPosition, TokenMainType, Token)
+                        ' throw away the "=" and get the size string
+                        pKey = Tokenizer_GetNextToken(Buffer, CurrentPosition, TokenMainType, Token)
+                        My_XPrint_FontName = Token
+                        XPRINT_Font(My_XPrint_FontName, My_XPrint_PointSize, My_XPrint_FontStyle)                         
+                    Case "CENTER"
+                        ' we already have the token
+                        My_XPrint_Justify = Token ' Remember it for later
+                    Case "LEFT"
+                        ' we already have the token
+                        My_XPrint_Justify = Token ' Remember it for later
+                    Case "RIGHT"
+                        ' we already have the token
+                        My_XPrint_Justify = Token ' Remember it for later
+                    Case "COLOR"
+                        Tokenizer_Default_Char(",", %TOKENIZER_DEFAULT_Delim) ' Colour uses "," as a delimiter
+                        pKey = Tokenizer_GetNextToken(Buffer, CurrentPosition, TokenMainType, Token)
+                        ' throw away the "=" and get the Red
+                        pKey = Tokenizer_GetNextToken(Buffer, CurrentPosition, TokenMainType, Token)
+                        My_XPrint_Color_R = Token
+                        pKey = Tokenizer_GetNextToken(Buffer, CurrentPosition, TokenMainType, Token)
+                        ' throw away the "," and get the Green
+                        pKey = Tokenizer_GetNextToken(Buffer, CurrentPosition, TokenMainType, Token)
+                        My_XPrint_Color_G = Token
+                        pKey = Tokenizer_GetNextToken(Buffer, CurrentPosition, TokenMainType, Token)
+                        ' throw away the "," and get the Blue
+                        pKey = Tokenizer_GetNextToken(Buffer, CurrentPosition, TokenMainType, Token)
+                        My_XPrint_Color_B = Token
+                        xprint_color (rgb(My_XPrint_Color_R, My_XPrint_Color_G,My_XPrint_Color_B))
+                        Tokenizer_Default_Char(",", %TOKENIZER_DEFAULT_Alpha)
+                    Case "BCOLOR"
+                        Tokenizer_Default_Char(",", %TOKENIZER_DEFAULT_Delim)
+                        pKey = Tokenizer_GetNextToken(Buffer, CurrentPosition, TokenMainType, Token)
+                        ' throw away the "=" and get the Red
+                        pKey = Tokenizer_GetNextToken(Buffer, CurrentPosition, TokenMainType, Token)
+                        My_XPrint_BColor_R = Token
+                        pKey = Tokenizer_GetNextToken(Buffer, CurrentPosition, TokenMainType, Token)
+                        ' throw away the "," and get the Green
+                        pKey = Tokenizer_GetNextToken(Buffer, CurrentPosition, TokenMainType, Token)
+                        My_XPrint_BColor_G = Token
+                        pKey = Tokenizer_GetNextToken(Buffer, CurrentPosition, TokenMainType, Token)
+                        ' throw away the "," and get the Blue
+                        pKey = Tokenizer_GetNextToken(Buffer, CurrentPosition, TokenMainType, Token)
+                        My_XPrint_BColor_B = Token
+                        xprint_color (rgb(My_XPrint_Color_R, My_XPrint_Color_G, My_XPrint_Color_B), rgb(My_XPrint_BColor_R, My_XPrint_BColor_G, My_XPrint_BColor_B))
+                        Tokenizer_Default_Char(",", %TOKENIZER_DEFAULT_Alpha)
+                    Case "CCOLOR"
+                        Tokenizer_Default_Char(",", %TOKENIZER_DEFAULT_Delim)
+                        pKey = Tokenizer_GetNextToken(Buffer, CurrentPosition, TokenMainType, Token)
+                        ' throw away the "=" and get the Red
+                        pKey = Tokenizer_GetNextToken(Buffer, CurrentPosition, TokenMainType, Token)
+                        My_XPrint_CColor_R = Token
+                        pKey = Tokenizer_GetNextToken(Buffer, CurrentPosition, TokenMainType, Token)
+                        ' throw away the "," and get the Green
+                        pKey = Tokenizer_GetNextToken(Buffer, CurrentPosition, TokenMainType, Token)
+                        My_XPrint_CColor_G = Token
+                        pKey = Tokenizer_GetNextToken(Buffer, CurrentPosition, TokenMainType, Token)
+                        ' throw away the "," and get the Blue
+                        pKey = Tokenizer_GetNextToken(Buffer, CurrentPosition, TokenMainType, Token)
+                        My_XPrint_CColor_B = Token
+                        ' Nothing we can do with this one so just throw it away
+                        Tokenizer_Default_Char(",", %TOKENIZER_DEFAULT_Alpha)
+                    Case "B"
+                        My_XPrint_Style.FP_bold = %XPC_bold
+                        My_XPrint_FontStyle = My_XPrint_Style.FP_normal | My_XPrint_Style.FP_bold | My_XPrint_Style.FP_italic | My_XPrint_Style.FP_underline | My_XPrint_Style.FP_strikeout
+                        XPRINT_Font(My_XPrint_FontName, My_XPrint_PointSize, My_XPrint_FontStyle) 
+                    Case "I"
+                        My_XPrint_Style.FP_italic = %XPC_italic
+                        My_XPrint_FontStyle = My_XPrint_Style.FP_normal | My_XPrint_Style.FP_bold | My_XPrint_Style.FP_italic | My_XPrint_Style.FP_underline | My_XPrint_Style.FP_strikeout
+                        XPRINT_Font(My_XPrint_FontName, My_XPrint_PointSize, My_XPrint_FontStyle) 
+                    Case "U"
+                        My_XPrint_Style.FP_underline = %XPC_underline
+                        My_XPrint_FontStyle = My_XPrint_Style.FP_normal | My_XPrint_Style.FP_bold | My_XPrint_Style.FP_italic | My_XPrint_Style.FP_underline | My_XPrint_Style.FP_strikeout
+                        XPRINT_Font(My_XPrint_FontName, My_XPrint_PointSize, My_XPrint_FontStyle) 
+                    Case "S"
+                        My_XPrint_Style.FP_strikeout = %XPC_strikeout
+                        My_XPrint_FontStyle = My_XPrint_Style.FP_normal | My_XPrint_Style.FP_bold | My_XPrint_Style.FP_italic | My_XPrint_Style.FP_underline | My_XPrint_Style.FP_strikeout
+                        XPRINT_Font(My_XPrint_FontName, My_XPrint_PointSize, My_XPrint_FontStyle) 
+                    Case "/"
+                        ' throw away the "/" and get the Style that's just ended
+                        pKey = Tokenizer_GetNextToken(Buffer, CurrentPosition, TokenMainType, Token)
+                        Select Case Token
+                            Case "B"
+                                My_XPrint_Style.FP_bold = 0
+                                My_XPrint_FontStyle = My_XPrint_Style.FP_normal | My_XPrint_Style.FP_bold | My_XPrint_Style.FP_italic | My_XPrint_Style.FP_underline | My_XPrint_Style.FP_strikeout
+                                XPRINT_Font(My_XPrint_FontName, My_XPrint_PointSize, My_XPrint_FontStyle) 
+                            Case "I"
+                                My_XPrint_Style.FP_italic = 0
+                                My_XPrint_FontStyle = My_XPrint_Style.FP_normal | My_XPrint_Style.FP_bold | My_XPrint_Style.FP_italic | My_XPrint_Style.FP_underline | My_XPrint_Style.FP_strikeout
+                                XPRINT_Font(My_XPrint_FontName, My_XPrint_PointSize, My_XPrint_FontStyle) 
+                            Case "U"
+                                My_XPrint_Style.FP_underline = 0
+                                My_XPrint_FontStyle = My_XPrint_Style.FP_normal | My_XPrint_Style.FP_bold | My_XPrint_Style.FP_italic | My_XPrint_Style.FP_underline | My_XPrint_Style.FP_strikeout
+                                XPRINT_Font(My_XPrint_FontName, My_XPrint_PointSize, My_XPrint_FontStyle) 
+                            Case "S"
+                                My_XPrint_Style.FP_strikeout = 0
+                                My_XPrint_FontStyle = My_XPrint_Style.FP_normal | My_XPrint_Style.FP_bold | My_XPrint_Style.FP_italic | My_XPrint_Style.FP_underline | My_XPrint_Style.FP_strikeout
+                                XPRINT_Font(My_XPrint_FontName, My_XPrint_PointSize, My_XPrint_FontStyle) 
+                            Case Else
+                            ' Something we weren't expecting
+                            msgbox 0, "Unexpected Print Control " & Token ,%MB_ICONHAND,"QMDJ ERROR" 
+                        End Select   
+                    Case Else
+                            ' User put a [ in the string, so put them back and print it
+                            My_XPRINT_String (My_XPrint_Justify, "[" & Token & "]")
+                            ' Something we weren't expecting
+                            ' msgbox 0, "Unexpected Print Control; " & Token ,%MB_ICONHAND,"QMDJ ERROR"
+                 End Select   
+            Case "]" 
+                ' End Print Control - we've already processd the content, so ignore it and get the next token
+            Case "$CRLF"
+                ' start a new line
+'                xprint $crlf
+                My_XPRINT_String_LineFeed () ' and decrement the remaining page y space
+            Case Else
+                ' Something else so we'll treat it as something to print
+                If Token <> "" THEN ' discard null strings
+                    My_XPRINT_String (My_XPrint_Justify, Token)        
+                END IF
+        End Select
+    LOOP
+End Function
+
+Function My_XPRINT_String (Justify As String, Buffer As String) As Number
+Dim i As Number
+Dim PrintPad As String
+Dim PrintString As String
+Dim BufferLength As Number
+Dim PixLeft As Number
+Dim CharsLeft As Number
+Dim Chars_Lefton_Line As Number
+Dim PadLength As Number
+Dim LineHeightPix As Number
+    PixLeft = XPRINT_GetTextWidth  (Buffer)
+    PrintString = My_XPRINT_String_Get_String (Buffer, Justify)
+    DO WHILE PixLeft => PixLeftThisLine
+        My_XPRINT_String_CheckNewPage () ' make sure there's room to print it
+        My_XPRINT_String_Pad (PrintString, Justify)
+        PrintString = PrintString ' break the line to make room for the next one
+        My_XPRINT (PixUsedThisLine + 1, PixUsedThisPage, PrintString)
+        My_XPRINT_String_LineFeed () ' decrement the remaining page y pix by the line height
+        PixLeft = XPRINT_GetTextWidth  (Buffer)
+        PrintString = My_XPRINT_String_Get_String (Buffer, Justify)
+    LOOP
+    My_XPRINT_String_CheckNewPage () ' make sure there's room to print it
+    My_XPRINT_String_Pad (PrintString, Justify) ' move the start of print possition if needs be
+    My_XPRINT (PixUsedThisLine + 1, PixUsedThisPage, PrintString)
+End Function
+
+Function My_XPRINT_String_LineFeed () As Number
+' Call this function when sending a CRLF to the printer to decrement the number of page y pix we used up on the last line
+' and reset the pix left on the line
+    PixUsedThisPage += PixLineDepth
+    PixLeftThisPage -= PixLineDepth
+    PixLeftThisLine = PixPerLine
+    PixUsedThisLine = PixMarginLeft
+    IF PixLineDepthType = "pspace" THEN
+        IF LastpspacePixLineDepth < PixLineDepth THEN
+             PixLineDepth = LastpspacePixLineDepth ' set the proportional line spacing for the most recent font size
+        END IF    
+    END IF 
+End Function
+ 
+Function My_XPRINT_String_CheckNewPage () As Number
+' Call this function before sending chars to the printer to check that there's y pix space on the page to fit them in
+    IF PixLineDepth > PixLeftThisPage THEN
+        ' No room left to squeeze this line in
+        xprint_formfeed
+        PixUsedThisPage = PixMarginTop
+        PixLeftThisPage = PixPerPage
+        PixUsedThisLine = PixMarginLeft 
+        PixLeftThisLine = PixPerLine
+    END IF
+End Function
+
+Function My_XPRINT_String_Get_String (ByRef Buffer As String, Justify As String) As String
+' Given a string that's too long to fit the remaining space on the line go back towards the beginning of the string looking for a natural breakpoint
+Dim PixLength As Number
+Dim BreakPoint As Number
+Dim i As Number
+Dim BreakIt As Long
+Dim BufLen As Long
+Dim EndFlag As Long
+Dim CurrentChar As String
+Dim ReturnString As String
+    PixLength = XPRINT_GetTextWidth  (Buffer)
+    BufLen = LEN(Buffer)
+    BreakPoint = BufLen * PixLeftThisLine / PixLength
+    EndFlag = %False
+    BreakIt = BreakPoint
+    IF BreakIt > BufLen THEN
+        BreakIt = BufLen
+    ELSE
+        For i = BreakIt to 1 STEP -1 UNTIL EndFlag <> %FALSE
+            CurrentChar = MID$(Buffer, i, 1)
+            IF (CurrentChar = " ") OR (CurrentChar = "-") OR (CurrentChar = "_") THEN
+                ' Found a natural breakpoint
+                BreakIt = i 
+                IF (Justify = "RIGHT") AND (CurrentChar = " ") THEN
+                    BreakIt -= 1 ' for right justify put the break character on the next line or the print will look odd
+                END IF
+                ReturnString = LEFT$(Buffer, BreakIt)
+                PixLength = XPRINT_GetTextWidth  (ReturnString)
+                IF PixLength <= PixLeftThisLine THEN
+                    EndFlag = %True ' end if it will fit, if not keep looking for a breakpoint
+                END IF
+            END IF
+        Next
+        IF EndFlag = %False THEN
+            ' We dropped out of the loop without finding a breakpoint so we'll just break it at the specified point
+            ReturnString = LEFT$(Buffer, BreakIt)
+            PixLength = XPRINT_GetTextWidth  (ReturnString)
+            IF PixLength > PixLeftThisLine THEN
+                ' it won't fit, so keep lopping off characters until it will!
+                For i = (BreakIt - 1) to 1 STEP -1 UNTIL EndFlag <> %FALSE
+                    ReturnString = LEFT$(Buffer, i)
+                    PixLength = XPRINT_GetTextWidth  (ReturnString)
+                    IF PixLength <= PixLeftThisLine THEN
+                        EndFlag = %True ' it's now short enough to fit
+                    END IF
+                Next
+                BreakIt = i
+            END IF
+        END IF
+    END IF
+    ReturnString = LEFT$(Buffer, BreakIt)
+    SELECT CASE BufLen 
+        CASE > BreakIt 
+            Buffer = RIGHT$(Buffer, BufLen - BreakIt) 
+        CASE ELSE ' they're equal
+            Buffer = "" ' everything is in the return string
+    END Select
+    Return ReturnString ' give the string back for printing
+End Function
+
+Function My_XPRINT_String_Pad (PrintString As String, MyJustify As String) As String
+Dim PixStringLength As Number
+Dim SparePix As Number
+    PixStringLength = XPRINT_GetTextWidth  (PrintString)
+    SparePix = PixLeftThisLine - PixStringLength
+    SELECT Case MyJustify
+        case "RIGHT"
+            PixUsedThisLine += SparePix
+            PixLeftThisLine -= SparePix
+        case "CENTER"
+            PixUsedThisLine += SparePix/2
+            PixLeftThisLine -= SparePix/2
+        Case ELSE ' "LEFT" by default
+            ' don't move the print possition
+    End SELECT
+End Function
+
+Function My_XPRINT (XPos As Number, YPos As Number, Buffer As String)
+Dim TempPixLength As Number
+    XPRINT_Set(%XPRINT_SET_POS , XPos, YPos)
+    TempPixLength = XPRINT_GetTextWidth  (Buffer)
+    PixLeftThisLine -= TempPixLength
+    PixUsedThisLine = XPos + TempPixLength
+    xprint Buffer
+End Function

@@ -1,0 +1,38 @@
+uses "Stat", "Console"
+
+%ELEMENTS = 10
+
+function Main()
+  dim aData(%ELEMENTS) as ext
+
+  Stat_Random(aData, 1, %ELEMENTS)
+  Display("Random data", aData)
+
+  Stat_FillArray(aData, %Stat_Fill_Natural)
+  Display("Fill Natural", aData)
+
+  Stat_FillArray(aData, %Stat_Fill_Natural_Fibonacci)
+  Display("Fill Natural Fibonacci", aData)
+
+  Stat_FillArray(aData, %Stat_Fill_Natural_Even)
+  Display("Fill Natural Even", aData)
+
+  Stat_FillArray(aData, %Stat_Fill_Natural_Odd, 100)
+  Display("Fill Natural Odd", aData)
+
+  printl "Press any key to quit..."
+  waitkey
+end function
+
+sub Display(sTitle as string, data() as ext)
+  local s as string
+  local i as long
+  
+  printl sTitle+":"
+  for i = 1 to %ELEMENTS 
+    print data(i)+" "
+  next
+
+  printl  
+  printl  
+end sub

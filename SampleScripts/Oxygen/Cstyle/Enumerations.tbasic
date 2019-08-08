@@ -1,0 +1,60 @@
+
+
+'ENUMERATIONS
+'
+
+uses "oxygen","file"
+dim src as string
+
+src = "
+
+  basic
+
+'------------------
+'SIMPLE ENUMERATION
+'==================
+
+  enum things
+  {
+    shoes, ships, sealing_wax, cabbages, kings
+  }
+
+  print `cabbages: `  things.cabbages 
+
+
+'-----------------------------
+'ENUMERATION FROM A BASE VALUE
+'=============================
+
+  enum things
+  {
+    shoes 11 ships sealing_wax cabbages kings
+  }
+
+  print `cabbages: `  things.cabbages 
+
+
+'-------------------
+'BITWISE ENUMERATION
+'===================
+
+  enum bit things
+  {
+    shoes ships sealing_wax cabbages kings
+  }
+
+
+  print `bitwise shoes or cabbages: `  str(things.shoes or things.cabbages)
+
+       
+  "
+  
+o2_asmo src
+
+'msgbox 0, o2_view "o2h "+src
+
+if len(o2_error) then
+  msgbox 0, o2_error : stop
+end if
+
+o2_exec

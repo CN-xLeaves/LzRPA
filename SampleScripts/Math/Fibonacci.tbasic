@@ -1,0 +1,18 @@
+Dim MyNumber  As Long = 25
+Dim Result    As Long 
+Dim T1, T2    As Double 
+
+T1 = Timer
+Result = Fibonacci(MyNumber)
+T2 = Timer 
+
+MsgBox 0, "Fibonacci of " & MyNumber & " is: " & Result & $CRLF & 
+          "Calculation time: " & Format$(T2 - T1, "#0.00") & " secs" 
+
+Function Fibonacci(Sequence As Long) As Long
+  If Sequence < 2 Then
+    Function = Sequence
+  Else
+    Function = Fibonacci(Sequence - 1) + Fibonacci(Sequence - 2)
+  End If
+End Function

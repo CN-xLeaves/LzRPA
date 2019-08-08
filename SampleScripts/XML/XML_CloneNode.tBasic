@@ -1,0 +1,49 @@
+' ========================================================================================
+' Demonstrates the use of the cloneNode method.
+' ========================================================================================
+
+uses "Console"
+
+#default declare Checkduplicates    %TRUE
+#default declare CheckMissing       %TRUE
+
+#INCLUDE "%APP_INCLUDEPATH%\TB_XML60.INC"
+
+' ========================================================================================
+' Main
+' ========================================================================================
+FUNCTION MAIN() as long
+
+   LOCAL pXmlDoc AS DWORD
+   LOCAL pRootNode AS DWORD
+   LOCAL pChildNodes AS DWORD
+   LOCAL pCurrNode AS DWORD
+   LOCAL pMyNewNode AS DWORD
+
+   pXmlDoc = XmlCreateObject("Msxml2.DOMDocument.6.0")
+   IXMLDOMDocument_put_async pXmlDoc, %FALSE
+
+   IXMLDOMDocument_load pXmlDoc, "books.xml"
+   IF XmlParseError_get_errorCode(pXmlDoc) <> 0 THEN
+      console_writeline "You have error " & XmlParseError_get_reason(pXmlDoc)
+   ELSE
+      pRootNode = IXMLDOMDocument_get_documentElement(pXmlDoc)
+      pChildNodes = IXMLDOMNode_get_childNodes(pRootNode)
+      pCurrNode = IXMLDOMNodeList_get_item(pChildNodes, 1)
+      pMyNewNode = IXMLDOMNode_cloneNode(pCurrNode, %TRUE)
+      IXMLDOMNode_appendChild pRootNode, pMyNewNode
+      console_writeline IXMLDOMDocument_get_xml(pXmlDoc)
+      XmlRelease pMyNewNode
+      XmlRelease pCurrNode
+      XmlRelease pChildNodes
+      XmlRelease pRootNode
+   END IF
+
+   XmlRelease pXmlDoc
+   
+   console_writeline "--- Press any key to finish ---"
+   console_WAITKEY
+
+END FUNCTION
+
+Main

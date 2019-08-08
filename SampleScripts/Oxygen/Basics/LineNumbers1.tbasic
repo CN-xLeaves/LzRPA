@@ -1,0 +1,36 @@
+
+'LINE NUMBERS
+'
+
+uses "oxygen","file"
+dim src as string
+
+src = "
+00:    basic
+10:    rem legacy
+20:    dim a,b,c,i
+30:    a=1 : b=1
+40:    c=a+b
+60   i=i+1
+70   if i<20 then a=b : b=c : goto 40 '
+80 
+90   print `FIBONACCI NUMBER: `+str$(c/b)
+
+"
+
+
+
+'msgbox 0,o2_prep src
+
+o2_asmo src
+
+'msgbox 0, o2_view src
+
+if len(o2_error) then
+  msgbox 0, o2_error : stop
+end if
+
+o2_exec
+
+'msgbox 0,o2_error
+

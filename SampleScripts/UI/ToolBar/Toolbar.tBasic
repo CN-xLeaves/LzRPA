@@ -1,0 +1,165 @@
+uses "UI"
+
+'------------------------------------------------------------------------------
+' Equates
+'------------------------------------------------------------------------------
+$AppTitle    = "Toolbar Example"
+%ToolButtons = 11               
+
+Begin ControlID
+  %ID_ToolBar  
+  
+  %ID_FILENEW  
+  %ID_FILESAVE 
+  %ID_FILEOPEN 
+  %ID_UNDO     
+  %ID_REDO     
+  %ID_PRINT    
+End ControlID
+
+'------------------------------------------------------------------------------
+' Main entry point for the application
+'------------------------------------------------------------------------------
+FUNCTION Main () AS LONG
+
+  local hDlg              as long
+  local x                 AS LONG
+  LOCAL sTmp              AS STRING
+  ' Toolbar variables
+  LOCAL Tabm              AS TBADDBITMAP
+  local Tbb(%ToolButtons) AS TBBUTTON
+
+  '--------------------------------------------------------------------------
+  Dialog New %HWND_DESKTOP, $AppTitle + " - thinBasic", 0, 0, 250, 200, 
+      %WS_MAXIMIZEBOX | %WS_MINIMIZEBOX | %WS_SYSMENU |
+      %WS_THICKFRAME | %WS_CLIPCHILDREN | %WS_CLIPSIBLINGS | %DS_CENTER _
+      TO hDlg
+
+  '--------------------------------------------------------------------------
+  Control Add "TOOLBARWINDOW32", hDlg, %ID_TOOLBAR, "", 0, 0, 0, 0, 
+      %WS_CHILD | %WS_VISIBLE | %WS_BORDER | %CCS_TOP |
+      %TBSTYLE_TOOLTIPS | %TB_AUTOSIZE | %TBSTYLE_FLAT
+
+  '--------------------------------------------------------------------------
+  ' Init Tbb array.
+  FOR x = 1 TO %ToolButtons
+      ' Set the initial states for each button
+      Tbb(x).iBitmap    = 0
+      Tbb(x).idCommand  = 0
+      Tbb(x).fsState    = %TBSTATE_ENABLED
+      Tbb(x).fsStyle    = %TBSTYLE_BUTTON
+      Tbb(x).dwData     = 0
+      Tbb(x).iString    = 0
+
+      SELECT CASE x
+        CASE 1, 5, 8, 10
+            '---Separators.
+            Tbb(x).fsStyle = %TBSTYLE_SEP
+
+        CASE 2
+            Tbb(x).iBitmap = %STD_FILENEW
+            Tbb(x).idCommand = %ID_FILENEW
+            Tbb(x).iString = 0
+
+        CASE 3
+            Tbb(x).iBitmap = %STD_FILESAVE
+            Tbb(x).idCommand = %ID_FILESAVE
+            Tbb(x).iString = 1
+
+        CASE 4
+            Tbb(x).iBitmap = %STD_FILEOPEN
+            Tbb(x).idCommand = %ID_FILEOPEN
+            Tbb(x).iString = 2
+
+        CASE 6
+            Tbb(x).iBitmap = %STD_UNDO
+            Tbb(x).idCommand = %ID_UNDO
+            Tbb(x).iString = 3
+
+        CASE 7
+            Tbb(x).iBitmap = %STD_REDOW
+            Tbb(x).idCommand = %ID_REDO
+            Tbb(x).iString = 4
+
+        CASE 9
+            Tbb(x).iBitmap = %STD_PRINT
+            Tbb(x).idCommand = %ID_PRINT
+            Tbb(x).iString = 5
+
+        CASE 11
+            Tbb(x).iBitmap = %STD_DELETE
+            Tbb(x).idCommand = %IDCANCEL
+            Tbb(x).iString = 6
+
+      END SELECT
+  NEXT
+
+
+  '--------------------------------------------------------------------------
+  Tabm.nID   = %IDB_STD_LARGE_COLOR ' Use the ID of the bitmap image, ie, %ID_TOOLBAR
+  Tabm.hInst = %HINST_COMMCTRL      ' Use GetModuleHandle(BYVAL %NULL) if using a bitmap in a linked resource file
+  
+  ' Set the imge list for the TB
+  CONTROL SEND hDlg, %ID_TOOLBAR, %TB_ADDBITMAP, %ToolButtons, VARPTR(Tabm)
+
+  ' Set the buttons
+  CONTROL SEND hDlg, %ID_TOOLBAR, %TB_BUTTONSTRUCTSIZE, SIZEOF(TBBUTTON), 0
+
+  CONTROL SEND hDlg, %ID_TOOLBAR, %TB_ADDBUTTONS, %ToolButtons, VARPTR(Tbb(1))
+
+  ' Set the button description
+  sTmp =  "New"   + $NUL + 
+          "Save"  + $NUL + 
+          "Open"  + $NUL + 
+          "Undo"  + $NUL + 
+          "Redo"  + $NUL + 
+          "Print" + $NUL + 
+          "Quit"  + $NUL + $NUL
+          
+  CONTROL SEND hDlg, %ID_TOOLBAR, %TB_ADDSTRING, 0, STRPTR(sTmp)
+
+  ' ** Display the dialog
+  DIALOG SHOW modal hDlg, call cbDialog
+  
+end function
+
+'------------------------------------------------------------------------------
+'
+'------------------------------------------------------------------------------
+callback function cbDialog() as long
+'------------------------------------------------------------------------------
+
+    '---Now test the message
+    SELECT CASE cbMsg
+      
+      case %WM_INITDIALOG
+
+      case %WM_COMMAND
+        
+        '---Test which control has been clicked
+        SELECT CASE cbctl
+
+          case %ID_FILENEW
+            msgbox cbhndl, "New toolbar button"
+          case %ID_FILESAVE
+            msgbox cbhndl, "SAVE toolbar button"
+          case %ID_FILEOPEN
+            msgbox cbhndl, "OPEN toolbar button"
+          case %ID_UNDO
+            msgbox cbhndl, "UNDO toolbar button"
+          case %ID_REDO
+            msgbox cbhndl, "REDO toolbar button"
+          case %ID_PRINT
+            msgbox cbhndl, "PRINT toolbar button"
+
+          case %IDCANCEL
+             dialog end cbhndl
+             
+        end select
+
+      case %WM_SIZE
+        CONTROL SEND cbhndl, %ID_Toolbar, %WM_SIZE, 0, 0
+
+    end select
+    
+End Function
