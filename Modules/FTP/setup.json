@@ -1,0 +1,8 @@
+{
+    "Keyword1": "FTP_Connect FTP_Quit FTP_GetErrorNumber FTP_GetErrorString FTP_Command FTP_Finished FTP_SetMode FTP_GetList FTP_DelFile FTP_GetFile FTP_PutFile FTP_Extract FTP_GetServerDir FTP_GetLocalDir FTP_SetServerDir FTP_SetLocalDir FTP_SetLogFile FTP_WriteToLogFile FTP_GetNumber FTP_SetNumber FTP_GetString",
+    "Keyword2": null,
+    "Keyword3": null,
+    "RelyFile": null,
+    "PackFile": null,
+    "RelyCode": "boot.tbs"
+}

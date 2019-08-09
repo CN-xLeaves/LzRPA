@@ -1,0 +1,540 @@
+﻿{
+  "Caption": "Ftp",
+  "Remark": "文件传输协议",
+  "Icon": "公文包",
+  "Templet": "index.html",
+  "Visible": true,
+  "Function": false,
+  "Help": {},
+  "Child": [
+    {
+      "Caption": "单文件使用扩展库",
+      "Icon": "信息",
+      "Templet": "document.html",
+      "Visible": true,
+      "Function": true,
+      "Help": {
+        "Caption": "扩展库使用帮助",
+        "Document": "感谢 瞳灵 制作了这个扩展库的帮助文档。<br><br>在项目中使用扩展库功能会自动将扩展库引入项目，项目编译或运行时，自动加入扩展库依赖代码和文件。<br><br>如果您在单文件中希望使用本扩展库，则必须编写扩展库依赖代码才能调用扩展库中的函数，否则会报错，LzRPA 建议使用工程方式编写程序，但仍保留单文件使用扩展库的方法。<br><br>扩展库依赖代码：<br>&nbsp;&nbsp;Uses &quot;FTP&quot;<br><br>建议将引用扩展库代码统一添加到全局代码块，也就是代码的最上面。"
+      }
+    },
+    {
+      "Caption": "FTP_Connect",
+      "Remark": "连接Ftp服务器",
+      "Icon": "函数",
+      "Templet": "command.html",
+      "Visible": true,
+      "Function": true,
+      "InsCode": "nRet = FTP_Connect(Server, User, Password)",
+      "Help": {
+        "Caption": "FTP_Connect",
+        "Define": "nRet = FTP_Connect(Server, User, Password)",
+        "Describe": "使用Ftp时，首先必须连接Ftp服务器",
+        "RetType": "Integer",
+        "Return": "小于0则出错，使用ftp_GetErrorString（nret）获取有关错误代码的信息",
+        "Param": [
+          {
+            "Caption": "Server",
+            "DataType": "String",
+            "Describe": "服务器地址",
+            "Optional": false
+          },
+          {
+            "Caption": "User",
+            "DataType": "String",
+            "Describe": "账户",
+            "Optional": false
+          },
+          {
+            "Caption": "Password",
+            "DataType": "String",
+            "Describe": "密码",
+            "Optional": false
+          }
+        ]
+      }
+    },
+    {
+      "Caption": "FTP_Quit",
+      "Remark": "断开Ftp服务器",
+      "Icon": "函数",
+      "Templet": "command.html",
+      "Visible": true,
+      "Function": true,
+      "InsCode": "n = FTP_Quit",
+      "Help": {
+        "Caption": "FTP_Quit",
+        "Define": "n = FTP_Quit",
+        "Describe": "断开Ftp服务器",
+        "RetType": "Integer",
+        "Return": "",
+        "Param": []
+      }
+    },
+    {
+      "Caption": "FTP_GetErrorNumber",
+      "Remark": "获取错误代码",
+      "Icon": "函数",
+      "Templet": "command.html",
+      "Visible": true,
+      "Function": true,
+      "InsCode": "n = FTP_GetErrorNumber()",
+      "Help": {
+        "Caption": "FTP_GetErrorNumber",
+        "Define": "n = FTP_GetErrorNumber()",
+        "Describe": "返回上次ftp操作设置的错误代码",
+        "RetType": "Integer",
+        "Return": "小于0则出错，大于或等于0表示状态",
+        "Param": []
+      }
+    },
+    {
+      "Caption": "FTP_GetErrorString",
+      "Remark": "获取错误信息",
+      "Icon": "函数",
+      "Templet": "command.html",
+      "Visible": true,
+      "Function": true,
+      "InsCode": "s = FTP_GetErrorString(nErrorNo)",
+      "Help": {
+        "Caption": "FTP_GetErrorString",
+        "Define": "s = FTP_GetErrorString(nErrorNo)",
+        "Describe": "根据错误代码获取错误信息，此命令参数为FTP_GetErrorNumber的返回值",
+        "RetType": "String",
+        "Return": "错误信息",
+        "Param": [
+          {
+            "Caption": "nErrorNo",
+            "DataType": "Integer",
+            "Describe": "FTP_GetErrorNumber的返回值",
+            "Optional": false
+          }
+        ]
+      }
+    },
+    {
+      "Caption": "FTP_Command",
+      "Remark": "发送Ftp命令",
+      "Icon": "函数",
+      "Templet": "command.html",
+      "Visible": true,
+      "Function": true,
+      "InsCode": "n = FTP_Command(sCommand)",
+      "Help": {
+        "Caption": "FTP_Command",
+        "Define": "n = FTP_Command(sCommand)",
+        "Describe": "发送Ftp命令到服务器",
+        "RetType": "Integer",
+        "Return": "大于0 表明服务器已接受该指令,小于0则出错，调用调用ftp_GetErrorString获取错误信息",
+        "Param": [
+          {
+            "Caption": "sCommand",
+            "DataType": "String",
+            "Describe": "Ftp服务可以接受的命令",
+            "Optional": false
+          }
+        ]
+      }
+    },
+    {
+      "Caption": "FTP_Finished",
+      "Remark": "检查Ftp状态",
+      "Icon": "函数",
+      "Templet": "command.html",
+      "Visible": true,
+      "Function": true,
+      "InsCode": "n = FTP_Finished()",
+      "Help": {
+        "Caption": "FTP_Finished",
+        "Define": "n = FTP_Finished()",
+        "Describe": "检查Ftp状态",
+        "RetType": "Integer",
+        "Return": "返回小于0：发生错误。 调用FTP_GetErrorStrin（n）。\n\n返回= 0：状态结束（空闲）。\n\n返回大于 0：状态尚未完成。",
+        "Param": []
+      }
+    },
+    {
+      "Caption": "FTP_SetMode",
+      "Remark": "设置传输模式",
+      "Icon": "函数",
+      "Templet": "command.html",
+      "Visible": true,
+      "Function": true,
+      "InsCode": "n = FTP_SetMode(sMode)",
+      "Help": {
+        "Caption": "FTP_SetMode",
+        "Define": "n = FTP_SetMode(sMode)",
+        "Describe": "设置传输模式",
+        "RetType": "Integer",
+        "Return": "小于0则出错，调用FTP_GetErrorString(n)查看错误信息",
+        "Param": [
+          {
+            "Caption": "sMode",
+            "DataType": "String",
+            "Describe": "Pass \\\"A\\\" to specify ASCII mode<br>Pass \\\"B\\\" to specify binary mode.",
+            "Optional": false
+          }
+        ]
+      }
+    },
+    {
+      "Caption": "FTP_GetList",
+      "Remark": "获取文件列表",
+      "Icon": "函数",
+      "Templet": "command.html",
+      "Visible": true,
+      "Function": true,
+      "InsCode": "sFileList = FTP_GetList(%FTP_LIST_FULLLISTFILE, %FTP_FULL_LIST)",
+      "Help": {
+        "Caption": "FTP_GetList",
+        "Define": "sFileList = FTP_GetList(lWhat, lType)",
+        "Describe": "获取Ftp远程目录的文件列表",
+        "RetType": "String",
+        "Return": "文件列表",
+        "Param": [
+          {
+            "Caption": "lWhat",
+            "DataType": "Integer",
+            "Describe": "",
+            "Optional": false
+          },
+          {
+            "Caption": "lType",
+            "DataType": "Integer",
+            "Describe": "",
+            "Optional": false
+          }
+        ]
+      }
+    },
+    {
+      "Caption": "FTP_DelFile",
+      "Remark": "从Ftp服务器中删除一个文件",
+      "Icon": "函数",
+      "Templet": "command.html",
+      "Visible": true,
+      "Function": true,
+      "InsCode": "n = FTP_DelFile(sFileName)",
+      "Help": {
+        "Caption": "FTP_DelFile",
+        "Define": "n = FTP_DelFile(sFileName)",
+        "Describe": "从Ftp服务器中删除一个文件",
+        "RetType": "Integer",
+        "Return": "小于0则出错，调用FTP_GetErrorString(n)查看错误信息",
+        "Param": [
+          {
+            "Caption": "sFileName",
+            "DataType": "String",
+            "Describe": "参数说明",
+            "Optional": false
+          }
+        ]
+      }
+    },
+    {
+      "Caption": "FTP_GetFile",
+      "Remark": "下载文件",
+      "Icon": "函数",
+      "Templet": "command.html",
+      "Visible": true,
+      "Function": true,
+      "InsCode": "n = FTP_GetFile(sFileName, lOptions)",
+      "Help": {
+        "Caption": "FTP_GetFile",
+        "Define": "n = FTP_GetFile(sFileName, lOptions)",
+        "Describe": "下载文件",
+        "RetType": "Integer",
+        "Return": "小于0则出错，调用FTP_GetErrorString(n)查看错误信息",
+        "Param": [
+          {
+            "Caption": "sFileName",
+            "DataType": "String",
+            "Describe": "文件名",
+            "Optional": false
+          },
+          {
+            "Caption": "lOptions",
+            "DataType": "Integer",
+            "Describe": "",
+            "Optional": false
+          }
+        ]
+      }
+    },
+    {
+      "Caption": "FTP_PutFile",
+      "Remark": "上载文件",
+      "Icon": "函数",
+      "Templet": "command.html",
+      "Visible": true,
+      "Function": true,
+      "InsCode": "n = FTP_PutFile(sFileName, SyncMode)",
+      "Help": {
+        "Caption": "FTP_PutFile",
+        "Define": "n = FTP_PutFile(sFileName, SyncMode)",
+        "Describe": "上传文件",
+        "RetType": "Integer",
+        "Return": "",
+        "Param": [
+          {
+            "Caption": "sFileName",
+            "DataType": "String",
+            "Describe": "文件名",
+            "Optional": false
+          },
+          {
+            "Caption": "SyncMode",
+            "DataType": "Integer",
+            "Describe": "传输模式",
+            "Optional": false
+          }
+        ]
+      }
+    },
+    {
+      "Caption": "FTP_Extract",
+      "Remark": "提取字符串",
+      "Icon": "函数",
+      "Templet": "command.html",
+      "Visible": true,
+      "Function": true,
+      "InsCode": "sLine = FTP_Extract(sFileListBuffer, LineNumber, FieldNumber)",
+      "Help": {
+        "Caption": "FTP_Extract",
+        "Define": "sLine = FTP_Extract(sFileListBuffer, LineNumber, FieldNumber)",
+        "Describe": "从FTP格式的文件列表中提取字符串",
+        "RetType": "String",
+        "Return": "The line LineNumber from sFileListBuffer",
+        "Param": [
+          {
+            "Caption": "sFileListBuffer",
+            "DataType": "String",
+            "Describe": "FTP_GetList命令返回的字符串",
+            "Optional": false
+          },
+          {
+            "Caption": "LineNumber",
+            "DataType": "Integer",
+            "Describe": "行号",
+            "Optional": false
+          },
+          {
+            "Caption": "FieldNumber",
+            "DataType": "Integer",
+            "Describe": "字段号",
+            "Optional": false
+          }
+        ]
+      }
+    },
+    {
+      "Caption": "FTP_GetServerDir",
+      "Remark": "获取远程工作目录",
+      "Icon": "函数",
+      "Templet": "command.html",
+      "Visible": true,
+      "Function": true,
+      "InsCode": "s = FTP_GetServerDir()",
+      "Help": {
+        "Caption": "FTP_GetServerDir",
+        "Define": "s = FTP_GetServerDir()",
+        "Describe": "获取远程工作目录",
+        "RetType": "String",
+        "Return": "远程工作目录",
+        "Param": []
+      }
+    },
+    {
+      "Caption": "FTP_GetLocalDir",
+      "Remark": "获取本地工作目录",
+      "Icon": "函数",
+      "Templet": "command.html",
+      "Visible": true,
+      "Function": true,
+      "InsCode": "s = FTP_GetLocalDir()",
+      "Help": {
+        "Caption": "FTP_GetLocalDir",
+        "Define": "s = FTP_GetLocalDir()",
+        "Describe": "获取本地工作目录",
+        "RetType": "String",
+        "Return": "本地工作目录",
+        "Param": []
+      }
+    },
+    {
+      "Caption": "FTP_SetServerDir",
+      "Remark": "设置远程工作目录",
+      "Icon": "函数",
+      "Templet": "command.html",
+      "Visible": true,
+      "Function": true,
+      "InsCode": "n = FTP_SetServerDir(LocalRemoteDir)",
+      "Help": {
+        "Caption": "FTP_SetServerDir",
+        "Define": "n = FTP_SetServerDir(LocalRemoteDir)",
+        "Describe": "设置远程工作目录",
+        "RetType": "Integer",
+        "Return": "小于0则出错，调用FTP_GetErrorString(n)查看错误信息",
+        "Param": [
+          {
+            "Caption": "LocalRemoteDir",
+            "DataType": "String",
+            "Describe": "远程工作目录路径",
+            "Optional": false
+          }
+        ]
+      }
+    },
+    {
+      "Caption": "FTP_SetLocalDir",
+      "Remark": "设置本地工作目录",
+      "Icon": "函数",
+      "Templet": "command.html",
+      "Visible": true,
+      "Function": true,
+      "InsCode": "n = FTP_SetLocalDir(LocalCurrentDir)",
+      "Help": {
+        "Caption": "FTP_SetLocalDir",
+        "Define": "n = FTP_SetLocalDir(LocalCurrentDir)",
+        "Describe": "设置本地工作目录",
+        "RetType": "Integer",
+        "Return": "小于0则出错，调用FTP_GetErrorString(n)查看错误信息",
+        "Param": [
+          {
+            "Caption": "LocalCurrentDir",
+            "DataType": "Integer",
+            "Describe": "本地工作目录路径",
+            "Optional": false
+          }
+        ]
+      }
+    },
+    {
+      "Caption": "FTP_SetLogFile",
+      "Remark": "设置会话日志文件",
+      "Icon": "函数",
+      "Templet": "command.html",
+      "Visible": true,
+      "Function": true,
+      "InsCode": "n = FTP_SetLogFile(LogFile)",
+      "Help": {
+        "Caption": "FTP_SetLogFile",
+        "Define": "n = FTP_SetLogFile(LogFile)",
+        "Describe": "设置会话日志文件",
+        "RetType": "Null",
+        "Return": "无",
+        "Param": [
+          {
+            "Caption": "LogFile",
+            "DataType": "String",
+            "Describe": "ftp会话日志文件的完整路径名",
+            "Optional": false
+          }
+        ]
+      }
+    },
+    {
+      "Caption": "FTP_WriteToLogFile",
+      "Remark": "写入消息到会话日志",
+      "Icon": "函数",
+      "Templet": "command.html",
+      "Visible": true,
+      "Function": true,
+      "InsCode": "n = FTP_WriteToLogFile(sBuffer)",
+      "Help": {
+        "Caption": "FTP_WriteToLogFile",
+        "Define": "n = FTP_WriteToLogFile(sBuffer)",
+        "Describe": "写入一条消息到会话日志文件",
+        "RetType": "Integer",
+        "Return": "小于0则出错，调用FTP_GetErrorString(n)查看错误信息",
+        "Param": [
+          {
+            "Caption": "sBuffer",
+            "DataType": "String",
+            "Describe": "日志消息",
+            "Optional": false
+          }
+        ]
+      }
+    },
+    {
+      "Caption": "FTP_GetNumber",
+      "Remark": "获取Ftp引擎版本号",
+      "Icon": "函数",
+      "Templet": "command.html",
+      "Visible": true,
+      "Function": true,
+      "InsCode": "n = FTP_GetNumber(lWhat)",
+      "Help": {
+        "Caption": "FTP_GetNumber",
+        "Define": "n = FTP_GetNumber(lWhat)",
+        "Describe": "获取Ftp引擎版本号",
+        "RetType": "Integer",
+        "Return": "",
+        "Param": [
+          {
+            "Caption": "lWhat",
+            "DataType": "Integer",
+            "Describe": "",
+            "Optional": false
+          }
+        ]
+      }
+    },
+    {
+      "Caption": "FTP_SetNumber",
+      "Remark": "设置Ftp引擎版本号",
+      "Icon": "函数",
+      "Templet": "command.html",
+      "Visible": true,
+      "Function": true,
+      "InsCode": "n = FTP_SetNumber(lWhat, lValue)",
+      "Help": {
+        "Caption": "FTP_SetNumber",
+        "Define": "n = FTP_SetNumber(lWhat, lValue)",
+        "Describe": "设置Ftp引擎版本号",
+        "RetType": "Integer",
+        "Return": "小于0则出错，调用FTP_GetErrorString(n)查看错误信息",
+        "Param": [
+          {
+            "Caption": "lWhat",
+            "DataType": "Integer",
+            "Describe": "",
+            "Optional": false
+          },
+          {
+            "Caption": "lValue",
+            "DataType": "Integer",
+            "Describe": "",
+            "Optional": false
+          }
+        ]
+      }
+    },
+    {
+      "Caption": "FTP_GetString",
+      "Remark": "获取Ftp引擎版本信息",
+      "Icon": "函数",
+      "Templet": "command.html",
+      "Visible": true,
+      "Function": true,
+      "InsCode": "n = FTP_GetString(lWhat)",
+      "Help": {
+        "Caption": "FTP_GetString",
+        "Define": "n = FTP_GetString(lWhat)",
+        "Describe": "获取Ftp引擎版本信息",
+        "RetType": "",
+        "Return": "",
+        "Param": [
+          {
+            "Caption": "lWhat",
+            "DataType": "Integer",
+            "Describe": "",
+            "Optional": false
+          }
+        ]
+      }
+    }
+  ],
+  "ModuleName": "Ftp"
+}

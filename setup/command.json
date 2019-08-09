@@ -1,5 +1,306 @@
 [
 	{
+		"Caption": "常用功能",
+		"Icon": "文件夹",
+		"Visible": true,
+		"Templet": "index.html",
+		"Help": {
+			"Caption": ""
+		},
+		"Child": [
+			{
+				"Caption": "TracePrint",
+				"Remark": "调试输出",
+				"Visible": true,
+				"Function": true,
+				"InsCode": "TracePrint(\"消息内容\")",
+				"Templet": "command.html",
+				"Help": {
+					"Caption": "TracePrint",
+					"Define": "TracePrint(sMessage)",
+					"Describe": "输出调试信息",
+					"RetType": "Null",
+					"Return": "无",
+					"Param": [
+						{
+							"Caption": "sMessage",
+							"DataType": "Integer",
+							"Describe": "输出的调试信息文本",
+							"Optional": false
+						}
+					]
+				}
+			},
+			{
+				"Caption": "MsgBox",
+				"Remark": "弹出消息框",
+				"Visible": true,
+				"Function": true,
+				"InsCode": "MsgBox(\"消息内容\")",
+				"Templet": "command.html",
+				"Help": {
+					"Caption": "MsgBox",
+					"Define": "Result = MsgBox(Message[, Style[, Title]])",
+					"Describe": "弹出消息对话框",
+					"RetType": "Integer",
+					"Return": "返回用户点击的对话框按钮",
+					"Param": [
+						{
+							"Caption": "Message",
+							"DataType": "String",
+							"Describe": "弹出窗口显示的消息内容",
+							"Optional": false
+						},
+						{
+							"Caption": "Style",
+							"DataType": "Integer",
+							"Describe": "弹出窗口的样式",
+							"Optional": true
+						},
+						{
+							"Caption": "Title",
+							"DataType": "String",
+							"Describe": "弹出窗口的标题",
+							"Optional": true
+						}
+					]
+				}
+			},
+			{
+				"Caption": "InputBox",
+				"Remark": "弹出输入框",
+				"Visible": true,
+				"Function": true,
+				"InsCode": "InputBox(\"提示内容\", \"默认内容\", \"标题\")",
+				"Templet": "command.html",
+				"Help": {
+					"Caption": "InputBox",
+					"Define": "Result = InputBox([hParent, ]Prompt[, Title[, DefaultText[, Pass]]])",
+					"Describe": "弹出消息对话框",
+					"RetType": "String",
+					"Return": "返回用户输入的文本内容",
+					"Param": [
+						{
+							"Caption": "Prompt",
+							"DataType": "String",
+							"Describe": "弹出窗口显示的提示内容",
+							"Optional": false
+						},
+						{
+							"Caption": "DefaultText",
+							"DataType": "String",
+							"Describe": "弹出窗口输入框里的默认文字内容",
+							"Optional": true
+						},
+						{
+							"Caption": "Title",
+							"DataType": "String",
+							"Describe": "弹出窗口的标题",
+							"Optional": true
+						}
+					]
+				}
+			},
+			{
+				"Caption": "Alert",
+				"Remark": "弹出消息通知",
+				"Visible": true,
+				"Function": true,
+				"InsCode": "Alert(\"标题\", \"消息内容\", 2)",
+				"Templet": "command.html",
+				"Help": {
+					"Caption": "Alert",
+					"Define": "Result = Alert(Title, Message[, Timeout])",
+					"Describe": "弹出托盘提示对话框",
+					"RetType": "Integer",
+					"Return": "用户点击关闭按钮时返回 -1，用户点击消息链接时返回 -2，窗口超时关闭时返回 -3",
+					"Param": [
+						{
+							"Caption": "Title",
+							"DataType": "String",
+							"Describe": "弹出提示窗口标题",
+							"Optional": false
+						},
+						{
+							"Caption": "Message",
+							"DataType": "String",
+							"Describe": "弹出提示窗口显示的内容",
+							"Optional": false
+						},
+						{
+							"Caption": "Timeout",
+							"DataType": "Integer",
+							"Describe": "弹出提示窗口超时关闭的时间(单位:秒)",
+							"Optional": true
+						}
+					]
+				}
+			},
+			{
+				"Caption": "Delay",
+				"Remark": "延时",
+				"Visible": true,
+				"Function": true,
+				"InsCode": "Delay(1000)",
+				"Templet": "command.html",
+				"Help": {
+					"Caption": "Delay",
+					"Define": "Delay(ms)",
+					"Describe": "延时一定毫秒后继续执行代码",
+					"RetType": "Null",
+					"Return": "无",
+					"Param": [
+						{
+							"Caption": "ms",
+							"DataType": "Integer",
+							"Describe": "延时的毫秒数",
+							"Optional": false
+						}
+					]
+				}
+			},
+			{
+				"Caption": "RunApp",
+				"Remark": "运行应用程序",
+				"Visible": true,
+				"Function": true,
+				"InsCode": "RunApp(\"程序路径\")",
+				"Templet": "command.html",
+				"Help": {
+					"Caption": "RunApp",
+					"Define": "Result = RunApp(sExecute[, iShowMode[, bASync]])",
+					"Describe": "运行应用程序",
+					"RetType": "Integer",
+					"Return": "返回应用程序的退出代码",
+					"Param": [
+						{
+							"Caption": "sExecute",
+							"DataType": "String",
+							"Describe": "执行的程序路径和命令行",
+							"Optional": false
+						},
+						{
+							"Caption": "iShowMode",
+							"DataType": "Integer",
+							"Describe": "窗口的显示状态，设置为 %OS_WNDSTYLE_HIDE 会隐藏窗口运行（并非所有程序都能隐藏）",
+							"Optional": true
+						},
+						{
+							"Caption": "bASync",
+							"DataType": "Boolean",
+							"Describe": "是否立刻执行之后的代码，设置为 %OS_SHELL_SYNC 会等待程序运行完毕，设置为 %OS_SHELL_ASYNC 则会继续执行之后的代码（默认）。",
+							"Optional": true
+						}
+					]
+				}
+			},
+			{
+				"Caption": "ShellExecute",
+				"Remark": "打开文件或网址",
+				"Visible": true,
+				"Function": true,
+				"InsCode": "ShellExecute(\"open\", \"c:\\1.txt\", \"\", \"\", %SW_SHOWNORMAL)",
+				"Templet": "command.html",
+				"Help": {
+					"Caption": "ShellExecute",
+					"Define": "Result = ShellExecute(sOperation, sFile, sCommand, sDirectory[, iShow])",
+					"Describe": "打开一个文件或网址",
+					"RetType": "Integer",
+					"Return": "如果函数执行成功，返回一个大于32的数值，否则返回错误代码",
+					"Param": [
+						{
+							"Caption": "sOperation",
+							"DataType": "String",
+							"Describe": "操作方法，传递为 \\\"open\\\" 为打开，传递为 \\\"print\\\" 为打印",
+							"Optional": false
+						},
+						{
+							"Caption": "sFile",
+							"DataType": "String",
+							"Describe": "文件路径",
+							"Optional": false
+						},
+						{
+							"Caption": "sCommand",
+							"DataType": "String",
+							"Describe": "传递给应用程序的命令行",
+							"Optional": false
+						},
+						{
+							"Caption": "sDirectory",
+							"DataType": "String",
+							"Describe": "程序启动后的工作目录",
+							"Optional": false
+						},
+						{
+							"Caption": "iShow",
+							"DataType": "Integer",
+							"Describe": "窗口显示状态，可选值：%SW_SHOWNORMAL(正常显示)、%SW_HIDE(隐藏)、%SW_SHOW(显示)",
+							"Optional": true
+						}
+					]
+				}
+			},
+			{
+				"Caption": "GetTickCount",
+				"Remark": "获取时间戳",
+				"Visible": true,
+				"Function": true,
+				"InsCode": "GetTickCount",
+				"Templet": "command.html",
+				"Help": {
+					"Caption": "GetTickCount",
+					"Define": "Result = GetTickCount",
+					"Describe": "获取自系统开机时开始的时间戳（开机经过的毫秒数）",
+					"RetType": "Integer",
+					"Return": "返回系统时间戳",
+					"Param": [
+					]
+				}
+			},
+			{
+				"Caption": "DoEvents",
+				"Remark": "执行消息循环",
+				"Visible": true,
+				"Function": true,
+				"InsCode": "DoEvents",
+				"Templet": "command.html",
+				"Help": {
+					"Caption": "DoEvents",
+					"Define": "Result = DoEvents [bAuto]",
+					"Describe": "执行事件循环，避免界面卡死",
+					"RetType": "Null",
+					"Return": "无",
+					"Param": [
+						{
+							"Caption": "bAuto",
+							"DataType": "Boolean",
+							"Describe": "是否自动进行 DoEnents",
+							"Optional": true
+						}
+					]
+				}
+			},
+			{
+				"Caption": "Stop",
+				"Remark": "结束脚本运行",
+				"Visible": true,
+				"Function": true,
+				"InsCode": "Stop",
+				"Templet": "command.html",
+				"Help": {
+					"Caption": "Stop",
+					"Define": "Stop",
+					"Describe": "结束脚本的运行",
+					"RetType": "Null",
+					"Return": "无",
+					"Param": [
+					]
+				}
+			}
+		]
+	},
+	{
 		"Caption": "语言标准",
 		"Icon": "文件夹",
 		"Visible": true,
@@ -5047,307 +5348,6 @@
 						}
 					},
 				]
-			}
-		]
-	},
-	{
-		"Caption": "常用功能",
-		"Icon": "文件夹",
-		"Visible": true,
-		"Templet": "index.html",
-		"Help": {
-			"Caption": ""
-		},
-		"Child": [
-			{
-				"Caption": "TracePrint",
-				"Remark": "调试输出",
-				"Visible": true,
-				"Function": true,
-				"InsCode": "TracePrint(\"消息内容\")",
-				"Templet": "command.html",
-				"Help": {
-					"Caption": "TracePrint",
-					"Define": "TracePrint(sMessage)",
-					"Describe": "输出调试信息",
-					"RetType": "Null",
-					"Return": "无",
-					"Param": [
-						{
-							"Caption": "sMessage",
-							"DataType": "Integer",
-							"Describe": "输出的调试信息文本",
-							"Optional": false
-						}
-					]
-				}
-			},
-			{
-				"Caption": "MsgBox",
-				"Remark": "弹出消息框",
-				"Visible": true,
-				"Function": true,
-				"InsCode": "MsgBox(\"消息内容\")",
-				"Templet": "command.html",
-				"Help": {
-					"Caption": "MsgBox",
-					"Define": "Result = MsgBox(Message[, Style[, Title]])",
-					"Describe": "弹出消息对话框",
-					"RetType": "Integer",
-					"Return": "返回用户点击的对话框按钮",
-					"Param": [
-						{
-							"Caption": "Message",
-							"DataType": "String",
-							"Describe": "弹出窗口显示的消息内容",
-							"Optional": false
-						},
-						{
-							"Caption": "Style",
-							"DataType": "Integer",
-							"Describe": "弹出窗口的样式",
-							"Optional": true
-						},
-						{
-							"Caption": "Title",
-							"DataType": "String",
-							"Describe": "弹出窗口的标题",
-							"Optional": true
-						}
-					]
-				}
-			},
-			{
-				"Caption": "InputBox",
-				"Remark": "弹出输入框",
-				"Visible": true,
-				"Function": true,
-				"InsCode": "InputBox(\"提示内容\", \"默认内容\", \"标题\")",
-				"Templet": "command.html",
-				"Help": {
-					"Caption": "InputBox",
-					"Define": "Result = InputBox([hParent, ]Prompt[, Title[, DefaultText[, Pass]]])",
-					"Describe": "弹出消息对话框",
-					"RetType": "String",
-					"Return": "返回用户输入的文本内容",
-					"Param": [
-						{
-							"Caption": "Prompt",
-							"DataType": "String",
-							"Describe": "弹出窗口显示的提示内容",
-							"Optional": false
-						},
-						{
-							"Caption": "DefaultText",
-							"DataType": "String",
-							"Describe": "弹出窗口输入框里的默认文字内容",
-							"Optional": true
-						},
-						{
-							"Caption": "Title",
-							"DataType": "String",
-							"Describe": "弹出窗口的标题",
-							"Optional": true
-						}
-					]
-				}
-			},
-			{
-				"Caption": "Alert",
-				"Remark": "弹出消息通知",
-				"Visible": true,
-				"Function": true,
-				"InsCode": "Alert(\"标题\", \"消息内容\", 2)",
-				"Templet": "command.html",
-				"Help": {
-					"Caption": "Alert",
-					"Define": "Result = Alert(Title, Message[, Timeout])",
-					"Describe": "弹出托盘提示对话框",
-					"RetType": "Integer",
-					"Return": "用户点击关闭按钮时返回 -1，用户点击消息链接时返回 -2，窗口超时关闭时返回 -3",
-					"Param": [
-						{
-							"Caption": "Title",
-							"DataType": "String",
-							"Describe": "弹出提示窗口标题",
-							"Optional": false
-						},
-						{
-							"Caption": "Message",
-							"DataType": "String",
-							"Describe": "弹出提示窗口显示的内容",
-							"Optional": false
-						},
-						{
-							"Caption": "Timeout",
-							"DataType": "Integer",
-							"Describe": "弹出提示窗口超时关闭的时间(单位:秒)",
-							"Optional": true
-						}
-					]
-				}
-			},
-			{
-				"Caption": "Delay",
-				"Remark": "延时",
-				"Visible": true,
-				"Function": true,
-				"InsCode": "Delay(1000)",
-				"Templet": "command.html",
-				"Help": {
-					"Caption": "Delay",
-					"Define": "Delay(ms)",
-					"Describe": "延时一定毫秒后继续执行代码",
-					"RetType": "Null",
-					"Return": "无",
-					"Param": [
-						{
-							"Caption": "ms",
-							"DataType": "Integer",
-							"Describe": "延时的毫秒数",
-							"Optional": false
-						}
-					]
-				}
-			},
-			{
-				"Caption": "RunApp",
-				"Remark": "运行应用程序",
-				"Visible": true,
-				"Function": true,
-				"InsCode": "RunApp(\"程序路径\")",
-				"Templet": "command.html",
-				"Help": {
-					"Caption": "RunApp",
-					"Define": "Result = RunApp(sExecute[, iShowMode[, bASync]])",
-					"Describe": "运行应用程序",
-					"RetType": "Integer",
-					"Return": "返回应用程序的退出代码",
-					"Param": [
-						{
-							"Caption": "sExecute",
-							"DataType": "String",
-							"Describe": "执行的程序路径和命令行",
-							"Optional": false
-						},
-						{
-							"Caption": "iShowMode",
-							"DataType": "Integer",
-							"Describe": "窗口的显示状态，设置为 %OS_WNDSTYLE_HIDE 会隐藏窗口运行（并非所有程序都能隐藏）",
-							"Optional": true
-						},
-						{
-							"Caption": "bASync",
-							"DataType": "Boolean",
-							"Describe": "是否立刻执行之后的代码，设置为 %OS_SHELL_SYNC 会等待程序运行完毕，设置为 %OS_SHELL_ASYNC 则会继续执行之后的代码（默认）。",
-							"Optional": true
-						}
-					]
-				}
-			},
-			{
-				"Caption": "ShellExecute",
-				"Remark": "打开文件或网址",
-				"Visible": true,
-				"Function": true,
-				"InsCode": "ShellExecute(\"open\", \"c:\\1.txt\", \"\", \"\", %SW_SHOWNORMAL)",
-				"Templet": "command.html",
-				"Help": {
-					"Caption": "ShellExecute",
-					"Define": "Result = ShellExecute(sOperation, sFile, sCommand, sDirectory[, iShow])",
-					"Describe": "打开一个文件或网址",
-					"RetType": "Integer",
-					"Return": "如果函数执行成功，返回一个大于32的数值，否则返回错误代码",
-					"Param": [
-						{
-							"Caption": "sOperation",
-							"DataType": "String",
-							"Describe": "操作方法，传递为 \\\"open\\\" 为打开，传递为 \\\"print\\\" 为打印",
-							"Optional": false
-						},
-						{
-							"Caption": "sFile",
-							"DataType": "String",
-							"Describe": "文件路径",
-							"Optional": false
-						},
-						{
-							"Caption": "sCommand",
-							"DataType": "String",
-							"Describe": "传递给应用程序的命令行",
-							"Optional": false
-						},
-						{
-							"Caption": "sDirectory",
-							"DataType": "String",
-							"Describe": "程序启动后的工作目录",
-							"Optional": false
-						},
-						{
-							"Caption": "iShow",
-							"DataType": "Integer",
-							"Describe": "窗口显示状态，可选值：%SW_SHOWNORMAL(正常显示)、%SW_HIDE(隐藏)、%SW_SHOW(显示)",
-							"Optional": true
-						}
-					]
-				}
-			},
-			{
-				"Caption": "GetTickCount",
-				"Remark": "获取时间戳",
-				"Visible": true,
-				"Function": true,
-				"InsCode": "GetTickCount",
-				"Templet": "command.html",
-				"Help": {
-					"Caption": "GetTickCount",
-					"Define": "Result = GetTickCount",
-					"Describe": "获取自系统开机时开始的时间戳（开机经过的毫秒数）",
-					"RetType": "Integer",
-					"Return": "返回系统时间戳",
-					"Param": [
-					]
-				}
-			},
-			{
-				"Caption": "DoEvents",
-				"Remark": "执行消息循环",
-				"Visible": true,
-				"Function": true,
-				"InsCode": "DoEvents",
-				"Templet": "command.html",
-				"Help": {
-					"Caption": "DoEvents",
-					"Define": "Result = DoEvents [bAuto]",
-					"Describe": "执行事件循环，避免界面卡死",
-					"RetType": "Null",
-					"Return": "无",
-					"Param": [
-						{
-							"Caption": "bAuto",
-							"DataType": "Boolean",
-							"Describe": "是否自动进行 DoEnents",
-							"Optional": true
-						}
-					]
-				}
-			},
-			{
-				"Caption": "Stop",
-				"Remark": "结束脚本运行",
-				"Visible": true,
-				"Function": true,
-				"InsCode": "Stop",
-				"Templet": "command.html",
-				"Help": {
-					"Caption": "Stop",
-					"Define": "Stop",
-					"Describe": "结束脚本的运行",
-					"RetType": "Null",
-					"Return": "无",
-					"Param": [
-					]
-				}
 			}
 		]
 	},

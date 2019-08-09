@@ -1,0 +1,8 @@
+{
+    "Keyword1": "FTP_Connect FTP_Quit FTP_GetErrorNumber FTP_GetErrorString FTP_Command FTP_Finished FTP_SetMode FTP_GetList FTP_DelFile FTP_GetFile FTP_PutFile FTP_Extract FTP_GetServerDir FTP_GetLocalDir FTP_SetServerDir FTP_SetLocalDir FTP_SetLogFile FTP_WriteToLogFile FTP_GetNumber FTP_SetNumber FTP_GetString",
+    "Keyword2": "cJSON",
+    "Keyword3": "%cJSON_IsInvalid %cJSON_IsFalse %cJSON_IsTrue %cJSON_IsNULL %cJSON_IsNumber %cJSON_IsString %cJSON_IsArray %cJSON_IsObject %cJSON_IsRaw %cJSON_IsReference %cJSON_StringIsConst",
+    "RelyFile": null,
+    "PackFile": null,
+    "RelyCode": "boot.tbs"
+}

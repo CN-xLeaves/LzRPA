@@ -1,0 +1,85 @@
+Uses "CJson"
+
+
+
+' 以下封装原作者 : 天才 ( QQ : 94220045 )
+
+' 根据路径获取 CJSON Ptr
+/*
+Function cJSON_GetPathItem(ByVal pJson As CJSON Ptr, ByVal sPath As String) As CJSON Ptr
+	Dim As Long i, j, start
+    Dim As String index, item
+    Dim p As CJSON Ptr = pJson
+	i = 1
+    Do While (i <= Len(sPath))
+		If Mid$(sPath, i, 1) = "." Then
+			i = i + 1
+        ElseIf Mid$(sPath, i, 1) = "(" Then
+			start = i + 1
+            For j = start To Len(sPath)
+				If Mid$(sPath, j, 1) = ")" Then
+					Exit For
+                End If
+            Next
+            index = Mid$(sPath, start, j - start)
+            p = cJSON_GetArrayItem(p, CLng(index))
+            i = j + 1
+        Else
+			start = i
+            Do
+				i = i + 1
+            Loop While Not ((Mid$(sPath, i, 1) = ".") Or (Mid$(sPath, i, 1) = "(") Or (i > Len(sPath)))
+            item = Mid$(sPath, start, i - start)
+            p = cJSON_GetObjectItem(p, item)
+        End If
+    Loop
+    return p
+End Function
+
+' 从字符串中 根据路径获取 CJSON Ptr
+Function cJSON_GetPathItemByString(ByVal sJson As String, ByVal sPath As String) As CJSON Ptr
+    Return cJSON_GetPathItem(cJSON_Parse(sJson), sPath)
+End Function
+
+' 从文件中 根据路径获取 CJSON Ptr
+Function cJSON_GetPathItemByFile(ByVal sPath As String, ByVal sPath As String) As CJSON Ptr
+    Return cJSON_GetPathItemByString(Load_File(sPath), sPath)
+End Function
+
+' 根据路径获取字符串值
+Function cJSON_GetPathValue(ByVal pJson As CJSON Ptr, ByVal sPath As String) As String
+    Dim p As CJSON Ptr = cJSON_GetPathItem(pJson, sPath)
+    Return cJSON_Item_GetValue(p)
+End Function
+
+' 从字符串中 根据路径获取字符串值
+Function cJSON_GetPathValueByString(ByVal sJson As String, ByVal sPath As String) As String
+    Dim p As CJSON Ptr = cJSON_GetPathItemByString(sJson, sPath)
+    Return cJSON_Item_GetValue(p)
+End Function
+
+' 从文件中 根据路径获取字符串值
+Function cJSON_GetPathValueByFile(ByVal sPath As String, ByVal sPath As String) As String
+    Dim p As CJSON Ptr = cJSON_GetPathItemByFile(sPath, sPath)
+    Return cJSON_Item_GetValue(p)
+End Function
+
+' 根据路径获取数值
+Function cJSON_GetPathValueNumber(ByVal pJson As CJSON Ptr, ByVal sPath As String) As Double
+    Dim p As CJSON Ptr = cJSON_GetPathItem(pJson, sPath)
+    Return cJSON_Item_GetValueNumber(p)
+End Function
+
+' 从字符串中 根据路径获取数值
+Function cJSON_GetPathValueNumberByString(ByVal sJson As String, ByVal sPath As String) As Double
+    Dim p As CJSON Ptr = cJSON_GetPathItemByString(sJson, sPath)
+    Return cJSON_Item_GetValueNumber(p)
+End Function
+
+' 从文件中 根据路径获取数值
+Function cJSON_GetPathValueNumberByFile(ByVal sPath As String, ByVal sPath As String) As Double
+    Dim p As CJSON Ptr = cJSON_GetPathItemByFile(sPath, sPath)
+    Return cJSON_Item_GetValueNumber(p)
+End Function
+*/
+

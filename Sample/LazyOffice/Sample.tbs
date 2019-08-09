@@ -1,0 +1,8 @@
+RegCom("LazyOffice.dll")
+DIM Lxj as object = CreateObject("Lazy.LxjExcel")
+Lxj.ExcelOpen("c:\1.xls")
+
+' 懒人插件在 LzRPA 中调用是分为三个类的：
+' 	Lazy.LxjExcel
+' 	Lazy.LxjWord
+' 	Lazy.LxjAccess

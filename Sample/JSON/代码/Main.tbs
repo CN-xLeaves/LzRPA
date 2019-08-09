@@ -1,0 +1,32 @@
+
+Function Main() As Long
+    Dim pRoot As cJSON Ptr
+    Dim pItem As cJSON Ptr
+    ' 载入 JSON 文件
+    Dim sJson As String = Load_File(APP_ScriptPath & "test.json")
+    pRoot = cJSON_Parse(sJson)
+    ' 读取字符串
+    pItem = cJSON_GetObjectItem(pRoot, "StrItem")
+    MsgBox cJSON_Item_GetValue(pItem)
+    ' 读取整数
+    pItem = cJSON_GetObjectItem(pRoot, "IntItem")
+    MsgBox cJSON_Item_GetValueNumber(pItem)
+    ' 读取浮点数
+    pItem = cJSON_GetObjectItem(pRoot, "DblItem")
+    MsgBox cJSON_Item_GetValueNumber(pItem)
+    ' 读取逻辑值
+    pItem = cJSON_GetObjectItem(pRoot, "BoolItem")
+    MsgBox cJSON_Item_GetValue(pItem)
+    ' 读取数组节点
+    pItem = cJSON_GetObjectItem(pRoot, "ArrItem")
+    pItem = cJSON_GetArrayItem(pItem, 2)
+    MsgBox cJSON_Item_GetValue(pItem)
+    ' 读取对象节点
+    pItem = cJSON_GetObjectItem(pRoot, "ObjItem")
+    pItem = cJSON_GetObjectItem(pItem, "姓名")
+    MsgBox cJSON_Item_GetValue(pItem)
+    ' 通过 Path 获取数据 [目前这系列9个函数存在BUG]
+    /*
+    MsgBox cJSON_GetPathValue(pRoot, "ArrItem(4).Key")
+    */
+End Function
