@@ -35,7 +35,7 @@
   global hMenu as dword
   global hEdit as dword
   
-  function Main()  
+  function TBMain()  
     DIM hDlg  AS LONG   '---Handle of the main window
 
     DIALOG NEW 0, "RichEdit control example", 100, 50, 500, 300, _

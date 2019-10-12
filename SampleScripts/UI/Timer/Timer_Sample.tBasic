@@ -15,7 +15,7 @@
   '------------------------------------------------------------------------------
   ' Main function
   '------------------------------------------------------------------------------
-  Function Main() As Long
+  Function TBMain() As Long
     LOCAL hDlg AS DWORD
             
     Dialog New Name "TimerDialog", 0 , "Timer Example using CallBacks functions", -1, -1, 240, 40, %WS_OVERLAPPEDWINDOW  To hDlg

@@ -7,7 +7,7 @@
 '   "WinBeep" function expect 2 numeric parameters passed by value both double word type
 DECLARE FUNCTION WinBeep LIB "KERNEL32.DLL" ALIAS "Beep" (BYVAL dwFreq AS DWORD, BYVAL dwDuration AS DWORD) AS LONG
 
-Function Main()
+Function TBMain()
   '---Here call above functions using "WinBeep"
   
   MsgBox(0, "This example requires presence of PC Speaker", %MB_ICONINFORMATION or %MB_OK)

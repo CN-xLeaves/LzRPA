@@ -61,7 +61,7 @@ Global Punts               As POLYARRAY   'global array to store vertices
 
 
 '----------------------------------------------------------------------------------------
-  Function Main () As Long
+  Function TBMain () As Long
    Local j, hFontI As DWord
 
    '--- create dialog window ---

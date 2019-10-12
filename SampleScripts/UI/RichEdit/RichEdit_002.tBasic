@@ -44,7 +44,7 @@
   global hEdit  AS dword
   global hMenu  AS dword
  
-  function Main()
+  function TBMain()
     local hDlg   AS dword
     '---Menu handle
     LOCAL hPopupFile, hPopupEdit, hPopupFormat, hPopupFormat, hPopupControl, hPopupHelp  AS dword

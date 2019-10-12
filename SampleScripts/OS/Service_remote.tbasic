@@ -1,7 +1,7 @@
 ' Service sample
 uses "OS", "Console"
 
-function Main()
+function TBMain()
   dim lRet as long
   dim lStatus as long
   dim lStartType as long

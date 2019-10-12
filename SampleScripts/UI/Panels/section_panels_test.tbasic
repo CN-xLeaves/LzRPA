@@ -32,7 +32,7 @@
     %ID_TCOORD_Z
   End ControlID  
   
-function Main()
+function TBMain()
   DIM hDlg AS DWORD    
    
     

@@ -4,7 +4,7 @@
     "ModuleName": "File",
     "Icon": "公文包",
     "Visible": true,
-    "Templet": "index.html",
+    "Templet": "index",
     "Help": {
         "Caption": ""
     },
@@ -13,7 +13,7 @@
             "Caption": "单文件使用扩展库",
             "Icon": "信息",
             "Visible": true,
-            "Templet": "document.html",
+            "Templet": "document",
             "Help": {
                 "Caption": "扩展库使用帮助",
                 "Document": "在项目中使用扩展库功能会自动将扩展库引入项目，项目编译或运行时，自动加入扩展库依赖代码和文件。<br><br>如果您在单文件中希望使用本扩展库，则必须编写扩展库依赖代码才能调用扩展库中的函数，否则会报错，LzRPA 建议使用工程方式编写程序，但仍保留单文件使用扩展库的方法。<br><br>扩展库依赖代码：<br>&nbsp;&nbsp;Uses &quot;File&quot;<br><br>建议将引用扩展库代码统一添加到全局代码块，也就是代码的最上面。"
@@ -25,7 +25,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "File_Load(\"文件路径\")",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "File_Load",
                 "Define": "File_Load(sFile)",
@@ -48,7 +48,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "File_Save(\"文件路径\", \"写入内容\")",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "File_Save",
                 "Define": "File_Save(sFile, sText[, nAttribute])",
@@ -83,7 +83,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "File_Append(\"文件路径\", \"写入内容\")",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "File_Append",
                 "Define": "File_Append(sFile, sText)",
@@ -112,7 +112,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "File_Size(\"文件路径\")",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "File_Size",
                 "Define": "File_Size(sFile)",
@@ -135,7 +135,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "File_Open(\"文件路径\", \"OUTPUT\")",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "File_Open",
                 "Define": "iRet = File_Open(sFile, sMode[, RecordSize])",
@@ -170,7 +170,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "File_Close(文件号)",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "File_Close",
                 "Define": "File_Close(iFileID)",
@@ -193,7 +193,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "File_Get(文件号, 长度)",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "File_Get",
                 "Define": "sRet = File_Get(iFileID, iSize)",
@@ -222,7 +222,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "File_Put(文件号, \"写入内容\")",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "File_Put",
                 "Define": "iRet = File_Put(iFileID, sText)",
@@ -251,7 +251,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "File_GetR(文件号, 记录号, 保存数据的结构体)",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "File_GetR",
                 "Define": "sRet = File_GetR(iFileID, iRec, UDTStructure)",
@@ -286,7 +286,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "File_PutR(文件号, 记录号, 保存数据的结构体)",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "File_PutR",
                 "Define": "sRet = File_PutR(iFileID, iRec, UDTStructure)",
@@ -321,7 +321,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "File_LineInput(文件号)",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "File_LineInput",
                 "Define": "sRet = File_LineInput(iFileID)",
@@ -344,7 +344,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "File_LinePrint(文件号, \"写入内容\")",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "File_LinePrint",
                 "Define": "File_LinePrint(iFileID, sText)",
@@ -373,7 +373,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "File_Seek(文件号, 读写位置)",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "File_Seek",
                 "Define": "File_Seek(iFileID, iPos)",
@@ -402,7 +402,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "File_EOF(文件号)",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "File_EOF",
                 "Define": "bRet = File_EOF(iFileID)",
@@ -425,7 +425,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "File_LOF(文件号)",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "File_LOF",
                 "Define": "iRet = File_LOF(iFileID)",
@@ -448,7 +448,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "File_Exists(\"文件路径\")",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "File_Exists",
                 "Define": "File_Exists(sFile)",
@@ -471,7 +471,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "Dir_Exists(\"文件路径\")",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "Dir_Exists",
                 "Define": "Dir_Exists(sPath)",
@@ -494,7 +494,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "Dir_IsDir(\"路径\")",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "Dir_IsDir",
                 "Define": "Dir_IsDir(sPath)",
@@ -517,7 +517,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "File_GetAttr(\"文件路径\")",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "File_GetAttr",
                 "Define": "File_GetAttr(sFile)",
@@ -540,7 +540,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "File_SetAttr(\"文件路径\", %FILE_HIDDEN)",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "File_SetAttr",
                 "Define": "File_SetAttr(sFile, iAttribute)",
@@ -569,7 +569,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "File_GetDate(\"文件路径\", %DATE_TIME_LAST_FILE_WRITE)",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "File_GetDate",
                 "Define": "sRet = File_GetDate(sFile, iChoice)",
@@ -598,7 +598,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "File_GetTime(\"文件路径\", %DATE_TIME_LAST_FILE_WRITE)",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "File_GetTime",
                 "Define": "sRet = File_GetTime(sFile, iChoice)",
@@ -627,7 +627,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "File_GetDateTime(\"文件路径\")",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "File_GetDateTime",
                 "Define": "sRet = File_GetDateTime(sFile)",
@@ -650,7 +650,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "File_SetDateTime(\"文件路径\", \"07-23-2005\", \"22:00:00\", %DATE_TIME_LAST_FILE_WRITE)",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "File_SetDateTime",
                 "Define": "sRet = File_SetDateTime(sFile[[, sDate], sTime], iChoice)",
@@ -691,7 +691,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "File_Copy(\"待复制文件\", \"目标位置\")",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "File_Copy",
                 "Define": "File_Copy(Source, Destination)",
@@ -720,7 +720,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "File_Move(\"待移动文件\", \"目标位置\")",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "File_Move",
                 "Define": "File_Move(Source, Destination)",
@@ -749,7 +749,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "File_Rename(\"待移动文件\", \"目标位置\")",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "File_Rename",
                 "Define": "File_Rename(sOldFile, sNewFile)",
@@ -778,7 +778,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "File_Kill(\"文件路径\")",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "File_Kill",
                 "Define": "File_Kill(sFileName)",
@@ -801,7 +801,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "File_ShellCopy(\"待复制文件\", \"目标位置\")",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "File_ShellCopy",
                 "Define": "File_ShellCopy(Source, Destination)",
@@ -830,7 +830,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "File_ShellMove(\"待移动文件\", \"目标位置\")",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "File_ShellMove",
                 "Define": "File_ShellMove(Source, Destination)",
@@ -859,7 +859,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "File_ShellDelete(\"文件路径\")",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "File_ShellDelete",
                 "Define": "File_ShellDelete(sFileName)",
@@ -882,7 +882,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "Dir_Remove(\"路径\")",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "Dir_Remove",
                 "Define": "Dir_Remove(sPath)",
@@ -905,7 +905,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "Dir_Make(\"路径\")",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "Dir_Make",
                 "Define": "Dir_Make(sPath)",
@@ -928,7 +928,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "Dir_MakeAll(\"路径\")",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "Dir_MakeAll",
                 "Define": "Dir_MakeAll(sPath)",
@@ -951,7 +951,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "File_PathSplit(\"文件路径\", %Path_RootPath)",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "File_PathSplit",
                 "Define": "File_PathSplit(sFileName, iPart)",
@@ -980,7 +980,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "Dir_GetCurrent",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "Dir_GetCurrent",
                 "Define": "Dir_GetCurrent",
@@ -997,7 +997,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "Dir_ListArray(数据返回数组, \"路径\", \"*.*\", %FILE_NORMAL)",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "Dir_ListArray",
                 "Define": "iRet = Dir_ListArray(arrRet, sPath, sMask, iAttr)",

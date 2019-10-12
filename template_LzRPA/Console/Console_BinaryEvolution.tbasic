@@ -1,0 +1,29 @@
+Uses "console"
+
+Randomize Timer
+
+Dim gMaxX As Long = 120
+Dim gMaxY As Long = 40
+Dim x, y, c  As Long
+
+Dim bArray(gMaxX, gMaxY) As Byte
+
+Console_SetScreenBufferSize(gMaxX, gMaxY)
+Console_ShowWindow(%CONSOLE_SW_MAXIMIZE)
+Console_SetTitle "[ Press ESC to finish ]"
+
+While Len(Console_InKey) <> 2
+  Fill_Screen
+Wend
+
+Function Fill_Screen()
+
+  x = Rnd(1, gMaxX)
+  y = Rnd(1, gMaxy)
+  bArray(x, y) = Rnd(0, 1)
+  c = Mod(x*y, 15) +1
+  
+  PrintAt bArray(x, y), x, y, c
+  
+End Function
+  

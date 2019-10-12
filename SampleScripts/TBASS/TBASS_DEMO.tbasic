@@ -1,6 +1,6 @@
 Uses "TBASS", "CONSOLE"
  
-Function Main()
+Function TBMain()
   Dim Channel     As DWord 
   Dim SamChannel  As DWord
   Dim CurrentPos_Bytes    As Quad      

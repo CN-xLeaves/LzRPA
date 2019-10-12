@@ -7,7 +7,7 @@ Uses "UI"
 '---------------------------------------------------------------
 ' You have 3 Min to get your best score  - use mouse to move paddle
 '---------------------------------------------------------------
-Function Main () As Long    
+Function TBMain () As Long    
   
   Local cwh, score, level   As Long
   Local cx,cy,x1,y1,py,ps   As Long

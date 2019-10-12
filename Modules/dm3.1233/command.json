@@ -4,7 +4,7 @@
     "ModuleName": "dm3.1233",
     "Icon": "公文包",
     "Visible": true,
-    "Templet": "index.html",
+    "Templet": "index",
     "Help": {
         "Caption": ""
     },
@@ -13,7 +13,7 @@
             "Caption": "单文件使用扩展库",
             "Icon": "信息",
             "Visible": true,
-            "Templet": "document.html",
+            "Templet": "document",
             "Help": {
                 "Caption": "扩展库使用帮助",
                 "Document": "在项目中使用扩展库功能会自动将扩展库引入项目，项目编译或运行时，自动加入扩展库依赖代码和文件。<br><br>如果您在单文件中希望使用本扩展库，则必须编写扩展库依赖代码才能调用扩展库中的函数，否则会报错，LzRPA 建议使用工程方式编写程序，但仍保留单文件使用扩展库的方法。<br><br>扩展库依赖代码：<br>&nbsp;&nbsp;#Include &quot;%APP_PATH%\\\\..\\\\Modules\\\\dm3.1233\\\\boot.tbs&quot;<br><br>建议将引用扩展库代码统一添加到全局代码块，也就是代码的最上面。<br><br>单文件使用 大漠插件 除了要引用扩展库文件外，还需要将 dm.dll 文件复制到生成的 exe 或脚本文件同一目录下，dm.dll 文件保存在软件安装目录下的 Modules\\\\dm3.1233 子目录内。"
@@ -24,7 +24,7 @@
             "Icon": "文件",
             "Visible": true,
             "InsCode": "Dim dm As Object = CreateObject(\"dm.dmsoft\")",
-            "Templet": "document.html",
+            "Templet": "document",
             "Help": {
                 "Caption": "创建大漠对象",
                 "Document": "要使用大漠插件，必选先创建一个大漠插件对象，双击这条命令将创建大漠对象的代码添加到编辑器。<br><br>Dim dm As Object = CreateObject(\\\"dm.dmsoft\\\")"
@@ -35,7 +35,7 @@
             "Icon": "文件",
             "Visible": true,
             "InsCode": "ReleaseObject(dm)",
-            "Templet": "document.html",
+            "Templet": "document",
             "Help": {
                 "Caption": "释放大漠对象",
                 "Document": "大漠插件不再使用后，应释放插件占用的资源，双击这条命令将释放大漠对象的代码添加到编辑器。<br><br>ReleaseObject(dm)"
@@ -46,7 +46,7 @@
             "Icon": "文件",
             "Visible": true,
             "InsCode": "dm.BindWindowEx(hWin, \"windows\", \"windows\", \"windows\", \"\", 0)",
-            "Templet": "document.html",
+            "Templet": "document",
             "Help": {
                 "Caption": "绑定窗口",
                 "Document": "大漠插件的很多功能必须先绑定窗口才能使用，这些操作将对绑定的窗口进行，双击这条命令将大漠对象绑定窗口的代码添加到编辑器。<br><br>dm.BindWindowEx(hWin, \\\"windows\\\", \\\"windows\\\", \\\"windows\\\", \\\"\\\", 0)"
@@ -56,7 +56,7 @@
             "Caption": "BindWindow 参数说明",
             "Icon": "文件",
             "Visible": true,
-            "Templet": "document.html",
+            "Templet": "document",
             "Help": {
                 "Caption": "BindWindow 参数说明",
                 "Document": "display 字符串: 屏幕颜色获取方式 取值有以下几种<br><br>\\\"normal\\\" : 正常模式,平常我们用的前台截屏模式<br>\\\"gdi\\\" : gdi模式,用于窗口采用GDI方式刷新时. 此模式占用CPU较大.<br>\\\"gdi2\\\" : gdi2模式,此模式兼容性较强,但是速度比gdi模式要慢许多,如果gdi模式发现后台不刷新时,可以考虑用gdi2模式.<br>\\\"dx2\\\" : dx2模式,用于窗口采用dx模式刷新,如果dx方式会出现窗口所在进程崩溃的状况,可以考虑采用这种.采用这种方式要保证窗口有一部分在屏幕外.win7或者vista不需要移动也可后台.此模式占用CPU较大.<br>\\\"dx3\\\" : dx3模式,同dx2模式,但是如果发现有些窗口后台不刷新时,可以考虑用dx3模式,此模式比dx2模式慢许多. 此模式占用CPU较大.<br>\\\"dx\\\" : dx模式,等同于BindWindowEx中，display设置的\\\"dx.graphic.2d|dx.graphic.3d\\\",具体参考BindWindowEx<br>注意此模式需要管理员权限<br><br><br>mouse 字符串: 鼠标仿真模式 取值有以下几种<br><br>\\\"normal\\\" : 正常模式,平常我们用的前台鼠标模式<br>\\\"windows\\\": Windows模式,采取模拟windows消息方式 同按键自带后台插件.<br>\\\"windows2\\\": Windows2 模式,采取模拟windows消息方式(锁定鼠标位置) 此模式等同于BindWindowEx中的mouse为以下组合<br>\\\"dx.mouse.position.lock.api|dx.mouse.position.lock.message|dx.mouse.state.message\\\"<br>注意此模式需要管理员权限<br>\\\"windows3\\\": Windows3模式，采取模拟windows消息方式,可以支持有多个子窗口的窗口后台.<br>\\\"dx\\\": dx模式,采用模拟dx后台鼠标模式,这种方式会锁定鼠标输入.有些窗口在此模式下绑定时，需要先激活窗口再绑定(或者绑定以后激活)，否则可能会出现绑定后鼠标无效的情况.此模式等同于BindWindowEx中的mouse为以下组合<br>\\\"dx.public.active.api|dx.public.active.message|dx.mouse.position.lock.api|dx.mouse.position.lock.message|dx.mouse.state.api|dx.mouse.state.message|dx.mouse.api|dx.mouse.focus.input.api|dx.mouse.focus.input.message|dx.mouse.clip.lock.api|dx.mouse.input.lock.api|dx.mouse.cursor\\\"<br>注意此模式需要管理员权限<br>\\\"dx2\\\"：dx2模式,这种方式类似于dx模式,但是不会锁定外部鼠标输入.<br>有些窗口在此模式下绑定时，需要先激活窗口再绑定(或者绑定以后手动激活)，否则可能会出现绑定后鼠标无效的情况. 此模式等同于BindWindowEx中的mouse为以下组合<br>\\\"dx.public.active.api|dx.public.active.message|dx.mouse.position.lock.api|dx.mouse.state.api|dx.mouse.api|dx.mouse.focus.input.api|dx.mouse.focus.input.message|dx.mouse.clip.lock.api|dx.mouse.input.lock.api| dx.mouse.cursor\\\"<br>注意此模式需要管理员权限<br><br><br>keypad 字符串: 键盘仿真模式 取值有以下几种<br><br>\\\"normal\\\" : 正常模式,平常我们用的前台键盘模式<br>\\\"windows\\\": Windows模式,采取模拟windows消息方式 同按键的后台插件.<br>\\\"dx\\\": dx模式,采用模拟dx后台键盘模式。有些窗口在此模式下绑定时，需要先激活窗口再绑定(或者绑定以后激活)，否则可能会出现绑定后键盘无效的情况. 此模式等同于BindWindowEx中的keypad为以下组合<br>\\\"dx.public.active.api|dx.public.active.message| dx.keypad.state.api|dx.keypad.api|dx.keypad.input.lock.api\\\"<br>注意此模式需要管理员权限<br><br><br>mode 整形数: 模式。 取值有以下两种<br><br>0 : 推荐模式此模式比较通用，而且后台效果是最好的.<br>1 : 和模式0效果一样，如果模式0会失败时，可以尝试此模式. <收费功能，具体详情点击查看><br>2 : 同模式0,此模式为老的模式0,尽量不要用此模式，除非有兼容性问题.<br>3 : 同模式1,此模式为老的模式1,尽量不要用此模式，除非有兼容性问题. <收费功能，具体详情点击查看><br>4 : 同模式0,如果模式0有崩溃问题，可以尝试此模式.<br>5 : 同模式1, 如果模式0有崩溃问题，可以尝试此模式. <收费功能，具体详情点击查看><br>6 : 同模式0，如果模式0有崩溃问题，可以尝试此模式. <收费功能，具体详情点击查看><br>7 : 同模式1，如果模式1有崩溃问题，可以尝试此模式. <收费功能，具体详情点击查看><br>101 : 超级绑定模式. 可隐藏目标进程中的dm.dll.避免被恶意检测.效果要比dx.public.hide.dll好. 推荐使用. <收费功能，具体详情点击查看><br>103 : 同模式101，如果模式101有崩溃问题，可以尝试此模式. <收费功能，具体详情点击查看><br>需要注意的是: 模式1 3 5 7 101 103在大部分窗口下绑定都没问题。但也有少数特殊的窗口，比如有很多子窗口的窗口，对于这种窗口，在绑定时，一定要把<br>鼠标指向一个可以输入文字的窗口，比如一个文本框，最好能激活这个文本框，这样可以保证绑定的成功.<br><br><br>注意:<br><br>绑定之后,所有的坐标都相对于窗口的客户区坐标(不包含窗口边框)<br>另外,绑定窗口后,必须加以下代码,以保证所有资源正常释放<br>另外 绑定dx会比较耗时间,请不要频繁调用此函数.<br>另外如果绑定的是dx,要注意不可连续操作dx,中间至少加个10MS的延时,否则可能会导致操作失败.比如绑定图色DX,那么不要连续取色等,键鼠也是一样.<br>注意,图色dx,鼠标windows2 dx dx2以及键盘dx都需要管理员权限才能运行,所以对于WIN7和VISTA用户,在启动目标窗口时,必须用管理员方式启动,否则无法绑定成功！<br>还有一点特别要注意的是,有些窗口绑定之后必须加一定的延时,否则后台也无效.一般1秒到2秒的延时就足够.<br>发现绑定失败的几种可能(一般是需要管理员权限的模式才有可能会失败)<br><br>1.     系统登录的帐号必须有Administrators权限<br><br>2.     如果是vista和win7系统，启动窗口进程必须用管理员模式启动，脚本也必须用管理员模式启动.<br><br>3.     一些防火墙会防止插件注入窗口所在进程，比如360防火墙等，必须把dm.dll设置为信任.<br><br>4.     还有一个比较弱智的可能性，那就是插件没有注册到系统中，这时CreateObject压根就是失败的. 检测对象是否创建成功很简单，如下代码：<br>Dim dm As Object = CreateObject(\\\"dm.dmsoft\\\")<br>Dim ver As String = dm.Ver()<br>If ver = \\\"\\\" Then<br>    MsgBox \\\"创建对象失败,检查大漠插件是否已注册\\\"<br>End If<br><br>5.     在沙盘中开的窗口进程，绑定一些需要管理员权限的模式，会失败。<br>解决方法是要配置沙盘参数，具体如何配置参考沙盘绑定方法.<br><br>6.     窗口所在进程有保护，这个我也无能为力."
@@ -66,7 +66,7 @@
             "Caption": "BindWindowEx 参数说明",
             "Icon": "文件",
             "Visible": true,
-            "Templet": "document.html",
+            "Templet": "document",
             "Help": {
                 "Caption": "BindWindowEx 参数说明",
                 "Document": "display 字符串: 屏幕颜色获取方式 取值有以下几种<br><br>\\\"normal\\\" : 正常模式,平常我们用的前台截屏模式<br>\\\"gdi\\\" : gdi模式,用于窗口采用GDI方式刷新时. 此模式占用CPU较大.<br>\\\"gdi2\\\" : gdi2模式,此模式兼容性较强,但是速度比gdi模式要慢许多,如果gdi模式发现后台不刷新时,可以考虑用gdi2模式.<br>\\\"dx2\\\" : dx2模式,用于窗口采用dx模式刷新,如果dx方式会出现窗口进程崩溃的状况,可以考虑采用这种.采用这种方式要保证窗口有一部分在屏幕外.win7或者vista不需要移动也可后台. 此模式占用CPU较大.<br>\\\"dx3\\\" : dx3模式,同dx2模式,但是如果发现有些窗口后台不刷新时,可以考虑用dx3模式,此模式比dx2模式慢许多. 此模式占用CPU较大.<br>dx模式,用于窗口采用dx模式刷新,取值可以是以下任意组合，组合采用\\\"|\\\"符号进行连接  注意此模式需要管理员权限. 支持BindWindow中的缩写模式. 比如dx代表\\\" dx.graphic.2d| dx.graphic.3d\\\"<br>1. \\\"dx.graphic.2d\\\"  2d窗口的dx图色模式  <br>2. \\\"dx.graphic.2d.2\\\"  2d窗口的dx图色模式  是dx.graphic.2d的增强模式.兼容性更好. <收费功能，具体详情点击查看><br>3. \\\"dx.graphic.3d\\\"  3d窗口的dx图色模式,注意采用这个模式，必须关闭窗口3D视频设置的全屏抗锯齿选项.<br>4. \\\"dx.graphic.3d.8\\\"  3d窗口的dx8图色模式,注意采用这个模式，必须关闭窗口3D视频设置的全屏抗锯齿选项. 这个模式支持某些老的引擎. <收费功能，具体详情点击查看><br><br><br>mouse 字符串: 鼠标仿真模式 取值有以下几种<br><br>\\\"normal\\\" : 正常模式,平常我们用的前台鼠标模式<br>\\\"windows\\\": Windows模式,采取模拟windows消息方式 同按键的后台插件.<br>\\\"windows3\\\": Windows3模式，采取模拟windows消息方式,可以支持有多个子窗口的窗口后台<br>dx模式,取值可以是以下任意组合. 组合采用\\\"|\\\"符号进行连接 注意此模式需要管理员权限.支持BindWindow中的缩写模式,比如windows2代表\\\"dx.mouse.position.lock.api|dx.mouse.position.lock.message|dx.mouse.state.message\\\"<br>1. \\\"dx.mouse.position.lock.api\\\"  此模式表示通过封锁系统API，来锁定鼠标位置.<br>2. \\\"dx.mouse.position.lock.message\\\" 此模式表示通过封锁系统消息，来锁定鼠标位置.<br>3. \\\"dx.mouse.focus.input.api\\\" 此模式表示通过封锁系统API来锁定鼠标输入焦点.<br>4. \\\"dx.mouse.focus.input.message\\\"此模式表示通过封锁系统消息来锁定鼠标输入焦点.<br>5. \\\"dx.mouse.clip.lock.api\\\" 此模式表示通过封锁系统API来锁定刷新区域。注意，使用这个模式，在绑定前，必须要让窗口完全显示出来.<br>6. \\\"dx.mouse.input.lock.api\\\" 此模式表示通过封锁系统API来锁定鼠标输入接口.<br>7. \\\"dx.mouse.state.api\\\" 此模式表示通过封锁系统API来锁定鼠标输入状态.<br>8. \\\"dx.mouse.state.message\\\" 此模式表示通过封锁系统消息来锁定鼠标输入状态.<br>9. \\\"dx.mouse.api\\\"  此模式表示通过封锁系统API来模拟dx鼠标输入.<br>10. \\\"dx.mouse.cursor\\\"  开启此模式，可以后台获取鼠标特征码. <收费功能，具体详情点击查看><br>11. \\\"dx.mouse.raw.input\\\"  有些窗口需要这个才可以正常操作鼠标. <收费功能，具体详情点击查看><br>12. \\\"dx.mouse.input.lock.api2\\\"  部分窗口在后台操作时，前台鼠标会移动,需要这个属性. <收费功能，具体详情点击查看><br>13. \\\"dx.mouse.input.lock.api3\\\"  部分窗口在后台操作时，前台鼠标会移动,需要这个属性. <收费功能，具体详情点击查看><br><br><br>keypad 字符串: 键盘仿真模式 取值有以下几种<br><br>\\\"normal\\\" : 正常模式,平常我们用的前台键盘模式<br>\\\"windows\\\": Windows模式,采取模拟windows消息方式 同按键的后台插件.<br>dx模式,取值可以是以下任意组合. 组合采用\\\"|\\\"符号进行连接 注意此模式需要管理员权限.支持BindWindow中的缩写模式.比如dx代表\\\" dx.public.active.api|dx.public.active.message| dx.keypad.state.api|dx.keypad.api|dx.keypad.input.lock.api\\\"<br>1. \\\"dx.keypad.input.lock.api\\\" 此模式表示通过封锁系统API来锁定键盘输入接口.<br>2. \\\"dx.keypad.state.api\\\" 此模式表示通过封锁系统API来锁定键盘输入状态.<br>3. \\\"dx.keypad.api\\\" 此模式表示通过封锁系统API来模拟dx键盘输入. <br>4. \\\"dx.keypad.raw.input\\\"  有些窗口需要这个才可以正常操作键盘. <收费功能，具体详情点击查看><br><br><br>public 字符串: 公共属性 dx模式共有  注意以下列表中,前面打五角星的表示需要管理员权限<br><br>取值可以是以下任意组合. 组合采用\\\"|\\\"符号进行连接 这个值可以为空<br>1. ★ \\\"dx.public.active.api\\\" 此模式表示通过封锁系统API来锁定窗口激活状态.  注意，部分窗口在此模式下会耗费大量资源慎用. <br>2. ★ \\\"dx.public.active.message\\\" 此模式表示通过封锁系统消息来锁定窗口激活状态.  注意，部分窗口在此模式下会耗费大量资源 慎用. 另外如果要让此模式生效，必须在绑定前，让绑定窗口处于激活状态,否则此模式将失效. 比如dm.SetWindowState hwnd,1 然后再绑定.<br>3.    \\\"dx.public.disable.window.position\\\" 此模式将锁定绑定窗口位置.不可与\\\"dx.public.fake.window.min\\\"共用.<br>4.    \\\"dx.public.disable.window.size\\\" 此模式将锁定绑定窗口,禁止改变大小. 不可与\\\"dx.public.fake.window.min\\\"共用.<br>5.    \\\"dx.public.disable.window.minmax\\\" 此模式将禁止窗口最大化和最小化,但是付出的代价是窗口同时也会被置顶. 不可与\\\"dx.public.fake.window.min\\\"共用.<br>6.    \\\"dx.public.fake.window.min\\\" 此模式将允许目标窗口在最小化状态时，仍然能够像非最小化一样操作.. 另注意，此模式会导致任务栏顺序重排，所以如果是多开模式下，会看起来比较混乱，建议单开使用，多开不建议使用. <收费功能，具体详情点击查看><br>7.    \\\"dx.public.hide.dll\\\" 此模式将会隐藏目标进程的大漠插件，避免被检测..另外使用此模式前，请仔细做过测试，此模式可能会造成目标进程不稳定，出现崩溃。<收费功能，具体详情点击查看><br>8. ★ \\\"dx.public.active.api2\\\" 此模式表示通过封锁系统API来锁定窗口激活状态. 部分窗口遮挡无法后台,需要这个属性. <收费功能，具体详情点击查看><br>9. ★ \\\"dx.public.input.ime\\\" 此模式是配合SendStringIme使用. 具体可以查看SendStringIme接口. <收费功能，具体详情点击查看><br>10 ★ \\\"dx.public.graphic.protect\\\" 此模式可以保护dx图色不被恶意检测.同时对dx.keypad.api和dx.mouse.api也有保护效果. <收费功能，具体详情点击查看><br>11 ★ \\\"dx.public.disable.window.show\\\" 禁止目标窗口显示,这个一般用来配合dx.public.fake.window.min来使用. <收费功能，具体详情点击查看><br>12 ★ \\\"dx.public.anti.api\\\" 此模式可以突破部分窗口对后台的保护. <收费功能，具体详情点击查看><br>13 ★ \\\"dx.public.memory\\\" 此模式可以让内存读写函数突破保护.只要绑定成功即可操作内存函数. <收费功能，具体详情点击查看><br>14 ★ \\\"dx.public.km.protect\\\" 此模式可以保护dx键鼠不被恶意检测.最好配合dx.public.anti.api一起使用. 此属性可能会导致部分后台功能失效. <收费功能，具体详情点击查看><br>15    \\\"dx.public.prevent.block\\\"  绑定模式1 3 5 7 101 103下，可能会导致部分窗口卡死. 这个属性可以避免卡死. <收费功能，具体详情点击查看><br>16    \\\"dx.public.ori.proc\\\"  此属性只能用在模式0 1 2 3和101下. 有些窗口在不同的界面下(比如登录界面和登录进以后的界面)，键鼠的控制效果不相同. 那可以用这个属性来尝试让保持一致. 注意的是，这个属性不可以滥用，确保测试无问题才可以使用. 否则可能会导致后台失效. <收费功能，具体详情点击查看><br><br><br>mode 整形数: 模式。 取值有以下两种<br><br>0 : 推荐模式,此模式比较通用，而且后台效果是最好的.<br>1 : 和模式0效果一样，如果模式0会失败时，可以尝试此模式, <收费功能，具体详情点击查看>. <br>2 : 同模式0,此模式为老的模式0,尽量不要用此模式，除非有兼容性问题.<br>3 : 同模式1,此模式为老的模式1,尽量不要用此模式，除非有兼容性问题. <收费功能，具体详情点击查看><br>4 : 同模式0,如果模式0有崩溃问题，可以尝试此模式.<br>5 : 同模式1, 如果模式0有崩溃问题，可以尝试此模式. <收费功能，具体详情点击查看><br>6 : 同模式0，如果模式0有崩溃问题，可以尝试此模式. <收费功能，具体详情点击查看>.<br>7 : 模式1，如果模式1有崩溃问题，可以尝试此模式. <收费功能，具体详情点击查看>.<br>101 : 超级绑定模式. 可隐藏目标进程中的dm.dll.避免被恶意检测.效果要比dx.public.hide.dll好. 推荐使用. <收费功能，具体详情点击查看><br>103 : 同模式101，如果模式101有崩溃问题，可以尝试此模式. <收费功能，具体详情点击查看><br>需要注意的是: 模式1 3 5 7 101 103在大部分窗口下绑定都没问题。但也有少数特殊的窗口，比如有很多子窗口的窗口，对于这种窗口，在绑定时，一定要把鼠标指向一个可以输入文字的窗口，比如一个文本框，最好能激活这个文本框，这样可以保证绑定的成功.<br><br><br>注意:<br><br>绑定之后,所有的坐标都相对于窗口的客户区坐标(不包含窗口边框)<br>另外,绑定窗口后,必须加以下代码,以保证所有资源正常释放<br>另外 绑定dx会比较耗时间,请不要频繁调用此函数.<br>另外如果绑定的是dx,要注意不可连续操作dx,中间至少加个10MS的延时,否则可能会导致操作失败.比如绑定图色DX,那么不要连续取色等,键鼠也是一样.<br>注意,需要组合的模式,都需要管理员权限才能运行,所以对于WIN7和VISTA用户,在启动窗口进程时,必须用管理员方式启动,否则无法绑定成功！<br>还有一点特别要注意的是,有些窗口绑定之后必须加一定的延时,否则后台也无效.一般1秒到2秒的延时就足够.<br>发现绑定失败的几种可能(一般是需要管理员权限的模式才有可能会失败)<br><br>1.     系统登录的帐号必须有Administrators权限<br><br>2.     如果是vista和win7系统，启动窗口进程必须用管理员模式启动，脚本也必须用管理员模式启动.<br><br>3.     一些防火墙会防止插件注入窗口所在进程，比如360防火墙等，必须把dm.dll设置为信任.<br><br>4.     还有一个比较弱智的可能性，那就是插件没有注册到系统中，这时CreateObject压根就是失败的. 检测对象是否创建成功很简单，如下代码<br>Dim dm As Object = CreateObject(\\\"dm.dmsoft\\\")<br>Dim ver As String = dm.Ver()<br>If ver = \\\"\\\" Then<br>MsgBox \\\"创建对象失败,检查大漠插件是否已注册\\\"<br>End If<br><br>5.     在沙盘中开的窗口，绑定一些需要管理员权限的模式，会失败。<br>解决方法是要配置沙盘参数，参考如何配置沙盘参数.<br><br>6.     窗口所在进程有保护，这个我也无能为力."
@@ -76,7 +76,7 @@
             "Caption": "键码对应表",
             "Icon": "文件",
             "Visible": true,
-            "Templet": "document.html",
+            "Templet": "document",
             "Help": {
                 "Caption": "键码对应表",
                 "Document": "1 对应 49<br>2 对应 50<br> 3 对应 51<br>4 对应 52<br>5 对应 53<br>6 对应 54<br>7 对应 55<br>8 对应 56<br>9 对应 57<br>0 对应 48<br>- 对应 189<br>= 对应 187<br>back 对应 8<br><br>a 对应 65<br>b 对应 66<br>c 对应 67<br>d 对应 68<br>e 对应 69<br>f 对应 70<br>g 对应 71<br>h 对应 72<br>i 对应 73<br>j 对应 74<br>k 对应 75<br>l 对应 76<br>m 对应 77<br>n 对应 78<br>o 对应 79<br>p 对应 80<br>q 对应 81<br>r 对应 82<br>s 对应 83<br>t 对应 84<br>u 对应 85<br>v 对应 86<br>w 对应 87<br>x 对应 88<br>y 对应 89<br>z 对应 90<br><br>ctrl 对应 17<br>alt 对应 18<br>shift 对应 19<br>win 对应 91<br>space 对应 32<br>cap 对应 20<br>tab 对应 9<br>~ 对应 192<br>esc 对应 27<br>enter 对应 13<br><br>up 对应 38<br>down 对应 40<br>left 对应 37<br>right 对应 39<br><br>option 对应 93<br><br>print 对应 44<br>delete 对应 46<br>home 对应 36<br>end 对应 35<br>pgup 对应 33<br>pgdn 对应 34<br><br>f1 对应 112<br>f2 对应 113<br>f3 对应 114<br>f4 对应 115<br>f5 对应 116<br>f6 对应 117<br>f7 对应 118<br>f8 对应 119<br>f9 对应 120<br>f10 对应 121<br>f11 对应 122<br>f12 对应 123<br><br>[ 对应 219<br>] 对应 221<br>\\\\ 对应 220<br>; 对应 186<br>\\&apos; 对应 222<br>, 对应 188<br>. 对应 190<br>/ 对应 191"
@@ -86,7 +86,7 @@
             "Caption": "键盘鼠标模拟",
             "Icon": "文件夹",
             "Visible": true,
-            "Templet": "index.html",
+            "Templet": "index",
             "Help": {
                 "Caption": ""
             },
@@ -97,7 +97,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.MoveTo(0, 0)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "MoveTo",
                         "Define": "iRet = MoveTo(x, y)",
@@ -126,7 +126,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.MoveR(0, 0)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "MoveR",
                         "Define": "iRet = MoveR(rx, ry)",
@@ -155,7 +155,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.MoveToEx(100, 100, 10, 10)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "MoveToEx",
                         "Define": "sRet = MoveToEx(x, y, w, h)",
@@ -196,7 +196,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.LeftClick()",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "LeftClick",
                         "Define": "iRet = LeftClick()",
@@ -213,7 +213,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.LeftDoubleClick()",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "LeftDoubleClick",
                         "Define": "iRet = LeftDoubleClick()",
@@ -230,7 +230,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.LeftDown()",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "LeftDown",
                         "Define": "iRet = LeftDown()",
@@ -247,7 +247,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.LeftUp()",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "LeftUp",
                         "Define": "iRet = LeftUp()",
@@ -264,7 +264,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.RightClick()",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "RightClick",
                         "Define": "iRet = RightClick()",
@@ -281,7 +281,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.RightDown()",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "RightDown",
                         "Define": "iRet = RightDown()",
@@ -298,7 +298,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.RightUp()",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "RightUp",
                         "Define": "iRet = RightUp()",
@@ -315,7 +315,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.MiddleClick()",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "MiddleClick",
                         "Define": "iRet = MiddleClick()",
@@ -332,7 +332,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.WheelDown()",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "WheelDown",
                         "Define": "iRet = WheelDown()",
@@ -349,7 +349,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.WheelUp()",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "WheelUp",
                         "Define": "iRet = WheelUp()",
@@ -366,7 +366,7 @@
                     "Visible": false,
                     "Function": true,
                     "InsCode": "Dim As Long x, y\ndm.GetCursorPos(x, y)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetCursorPos",
                         "Define": "iRet = GetCursorPos(x, y)",
@@ -395,7 +395,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.GetCursorShape()",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetCursorShape",
                         "Define": "iRet = GetCursorShape()",
@@ -412,7 +412,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.GetCursorShapeEx(0)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetCursorShapeEx",
                         "Define": "iRet = GetCursorShapeEx(iType)",
@@ -435,7 +435,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.GetCursorSpot()",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetCursorSpot",
                         "Define": "iRet = GetCursorSpot()",
@@ -452,7 +452,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.KeyPress(65)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "KeyPress",
                         "Define": "iRet = KeyPress(vk_code)",
@@ -475,7 +475,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.KeyPressChar(\"F1\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "KeyPressChar",
                         "Define": "iRet = KeyPressChar(key_str)",
@@ -498,7 +498,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.KeyPressStr(65)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "KeyPressStr",
                         "Define": "iRet = KeyPressStr(key_str, delay)",
@@ -527,7 +527,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.KeyDown(65)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "KeyDown",
                         "Define": "iRet = KeyDown(vk_code)",
@@ -550,7 +550,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.KeyDownChar(\"F1\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "KeyDownChar",
                         "Define": "iRet = KeyDownChar(key_str)",
@@ -573,7 +573,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.KeyUp(65)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "KeyUp",
                         "Define": "iRet = KeyUp(vk_code)",
@@ -596,7 +596,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.KeyUpChar(\"F1\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "KeyUpChar",
                         "Define": "iRet = KeyUpChar(key_str)",
@@ -619,7 +619,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.GetKeyState(65)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetKeyState",
                         "Define": "iRet = GetKeyState(vk_code)",
@@ -642,7 +642,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.WaitKey(65, 3000)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "WaitKey",
                         "Define": "iRet = WaitKey(vk_code, time_out)",
@@ -671,7 +671,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.SetMouseDelay(\"normal\", 60)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "SetMouseDelay",
                         "Define": "iRet = SetMouseDelay(sType, delay)",
@@ -700,7 +700,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.SetKeypadDelay(\"normal\", 60)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "SetKeypadDelay",
                         "Define": "iRet = SetKeypadDelay(sType, delay)",
@@ -729,7 +729,7 @@
             "Caption": "图像、颜色",
             "Icon": "文件夹",
             "Visible": true,
-            "Templet": "index.html",
+            "Templet": "index",
             "Help": {
                 "Caption": ""
             },
@@ -740,7 +740,7 @@
                     "Visible": false,
                     "Function": true,
                     "InsCode": "Dim As Long intX, intY\ndm.FindPic(0, 0, 2000, 2000, \"1.bmp|2.bmp|3.bmp\", \"000000\", 0.9, 0, intX, intY)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "FindPic",
                         "Define": "iRet = FindPic(x1, y1, x2, y2, pic_name, delta_color, sim, dir, intX, intY)",
@@ -817,7 +817,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.FindPicE(0, 0, 2000, 2000, \"1.bmp|2.bmp|3.bmp\", \"000000\", 0.9, 0)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "FindPicE",
                         "Define": "iRet = FindPicE(x1, y1, x2, y2, pic_name, delta_color, sim, dir)",
@@ -882,7 +882,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.FindPicEx(0, 0, 2000, 2000, \"1.bmp|2.bmp|3.bmp\", \"000000\", 0.9, 0)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "FindPicEx",
                         "Define": "iRet = FindPicEx(x1, y1, x2, y2, pic_name, delta_color, sim, dir)",
@@ -947,7 +947,7 @@
                     "Visible": false,
                     "Function": true,
                     "InsCode": "Dim As Long intX, intY\ndm.FindPicS(0, 0, 2000, 2000, \"1.bmp|2.bmp|3.bmp\", \"000000\", 0.9, 0, intX, intY)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "FindPicS",
                         "Define": "iRet = FindPicS(x1, y1, x2, y2, pic_name, delta_color, sim, dir, intX, intY)",
@@ -1024,7 +1024,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.FindPicExS(0, 0, 2000, 2000, \"1.bmp|2.bmp|3.bmp\", \"000000\", 0.9, 0)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "FindPicExS",
                         "Define": "iRet = FindPicExS(x1, y1, x2, y2, pic_name, delta_color, sim, dir)",
@@ -1089,7 +1089,7 @@
                     "Visible": false,
                     "Function": true,
                     "InsCode": "Dim As Long intX, intY\ndm.FindColor(0, 0, 2000, 2000, \"123456-000000|aabbcc-030303|ddeeff-202020\", 1.0, 0, intX, intY)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "FindColor",
                         "Define": "iRet = FindColor(x1, y1, x2, y2, color, sim, dir, intX, intY)",
@@ -1160,7 +1160,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.FindColorE(0, 0, 2000, 2000, \"123456-000000|aabbcc-030303|ddeeff-202020\", 1.0, 0)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "FindColorE",
                         "Define": "iRet = FindColorE(x1, y1, x2, y2, color, sim, dir)",
@@ -1219,7 +1219,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.FindColorEx(0, 0, 2000, 2000, \"123456-000000|aabbcc-030303|ddeeff-202020\", 1.0, 0)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "FindColorEx",
                         "Define": "iRet = FindColorEx(x1, y1, x2, y2, color, sim, dir)",
@@ -1278,7 +1278,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.FindMulColor(0, 0, 2000, 2000, \"123456-000000|aabbcc-030303|ddeeff-202020\", 1.0)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "FindMulColor",
                         "Define": "iRet = FindMulColor(x1, y1, x2, y2, color, sim, dir)",
@@ -1331,7 +1331,7 @@
                     "Visible": false,
                     "Function": true,
                     "InsCode": "Dim As Long intX, intY\ndm.FindMultiColor(0, 0, 2000, 2000, \"cc805b-020202\", \"9|2|-00ff00,15|2|2dff1c-010101,6|11|a0d962,11|14|-ffffff\", 1.0, 1, intX, intY)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "FindMultiColor",
                         "Define": "iRet = FindMultiColor(x1, y1, x2, y2, first_color, offset_color, sim, dir, intX, intY)",
@@ -1408,7 +1408,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.FindMultiColorE(0, 0, 2000, 2000, \"cc805b-020202\", \"9|2|-00ff00,15|2|2dff1c-010101,6|11|a0d962,11|14|-ffffff\", 1.0, 1)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "FindMultiColorE",
                         "Define": "iRet = FindMultiColorE(x1, y1, x2, y2, first_color, offset_color, sim, dir)",
@@ -1473,7 +1473,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.FindMultiColorEx(0, 0, 2000, 2000, \"cc805b-020202\", \"9|2|-00ff00,15|2|2dff1c-010101,6|11|a0d962,11|14|-ffffff\", 1.0, 1)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "FindMultiColorEx",
                         "Define": "iRet = FindMultiColorEx(x1, y1, x2, y2, first_color, offset_color, sim, dir)",
@@ -1538,7 +1538,7 @@
                     "Visible": false,
                     "Function": true,
                     "InsCode": "Dim As Long intX, intY\ndm.FindShape(0, 0, 2000, 2000, \"1|1|0,1|6|1,0|10|1,9|10|1,7|6|1,7|8|0,8|9|0,2|2|1,3|1|1\", 1.0, 0, intX, intY)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "FindShape",
                         "Define": "iRet = FindShape(x1, y1, x2, y2, first_color, offset_color, sim, dir, intX, intY)",
@@ -1609,7 +1609,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.FindShapeE(0, 0, 2000, 2000, \"1|1|0,1|6|1,0|10|1,9|10|1,7|6|1,7|8|0,8|9|0,2|2|1,3|1|1\", 1.0, 0)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "FindShapeE",
                         "Define": "iRet = FindShapeE(x1, y1, x2, y2, first_color, offset_color, sim, dir)",
@@ -1668,7 +1668,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.FindShapeEx(0, 0, 2000, 2000, \"1|1|0,1|6|1,0|10|1,9|10|1,7|6|1,7|8|0,8|9|0,2|2|1,3|1|1\", 1.0, 0)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "FindShapeEx",
                         "Define": "iRet = FindShapeEx(x1, y1, x2, y2, first_color, offset_color, sim, dir)",
@@ -1727,7 +1727,7 @@
                     "Visible": false,
                     "Function": true,
                     "InsCode": "Dim As Long intX, intY\ndm.FindPicMem(0, 0, 2000, 2000, \"0|0\", \"000000\", 0.9, 0, intX, intY)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "FindPicMem",
                         "Define": "iRet = FindPicMem(x1, y1, x2, y2, pic_info, delta_color, sim, dir, intX, intY)",
@@ -1804,7 +1804,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.FindPicMemE(0, 0, 2000, 2000, \"0|0\", \"000000\", 0.9, 0)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "FindPicMemE",
                         "Define": "iRet = FindPicMemE(x1, y1, x2, y2, pic_info, delta_color, sim, dir)",
@@ -1869,7 +1869,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.FindPicMemEx(0, 0, 2000, 2000, \"0|0\", \"000000\", 0.9, 0)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "FindPicMemEx",
                         "Define": "iRet = FindPicMemEx(x1, y1, x2, y2, pic_info, delta_color, sim, dir)",
@@ -1934,7 +1934,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.GetColor(0, 0)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetColor",
                         "Define": "iRet = GetColor(x, y)",
@@ -1963,7 +1963,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.GetColorBGR(0, 0)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetColorBGR",
                         "Define": "iRet = GetColorBGR(x, y)",
@@ -1992,7 +1992,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.GetColorHSV(0, 0)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetColorHSV",
                         "Define": "iRet = GetColorHSV(x, y)",
@@ -2021,7 +2021,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.CmpColor(\"FF0000\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "CmpColor",
                         "Define": "iRet = CmpColor(x, y, color, sim)",
@@ -2062,7 +2062,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.GetColorNum(0, 0, 2000, 2000, \"123456-000000|aabbcc-030303|ddeeff-202020\", 1.0)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetColorNum",
                         "Define": "iRet = GetColorNum(x1, y1, x2, y2, color, sim)",
@@ -2115,7 +2115,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.GetAveRGB(0, 0, 2000, 2000)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetAveRGB",
                         "Define": "iRet = GetAveRGB(x1, y1, x2, y2)",
@@ -2156,7 +2156,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.GetAveHSV(0, 0, 2000, 2000)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetAveHSV",
                         "Define": "iRet = GetAveHSV(x1, y1, x2, y2)",
@@ -2197,7 +2197,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.IsDisplayDead(0, 0, 2000, 2000, 5)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "IsDisplayDead",
                         "Define": "iRet = IsDisplayDead(x1, y1, x2, y2, t)",
@@ -2244,7 +2244,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.BGR2RGB(\"FF0000\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "BGR2RGB",
                         "Define": "iRet = BGR2RGB(bgr_color)",
@@ -2267,7 +2267,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.RGB2BGR(\"FF0000\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "RGB2BGR",
                         "Define": "iRet = RGB2BGR(rgb_color)",
@@ -2290,7 +2290,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.Capture(0, 0, 2000, 2000, \"c:\\1.bmp\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "Capture",
                         "Define": "iRet = Capture(x1, y1, x2, y2, file)",
@@ -2337,7 +2337,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.CaptureGif(0, 0, 2000, 2000, \"c:\\1.gif\", 100, 3000)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "CaptureGif",
                         "Define": "iRet = CaptureGif(x1, y1, x2, y2, file, delay, time)",
@@ -2396,7 +2396,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.CaptureJpg(0, 0, 2000, 2000, \"c:\\1.bmp\", 80)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "CaptureJpg",
                         "Define": "iRet = CaptureJpg(x1, y1, x2, y2, file, quality)",
@@ -2449,7 +2449,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.CapturePng(0, 0, 2000, 2000, \"c:\\1.bmp\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "CapturePng",
                         "Define": "iRet = CapturePng(x1, y1, x2, y2, file)",
@@ -2496,7 +2496,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.CapturePre(\"c:\\1.bmp\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "CapturePre",
                         "Define": "iRet = CapturePre(file)",
@@ -2519,7 +2519,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.LoadPic(\"1.bmp|2.bmp|3.bmp\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "LoadPic",
                         "Define": "iRet = LoadPic(pic_name)",
@@ -2542,7 +2542,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.FreePic(\"1.bmp|2.bmp|3.bmp\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "FreePic",
                         "Define": "iRet = FreePic(pic_name)",
@@ -2565,7 +2565,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.GetPicSize(\"1.bmp\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetPicSize",
                         "Define": "iRet = GetPicSize(pic_name)",
@@ -2588,7 +2588,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.SetPicPwd(\"123\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "SetPicPwd",
                         "Define": "iRet = SetPicPwd(pwd)",
@@ -2611,7 +2611,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.ImageToBmp(\"1.png\", \"1.bmp\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "ImageToBmp",
                         "Define": "iRet = ImageToBmp(pic_name, bmp_name)",
@@ -2640,7 +2640,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.EnableDisplayDebug(1)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "EnableDisplayDebug",
                         "Define": "iRet = EnableDisplayDebug(enable_debug)",
@@ -2663,7 +2663,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.EnableGetColorByCapture(1)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "EnableGetColorByCapture",
                         "Define": "iRet = EnableGetColorByCapture(enable)",
@@ -2686,7 +2686,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.GetScreenData(0, 0, 2000, 2000)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetScreenData",
                         "Define": "iRet = GetScreenData(x1, y1, x2, y2)",
@@ -2727,7 +2727,7 @@
                     "Visible": false,
                     "Function": true,
                     "InsCode": "Dim As pData, iSize<br>dm.GetScreenDataBmp(0, 0, 2000, 2000, pData, iSize)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetScreenDataBmp",
                         "Define": "iRet = GetScreenDataBmp(x1, y1, x2, y2, data, size)",
@@ -2780,7 +2780,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.MatchPicName(\"1.bmp|2.bmp|3.bmp\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "MatchPicName",
                         "Define": "iRet = MatchPicName(pic_name)",
@@ -2803,7 +2803,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.AppendPicAddr(pic_info, 0, 0)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "AppendPicAddr",
                         "Define": "iRet = AppendPicAddr(pic_info, addr, size)",
@@ -2838,7 +2838,7 @@
             "Caption": "文字识别",
             "Icon": "文件夹",
             "Visible": true,
-            "Templet": "index.html",
+            "Templet": "index",
             "Help": {
                 "Caption": ""
             },
@@ -2849,7 +2849,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.SetDict(0, \"Dict.txt\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "SetDict",
                         "Define": "iRet = SetDict(index, file)",
@@ -2878,7 +2878,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.SetDictMem(0, \"Dict.txt\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "SetDictMem",
                         "Define": "iRet = SetDictMem(index, addr, size)",
@@ -2913,7 +2913,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.SetDictPwd(\"password\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "SetDictPwd",
                         "Define": "iRet = SetDictPwd(pwd)",
@@ -2936,7 +2936,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.UseDict(0)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "UseDict",
                         "Define": "iRet = UseDict(index)",
@@ -2959,7 +2959,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.GetNowDict()",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetNowDict",
                         "Define": "iRet = GetNowDict()",
@@ -2976,7 +2976,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.AddDict(0, \"081101BF8020089FD10A21443F85038$记$0.0$11\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "AddDict",
                         "Define": "iRet = AddDict(index, dict_info)",
@@ -3005,7 +3005,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.GetDictCount(0)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetDictCount",
                         "Define": "iRet = GetDictCount(index)",
@@ -3028,7 +3028,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.GetDict(0, 0)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetDict",
                         "Define": "iRet = GetDict(index, font_index)",
@@ -3057,7 +3057,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.GetDictInfo(\"回收站\", \"宋体\", 9, 0)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetDictInfo",
                         "Define": "iRet = GetDictInfo(str, font_name, font_size, flag)",
@@ -3098,7 +3098,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.ClearDict(0)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "ClearDict",
                         "Define": "iRet = ClearDict(index)",
@@ -3121,7 +3121,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.SaveDict(0, \"Dict.txt\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "SaveDict",
                         "Define": "iRet = SaveDict(index, file)",
@@ -3150,7 +3150,7 @@
                     "Visible": false,
                     "Function": true,
                     "InsCode": "Dim As Long intX, intY\ndm.FindStr(0, 0, 2000, 2000, \"长安|洛阳\", \"9f2e3f-000000\", 0.9, intX, intY)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "FindStr",
                         "Define": "iRet = FindStr(x1, y1, x2, y2, sText, color_format, sim, intX, intY)",
@@ -3221,7 +3221,7 @@
                     "Visible": false,
                     "Function": true,
                     "InsCode": "Dim As Long intX, intY\ndm.FindStrS(0, 0, 2000, 2000, \"长安|洛阳\", \"9f2e3f-000000\", 0.9, intX, intY)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "FindStrS",
                         "Define": "iRet = FindStrS(x1, y1, x2, y2, sText, color_format, sim, intX, intY)",
@@ -3292,7 +3292,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.FindStrE(0, 0, 2000, 2000, \"长安|洛阳\", \"9f2e3f-000000\", 0.9)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "FindStrE",
                         "Define": "iRet = FindStrE(x1, y1, x2, y2, sText, color_format, sim)",
@@ -3351,7 +3351,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.FindStrEx(0, 0, 2000, 2000, \"长安|洛阳\", \"9f2e3f-000000\", 0.9)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "FindStrEx",
                         "Define": "iRet = FindStrEx(x1, y1, x2, y2, sText, color_format, sim)",
@@ -3410,7 +3410,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.FindStrExS(0, 0, 2000, 2000, \"长安|洛阳\", \"9f2e3f-000000\", 0.9)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "FindStrExS",
                         "Define": "iRet = FindStrExS(x1, y1, x2, y2, sText, color_format, sim)",
@@ -3469,7 +3469,7 @@
                     "Visible": false,
                     "Function": true,
                     "InsCode": "Dim As Long intX, intY\ndm.FindStrFast(0, 0, 2000, 2000, \"长安|洛阳\", \"9f2e3f-000000\", 0.9, intX, intY)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "FindStrFast",
                         "Define": "iRet = FindStrFast(x1, y1, x2, y2, sText, color_format, sim, intX, intY)",
@@ -3540,7 +3540,7 @@
                     "Visible": false,
                     "Function": true,
                     "InsCode": "Dim As Long intX, intY\ndm.FindStrFastS(0, 0, 2000, 2000, \"长安|洛阳\", \"9f2e3f-000000\", 0.9, intX, intY)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "FindStrFastS",
                         "Define": "iRet = FindStrFastS(x1, y1, x2, y2, sText, color_format, sim, intX, intY)",
@@ -3611,7 +3611,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.FindStrFastE(0, 0, 2000, 2000, \"长安|洛阳\", \"9f2e3f-000000\", 0.9)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "FindStrFastE",
                         "Define": "iRet = FindStrFastE(x1, y1, x2, y2, sText, color_format, sim)",
@@ -3670,7 +3670,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.FindStrFastEx(0, 0, 2000, 2000, \"长安|洛阳\", \"9f2e3f-000000\", 0.9)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "FindStrFastEx",
                         "Define": "iRet = FindStrFastEx(x1, y1, x2, y2, sText, color_format, sim)",
@@ -3729,7 +3729,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.FindStrFastExS(0, 0, 2000, 2000, \"长安|洛阳\", \"9f2e3f-000000\", 0.9)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "FindStrFastExS",
                         "Define": "iRet = FindStrFastExS(x1, y1, x2, y2, sText, color_format, sim)",
@@ -3788,7 +3788,7 @@
                     "Visible": false,
                     "Function": true,
                     "InsCode": "Dim As Long intX, intY\ndm.FindStrWithFont(0, 0, 2000, 2000, \"长安|洛阳\", \"9f2e3f-000000\", 0.9, \"宋体\", 9, 0, intX, intY)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "FindStrWithFont",
                         "Define": "iRet = FindStrWithFont(x1, y1, x2, y2, sText, color_format, sim, font_name, font_size, flag, intX, intY)",
@@ -3877,7 +3877,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.FindStrWithFontE(0, 0, 2000, 2000, \"长安|洛阳\", \"9f2e3f-000000\", 0.9, \"宋体\", 9, 0)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "FindStrWithFontE",
                         "Define": "iRet = FindStrWithFontE(x1, y1, x2, y2, sText, color_format, sim, font_name, font_size, flag)",
@@ -3954,7 +3954,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.FindStrWithFontEx(0, 0, 2000, 2000, \"长安|洛阳\", \"9f2e3f-000000\", 0.9, \"宋体\", 9, 0)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "FindStrWithFontEx",
                         "Define": "iRet = FindStrWithFontEx(x1, y1, x2, y2, sText, color_format, sim, font_name, font_size, flag)",
@@ -4031,7 +4031,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.Ocr(0, 0, 2000, 2000, \"9f2e3f-000000\", 0.9)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "Ocr",
                         "Define": "iRet = Ocr(x1, y1, x2, y2, color_format, sim)",
@@ -4084,7 +4084,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.OcrEx(0, 0, 2000, 2000, \"9f2e3f-000000\", 0.9)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "OcrEx",
                         "Define": "iRet = OcrEx(x1, y1, x2, y2, color_format, sim)",
@@ -4137,7 +4137,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.OcrInFile(0, 0, 2000, 2000, \"test.bmp\", \"9f2e3f-000000\", 0.9)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "OcrInFile",
                         "Define": "iRet = OcrInFile(x1, y1, x2, y2, pic_name, color_format, sim)",
@@ -4196,7 +4196,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.GetResultCount(sRet)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetResultCount",
                         "Define": "iRet = GetResultCount(ret)",
@@ -4219,7 +4219,7 @@
                     "Visible": false,
                     "Function": true,
                     "InsCode": "Dim As Long IntX, IntY<br>dm.GetResultPos(sRet, 1, IntX, IntY)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetResultPos",
                         "Define": "iRet = GetResultPos(ret, index, intX, intY)",
@@ -4260,7 +4260,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.GetWordResultCount(sRet)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetWordResultCount",
                         "Define": "iRet = GetWordResultCount(str)",
@@ -4283,7 +4283,7 @@
                     "Visible": false,
                     "Function": true,
                     "InsCode": "Dim As Long IntX, IntY<br>dm.GetWordResultPos(sRet, 1, IntX, IntY)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetWordResultPos",
                         "Define": "iRet = GetWordResultPos(str, index, intX, intY)",
@@ -4324,7 +4324,7 @@
                     "Visible": false,
                     "Function": true,
                     "InsCode": "dm.GetWordResultStr(sRet, 1)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetWordResultStr",
                         "Define": "iRet = GetWordResultStr(str, index)",
@@ -4353,7 +4353,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.GetWords(0, 0, 2000, 2000, \"000000-000000\", 0.9)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetWords",
                         "Define": "iRet = GetWords(x1, y1, x2, y2, color, sim)",
@@ -4406,7 +4406,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.GetWordsNoDict(0, 0, 2000, 2000, \"000000-000000\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetWordsNoDict",
                         "Define": "iRet = GetWordsNoDict(x1, y1, x2, y2, color)",
@@ -4453,7 +4453,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.FetchWord(0, 0, 2000, 2000, \"abcdef-101010|ffffff-101010\", \"张三\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "FetchWord",
                         "Define": "iRet = FetchWord(x1, y1, x2, y2, color, word)",
@@ -4506,7 +4506,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.SetExactOcr(1)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "SetExactOcr",
                         "Define": "iRet = SetExactOcr(exact_ocr)",
@@ -4529,7 +4529,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.SetMinRowGap(1)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "SetMinRowGap",
                         "Define": "iRet = SetMinRowGap(min_row_gap)",
@@ -4552,7 +4552,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.SetMinColGap(1)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "SetMinColGap",
                         "Define": "iRet = SetMinColGap(min_col_gap)",
@@ -4575,7 +4575,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.SetRowGapNoDict(1)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "SetRowGapNoDict",
                         "Define": "iRet = SetRowGapNoDict(row_gap)",
@@ -4598,7 +4598,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.SetColGapNoDict(1)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "SetColGapNoDict",
                         "Define": "iRet = SetColGapNoDict(col_gap)",
@@ -4621,7 +4621,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.SetWordGap(5)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "SetWordGap",
                         "Define": "iRet = SetWordGap(word_gap)",
@@ -4644,7 +4644,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.SetWordGapNoDict(5)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "SetWordGapNoDict",
                         "Define": "iRet = SetWordGapNoDict(word_gap)",
@@ -4667,7 +4667,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.SetWordLineHeight(5)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "SetWordLineHeight",
                         "Define": "iRet = SetWordLineHeight(line_height)",
@@ -4690,7 +4690,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.SetWordLineHeightNoDict(5)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "SetWordLineHeightNoDict",
                         "Define": "iRet = SetWordLineHeightNoDict(line_height)",
@@ -4713,7 +4713,7 @@
             "Caption": "基本设置",
             "Icon": "文件夹",
             "Visible": true,
-            "Templet": "index.html",
+            "Templet": "index",
             "Help": {
                 "Caption": ""
             },
@@ -4724,7 +4724,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.Ver()",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "Ver",
                         "Define": "sRet = Ver()",
@@ -4741,7 +4741,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.SetPath(APP_ScriptName & \"res\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "SetPath",
                         "Define": "iRet = SetPath(path)",
@@ -4764,7 +4764,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.GetPath()",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetPath",
                         "Define": "sRet = GetPath()",
@@ -4781,7 +4781,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.GetBasePath()",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetBasePath",
                         "Define": "sRet = GetBasePath()",
@@ -4798,7 +4798,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.SetShowErrorMsg(true)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "SetShowErrorMsg",
                         "Define": "iRet = SetShowErrorMsg(show)",
@@ -4821,7 +4821,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.Reg()",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "Reg",
                         "Define": "iRet = Reg(reg_code, ver_info)",
@@ -4850,7 +4850,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.RegEx()",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "RegEx",
                         "Define": "iRet = RegEx(reg_code, ver_info, ip)",
@@ -4885,7 +4885,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.RegNoMac()",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "RegNoMac",
                         "Define": "iRet = RegNoMac(reg_code, ver_info)",
@@ -4914,7 +4914,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.RegExNoMac()",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "RegExNoMac",
                         "Define": "iRet = RegExNoMac(reg_code, ver_info, ip)",
@@ -4949,7 +4949,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.GetID()",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetID",
                         "Define": "iRet = GetID()",
@@ -4966,7 +4966,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.GetLastError()",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetLastError",
                         "Define": "iRet = GetLastError()",
@@ -4983,7 +4983,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.GetDmCount()",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetDmCount",
                         "Define": "iRet = GetDmCount()",
@@ -5000,7 +5000,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.SetDisplayInput(\"screen\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "SetDisplayInput",
                         "Define": "iRet = SetDisplayInput(mode)",
@@ -5023,7 +5023,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.SetEnumWindowDelay(30000)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "SetEnumWindowDelay",
                         "Define": "iRet = SetEnumWindowDelay(delay)",
@@ -5046,7 +5046,7 @@
             "Caption": "后台设置",
             "Icon": "文件夹",
             "Visible": true,
-            "Templet": "index.html",
+            "Templet": "index",
             "Help": {
                 "Caption": ""
             },
@@ -5057,7 +5057,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.BindWindow(hWin, \"windows\", \"windows\", \"windows\", 0)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "BindWindow",
                         "Define": "iRet = BindWindow(hwnd, display, mouse, keypad, mode)",
@@ -5104,7 +5104,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.BindWindowEx(hWin, \"windows\", \"windows\", \"windows\", \"\", 0)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "BindWindowEx",
                         "Define": "iRet = BindWindowEx(hwnd, display, mouse, keypad, public, mode)",
@@ -5157,7 +5157,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.UnBindWindow()",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "UnBindWindow",
                         "Define": "iRet = UnBindWindow()",
@@ -5174,7 +5174,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.ForceUnBindWindow(hWin)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "ForceUnBindWindow",
                         "Define": "iRet = ForceUnBindWindow(hwnd)",
@@ -5197,7 +5197,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.EnableBind(0)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "EnableBind",
                         "Define": "iRet = EnableBind(enable)",
@@ -5220,7 +5220,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.IsBind(hWin)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "IsBind",
                         "Define": "iRet = IsBind(hwnd)",
@@ -5243,7 +5243,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.DownCpu(50)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "DownCpu",
                         "Define": "iRet = DownCpu(rate)",
@@ -5266,7 +5266,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.SetSimMode(1)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "SetSimMode",
                         "Define": "iRet = SetSimMode(mode)",
@@ -5289,7 +5289,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.LockDisplay(1)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "LockDisplay",
                         "Define": "iRet = LockDisplay(lock)",
@@ -5312,7 +5312,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.LockInput(1)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "LockInput",
                         "Define": "iRet = LockInput(lock)",
@@ -5335,7 +5335,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.LockMouseRect(0, 0, 0, 0)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "LockMouseRect",
                         "Define": "iRet = LockMouseRect(x1, y1, x2, y2)",
@@ -5376,7 +5376,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.SetDisplayDelay(3000)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "SetDisplayDelay",
                         "Define": "iRet = SetDisplayDelay(time)",
@@ -5399,7 +5399,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.EnableFakeActive(3000)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "EnableFakeActive",
                         "Define": "iRet = EnableFakeActive(enable)",
@@ -5422,7 +5422,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.EnableIme(0)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "EnableIme",
                         "Define": "iRet = EnableIme(enable)",
@@ -5445,7 +5445,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.EnableKeypadMsg(0)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "EnableKeypadMsg",
                         "Define": "iRet = EnableKeypadMsg(enable)",
@@ -5468,7 +5468,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.EnableMouseMsg(0)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "EnableMouseMsg",
                         "Define": "iRet = EnableMouseMsg(enable)",
@@ -5491,7 +5491,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.EnableKeypadSync(0, 1000)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "EnableKeypadSync",
                         "Define": "iRet = EnableKeypadSync(enable, time_out)",
@@ -5520,7 +5520,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.EnableMouseSync(0, 1000)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "EnableMouseSync",
                         "Define": "iRet = EnableMouseSync(enable, time_out)",
@@ -5549,7 +5549,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.EnableKeypadPatch(0)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "EnableKeypadPatch",
                         "Define": "iRet = EnableKeypadPatch(enable)",
@@ -5572,7 +5572,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.EnableRealKeypad(0)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "EnableRealKeypad",
                         "Define": "iRet = EnableRealKeypad(enable)",
@@ -5595,7 +5595,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.EnableRealMouse(1, 20, 50)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "EnableRealMouse",
                         "Define": "iRet = EnableRealMouse(enable, mousedelay, mousestep)",
@@ -5630,7 +5630,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.EnableSpeedDx(0)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "EnableSpeedDx",
                         "Define": "iRet = EnableSpeedDx(enable)",
@@ -5653,7 +5653,7 @@
             "Caption": "窗口操作",
             "Icon": "文件夹",
             "Visible": true,
-            "Templet": "index.html",
+            "Templet": "index",
             "Help": {
                 "Caption": ""
             },
@@ -5664,7 +5664,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.FindWindow(\"\", \"记事本\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "FindWindow",
                         "Define": "iRet = FindWindow(class, title)",
@@ -5693,7 +5693,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.FindWindowEx(0, \"\", \"记事本\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "FindWindowEx",
                         "Define": "iRet = FindWindowEx(parent, class, title)",
@@ -5728,7 +5728,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.FindWindowByProcess(\"noteapd.exe\", \"\", \"记事本\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "FindWindowByProcess",
                         "Define": "iRet = FindWindowByProcess(process_name, class, title)",
@@ -5763,7 +5763,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.FindWindowByProcessId(123456, \"\", \"记事本\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "FindWindowByProcessId",
                         "Define": "iRet = FindWindowByProcessId(process_id, class, title)",
@@ -5798,7 +5798,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.FindWindowSuper(\"记事本\", 0, 1, \"notepad\", 1, 0)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "FindWindowSuper",
                         "Define": "iRet = FindWindowSuper(spec1, flag1, type1, spec2, flag2, type2)",
@@ -5851,7 +5851,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.EnumWindow(0, \"QQ三国\", \"\", 1 + 4 + 8 + 16)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "EnumWindow",
                         "Define": "iRet = EnumWindow(parent, title, class_name, filter)",
@@ -5892,7 +5892,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.EnumWindowByProcess(\"game.exe\", \"天龙八部\", \"\", 1 + 8 + 16)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "EnumWindowByProcess",
                         "Define": "iRet = EnumWindowByProcess(process_name, title, class_name, filter)",
@@ -5933,7 +5933,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.EnumWindowSuper(\"记事本\", 0, 1, \"notepad\", 1, 0, true)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "EnumWindowSuper",
                         "Define": "iRet = EnumWindowSuper(spec1, flag1, type1, spec2, flag2, type2, sort)",
@@ -5992,7 +5992,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.GetForegroundWindow()",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetForegroundWindow",
                         "Define": "iRet = GetForegroundWindow()",
@@ -6009,7 +6009,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.GetForegroundFocus()",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetForegroundFocus",
                         "Define": "iRet = GetForegroundFocus()",
@@ -6026,7 +6026,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.GetMousePointWindow()",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetMousePointWindow",
                         "Define": "iRet = GetMousePointWindow()",
@@ -6043,7 +6043,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.GetPointWindow(100, 100)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetPointWindow",
                         "Define": "iRet = GetPointWindow(x, y)",
@@ -6072,7 +6072,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.GetSpecialWindow(0)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetSpecialWindow",
                         "Define": "iRet = GetSpecialWindow(flag)",
@@ -6095,7 +6095,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.GetWindow(hWin, 0)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetWindow",
                         "Define": "iRet = GetWindow(hWnd, flag)",
@@ -6124,7 +6124,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.GetWindowClass(hWin)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetWindowClass",
                         "Define": "iRet = GetWindowClass(hWnd)",
@@ -6147,7 +6147,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.GetWindowTitle(hWin)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetWindowTitle",
                         "Define": "iRet = GetWindowTitle(hWnd)",
@@ -6170,7 +6170,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.GetWindowState(hWin, 1)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetWindowState",
                         "Define": "iRet = GetWindowState(hWnd, flag)",
@@ -6199,7 +6199,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.GetWindowProcessId(hWin)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetWindowProcessId",
                         "Define": "iRet = GetWindowProcessId(hWnd)",
@@ -6222,7 +6222,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.GetWindowProcessPath(hWin)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetWindowProcessPath",
                         "Define": "iRet = GetWindowProcessPath(hWnd)",
@@ -6245,7 +6245,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "Dim As Long x1, y1, x2, y2\ndm.GetWindowRect(hWin, x1, y1, x2, y2)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetWindowRect",
                         "Define": "iRet = GetWindowRect(hWnd, x1, y1, x2, y2)",
@@ -6292,7 +6292,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "Dim As Long x1, y1, x2, y2\ndm.GetClientRect(hWin, x1, y1, x2, y2)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetClientRect",
                         "Define": "iRet = GetClientRect(hWnd, x1, y1, x2, y2)",
@@ -6339,7 +6339,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "Dim As Long w, h\ndm.GetClientSize(hWin, w, h)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetClientSize",
                         "Define": "iRet = GetClientSize(hWnd, width, height)",
@@ -6374,7 +6374,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.SetWindowText(hWin, \"新的标题\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "SetWindowText",
                         "Define": "iRet = SetWindowText(hWnd, title)",
@@ -6403,7 +6403,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.SetWindowState(hWin, 1)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "SetWindowState",
                         "Define": "iRet = SetWindowState(hWnd, flag)",
@@ -6432,7 +6432,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.SetClientSize(hWin, 800, 600)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "SetClientSize",
                         "Define": "iRet = SetClientSize(hWnd, width, height)",
@@ -6467,7 +6467,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.SetWindowSize(hWin, 800, 600)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "SetWindowSize",
                         "Define": "iRet = SetWindowSize(hWnd, width, height)",
@@ -6502,7 +6502,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.SetWindowTransparent(hWin, 128)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "SetWindowTransparent",
                         "Define": "iRet = SetWindowTransparent(hWnd, trans)",
@@ -6531,7 +6531,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.MoveWindow(hWin, 100, 100)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "MoveWindow",
                         "Define": "iRet = MoveWindow(hWnd, x, y)",
@@ -6566,7 +6566,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "Dim As Long x, y = 100\ndm.ClientToScreen(hWin, x, y)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "ClientToScreen",
                         "Define": "iRet = ClientToScreen(hWnd, x, y)",
@@ -6601,7 +6601,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "Dim As Long x, y = 100\ndm.ScreenToClient(hWin, x, y)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "ScreenToClient",
                         "Define": "iRet = ScreenToClient(hWnd, x, y)",
@@ -6636,7 +6636,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.SendString(hWin, \"我是来测试的\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "SendString",
                         "Define": "iRet = SendString(hWnd, str)",
@@ -6665,7 +6665,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.SendString2(hWin, \"我是来测试的\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "SendString2",
                         "Define": "iRet = SendString2(hWnd, str)",
@@ -6694,7 +6694,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.SendStringIme(\"我是来测试的\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "SendStringIme",
                         "Define": "iRet = SendStringIme(str)",
@@ -6717,7 +6717,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.SendPaste(hWin)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "SendPaste",
                         "Define": "iRet = SendPaste(hWnd)",
@@ -6740,7 +6740,7 @@
             "Caption": "文件",
             "Icon": "文件夹",
             "Visible": true,
-            "Templet": "index.html",
+            "Templet": "index",
             "Help": {
                 "Caption": ""
             },
@@ -6751,7 +6751,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.ReadFile(\"c:\\123.txt\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "ReadFile",
                         "Define": "iRet = ReadFile(file)",
@@ -6774,7 +6774,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.WriteFile(\"c:\\123.txt\", \"哈哈哈\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "WriteFile",
                         "Define": "iRet = WriteFile(file, content)",
@@ -6803,7 +6803,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.GetFileLength(\"c:\\123.txt\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetFileLength",
                         "Define": "iRet = GetFileLength(file)",
@@ -6826,7 +6826,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.IsFileExist(\"c:\\123.txt\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "IsFileExist",
                         "Define": "iRet = IsFileExist(file)",
@@ -6849,7 +6849,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.CopyFile(\"c:\\123.txt\", \"c:\\456.txt\", true)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "CopyFile",
                         "Define": "iRet = CopyFile(src_file, dst_file, over)",
@@ -6884,7 +6884,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.MoveFile(\"c:\\123.txt\", \"c:\\456.txt\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "MoveFile",
                         "Define": "iRet = MoveFile(src_file, dst_file)",
@@ -6913,7 +6913,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.DeleteFile(\"c:\\123.txt\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "DeleteFile",
                         "Define": "iRet = DeleteFile(file)",
@@ -6936,7 +6936,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.EncodeFile(\"c:\\123.txt\", \"password\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "EncodeFile",
                         "Define": "iRet = EncodeFile(file, pwd)",
@@ -6965,7 +6965,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.DecodeFile(\"c:\\123.txt\", \"password\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "DecodeFile",
                         "Define": "iRet = DecodeFile(file, pwd)",
@@ -6994,7 +6994,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.CreateFolder(\"c:\\123\\456\\789\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "CreateFolder",
                         "Define": "iRet = CreateFolder(folder)",
@@ -7017,7 +7017,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.DeleteFolder(\"c:\\123\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "DeleteFolder",
                         "Define": "iRet = DeleteFolder(folder)",
@@ -7039,8 +7039,8 @@
                     "Remark": "下载文件",
                     "Visible": true,
                     "Function": true,
-                    "InsCode": "dm.DownloadFile(\"www.baidu.com\", \"baidu.html\", 3000)",
-                    "Templet": "command.html",
+                    "InsCode": "dm.DownloadFile(\"www.baidu.com\", \"baidu\", 3000)",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "DownloadFile",
                         "Define": "iRet = DownloadFile(url, save_file, timeout)",
@@ -7075,7 +7075,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.ReadIni(\"Global\", \"var1\", \"c:\\test_game\\cfg.ini\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "ReadIni",
                         "Define": "iRet = ReadIni(section, key, file)",
@@ -7110,7 +7110,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.WriteIni(\"Global\", \"var1\", \"123\", \"c:\\test_game\\cfg.ini\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "WriteIni",
                         "Define": "iRet = WriteIni(section, key, value, file)",
@@ -7151,7 +7151,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.DeleteIni(\"Global\", \"var1\", \"c:\\test_game\\cfg.ini\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "DeleteIni",
                         "Define": "iRet = DeleteIni(section, key, file)",
@@ -7186,7 +7186,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.ReadIniPwd(\"Global\", \"var1\", \"c:\\test_game\\cfg.ini\", \"1234\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "ReadIniPwd",
                         "Define": "iRet = ReadIniPwd(section, key, file, pwd)",
@@ -7227,7 +7227,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.WriteIniPwd(\"Global\", \"var1\", \"123\", \"c:\\test_game\\cfg.ini\", \"1234\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "WriteIniPwd",
                         "Define": "iRet = WriteIniPwd(section, key, value, file, pwd)",
@@ -7274,7 +7274,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.DeleteIniPwd(\"Global\", \"var1\", \"c:\\test_game\\cfg.ini\", \"1234\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "DeleteIniPwd",
                         "Define": "iRet = DeleteIniPwd(section, key, file, pwd)",
@@ -7315,7 +7315,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.SelectFile()",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "SelectFile",
                         "Define": "iRet = SelectFile()",
@@ -7332,7 +7332,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.SelectDirectory()",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "SelectDirectory",
                         "Define": "iRet = SelectDirectory()",
@@ -7349,7 +7349,7 @@
             "Caption": "系统",
             "Icon": "文件夹",
             "Visible": true,
-            "Templet": "index.html",
+            "Templet": "index",
             "Help": {
                 "Caption": ""
             },
@@ -7360,7 +7360,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.RunApp(\"notepad\", 0)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "RunApp",
                         "Define": "iRet = RunApp(app_path, mode)",
@@ -7389,7 +7389,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.Delay(1000)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "Delay",
                         "Define": "iRet = Delay(mis)",
@@ -7412,7 +7412,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.GetClipboard()",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetClipboard",
                         "Define": "iRet = GetClipboard()",
@@ -7429,7 +7429,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.SetClipboard(\"abcd\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "SetClipboard",
                         "Define": "iRet = SetClipboard(value)",
@@ -7452,7 +7452,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.GetOsType()",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetOsType",
                         "Define": "iRet = GetOsType()",
@@ -7469,7 +7469,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.Is64Bit()",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "Is64Bit",
                         "Define": "iRet = Is64Bit()",
@@ -7486,7 +7486,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.GetDir(2)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetDir",
                         "Define": "iRet = GetDir(type)",
@@ -7509,7 +7509,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.CheckUAC()",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "CheckUAC",
                         "Define": "iRet = CheckUAC()",
@@ -7526,7 +7526,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.SetUAC(true)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "SetUAC",
                         "Define": "iRet = SetUAC(enable)",
@@ -7549,7 +7549,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.CheckFontSmooth()",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "CheckFontSmooth",
                         "Define": "iRet = CheckFontSmooth()",
@@ -7566,7 +7566,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.DisableFontSmooth()",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "DisableFontSmooth",
                         "Define": "iRet = DisableFontSmooth()",
@@ -7583,7 +7583,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.DisablePowerSave()",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "DisablePowerSave",
                         "Define": "iRet = DisablePowerSave()",
@@ -7600,7 +7600,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.DisableScreenSave()",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "DisableScreenSave",
                         "Define": "iRet = DisableScreenSave()",
@@ -7617,7 +7617,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.SetDisplayAcceler(5)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "SetDisplayAcceler",
                         "Define": "iRet = SetDisplayAcceler(level)",
@@ -7640,7 +7640,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.GetScreenWidth()",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetScreenWidth",
                         "Define": "iRet = GetScreenWidth()",
@@ -7657,7 +7657,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.GetScreenHeight()",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetScreenHeight",
                         "Define": "iRet = GetScreenHeight()",
@@ -7674,7 +7674,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.GetScreenDepth()",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetScreenDepth",
                         "Define": "iRet = GetScreenDepth()",
@@ -7691,7 +7691,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.SetScreen(1920, 1080, 32)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "SetScreen",
                         "Define": "iRet = SetScreen(width, height, depth)",
@@ -7726,7 +7726,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.GetDiskSerial()",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetDiskSerial",
                         "Define": "iRet = GetDiskSerial()",
@@ -7743,7 +7743,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.GetMachineCode()",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetMachineCode",
                         "Define": "iRet = GetMachineCode()",
@@ -7760,7 +7760,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.GetMachineCodeNoMac()",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetMachineCodeNoMac",
                         "Define": "iRet = GetMachineCodeNoMac()",
@@ -7777,7 +7777,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.GetTime()",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetTime",
                         "Define": "iRet = GetTime()",
@@ -7794,7 +7794,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.GetNetTime()",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetNetTime",
                         "Define": "iRet = GetNetTime()",
@@ -7811,7 +7811,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.GetNetTimeSafe()",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetNetTimeSafe",
                         "Define": "iRet = GetNetTimeSafe()",
@@ -7828,7 +7828,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.Play(\"d:\\test.mp3\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "Play",
                         "Define": "iRet = Play(media_file)",
@@ -7851,7 +7851,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.Stop(id)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "Stop",
                         "Define": "iRet = Stop(id)",
@@ -7874,7 +7874,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.Beep(1000, 1000)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "Beep",
                         "Define": "iRet = Beep(f, duration)",
@@ -7903,7 +7903,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.ExitOs(1)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "ExitOs",
                         "Define": "iRet = ExitOs(type)",
@@ -7926,7 +7926,7 @@
             "Caption": "内存",
             "Icon": "文件夹",
             "Visible": true,
-            "Templet": "index.html",
+            "Templet": "index",
             "Help": {
                 "Caption": ""
             },
@@ -7937,7 +7937,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.FindData(hwnd, \"00000000-FFFFFFFF\", \"00 01 23 45 67 86 ab ce f1\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "FindData",
                         "Define": "sRet = FindData(hwnd, addr_range, data)",
@@ -7972,7 +7972,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.FindDataEx(hwnd, \"00000000-FFFFFFFF\", \"00 01 23 45 67 86 ab ce f1\", 4, 1, 0)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "FindDataEx",
                         "Define": "sRet = FindDataEx(hwnd, addr_range, data, step, multi_thread, mode)",
@@ -8025,7 +8025,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.FindInt(hwnd, \"00000000-FFFFFFFF\", 300, 300, 0)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "FindInt",
                         "Define": "sRet = FindInt(hwnd, addr_range, int_value_min, int_value_max, type)",
@@ -8072,7 +8072,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.FindIntEx(hwnd, \"00000000-FFFFFFFF\", 300, 300, 0, 2, 1, 0)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "FindIntEx",
                         "Define": "sRet = FindIntEx(hwnd, addr_range, int_value_min, int_value_max, type, step, multi_thread, mode)",
@@ -8137,7 +8137,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.FindFloat(hwnd, \"00000000-FFFFFFFF\", 0.5, 1.0)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "FindFloat",
                         "Define": "sRet = FindFloat(hwnd, addr_range, float_value_min, float_value_max)",
@@ -8178,7 +8178,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.FindFloatEx(hwnd, \"00000000-FFFFFFFF\", 0.5, 1.0, 0, 2, 1, 0)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "FindFloatEx",
                         "Define": "sRet = FindFloatEx(hwnd, addr_range, float_value_min, float_value_max, step, multi_thread, mode)",
@@ -8237,7 +8237,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.FindDouble(hwnd, \"00000000-FFFFFFFF\", 0.5, 1.0)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "FindDouble",
                         "Define": "sRet = FindDouble(hwnd, addr_range, double_value_min, double_value_max)",
@@ -8278,7 +8278,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.FindDoubleEx(hwnd, \"00000000-FFFFFFFF\", 0.5, 1.0, 0, 2, 1, 0)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "FindDoubleEx",
                         "Define": "sRet = FindDoubleEx(hwnd, addr_range, double_value_min, double_value_max, step, multi_thread, mode)",
@@ -8337,7 +8337,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.FindString(hwnd, \"00000000-FFFFFFFF\", \"哈哈哈哈\", 0)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "FindString",
                         "Define": "sRet = FindString(hwnd, addr_range, string_value, type)",
@@ -8378,7 +8378,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.FindStringEx(hwnd, \"00000000-FFFFFFFF\", \"哈哈哈哈\", 0, 0, 2, 1, 0)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "FindStringEx",
                         "Define": "sRet = FindStringEx(hwnd, addr_range, string_value, type, step, multi_thread, mode)",
@@ -8437,7 +8437,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.ReadData(hwnd, \"4DA678\", 10)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "ReadData",
                         "Define": "sRet = ReadData(hwnd, addr, len)",
@@ -8472,7 +8472,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.ReadInt(hwnd, \"4DA678\", 0)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "ReadInt",
                         "Define": "sRet = ReadInt(hwnd, addr, type)",
@@ -8507,7 +8507,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.ReadFloat(hwnd, \"4DA678\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "ReadFloat",
                         "Define": "sRet = ReadFloat(hwnd, addr)",
@@ -8536,7 +8536,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.ReadDouble(hwnd, \"4DA678\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "ReadDouble",
                         "Define": "sRet = ReadDouble(hwnd, addr)",
@@ -8565,7 +8565,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.ReadString(hwnd, \"4DA678\", 0, 10)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "ReadString",
                         "Define": "sRet = ReadString(hwnd, addr, type, len)",
@@ -8606,7 +8606,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.WriteData(hwnd, \"4DA678\", \"12 34 56 78 90 ab cd\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "WriteData",
                         "Define": "sRet = WriteData(hwnd, addr, data)",
@@ -8641,7 +8641,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.WriteInt(hwnd, \"4DA678\", 0, 100)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "WriteInt",
                         "Define": "sRet = WriteInt(hwnd, addr, type, v)",
@@ -8682,7 +8682,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.WriteFloat(hwnd, \"4DA678\", 2.34)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "WriteFloat",
                         "Define": "sRet = WriteFloat(hwnd, addr, v)",
@@ -8717,7 +8717,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.WriteDouble(hwnd, \"4DA678\", 2.34)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "WriteDouble",
                         "Define": "sRet = WriteDouble(hwnd, addr, v)",
@@ -8752,7 +8752,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.WriteString(hwnd, \"4DA678\", 0, \"我是来测试的\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "WriteString",
                         "Define": "sRet = WriteString(hwnd, addr, type, v)",
@@ -8793,7 +8793,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.IntToData(&H12345678, 0)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "IntToData",
                         "Define": "sRet = IntToData(value, type)",
@@ -8822,7 +8822,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.FloatToData(1.24)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "FloatToData",
                         "Define": "sRet = FloatToData(value)",
@@ -8845,7 +8845,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.DoubleToData(1.24)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "DoubleToData",
                         "Define": "sRet = DoubleToData(value)",
@@ -8868,7 +8868,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.StringToData(\"12345678\", 0)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "StringToData",
                         "Define": "sRet = StringToData(value, type)",
@@ -8897,7 +8897,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.GetModuleBaseAddr(hwnd, \"gdi32.dll\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetModuleBaseAddr",
                         "Define": "sRet = GetModuleBaseAddr(hwnd, module)",
@@ -8926,7 +8926,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.SetMemoryHwndAsProcessId(true)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "SetMemoryHwndAsProcessId",
                         "Define": "sRet = SetMemoryHwndAsProcessId(en)",
@@ -8949,7 +8949,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.SetMemoryFindResultToFile(true)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "SetMemoryFindResultToFile",
                         "Define": "sRet = SetMemoryFindResultToFile(file)",
@@ -8972,7 +8972,7 @@
             "Caption": "汇编",
             "Icon": "文件夹",
             "Visible": true,
-            "Templet": "index.html",
+            "Templet": "index",
             "Help": {
                 "Caption": ""
             },
@@ -8983,7 +8983,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.AsmClear()",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "AsmClear",
                         "Define": "iRet = AsmClear()",
@@ -9000,7 +9000,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.AsmAdd(\"push 0100\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "AsmAdd",
                         "Define": "iRet = AsmAdd(asm_ins)",
@@ -9023,7 +9023,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.AsmCall(hwnd, 1)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "AsmCall",
                         "Define": "iRet = AsmCall(hwnd, mode)",
@@ -9052,7 +9052,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.AsmCode(&H405940)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "AsmCode",
                         "Define": "iRet = AsmCode(base_addr)",
@@ -9075,7 +9075,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.Assemble(\"81 05 E0 5A 47 00 01 00 00 00\", &H435fde, 0)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "Assemble",
                         "Define": "iRet = Assemble(asm_code, base_addr, is_upper)",
@@ -9110,7 +9110,7 @@
             "Caption": "算法",
             "Icon": "文件夹",
             "Visible": true,
-            "Templet": "index.html",
+            "Templet": "index",
             "Help": {
                 "Caption": ""
             },
@@ -9121,7 +9121,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.ExcludePos(ret, 1, 100, 100, 300, 400)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "ExcludePos",
                         "Define": "iRet = ExcludePos(all_pos, type, x1, y1, x2, y2)",
@@ -9174,7 +9174,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.FindNearestPos(ret, 1, 100, 100)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "FindNearestPos",
                         "Define": "iRet = FindNearestPos(all_pos, type, x, y)",
@@ -9215,7 +9215,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.SortPosDistance(ret, 0, 100, 100)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "SortPosDistance",
                         "Define": "iRet = SortPosDistance(all_pos, type, x, y)",
@@ -9256,7 +9256,7 @@
             "Caption": "防护盾",
             "Icon": "文件夹",
             "Visible": true,
-            "Templet": "index.html",
+            "Templet": "index",
             "Help": {
                 "Caption": ""
             },
@@ -9267,7 +9267,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.DmGuard(true, \"np\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "DmGuard",
                         "Define": "iRet = DmGuard(enable, type)",
@@ -9296,7 +9296,7 @@
             "Caption": "Foobar",
             "Icon": "文件夹",
             "Visible": false,
-            "Templet": "index.html",
+            "Templet": "index",
             "Help": {
                 "Caption": ""
             },
@@ -9307,7 +9307,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.RedisConnect(\"127.0.0.1\", 6379)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "RedisConnect",
                         "Define": "iRet = RedisConnect(ip, port)",
@@ -9336,7 +9336,7 @@
             "Caption": "答题",
             "Icon": "文件夹",
             "Visible": false,
-            "Templet": "index.html",
+            "Templet": "index",
             "Help": {
                 "Caption": ""
             },
@@ -9347,7 +9347,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.RedisConnect(\"127.0.0.1\", 6379)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "RedisConnect",
                         "Define": "iRet = RedisConnect(ip, port)",
@@ -9376,7 +9376,7 @@
             "Caption": "杂项",
             "Icon": "文件夹",
             "Visible": true,
-            "Templet": "index.html",
+            "Templet": "index",
             "Help": {
                 "Caption": ""
             },
@@ -9387,7 +9387,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.ActiveInputMethod(hwnd, \"中文 - QQ拼音输入法\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "ActiveInputMethod",
                         "Define": "iRet = ActiveInputMethod(hwnd, input_method)",
@@ -9416,7 +9416,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.FindInputMethod(\"中文 - QQ拼音输入法\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "FindInputMethod",
                         "Define": "iRet = FindInputMethod(input_method)",
@@ -9439,7 +9439,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "dm.FindInputMethod(hwnd, \"中文 - QQ拼音输入法\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "FindInputMethod",
                         "Define": "iRet = FindInputMethod(hwnd, input_method)",

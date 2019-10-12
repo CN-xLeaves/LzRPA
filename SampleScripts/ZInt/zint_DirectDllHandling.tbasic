@@ -1,4 +1,4 @@
-'----------------------------------------------------------------------------
+﻿'----------------------------------------------------------------------------
 ' Generating barcode interacting directly to ZINT.DLL library
 ' Maybe a specific module will be developed
 '----------------------------------------------------------------------------
@@ -171,9 +171,9 @@ Type BGRA
 End Type
 
 ' -- Create dialog here
-FUNCTION Main()
+FUNCTION TBMAIN()
 
-  Dialog NEW Pixels, Name MainWindow, 0, "thinBasic and zint lib",-1,-1, 640, 300, 
+  Dialog NEW Pixels, Name MainWindow, 0, "thinBasic and zint lib",-1,-1, 800, 400, 
                                                       %WS_DLGFRAME | 
                                                       %DS_CENTER | 
                                                       %WS_CAPTION | 
@@ -239,9 +239,14 @@ End Function
 
 function DrawBarCode(byval hWnd as Long) as Long
   dim pSymbol as zint_symbol ptr
-  DWord   lSymbol
+
+  static lSymbol as DWord
+  if lSymbol <> 0 Then
+    '---We should delete but GPF for some reason
+    'ZBarcode_Delete(lSymbol)
+  end If
   
-  string  sText   = "thinBASIC & zint rocks!" & $NUL
+  string  sText   = "thinBASIC & zint " & timer & $NUL
 
   printl "----------------------------------------------------------"
   
@@ -266,8 +271,10 @@ function DrawBarCode(byval hWnd as Long) as Long
   'printl "BARCODE_CODE128 :", ZBarcode_ValidID(20)
   printl "Current pSymbol.symbology", pSymbol.symbology
   printl "ZBarcode_Encode :", ZBarcode_Encode(lSymbol, sText, 0)
+  printl "TEXT :", sText
 
   printl "ZBarcode_Buffer :", ZBarcode_Buffer(lSymbol, 0)
+  printl "Printing to file", pSymbol.outfile
   printl "ZBarcode_Print  :", ZBarcode_Print(lSymbol, 0)
 
   printl "Canvas X:", CanBarcode.X
@@ -339,6 +346,7 @@ function DrawBarCode(byval hWnd as Long) as Long
 '    ZBarcode_Delete(lSymbol)
 '
   CANVAS_Redraw
+
 
 end Function
 

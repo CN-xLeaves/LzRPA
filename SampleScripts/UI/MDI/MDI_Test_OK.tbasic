@@ -42,7 +42,7 @@ global ExStyle as long
 '----------------------------------------------------------------
 '               Main Dialog (called a MDI Frame)
 '----------------------------------------------------------------
-Sub Main() as long
+Sub TBMain() as long
 
     Style = %WS_DLGFRAME          | _
             %WS_CAPTION           | _

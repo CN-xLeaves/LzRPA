@@ -11,7 +11,7 @@
     %ID_TIMER
   End ControlID
   
-  function Main() as long  
+  function TBMain() as long  
     DIM hDlg    AS LONG
     DIM sFile   AS string
   

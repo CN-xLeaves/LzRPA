@@ -12,7 +12,7 @@ uses "Console"
 ' ========================================================================================
 ' Main
 ' ========================================================================================
-Function Main() As Long
+Function TBMain() As Long
 
    Local pXmlDoc      As DWord
    Local pRootNode    As DWord

@@ -10,7 +10,7 @@
     %bOpen
     %bSave
   End ControlID
-  function Main()
+  function TBMain()
     dim hDlg as dword
     DIM sFile as string
        

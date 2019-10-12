@@ -26,7 +26,7 @@ End ControlID
 '------------------------------------------------------------
 ' Main function
 '------------------------------------------------------------
-function Main() as long
+function TBMAIN() as long
   
   dim hDlg AS DWORD
 

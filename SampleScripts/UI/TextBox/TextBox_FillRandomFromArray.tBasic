@@ -14,7 +14,7 @@
   global CountEvents as long  
   global MyText(10,10) AS STRING
   
-  function Main()  
+  function TBMain()  
     DIM hDlg    AS LONG
     
     DIM CountX, CountY, count AS LONG

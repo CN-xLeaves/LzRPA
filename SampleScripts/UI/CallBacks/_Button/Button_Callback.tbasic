@@ -13,7 +13,7 @@
   '------------------------------------------------------------------------------
   ' Program start point
   '------------------------------------------------------------------------------
-  FUNCTION Main() as long
+  FUNCTION TBMain() as long
     local hDlg    AS DWORD   '---Used to store window handle of main dialog
 
     '---Create a new dialog

@@ -4,7 +4,7 @@
 
 uses "console"
 
-FUNCTION Main() as long
+FUNCTION TBMAIN() as long
    LOCAL randoms() AS LONG
    LOCAL Integers() AS LONG
    LOCAL i AS LONG, j AS LONG, ldup AS LONG, k AS LONG

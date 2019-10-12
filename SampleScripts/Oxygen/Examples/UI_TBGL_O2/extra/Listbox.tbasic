@@ -17,7 +17,7 @@
     %Butt01
   end const  
 
-  function Main()
+  function TBMain()
     DIM hDlg    AS LONG
   
     '---Create a new dialog

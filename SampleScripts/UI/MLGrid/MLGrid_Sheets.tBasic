@@ -26,7 +26,7 @@
 
 
   '----------------------------------------------------------------------------
-  FUNCTION Main() as long
+  FUNCTION TBMain() as long
   '----------------------------------------------------------------------------
     Local hDlg        As Long    '---Used to store window handle
     Local Count       As Long

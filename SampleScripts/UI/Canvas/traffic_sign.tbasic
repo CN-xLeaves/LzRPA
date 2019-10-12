@@ -10,7 +10,7 @@ Begin Const
 End Const
 Dim colr, colrFill As Long
 
-Function Main() As Long
+Function TBMain() As Long
  Local xsize,ysize As Long          
  Local hdlg As Long
  Local mygraf As Long

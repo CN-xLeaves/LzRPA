@@ -1,6 +1,6 @@
 Uses "PC"
 
-Function Main () As Long  
+Function TBMAIN () As Long  
 
   PC_ShutDown($PC_SD_MY_PC, "ThinBASIC launched reboot", %PC_SD_REBOOT, 60, %PC_SD_DONOT_FORCE)
 	

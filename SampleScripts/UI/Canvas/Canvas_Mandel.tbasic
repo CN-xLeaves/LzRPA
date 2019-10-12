@@ -5,7 +5,7 @@ Uses "GDIP"
 
 Randomize Timer
  
-Function Main () As Long
+Function TBMain () As Long
     Local hwin As DWord
     Local tmr, xmin, xmax, ymin, ymax, cx, cy, dcx, dcy, x, y, zr, zi As Double
     Local xi, j,k, numiter, numxpix, numypix As Long

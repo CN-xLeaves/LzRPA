@@ -240,7 +240,7 @@ END FUNCTION
 '------------------------------------------------------------------------------
 ' Applications Main Entry Point.
 '------------------------------------------------------------------------------
-FUNCTION Main () AS LONG
+FUNCTION TBMain () AS LONG
 
   LOCAL Msg         AS tagMsg
   LOCAL wcex        AS WNDCLASSEX

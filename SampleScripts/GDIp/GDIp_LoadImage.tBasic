@@ -12,7 +12,7 @@ Uses "UI", "File", "GdiP"
 dim wWidth      as long value 425
 dim wHeight     as long value 425  
 
-function Main()
+function TBMain()
 
   '------------------------------------------------------------------------------
   ' Create dialog

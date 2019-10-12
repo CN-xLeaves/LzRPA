@@ -37,7 +37,7 @@ GLOBAL GW   AS GWData
 GLOBAL c    AS CircleData
 
 '------------------------------------------------------------
-Function Main () As Long
+Function TBMain () As Long
 '------------------------------------------------------------
 
     LOCAL grstat            AS LONG

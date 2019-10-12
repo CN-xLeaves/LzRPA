@@ -50,7 +50,7 @@ a=Sin(hk) : b=Cos(hk)
 
       
 
-Function Main()
+Function TBMain()
   Local hWnd          As DWord
   Local FrameRate     As Double
   Local width, height As Long

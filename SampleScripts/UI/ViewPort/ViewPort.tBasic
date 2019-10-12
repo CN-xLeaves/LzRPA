@@ -48,7 +48,7 @@
   global Icon_Contacts_d    as long = ImageList_Add masked, iList, app_sourcepath & "Icons\Contacts16_d.bmp"        , cPink 
                 
   '----------------------------------------------------------------------------
-  FUNCTION Main()
+  FUNCTION TBMAIN()
   '----------------------------------------------------------------------------
     LOCAL hDlg    AS LONG
 

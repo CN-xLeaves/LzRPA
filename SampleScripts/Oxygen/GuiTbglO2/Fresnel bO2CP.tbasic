@@ -166,7 +166,7 @@ Begin Const
   %timeOut      = 20   ' -- Determines graphics refresh rate in milliseconds
 End Const
 
-Function Main()
+Function TBMain()
 
   Global hDlg As DWord
 

@@ -1,0 +1,303 @@
+﻿uses "console"
+
+'----------------------------------------------------------------------------
+' This example shows how to use FreeBASIC compiled functions from 
+' thinBasic script without the need to DECLARE FreeBASIC functions as 
+' expternal DLL functions. thinBasic will take care of it
+'----------------------------------------------------------------------------
+  
+#FBCode  
+	'----------------------------------------------------------------------------
+  ' Code inside #FBCode ... #endfbcode will be compiled on the fly using FreeBASIC
+  ' compiler into a DLL whose name is the same name of the script
+	'----------------------------------------------------------------------------
+
+	'----------------------------------------------------------------------------
+  ' There can be multiple #FBCode ... #endfbcode blocks
+  ' thinBasic will take care to concatenate into a single FreeBASIC source code 
+  ' before compiling
+	'----------------------------------------------------------------------------
+
+#endfbcode
+
+
+#FBCode
+  '----------------------------------------------------------------------------
+  ' ATTENTION:
+  ' FreeBASIC Functions declared with "CDecl" and "Export" will be visible
+  ' to thinBASIC code. Parameters and return value must be compatible with
+  ' thinBASIC variable types
+  '----------------------------------------------------------------------------
+
+ ' #include once "win/ole2.bi"
+' 
+'  #include once "win/wtypes.bi"
+'  #include once "win/unknwn.bi"
+'  #include once "win/oleauto.bi"
+'  '
+'  sub StringToBSTR( byref sb as BSTR, byref cnv_string As ZString )
+'      Dim As integer length
+'      length = MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, @cnv_string, -1, NULL, 0)
+'      sb=SysAllocStringLen(sb,length)
+'      MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, @cnv_string, -1, sb, length)
+'  End sub
+'
+'  function BstrToString(Strng as bstr ptr) as string' By Fr34k
+'    dim as string result
+'    dim as integer length
+'    dim as zstring ptr buffer
+'    Result = ""  
+'    If Strng then
+'      length = WideCharToMultiByte(CP_ACP, 0, *Strng, -1, NULL, 0, NULL, NULL) 
+'      Buffer = Allocate(length) 
+'      If Buffer then
+'        WideCharToMultiByte(CP_ACP, 0, *Strng, -1, Buffer, length, NULL, NULL) 
+'        Result = *Buffer 
+'        deallocate(Buffer) 
+'      EndIf 
+'    EndIf 
+'    Return Result 
+'  End function
+'
+'  Function StrToBSTR(FB_String As String) As BSTR
+'    Return  SysAllocStringByteLen( FB_String, Len(FB_String) )
+'  End Function
+
+	''----------------------------------------------------------------------------
+'	function FB_Autodeclare_AsciiStringByVal Cdecl (byref sString as bStr) As long Export
+'	'----------------------------------------------------------------------------
+'    'print "FB_Autodeclare_AsciiStringByVal strptr", sString.sptr
+'    'print "FB_Autodeclare_AsciiStringByVal varptr", sString.vptr
+'
+'    'print "FB_Autodeclare_AsciiStringByVal value",   cast(String, sString)
+'    print "FB_Autodeclare_AsciiStringByVal value",   BstrToString(@sString)'*cast(ZString Ptr, sString)
+'    print "FB_Autodeclare_AsciiStringByVal *cast(ZString Ptr, sBuffer)", *cast(ZString Ptr, sString)
+'
+'    sString = StrToBSTR("DEF")
+'    'StringToBSTR(sString, "DEF")
+'  end Function  
+'  
+
+'---
+'  #define UNICODE
+'  #INCLUDE ONCE "Afx/CWSTR.inc"
+'  USING Afx
+'---
+
+'  #Include Once "vbcompat.bi"
+'#INCLUDE ONCE "windows.bi"
+'#INCLUDE ONCE "win/ole2.bi"
+'#INCLUDE ONCE "/crt/string.bi"
+'#INCLUDE ONCE "utf_conv.bi"
+'#INCLUDE ONCE "win/shlwapi.bi"
+
+ ' Function repeat(s As String, n As Integer) As String
+'    If n < 1 Then Return ""
+'    If n = 1 Then Return s
+'    dim as long size = Len(s)
+'    If size = 0 Then Return s  ' empty string
+'    If size = 1 Then Return String(n, s[0])  ' repeated single character  
+'    Var buffer = Space(size * n)  'create buffer for size > 1
+'    For i As Integer = 0 To n - 1
+'      For j As Integer = 0 To size - 1
+'        buffer[i * size + j] = s[j]
+'      Next j
+'    Next i
+'    Return buffer
+'  End Function 
+
+	''----------------------------------------------------------------------------
+'	function FB_CAllocate Cdecl (byval nBytes as Long) As long Export
+'	'----------------------------------------------------------------------------
+'    function = CAllocate(nBytes, 1)
+'  end Function
+'
+'	'----------------------------------------------------------------------------
+'	function FB_ReAllocate Cdecl (byval pMem as Long, byval lSize as long) As long Export
+'	'----------------------------------------------------------------------------
+'    function = ReAllocate(pMem, lSize)
+'  end Function
+'
+'	'----------------------------------------------------------------------------
+'	function FB_DeAllocate Cdecl (byval pMem as Long) As long Export
+'	'----------------------------------------------------------------------------
+'    DeAllocate(pMem)
+'    function = 0
+'  end Function
+
+	'----------------------------------------------------------------------------
+	function FB_Autodeclare_StringByRef Cdecl (byref sString as string) As long Export
+	'----------------------------------------------------------------------------
+    print "Before using---"
+    print "FB_Autodeclare_StringByRef len",   len(sString)
+    print "FB_Autodeclare_StringByRef val",   sString
+    
+
+    print "After using---"
+    sString = "abcdefghijklmnopqrstuvwxyz0123456789."
+    
+'    print "FB_Autodeclare_WStringByRef varptr", varptr(sString)
+'    print "FB_Autodeclare_WStringByRef varptr", @sString
+'    print "FB_Autodeclare_WStringByRef strptr", sString.sptr
+'
+'    print "FB_Autodeclare_WStringByVal value",   *cast(zString ptr, sString)
+'    print "FB_Autodeclare_WStringByRef value",   **sString
+    print "FB_Autodeclare_StringByRef len",   len(sString)
+    print "FB_Autodeclare_StringByRef val",   sString
+'    'print "FB_Autodeclare_WStringByRef *cast(ZString Ptr, sBuffer)", *cast(ZString Ptr, sString)
+'
+'    'sString = StrToBSTR("DEF")
+'    'StringToBSTR(sString, "DEF")
+'
+    '---Transform into a standard FreeBASIC string
+'    dim localFBString as String
+'    localFBString = **sString
+'    localFBString = sString.ToAnsi
+'    print "localFBString value", localFBString
+'    print "localFBString len", len(localFBString)
+'    localFBString += "DEF"
+'
+'    '---Change CBSTR back
+'    sString = localFBString
+
+  end Function  
+
+	'----------------------------------------------------------------------------
+	function FB_Autodeclare_StringArray Cdecl (byval sString as string ptr) As long Export
+	'----------------------------------------------------------------------------
+    print "FB_Autodeclare_StringArray value 0", sString[0]
+    sString[0] = "zzzzz"
+  end Function
+
+#endfbcode
+
+'----------------------------------------------
+'---Structure of a FreeBasic String 
+'----------------------------------------------
+type tFBString
+  pData   as Long '---Pointer to actual string buffer
+  lLen    as Long '---Len of the string
+  lSize   as Long '---Size of the string buffer allocated into pData (ptr)
+
+  '----------------------------------------------
+  function _Destroy() as long
+  '----------------------------------------------
+    me.pData = crt_free(Me.pData)
+  end Function
+  
+  '----------------------------------------------
+  function sLet(byval sBuffer as string) as long
+  '----------------------------------------------
+    dim ExceedSize  as long = 32
+    dim sLen        as Long = len(sBuffer)
+    
+    if me.pData = 0 then
+      me.pData = crt_ReAlloc(Me.pData, sLen + ExceedSize)
+    Else
+      if sLen > me.lSize Then
+        me.pData = crt_ReAlloc(Me.pData, sLen + ExceedSize)
+      end If
+    end If
+    
+    if me.pData <> 0 then
+      POKE$(me.pData, sBuffer)
+      me.lLen = sLen
+      me.lSize = sLen + ExceedSize
+    end if
+    
+  end Function
+
+  '----------------------------------------------
+  function sGet() as string
+  '----------------------------------------------
+  
+    if me.pData <> 0 then
+      function = PEEK$(me.pData, me.lLen)
+    end if
+
+  end Function
+
+  '----------------------------------------------
+  function sPrint(optional byval PrintValue as Long = %false) as long
+  '----------------------------------------------  
+      printl "-----------------------------------------"
+      printl "FBString.pData....", Me.pData
+      printl "FBString.lLen.....", Me.lLen
+      printl "FBString.lSize....", Me.lSize
+    if PrintValue then
+      printl "FBString.Value....", Me.sGet
+    end if
+    
+  end Function
+  
+end type
+
+function TBMAin() as Long
+  dim FBString as tFBString
+
+  printl "---Single string---" in %CCOLOR_FLIGHTCYAN
+  FBString.sLet("ABCD")
+  FBString.sPrint(%True)  
+
+
+  FBString.sLet(repeat$(1000, "ABCD"))
+  FBString.sPrint()
+
+  FB_Autodeclare_StringByRef(FBString)
+  FBString.sPrint()
+
+  FBString.sLet("ABCD")
+  FBString.sPrint(%True)  
+
+  print
+  printl "---Array of strings---" in %CCOLOR_FLIGHTCYAN
+  dim FBStringArray(10) as tFBString
+  FBStringArray(1).sLet("1.ABCD")
+  FBStringArray(2).sLet("2.1234567890")
+  FBStringArray(1).sPrint(%True) 
+  FBStringArray(2).sPrint(%True)
+   
+  FB_Autodeclare_StringArray(FBStringArray(1))
+
+  FBStringArray(1).sPrint(%True) 
+
+  printl "---Press a key to end---"
+  
+  WaitKey
+end Function
+
+ ' dim MyString          as string 
+'  dim MyStringArray(2)  as string 
+'    
+'  '---
+'    MyString = "ABC"
+'    printl "---Calling a FB function ---" in %CCOLOR_FYELLOW
+'
+'    PrintL "BEFORE:", MyString
+'    PrintL "VARPTR:", varptr(MyString)
+'    PrintL "STRPTR:", StrPtr(MyString)
+'    
+'    FB_Autodeclare_WStringByRef(MyString)
+'    
+'    PrintL "AFTER:", MyString
+'    
+''   printl "Long 1 from thinBasic script BEFORE calling FB function", MyScriptLong1
+''    '---Call a compiled FreeBASIC function
+''    printl "FB function return value", FB_Check_LongByVal(MyScriptLong1, MyScriptLong2)
+''    printl "Long 1 from thinBasic script AFTER calling FB function", MyScriptLong1
+''    PrintL "---------------------------------------------------------------------"
+'    PrintL
+'
+'    MyStringArray(1) = ucode$("ZWX")
+'    MyStringArray(2) = ucode$("---ZWX---")
+'    FB_Autodeclare_WStringArray(MyStringArray)
+'    
+'  printl "---Press a key to end---"
+'  WaitKey
+PrintL
+
+
+
+
+
+ 

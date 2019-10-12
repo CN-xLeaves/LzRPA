@@ -32,11 +32,10 @@ Alias Sleep As Delay
 Alias ITERATE As Continue
 Alias TStr$ As CStr
 Alias Val As CDbl
-Alias ASCIIZ As ZString
+'Alias ASCIIZ As ZString
 Alias Bin$ As Bin
 Alias Chr$ As Chr
 Alias Hex$ As Hex
-Alias Format$ As Format
 Alias Join$ As Join
 //Alias LCase$ As LCase			暂时不适用，因为 UCase 无法设置别名
 //Alias UCase$ As UCase

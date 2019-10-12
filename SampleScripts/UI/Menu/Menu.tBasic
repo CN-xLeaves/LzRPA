@@ -14,7 +14,7 @@
   End ControlID
 
   '--------------------------------------------------
-  FUNCTION Main() AS LONG
+  FUNCTION TBMain() AS LONG
   '--------------------------------------------------
     LOCAL hDlg    AS long
     LOCAL lResult AS LONG

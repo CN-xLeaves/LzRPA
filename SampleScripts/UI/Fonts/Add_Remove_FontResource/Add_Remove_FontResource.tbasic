@@ -14,7 +14,7 @@ Begin Const
 End Const
 
 ' -- Create dialog here
-Function Main()
+Function TBMain()
   Local hDlg As DWord
 
   Dialog New Pixels, 0, "Testing font magic",-1,-1, %MAIN_WIDTH, %MAIN_HEIGHT, _

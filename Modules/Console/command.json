@@ -4,7 +4,7 @@
     "ModuleName": "Console",
     "Icon": "公文包",
     "Visible": true,
-    "Templet": "index.html",
+    "Templet": "index",
     "Help": {
         "Caption": ""
     },
@@ -13,7 +13,7 @@
             "Caption": "单文件使用扩展库",
             "Icon": "信息",
             "Visible": true,
-            "Templet": "document.html",
+            "Templet": "document",
             "Help": {
                 "Caption": "扩展库使用帮助",
                 "Document": "在项目中使用扩展库功能会自动将扩展库引入项目，项目编译或运行时，自动加入扩展库依赖代码和文件。<br><br>如果您在单文件中希望使用本扩展库，则必须编写扩展库依赖代码才能调用扩展库中的函数，否则会报错，LzRPA 建议使用工程方式编写程序，但仍保留单文件使用扩展库的方法。<br><br>扩展库依赖代码：<br>&nbsp;&nbsp;Uses &quot;Console&quot;<br><br>建议将引用扩展库代码统一添加到全局代码块，也就是代码的最上面。"
@@ -25,7 +25,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "Cls",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "Console_Cls",
                 "Define": "Cls<br>Console_Cls",
@@ -42,7 +42,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "Print",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "Console_Write",
                 "Define": "Print ...[ In iColor][ At x, y]<br>Console_Write ...[ In iColor][ At x, y]",
@@ -83,7 +83,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "PrintL",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "Console_WriteLine",
                 "Define": "PrintL ...[ In iColor][ At x, y]<br>Console_WriteLine ...[ In iColor][ At x, y]",
@@ -124,7 +124,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "WaitKey",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "Console_WaitKey",
                 "Define": "sRet = WaitKey[(nSecsTimeOut)]<br>sRet = Console_WaitKey[(nSecsTimeOut)]",
@@ -147,7 +147,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "Console_Read()",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "Console_Read",
                 "Define": "sRet = Console_Read()",
@@ -164,7 +164,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "Console_Line(3, 3, 20, %Console_Line_Vertical)",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "Console_Line",
                 "Define": "Console_Line(XPos, YPos, Len[, Direction])",
@@ -205,7 +205,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "Console_GetCursorX",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "Console_GetCursorX",
                 "Define": "iRet = Console_GetCursorX",
@@ -222,7 +222,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "Console_GetCursorY",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "Console_GetCursorY",
                 "Define": "iRet = Console_GetCursorY",
@@ -239,7 +239,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "Console_SetCursorPosition(3, 3)",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "Console_SetCursorPosition",
                 "Define": "Console_SetCursorPosition(XPos, YPos)",
@@ -268,7 +268,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "Console_GetSizeX",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "Console_GetSizeX",
                 "Define": "iRet = Console_GetSizeX",
@@ -285,7 +285,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "Console_GetSizeY",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "Console_GetSizeY",
                 "Define": "iRet = Console_GetSizeY",
@@ -302,7 +302,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "Console_GetTitle()",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "Console_GetTitle",
                 "Define": "sRet = Console_GetTitle()",
@@ -319,7 +319,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "Console_SetTitle(\"New Title\")",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "Console_SetTitle",
                 "Define": "Console_SetTitle(sTitle)",

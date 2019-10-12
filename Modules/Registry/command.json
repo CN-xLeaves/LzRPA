@@ -4,7 +4,7 @@
     "ModuleName": "Registry",
     "Icon": "公文包",
     "Visible": true,
-    "Templet": "index.html",
+    "Templet": "index",
     "Help": {
         "Caption": ""
     },
@@ -13,7 +13,7 @@
             "Caption": "单文件使用扩展库",
             "Icon": "信息",
             "Visible": true,
-            "Templet": "document.html",
+            "Templet": "document",
             "Help": {
                 "Caption": "扩展库使用帮助",
                 "Document": "在项目中使用扩展库功能会自动将扩展库引入项目，项目编译或运行时，自动加入扩展库依赖代码和文件。<br><br>如果您在单文件中希望使用本扩展库，则必须编写扩展库依赖代码才能调用扩展库中的函数，否则会报错，LzRPA 建议使用工程方式编写程序，但仍保留单文件使用扩展库的方法。<br><br>扩展库依赖代码：<br>&nbsp;&nbsp;Uses &quot;Registry&quot;<br><br>建议将引用扩展库代码统一添加到全局代码块，也就是代码的最上面。"
@@ -25,7 +25,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "Registry_KeyExists(%HKEY_CLASSES_ROOT, \"路径\", \"键名\")",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "Registry_KeyExists",
                 "Define": "iRet = Registry_KeyExists(HKEY, sMainKey, sKeyName)",
@@ -60,7 +60,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "Registry_PathExists(%HKEY_CLASSES_ROOT, \"路径\")",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "Registry_PathExists",
                 "Define": "iRet = Registry_PathExists(HKEY, sMainKey)",
@@ -89,7 +89,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "Registry_GetValue(%HKEY_CLASSES_ROOT, \"路径\", \"键名\")",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "Registry_GetValue",
                 "Define": "sRet = Registry_GetValue(HKEY, sMainKey, sKeyName)",
@@ -124,7 +124,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "Registry_GetDWord(%HKEY_CLASSES_ROOT, \"路径\", \"键名\")",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "Registry_GetDWord",
                 "Define": "iRet = Registry_GetDWord(HKEY, sMainKey, sKeyName)",
@@ -159,7 +159,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "Registry_SetValue(%HKEY_CLASSES_ROOT, \"路径\", \"键名\", \"值\")",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "Registry_SetValue",
                 "Define": "bRet = Registry_SetValue(HKEY, sMainKey, sKeyName, sValue)",
@@ -200,7 +200,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "Registry_SetDWord(%HKEY_CLASSES_ROOT, \"路径\", \"键名\", 1)",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "Registry_SetDWord",
                 "Define": "bRet = Registry_SetDWord(HKEY, sMainKey, sKeyName, sValue)",
@@ -241,7 +241,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "Registry_DelKey(%HKEY_CLASSES_ROOT, \"路径\")",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "Registry_DelKey",
                 "Define": "bRet = Registry_DelKey(HKEY, sMainKey)",
@@ -270,7 +270,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "Registry_DelValue(%HKEY_CLASSES_ROOT, \"路径\", \"键名\")",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "Registry_DelValue",
                 "Define": "bRet = Registry_DelValue(HKEY, sMainKey, sKeyName)",
@@ -305,7 +305,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "Registry_GetAllKeys(%HKEY_CLASSES_ROOT, \"路径\")",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "Registry_GetAllKeys",
                 "Define": "sRet = Registry_GetAllKeys(HKEY, sMainKey[, Separator])",

@@ -92,7 +92,7 @@ GLOBAL lScrH        AS LONG
 GLOBAL nChangeData  AS LONG   '---for RMC_SetData() demonstration in the first line chart
 
 
-FUNCTION Main()
+FUNCTION TBMain()
 
   LOCAL hDlg            AS DWORD
   LOCAL hMenu, hPopUp1, hPopUp2, hPopUp3, hPopUp4 AS DWORD

@@ -121,7 +121,7 @@ global lRet AS LONG
 
 global wx, hy       AS LONG
 
-function Main()
+function TBMain()
   DIM hDlg AS DWORD   
   DIALOG NEW  0, "CPU Usage", 107, 172, 240, 60, _
                                                 %WS_DLGFRAME          OR  _

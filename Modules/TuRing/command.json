@@ -1,0 +1,4176 @@
+﻿{
+  "Caption": "TuRing",
+  "Remark": "图灵文字识别插件",
+  "Icon": "公文包",
+  "Templet": "index",
+  "Visible": true,
+  "Function": false,
+  "Help": {},
+  "Child": [
+    {
+      "Caption": "单文件使用扩展库",
+      "Icon": "信息",
+      "Templet": "document",
+      "Visible": true,
+      "Function": false,
+      "Help": {
+        "Caption": "扩展库使用帮助",
+        "Document": "在项目中使用扩展库功能会自动将扩展库引入项目，项目编译或运行时，自动加入扩展库依赖代码和文件。<br><br>如果您在单文件中希望使用本扩展库，则必须编写扩展库依赖代码才能调用扩展库中的函数，否则会报错，LzRPA 建议使用工程方式编写程序，但仍保留单文件使用扩展库的方法。<br><br>扩展库依赖代码：<br>&nbsp;&nbsp;#Include &quot;%APP_PATH%\\\\..\\\\Modules\\\\TuRing\\\\boot.tbs&quot;<br><br>建议将引用扩展库代码统一添加到全局代码块，也就是代码的最上面。<br><br>单文件使用 图灵插件 除了要引用扩展库文件外，还需要将 TURING.dll 文件复制到生成的 exe 或脚本文件同一目录下，TURING.dll 文件保存在软件安装目录下的 Modules\\\\TuRing 子目录内。"
+      }
+    },
+    {
+      "Caption": "创建图灵对象",
+      "Icon": "文件",
+      "Templet": "document",
+      "Visible": true,
+      "Function": false,
+      "InsCode": "Dim 图灵 As Object = CreateObject(\"TURING.FISR\")",
+      "Help": {
+        "Caption": "创建大漠对象",
+        "Document": "要使用图灵插件，必选先创建一个图灵插件对象，双击这条命令将创建图灵对象的代码添加到编辑器。<br><br>Dim TURING As Object = CreateObject(\\\"TURING.FISR\\\")"
+      }
+    },
+    {
+      "Caption": "释放图灵对象",
+      "Icon": "文件",
+      "Templet": "document",
+      "Visible": true,
+      "Function": false,
+      "InsCode": "ReleaseObject(图灵)",
+      "Help": {
+        "Caption": "释放大漠对象",
+        "Document": "图灵插件不再使用后，应释放插件占用的资源，双击这条命令将释放图灵对象的代码添加到编辑器。<br><br>ReleaseObject(TURING)"
+      }
+    },
+    {
+      "Caption": "新手引导（必看）",
+      "Icon": "文件",
+      "Templet": "document",
+      "Visible": true,
+      "Function": false,
+      "Help": {
+        "Caption": "新手引导",
+        "Document": "欢迎使用“虹鱼图灵识别”系统，首次使用插件说明<br><br>创建对象的方式，脚本（每个线程）开头调用一次：<br>Dim TURING As Object = CreateObject(\\\"TURING.FISR\\\")<br><br>可以运行脚本输出版本号确认图灵插件注册是否成功：<br>Dim TURING As Object = CreateObject(\\\"TURING.FISR\\\")<br>TracePrint TURING.Version()"
+      }
+    },
+    {
+      "Caption": "免责声明",
+      "Icon": "文件",
+      "Templet": "document",
+      "Visible": true,
+      "Function": false,
+      "Help": {
+        "Caption": "免责声明",
+        "Document": "一. 本软件完全出于个人兴趣爱好，由本人在业余时间开发，是一款安全，绿色，可靠的软件产品。<br><br>二. 利用本软件所做出的任何软件作品，和本人无关。<br><br>三. 本软件绝对不针对任何一款游戏或者游戏开发商，如果有人利用本软件开发非法游戏辅助，本人将保留追究其民事以及刑事责任的权利。<br><br>四. 因使用本软件而引致的任何意外、疏忽、合约毁坏、诽谤、版权或知识产权侵犯及其所造成的任何损失，本人概不负责，亦概不承担任何民事或刑事法律责任。<br><br>五. 本软件的功能描述以按键精灵这款软件的语法来描述，但与按键精灵官方无任何关系。<br><br>六. 当你第一次开始使用本人所提供的任何软件及资源的那一刻起就将被视为对本声明全部内容的认可。同时您必须认可上述免责条款，方可使用本软件及资源。如有任何异议，建议立刻删除本软件及资源并且停止使用。<br><br>七. 以上内容，本人保留最终解释权。 "
+      }
+    },
+    {
+      "Caption": "Version",
+      "Remark": "版本号",
+      "Icon": "函数",
+      "Templet": "command",
+      "Visible": true,
+      "Function": true,
+      "InsCode": "TURING.Version()",
+      "Help": {
+        "Caption": "Version",
+        "Define": "TURING.Version()",
+        "Describe": "当前插件版本号 ",
+        "RetType": "String",
+        "Return": "插件版本号",
+        "Param": []
+      }
+    },
+    {
+      "Caption": "窗口句柄",
+      "Icon": "文件夹",
+      "Templet": "index",
+      "Visible": true,
+      "Function": false,
+      "Help": {},
+      "Child": [
+        {
+          "Caption": "Link",
+          "Remark": "关联窗口",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "InsCode": "TURING.Link(hwnd, mode)",
+          "Help": {
+            "Caption": "Link",
+            "Define": "TURING.Link(hwnd, mode)",
+            "Describe": "关联指定的窗口句柄 ",
+            "RetType": "Null",
+            "Return": "无",
+            "Param": [
+              {
+                "Caption": "hwnd",
+                "DataType": "Integer",
+                "Describe": "窗口句柄(窗口不能最小化)",
+                "Optional": false
+              },
+              {
+                "Caption": "mode",
+                "DataType": "String",
+                "Describe": "关联模式。<br>默认：普通窗口后台\\\"normal\\\"，<br>普通前台窗口\\\"window\\\"，<br>3D游戏窗口后台\\\"gdi\\\"(切换主题为Aero再试)，<br>Aero主题缩略图后台\\\"aero\\\"。",
+                "Optional": true
+              }
+            ]
+          }
+        },
+        {
+          "Caption": "UnLink",
+          "Remark": "解除窗口关联",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "InsCode": "TURING.UnLink()",
+          "Help": {
+            "Caption": "UnLink",
+            "Define": "TURING.UnLink()",
+            "Describe": "解除指定窗口句柄的关联",
+            "RetType": "Null",
+            "Return": "无",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "Window_GetSize",
+          "Remark": "得到窗口大小",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "InsCode": "TURING.Window_GetSize()",
+          "Help": {
+            "Caption": "Window_GetSize",
+            "Define": "[left, top, right, bottom] = TURING.Window_GetSize()",
+            "Describe": "得到指定关联句柄的窗口屏幕位置区域",
+            "RetType": "String",
+            "Return": "[窗口大小，字符串型格式：左,上,右,下]<br>left：窗口左上角X坐标<br>top：窗口左上角Y坐标<br>right：窗口右下角X坐标<br>bottom：窗口右下角Y坐标",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "Window_GetAncestor",
+          "Remark": "取祖窗口句柄",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "InsCode": "TURING.Window_GetAncestor(iHwnd)",
+          "Help": {
+            "Caption": "Window_GetAncestor",
+            "Define": "Hwnd = TURING.Window_GetAncestor(iHwnd)",
+            "Describe": "指定任意窗口句柄即可得到窗口最顶级的祖父句柄",
+            "RetType": "Integer",
+            "Return": "祖父（顶级）窗口句柄",
+            "Param": [
+              {
+                "Caption": "iHwnd",
+                "DataType": "Integer",
+                "Describe": "窗口内任意元素句柄",
+                "Optional": false
+              }
+            ]
+          }
+        },
+        {
+          "Caption": "Window_GetPointHwnd",
+          "Remark": "取指定坐标下句柄",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "InsCode": "TURING.Window_GetPointHwnd(x, y)",
+          "Help": {
+            "Caption": "Window_GetPointHwnd",
+            "Define": "Hwnd = TURING.Window_GetPointHwnd(x, y)",
+            "Describe": "获取指定屏幕坐标下的窗口句柄 ",
+            "RetType": "Integer",
+            "Return": "坐标下句柄",
+            "Param": [
+              {
+                "Caption": "x",
+                "DataType": "Integer",
+                "Describe": "屏幕X坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "y",
+                "DataType": "Integer",
+                "Describe": "屏幕Y坐标",
+                "Optional": false
+              }
+            ]
+          }
+        },
+        {
+          "Caption": "Window_MoveTo",
+          "Remark": "移动窗口位置",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "InsCode": "TURING.Window_MoveTo(iHwnd, iLeft, iTop)",
+          "Help": {
+            "Caption": "Window_MoveTo",
+            "Define": "TURING.Window_MoveTo(iHwnd, iLeft, iTop)",
+            "Describe": "移动指定窗口句柄在屏幕上的位置",
+            "RetType": "Null",
+            "Return": "无",
+            "Param": [
+              {
+                "Caption": "iHwnd",
+                "DataType": "Integer",
+                "Describe": "窗口句柄",
+                "Optional": false
+              },
+              {
+                "Caption": "iLeft",
+                "DataType": "Integer",
+                "Describe": "屏幕X坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "iTop",
+                "DataType": "Integer",
+                "Describe": "屏幕Y坐标",
+                "Optional": false
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Caption": "文字识别（主打命令）",
+      "Icon": "文件夹",
+      "Templet": "index",
+      "Visible": true,
+      "Function": false,
+      "Help": {},
+      "Child": [
+        {
+          "Caption": "步骤1：获取图像",
+          "Icon": "文件夹",
+          "Templet": "index",
+          "Visible": true,
+          "Function": false,
+          "Help": {},
+          "Child": [
+            {
+              "Caption": "Pixel_FromScreen",
+              "Remark": "获取屏幕像素",
+              "Icon": "函数",
+              "Templet": "command",
+              "Visible": true,
+              "Function": true,
+              "InsCode": "TURING.Pixel_FromScreen(left, top, right, bottom, Mode)",
+              "Help": {
+                "Caption": "Pixel_FromScreen",
+                "Define": "TURING.Pixel_FromScreen(left, top, right, bottom, Mode)",
+                "Describe": "获取屏幕指定范围的图像像素数据",
+                "RetType": "Null",
+                "Return": "无",
+                "Param": [
+                  {
+                    "Caption": "left",
+                    "DataType": "Integer",
+                    "Describe": "屏幕左上角X坐标",
+                    "Optional": false
+                  },
+                  {
+                    "Caption": "top",
+                    "DataType": "Integer",
+                    "Describe": "屏幕左上角Y坐标",
+                    "Optional": false
+                  },
+                  {
+                    "Caption": "right",
+                    "DataType": "Integer",
+                    "Describe": "屏幕右下角X坐标",
+                    "Optional": false
+                  },
+                  {
+                    "Caption": "bottom",
+                    "DataType": "Integer",
+                    "Describe": "屏幕右下角Y坐标",
+                    "Optional": false
+                  },
+                  {
+                    "Caption": "Mode",
+                    "DataType": "Integer",
+                    "Describe": "默认0。应用于图中图时使用1,应用于绘图时使用2",
+                    "Optional": true
+                  }
+                ]
+              }
+            },
+            {
+              "Caption": "Pixel_FromPicture",
+              "Remark": "获取图片像素",
+              "Icon": "函数",
+              "Templet": "command",
+              "Visible": true,
+              "Function": true,
+              "InsCode": "TURING.Pixel_FromPicture(ImagePath, Mode)",
+              "Help": {
+                "Caption": "Pixel_FromPicture",
+                "Define": "TURING.Pixel_FromPicture(ImagePath, Mode)",
+                "Describe": "获取指定路径图片文件的图像像素数据",
+                "RetType": "Null",
+                "Return": "无",
+                "Param": [
+                  {
+                    "Caption": "ImagePath",
+                    "DataType": "String",
+                    "Describe": "图片文件的路径(支持：bmp、png、jpg、gif|帧、格式)，GIF帧参数：\\\"路径|帧\\\"",
+                    "Optional": false
+                  },
+                  {
+                    "Caption": "Mode",
+                    "DataType": "Integer",
+                    "Describe": "默认0。应用于图中图时使用1,应用于绘图时使用2",
+                    "Optional": true
+                  }
+                ]
+              }
+            },
+            {
+              "Caption": "Pixel_FromMouse",
+              "Remark": "获取鼠标像素",
+              "Icon": "函数",
+              "Templet": "command",
+              "Visible": true,
+              "Function": true,
+              "InsCode": "TURING.Pixel_FromMouse(Width, Height)",
+              "Help": {
+                "Caption": "Pixel_FromMouse",
+                "Define": "[x, y] = TURING.Pixel_FromMouse(Width, Height)",
+                "Describe": "获取当前鼠标图案的像素数据",
+                "RetType": "String",
+                "Return": "[字符串型，hot热点（格式：x坐标,y坐标）]<br>x：热点x坐标<br>y：热点y坐标",
+                "Param": [
+                  {
+                    "Caption": "Width",
+                    "DataType": "Integer",
+                    "Describe": "宽度（默认32）",
+                    "Optional": true
+                  },
+                  {
+                    "Caption": "Height",
+                    "DataType": "Integer",
+                    "Describe": "高度（默认32）",
+                    "Optional": true
+                  }
+                ]
+              }
+            },
+            {
+              "Caption": "Pixel_Preview",
+              "Remark": "像素数据预览",
+              "Icon": "函数",
+              "Templet": "command",
+              "Visible": true,
+              "Function": true,
+              "InsCode": "TURING.Pixel_Preview(Mode,subline)",
+              "Help": {
+                "Caption": "Pixel_Preview",
+                "Define": "[x,y] = TURING.Pixel_Preview(Mode,subline)",
+                "Describe": "对获取的图像像素数据进行显示查看",
+                "RetType": "",
+                "Return": "",
+                "Param": [
+                  {
+                    "Caption": "Mode",
+                    "DataType": "Integer",
+                    "Describe": "模式：图像或直方图（默认0图像,1垂直直方图,2水平直方图）",
+                    "Optional": true
+                  },
+                  {
+                    "Caption": "subline",
+                    "DataType": "Boolean",
+                    "Describe": "默认False（True显示十字辅助线）",
+                    "Optional": true
+                  }
+                ]
+              }
+            },
+            {
+              "Caption": "配置图像数据",
+              "Icon": "文件夹",
+              "Templet": "index",
+              "Visible": true,
+              "Function": false,
+              "Help": {},
+              "Child": [
+                {
+                  "Caption": "SaveImageData",
+                  "Remark": "图像数据保存为图片",
+                  "Icon": "函数",
+                  "Templet": "command",
+                  "Visible": true,
+                  "Function": true,
+                  "InsCode": "TURING.SaveImageData(ImagePath)",
+                  "Help": {
+                    "Caption": "SaveImageData",
+                    "Define": "TURING.SaveImageData(ImagePath)",
+                    "Describe": "将内部的图像数据保存为.bmp图片文件",
+                    "RetType": "Null",
+                    "Return": "无",
+                    "Param": [
+                      {
+                        "Caption": "ImagePath",
+                        "DataType": "String",
+                        "Describe": "保存图片文件的路径",
+                        "Optional": false
+                      }
+                    ]
+                  }
+                },
+                {
+                  "Caption": "Pixel_ColorImageData",
+                  "Remark": "获取颜色图层像素",
+                  "Icon": "函数",
+                  "Templet": "command",
+                  "Visible": true,
+                  "Function": true,
+                  "InsCode": "TURING.Pixel_ColorImageData(Interval, Value)",
+                  "Help": {
+                    "Caption": "Pixel_ColorImageData",
+                    "Define": "CharNum = TURING.Pixel_ColorImageData(Interval, Value)",
+                    "Describe": "对获取的图像像素数据进行颜色图层拆分",
+                    "RetType": "Integer",
+                    "Return": "颜色图层数量",
+                    "Param": [
+                      {
+                        "Caption": "Interval",
+                        "DataType": "Integer",
+                        "Describe": "两颜色值之间的空间距离（以HSV的颜色空间计算的）",
+                        "Optional": false
+                      },
+                      {
+                        "Caption": "Value",
+                        "DataType": "String",
+                        "Describe": "筛选掉干扰的颜色点数范围（例：大于保留：\"15\"个像素，区间保留：\"520-9751\"个像素）",
+                        "Optional": false
+                      }
+                    ]
+                  }
+                },
+                {
+                  "Caption": "Pixel_ChannelImageData",
+                  "Remark": "获取通道图层像素",
+                  "Icon": "函数",
+                  "Templet": "command",
+                  "Visible": true,
+                  "Function": true,
+                  "InsCode": "TURING.Pixel_ChannelImageData()",
+                  "Help": {
+                    "Caption": "Pixel_ChannelImageData",
+                    "Define": "TURING.Pixel_ChannelImageData()",
+                    "Describe": "对获取的图像像素数据进行RGB通道图层拆分",
+                    "RetType": "Null",
+                    "Return": "无",
+                    "Param": []
+                  }
+                },
+                {
+                  "Caption": "Pixel_CutImageData",
+                  "Remark": "拆分图像数据",
+                  "Icon": "函数",
+                  "Templet": "command",
+                  "Visible": true,
+                  "Function": true,
+                  "InsCode": "TURING.Pixel_CutImageData(left, top, right, bottom, Serial)",
+                  "Help": {
+                    "Caption": "Pixel_CutImageData",
+                    "Define": "TURING.Pixel_CutImageData(left, top, right, bottom, Serial)",
+                    "Describe": "图像像素数据拆分为多个（上限10个）",
+                    "RetType": "Null",
+                    "Return": "无",
+                    "Param": [
+                      {
+                        "Caption": "left",
+                        "DataType": "Integer",
+                        "Describe": "屏幕左上角X坐标",
+                        "Optional": false
+                      },
+                      {
+                        "Caption": "top",
+                        "DataType": "Integer",
+                        "Describe": "屏幕左上角Y坐标",
+                        "Optional": false
+                      },
+                      {
+                        "Caption": "right",
+                        "DataType": "Integer",
+                        "Describe": "屏幕右下角X坐标",
+                        "Optional": false
+                      },
+                      {
+                        "Caption": "bottom",
+                        "DataType": "Integer",
+                        "Describe": "屏幕右下角Y坐标",
+                        "Optional": false
+                      },
+                      {
+                        "Caption": "Serial",
+                        "DataType": "Integer",
+                        "Describe": "分配数据编号（默认1，上限10个）",
+                        "Optional": false
+                      }
+                    ]
+                  }
+                },
+                {
+                  "Caption": "Pixel_SetImageData",
+                  "Remark": "配置拆分图像数据",
+                  "Icon": "函数",
+                  "Templet": "command",
+                  "Visible": true,
+                  "Function": true,
+                  "InsCode": "TURING.Pixel_SetImageData(Serial)",
+                  "Help": {
+                    "Caption": "Pixel_SetImageData",
+                    "Define": "TURING.Pixel_SetImageData(Serial)",
+                    "Describe": "对拆分的图像像素数据进行设置",
+                    "RetType": "Null",
+                    "Return": "无",
+                    "Param": [
+                      {
+                        "Caption": "Serial",
+                        "DataType": "Integer",
+                        "Describe": "指定数据编号（默认1，上限10个）",
+                        "Optional": false
+                      }
+                    ]
+                  }
+                },
+                {
+                  "Caption": "Pixel_SetImageDataCut",
+                  "Remark": "配置切割图像数据",
+                  "Icon": "函数",
+                  "Templet": "command",
+                  "Visible": true,
+                  "Function": true,
+                  "InsCode": "TURING.Pixel_SetImageDataCut(index)",
+                  "Help": {
+                    "Caption": "Pixel_SetImageDataCut",
+                    "Define": "TURING.Pixel_SetImageDataCut(index)",
+                    "Describe": "对切割的字符图像像素数据进行设置",
+                    "RetType": "Null",
+                    "Return": "无",
+                    "Param": [
+                      {
+                        "Caption": "index",
+                        "DataType": "Integer",
+                        "Describe": "切割图像索引号",
+                        "Optional": false
+                      }
+                    ]
+                  }
+                },
+                {
+                  "Caption": "Pixel_SetSceneImageData",
+                  "Remark": "配置图像数据环境",
+                  "Icon": "函数",
+                  "Templet": "command",
+                  "Visible": true,
+                  "Function": true,
+                  "InsCode": "TURING.Pixel_SetSceneImageData(Mode)",
+                  "Help": {
+                    "Caption": "Pixel_SetSceneImageData",
+                    "Define": "TURING.Pixel_SetSceneImageData(Mode)",
+                    "Describe": "配置图像像素数据应用于图色场景",
+                    "RetType": "Null",
+                    "Return": "无",
+                    "Param": [
+                      {
+                        "Caption": "Mode",
+                        "DataType": "Integer",
+                        "Describe": "场景模式(默认1找图场景,2绘图图像>)",
+                        "Optional": false
+                      }
+                    ]
+                  }
+                },
+                {
+                  "Caption": "Pixel_SetLayerImageData",
+                  "Remark": "配置图层图像数据",
+                  "Icon": "函数",
+                  "Templet": "command",
+                  "Visible": true,
+                  "Function": true,
+                  "InsCode": "TURING.Pixel_SetLayerImageData(Index)",
+                  "Help": {
+                    "Caption": "Pixel_SetLayerImageData",
+                    "Define": "TURING.Pixel_SetLayerImageData(Index)",
+                    "Describe": "对拆分的颜色图层设置为图像像素数据",
+                    "RetType": "Null",
+                    "Return": "无",
+                    "Param": [
+                      {
+                        "Caption": "Index",
+                        "DataType": "Integer",
+                        "Describe": "颜色图层数据索引号",
+                        "Optional": false
+                      }
+                    ]
+                  }
+                },
+                {
+                  "Caption": "GetImageData",
+                  "Remark": "获取图像数据",
+                  "Icon": "函数",
+                  "Templet": "command",
+                  "Visible": true,
+                  "Function": true,
+                  "InsCode": "TURING.GetImageData()",
+                  "Help": {
+                    "Caption": "GetImageData",
+                    "Define": "[width, height, ImageData] = TURING.GetImageData()",
+                    "Describe": "得到内部的图像像素数据，用于二次开发",
+                    "RetType": "String",
+                    "Return": "[图像像素数据，字符串型格式：宽|高|图像数据(b,g,r,a,b,g,r,a,…)]<br>width：字符串型，图像宽度<br>height：字符串型，图像高度<br>ImageData：字符串型，图像数据",
+                    "Param": []
+                  }
+                },
+                {
+                  "Caption": "LoadImageData",
+                  "Remark": "载入图像数据",
+                  "Icon": "函数",
+                  "Templet": "command",
+                  "Visible": true,
+                  "Function": true,
+                  "InsCode": "TURING.LoadImageData(ImageData)",
+                  "Help": {
+                    "Caption": "LoadImageData",
+                    "Define": "TURING.LoadImageData(ImageData)",
+                    "Describe": "载入图像像素数据，用于内部滤镜处理",
+                    "RetType": "Null",
+                    "Return": "无",
+                    "Param": [
+                      {
+                        "Caption": "ImageData",
+                        "DataType": "String",
+                        "Describe": "图像像素数据，格式：宽|高|图像数据(b,g,r,a,b,g,r,a,…)",
+                        "Optional": false
+                      }
+                    ]
+                  }
+                },
+                {
+                  "Caption": "GetImageSize",
+                  "Remark": "获取图片大小",
+                  "Icon": "函数",
+                  "Templet": "command",
+                  "Visible": true,
+                  "Function": true,
+                  "InsCode": "TURING.GetImageSize(FilePath)",
+                  "Help": {
+                    "Caption": "GetImageSize",
+                    "Define": "[w,h] = TURING.GetImageSize(FilePath)",
+                    "Describe": "获取指定图片的宽度和高度",
+                    "RetType": "String",
+                    "Return": "[图片大小，格式：宽,高]<br>w：图片宽度值<br>h：图片高度值",
+                    "Param": [
+                      {
+                        "Caption": "FilePath",
+                        "DataType": "String",
+                        "Describe": "图片文件的路径(支持：bmp、png、jpg、gif格式)",
+                        "Optional": false
+                      }
+                    ]
+                  }
+                },
+                {
+                  "Caption": "ImageFormatConverter",
+                  "Remark": "图片格式转换",
+                  "Icon": "函数",
+                  "Templet": "command",
+                  "Visible": true,
+                  "Function": true,
+                  "InsCode": "TURING.ImageFormatConverter(ImagePath, ImageSavePath, Value)",
+                  "Help": {
+                    "Caption": "ImageFormatConverter",
+                    "Define": "TURING.ImageFormatConverter(ImagePath, ImageSavePath, Value)",
+                    "Describe": "对各种的图片格式进行转换",
+                    "RetType": "Null",
+                    "Return": "无",
+                    "Param": [
+                      {
+                        "Caption": "ImagePath",
+                        "DataType": "String",
+                        "Describe": "需转换的图片路径（支持任意格式图片）",
+                        "Optional": false
+                      },
+                      {
+                        "Caption": "ImageSavePath",
+                        "DataType": "String",
+                        "Describe": "保存指定格式的图片路径（支持的格式：bmp、png、jpg、gif）",
+                        "Optional": false
+                      },
+                      {
+                        "Caption": "Value",
+                        "DataType": "Integer",
+                        "Describe": "仅jpg格式的压缩率（默认80）",
+                        "Optional": true
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "Caption": "剪切板图像",
+              "Icon": "文件夹",
+              "Templet": "index",
+              "Visible": true,
+              "Function": false,
+              "Help": {},
+              "Child": [
+                {
+                  "Caption": "Pixel_GetClpImageData",
+                  "Remark": "获取剪切板图像数据",
+                  "Icon": "函数",
+                  "Templet": "command",
+                  "Visible": true,
+                  "Function": true,
+                  "InsCode": "TURING.Pixel_GetClpImageData()",
+                  "Help": {
+                    "Caption": "Pixel_GetClpImageData",
+                    "Define": "TURING.Pixel_GetClpImageData()",
+                    "Describe": "获取剪切板中的图像像素数据",
+                    "RetType": "Null",
+                    "Return": "无",
+                    "Param": []
+                  }
+                },
+                {
+                  "Caption": "Pixel_SetClpImageData",
+                  "Remark": "设置剪切板图像数据",
+                  "Icon": "函数",
+                  "Templet": "command",
+                  "Visible": true,
+                  "Function": true,
+                  "InsCode": "TURING.Pixel_SetClpImageData()",
+                  "Help": {
+                    "Caption": "Pixel_SetClpImageData",
+                    "Define": "TURING.Pixel_SetClpImageData()",
+                    "Describe": "将内部的图像数据设置到剪切板中",
+                    "RetType": "Null",
+                    "Return": "无",
+                    "Param": []
+                  }
+                },
+                {
+                  "Caption": "Pixel_SetClpScreenData",
+                  "Remark": "设置剪切板屏幕像素",
+                  "Icon": "函数",
+                  "Templet": "command",
+                  "Visible": true,
+                  "Function": true,
+                  "InsCode": "TURING.Pixel_SetClpScreenData(left, top, right, bottom)",
+                  "Help": {
+                    "Caption": "Pixel_SetClpScreenData",
+                    "Define": "TURING.Pixel_SetClpScreenData(left, top, right, bottom)",
+                    "Describe": "设置屏幕图像数据保存到剪切板中",
+                    "RetType": "Null",
+                    "Return": "无",
+                    "Param": [
+                      {
+                        "Caption": "left",
+                        "DataType": "Integer",
+                        "Describe": "屏幕左上角X坐标",
+                        "Optional": false
+                      },
+                      {
+                        "Caption": "top",
+                        "DataType": "Integer",
+                        "Describe": "屏幕左上角Y坐标",
+                        "Optional": false
+                      },
+                      {
+                        "Caption": "right",
+                        "DataType": "Integer",
+                        "Describe": "屏幕右下角X坐标",
+                        "Optional": false
+                      },
+                      {
+                        "Caption": "bottom",
+                        "DataType": "Integer",
+                        "Describe": "屏幕右下角Y坐标",
+                        "Optional": false
+                      }
+                    ]
+                  }
+                },
+                {
+                  "Caption": "Pixel_SetClpPictureData",
+                  "Remark": "设置剪切板图片像素",
+                  "Icon": "函数",
+                  "Templet": "command",
+                  "Visible": true,
+                  "Function": true,
+                  "InsCode": "TURING.Pixel_SetClpPictureData(ImagePath)",
+                  "Help": {
+                    "Caption": "Pixel_SetClpPictureData",
+                    "Define": "TURING.Pixel_SetClpPictureData(ImagePath)",
+                    "Describe": "设置图片图像数据保存到剪切板中",
+                    "RetType": "Null",
+                    "Return": "无",
+                    "Param": [
+                      {
+                        "Caption": "ImagePath",
+                        "DataType": "String",
+                        "Describe": "图片文件的路径",
+                        "Optional": false
+                      }
+                    ]
+                  }
+                },
+                {
+                  "Caption": "Pixel_SaveClpImageData",
+                  "Remark": "保存剪切板图片",
+                  "Icon": "函数",
+                  "Templet": "command",
+                  "Visible": true,
+                  "Function": true,
+                  "InsCode": "TURING.Pixel_SaveClpImageData(ImagePath)",
+                  "Help": {
+                    "Caption": "Pixel_SaveClpImageData",
+                    "Define": "TURING.Pixel_SaveClpImageData(ImagePath)",
+                    "Describe": "剪切板中的图像数据保存为图片文件",
+                    "RetType": "",
+                    "Return": "",
+                    "Param": [
+                      {
+                        "Caption": "ImagePath",
+                        "DataType": "String",
+                        "Describe": "保存图片文件的路径",
+                        "Optional": false
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "Caption": "步骤2：滤镜处理",
+          "Icon": "文件夹",
+          "Templet": "index",
+          "Visible": true,
+          "Function": false,
+          "Help": {},
+          "Child": [
+            {
+              "Caption": "（彩色）滤镜",
+              "Icon": "文件夹",
+              "Templet": "index",
+              "Visible": true,
+              "Function": false,
+              "Help": {},
+              "Child": [
+                {
+                  "Caption": "Filter_Binaryzation",
+                  "Remark": "二值化",
+                  "Icon": "函数",
+                  "Templet": "command",
+                  "Visible": true,
+                  "Function": true,
+                  "InsCode": "TURING.Filter_Binaryzation(value)",
+                  "Help": {
+                    "Caption": "Filter_Binaryzation",
+                    "Define": "TURING.Filter_Binaryzation(value)",
+                    "Describe": "(针对彩色图像处理)二值化滤镜",
+                    "RetType": "Null",
+                    "Return": "无",
+                    "Param": [
+                      {
+                        "Caption": "value",
+                        "DataType": "Integer",
+                        "Describe": "字符串型，色阶阈值（范围：0-255）<br>或者：指定颜色串BBGGRR-BDGDRD（\\\"0000FF-000080|00FFFF\\\"）(反色效果：\\\"@BBGGRR-DBDGDR\\\")<br>或者：通过最大类间方差法[Otsu]取得（\\\"auto\\\"）",
+                        "Optional": false
+                      }
+                    ]
+                  }
+                },
+                {
+                  "Caption": "Filter_Gray",
+                  "Remark": "灰度",
+                  "Icon": "函数",
+                  "Templet": "command",
+                  "Visible": true,
+                  "Function": true,
+                  "InsCode": "TURING.Filter_Gray(mode)",
+                  "Help": {
+                    "Caption": "Filter_Gray",
+                    "Define": "Gray = TURING.Filter_Gray(mode)",
+                    "Describe": "(针对彩色图像处理)灰度滤镜",
+                    "RetType": "Integer",
+                    "Return": "灰色平均值",
+                    "Param": [
+                      {
+                        "Caption": "mode",
+                        "DataType": "Integer",
+                        "Describe": "模式（默认0:标准，1:Photoshop算法）",
+                        "Optional": false
+                      }
+                    ]
+                  }
+                },
+                {
+                  "Caption": "Filter_Posterization",
+                  "Remark": "色调分离",
+                  "Icon": "函数",
+                  "Templet": "command",
+                  "Visible": true,
+                  "Function": true,
+                  "InsCode": "TURING.Filter_Posterization(value)",
+                  "Help": {
+                    "Caption": "Filter_Posterization",
+                    "Define": "TURING.Filter_Posterization(value)",
+                    "Describe": "(针对彩色图像处理)色调分离滤镜",
+                    "RetType": "Null",
+                    "Return": "无",
+                    "Param": [
+                      {
+                        "Caption": "value",
+                        "DataType": "Integer",
+                        "Describe": "色阶阈值（范围：2~255）",
+                        "Optional": false
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "Caption": "（黑白）滤镜",
+              "Icon": "文件夹",
+              "Templet": "index",
+              "Visible": true,
+              "Function": false,
+              "Help": {},
+              "Child": [
+                {
+                  "Caption": "Filter_Despeckle",
+                  "Remark": "清除杂点",
+                  "Icon": "函数",
+                  "Templet": "command",
+                  "Visible": true,
+                  "Function": true,
+                  "InsCode": "TURING.Filter_Despeckle(Value, Interval, Mode)",
+                  "Help": {
+                    "Caption": "Filter_Despeckle",
+                    "Define": "TURING.Filter_Despeckle(Value, Interval, Mode)",
+                    "Describe": "(针对黑白图像处理)清除杂点滤镜",
+                    "RetType": "Null",
+                    "Return": "无",
+                    "Param": [
+                      {
+                        "Caption": "Value",
+                        "DataType": "Integer",
+                        "Describe": "点数阈值（范围：1~8）",
+                        "Optional": false
+                      },
+                      {
+                        "Caption": "Interval",
+                        "DataType": "Integer",
+                        "Describe": "间隙，默认0",
+                        "Optional": false
+                      },
+                      {
+                        "Caption": "Mode",
+                        "DataType": "Integer",
+                        "Describe": "模式（默认：1去白点，0去黑点）",
+                        "Optional": false
+                      }
+                    ]
+                  }
+                },
+                {
+                  "Caption": "Filter_EraseLine",
+                  "Remark": "去掉直线",
+                  "Icon": "函数",
+                  "Templet": "command",
+                  "Visible": true,
+                  "Function": true,
+                  "InsCode": "TURING.Filter_EraseLine(value)",
+                  "Help": {
+                    "Caption": "Filter_EraseLine",
+                    "Define": "TURING.Filter_EraseLine(value)",
+                    "Describe": "(针对黑白图像处理)去掉直线滤镜",
+                    "RetType": "Null",
+                    "Return": "无",
+                    "Param": [
+                      {
+                        "Caption": "value",
+                        "DataType": "Integer",
+                        "Describe": "点数百分比（范围：1~100）",
+                        "Optional": false
+                      }
+                    ]
+                  }
+                },
+                {
+                  "Caption": "Filter_Outline",
+                  "Remark": "获取轮廓",
+                  "Icon": "函数",
+                  "Templet": "command",
+                  "Visible": true,
+                  "Function": true,
+                  "InsCode": "TURING.Filter_Outline()",
+                  "Help": {
+                    "Caption": "Filter_Outline",
+                    "Define": "TURING.Filter_Outline()",
+                    "Describe": "(针对黑白图像处理)获取轮廓滤镜",
+                    "RetType": "Null",
+                    "Return": "无",
+                    "Param": []
+                  }
+                },
+                {
+                  "Caption": "Filter_ExtractBlock",
+                  "Remark": "提取色块",
+                  "Icon": "函数",
+                  "Templet": "command",
+                  "Visible": true,
+                  "Function": true,
+                  "InsCode": "TURING.Filter_ExtractBlock(width, height, num)",
+                  "Help": {
+                    "Caption": "Filter_ExtractBlock",
+                    "Define": "TURING.Filter_ExtractBlock(width, height, num)",
+                    "Describe": "(针对黑白图像处理)提取色块滤镜",
+                    "RetType": "Null",
+                    "Return": "无",
+                    "Param": [
+                      {
+                        "Caption": "width",
+                        "DataType": "Integer",
+                        "Describe": "色块宽度范围",
+                        "Optional": false
+                      },
+                      {
+                        "Caption": "height",
+                        "DataType": "Integer",
+                        "Describe": "色块高度范围",
+                        "Optional": false
+                      },
+                      {
+                        "Caption": "num",
+                        "DataType": "Integer",
+                        "Describe": "符合点数量",
+                        "Optional": false
+                      }
+                    ]
+                  }
+                },
+                {
+                  "Caption": "Filter_SlantCorrect",
+                  "Remark": "倾斜矫正",
+                  "Icon": "函数",
+                  "Templet": "command",
+                  "Visible": true,
+                  "Function": true,
+                  "InsCode": "TURING.Filter_SlantCorrect()",
+                  "Help": {
+                    "Caption": "Filter_SlantCorrect",
+                    "Define": "TURING.Filter_SlantCorrect()",
+                    "Describe": "(针对黑白图像处理)倾斜矫正滤镜",
+                    "RetType": "Null",
+                    "Return": "无",
+                    "Param": []
+                  }
+                },
+                {
+                  "Caption": "Filter_RotateCorrect",
+                  "Remark": "旋转纠正",
+                  "Icon": "函数",
+                  "Templet": "command",
+                  "Visible": true,
+                  "Function": true,
+                  "InsCode": "TURING.Filter_RotateCorrect(angle, value)",
+                  "Help": {
+                    "Caption": "Filter_RotateCorrect",
+                    "Define": "TURING.Filter_RotateCorrect(angle, value)",
+                    "Describe": "(针对黑白图像处理)旋转纠正滤镜",
+                    "RetType": "Null",
+                    "Return": "无",
+                    "Param": [
+                      {
+                        "Caption": "angle",
+                        "DataType": "Integer",
+                        "Describe": "旋转的正负度数值（范围：1~90）",
+                        "Optional": false
+                      },
+                      {
+                        "Caption": "value",
+                        "DataType": "Integer",
+                        "Describe": "旋转的度数步进（范围：1~9）",
+                        "Optional": false
+                      }
+                    ]
+                  }
+                },
+                {
+                  "Caption": "Filter_InverseColor",
+                  "Remark": "颠倒颜色",
+                  "Icon": "函数",
+                  "Templet": "command",
+                  "Visible": true,
+                  "Function": true,
+                  "InsCode": "TURING.Filter_InverseColor(Mode)",
+                  "Help": {
+                    "Caption": "Filter_InverseColor",
+                    "Define": "TURING.Filter_InverseColor(Mode)",
+                    "Describe": "(针对黑白图像处理)颠倒颜色滤镜",
+                    "RetType": "Null",
+                    "Return": "无",
+                    "Param": [
+                      {
+                        "Caption": "Mode",
+                        "DataType": "Integer",
+                        "Describe": "模式（默认：1白多变黑，0黑多变白，2单纯反色）",
+                        "Optional": false
+                      }
+                    ]
+                  }
+                },
+                {
+                  "Caption": "Filter_DilationErosion",
+                  "Remark": "腐蚀膨胀",
+                  "Icon": "函数",
+                  "Templet": "command",
+                  "Visible": true,
+                  "Function": true,
+                  "InsCode": "TURING.Filter_DilationErosion(Mode)",
+                  "Help": {
+                    "Caption": "Filter_DilationErosion",
+                    "Define": "TURING.Filter_DilationErosion(Mode)",
+                    "Describe": "(针对黑白图像处理)腐蚀膨胀滤镜",
+                    "RetType": "Null",
+                    "Return": "无",
+                    "Param": [
+                      {
+                        "Caption": "Mode",
+                        "DataType": "Integer",
+                        "Describe": "模式（默认：1膨胀，0腐蚀）",
+                        "Optional": false
+                      }
+                    ]
+                  }
+                },
+                {
+                  "Caption": "Filter_ThinBone",
+                  "Remark": "细化抽骨",
+                  "Icon": "函数",
+                  "Templet": "command",
+                  "Visible": true,
+                  "Function": true,
+                  "InsCode": "TURING.Filter_ThinBone()",
+                  "Help": {
+                    "Caption": "Filter_ThinBone",
+                    "Define": "TURING.Filter_ThinBone()",
+                    "Describe": "(针对黑白图像处理)细化抽骨(细骨)滤镜",
+                    "RetType": "Null",
+                    "Return": "无",
+                    "Param": []
+                  }
+                }
+              ]
+            },
+            {
+              "Caption": "（通用）滤镜",
+              "Icon": "文件夹",
+              "Templet": "index",
+              "Visible": true,
+              "Function": false,
+              "Help": {},
+              "Child": [
+                {
+                  "Caption": "Filter_Zoom",
+                  "Remark": "等比缩放",
+                  "Icon": "函数",
+                  "Templet": "command",
+                  "Visible": true,
+                  "Function": true,
+                  "InsCode": "TURING.Filter_Zoom(xTimes, yTimes)",
+                  "Help": {
+                    "Caption": "Filter_Zoom",
+                    "Define": "TURING.Filter_Zoom(xTimes, yTimes)",
+                    "Describe": "(通用图像处理)等比缩放滤镜",
+                    "RetType": "Null",
+                    "Return": "无",
+                    "Param": [
+                      {
+                        "Caption": "xTimes",
+                        "DataType": "Integer",
+                        "Describe": "宽度倍数，0.5缩小2倍（范围：0.1~1,2~8）",
+                        "Optional": false
+                      },
+                      {
+                        "Caption": "yTimes",
+                        "DataType": "Integer",
+                        "Describe": "高度倍数，0.5缩小2倍（范围：0.1~1,2~8）",
+                        "Optional": false
+                      }
+                    ]
+                  }
+                },
+                {
+                  "Caption": "Filter_ZoomOne",
+                  "Remark": "缩放归一化",
+                  "Icon": "函数",
+                  "Templet": "command",
+                  "Visible": true,
+                  "Function": true,
+                  "InsCode": "TURING.Filter_ZoomOne(width, height)",
+                  "Help": {
+                    "Caption": "Filter_ZoomOne",
+                    "Define": "TURING.Filter_ZoomOne(width, height)",
+                    "Describe": "(通用图像处理)缩放归一化滤镜",
+                    "RetType": "Null",
+                    "Return": "无",
+                    "Param": [
+                      {
+                        "Caption": "width",
+                        "DataType": "Integer",
+                        "Describe": "宽度数值",
+                        "Optional": false
+                      },
+                      {
+                        "Caption": "height",
+                        "DataType": "Integer",
+                        "Describe": "高度数值",
+                        "Optional": false
+                      }
+                    ]
+                  }
+                },
+                {
+                  "Caption": "Filter_ValidCut",
+                  "Remark": "裁剪有效图像",
+                  "Icon": "函数",
+                  "Templet": "command",
+                  "Visible": true,
+                  "Function": true,
+                  "InsCode": "TURING.Filter_ValidCut(Value)",
+                  "Help": {
+                    "Caption": "Filter_ValidCut",
+                    "Define": "TURING.Filter_ValidCut(Value)",
+                    "Describe": "(通用图像处理)一键裁剪有效图像数据滤镜(裁剪四个角一样的颜色)",
+                    "RetType": "Null",
+                    "Return": "无",
+                    "Param": [
+                      {
+                        "Caption": "Value",
+                        "DataType": "Integer",
+                        "Describe": "可选，裁剪方式（默认空：裁剪黑边，\"auto\"：四角相同颜色裁剪）",
+                        "Optional": true
+                      }
+                    ]
+                  }
+                },
+                {
+                  "Caption": "Filter_ColorChoose",
+                  "Remark": "颜色选留",
+                  "Icon": "函数",
+                  "Templet": "command",
+                  "Visible": true,
+                  "Function": true,
+                  "InsCode": "TURING.Filter_ColorChoose(value, bColor)",
+                  "Help": {
+                    "Caption": "Filter_ColorChoose",
+                    "Define": "TURING.Filter_ColorChoose(value, bColor)",
+                    "Describe": "(通用图像处理)指定颜色保留或者涂黑滤镜",
+                    "RetType": "Null",
+                    "Return": "无",
+                    "Param": [
+                      {
+                        "Caption": "value",
+                        "DataType": "String",
+                        "Describe": "指定颜色串BBGGRR-BDGDRD（\\\"0000FF-000080|00FFFF\\\"）(反选效果：\\\"@BBGGRR-DBDGDR\\\")",
+                        "Optional": false
+                      },
+                      {
+                        "Caption": "bColor",
+                        "DataType": "String",
+                        "Describe": "设置背景色（默认BBGGRR黑色\\\"000000\\\"）",
+                        "Optional": false
+                      }
+                    ]
+                  }
+                },
+                {
+                  "Caption": "Filter_DispelSpot",
+                  "Remark": "祛除斑点",
+                  "Icon": "函数",
+                  "Templet": "command",
+                  "Visible": true,
+                  "Function": true,
+                  "InsCode": "TURING.Filter_DispelSpot(Sensitivity, Num)",
+                  "Help": {
+                    "Caption": "Filter_DispelSpot",
+                    "Define": "TURING.Filter_DispelSpot(Sensitivity, Num)",
+                    "Describe": "(通用图像处理)图像斑点祛除",
+                    "RetType": "Null",
+                    "Return": "无",
+                    "Param": [
+                      {
+                        "Caption": "Sensitivity",
+                        "DataType": "Integer",
+                        "Describe": "周边颜色与中间颜色的差值灵敏度，默认25",
+                        "Optional": false
+                      },
+                      {
+                        "Caption": "Num",
+                        "DataType": "Integer",
+                        "Describe": "平均色的元素个数，默认2",
+                        "Optional": false
+                      }
+                    ]
+                  }
+                },
+                {
+                  "Caption": "Filter_DiffeExtract",
+                  "Remark": "差异提取",
+                  "Icon": "函数",
+                  "Templet": "command",
+                  "Visible": true,
+                  "Function": true,
+                  "InsCode": "TURING.Filter_DiffeExtract(ImgData1, ImgData2, Similarity)",
+                  "Help": {
+                    "Caption": "Filter_DiffeExtract",
+                    "Define": "Num = TURING.Filter_DiffeExtract(ImgData1, ImgData2, Similarity)",
+                    "Describe": "(通用图像处理)两图像数据之间的差异提取，并返回匹配到的点数",
+                    "RetType": "Integer",
+                    "Return": "比对匹配上的点数量（白色为不同数据）",
+                    "Param": [
+                      {
+                        "Caption": "ImgData1",
+                        "DataType": "Integer",
+                        "Describe": "备份图像编号1 或者 字符串型，图像的像素数据1（格式：宽|高|图像数据）",
+                        "Optional": false
+                      },
+                      {
+                        "Caption": "ImgData2",
+                        "DataType": "Integer",
+                        "Describe": "备份图像编号2 或者 字符串型，图像的像素数据2（格式：宽|高|图像数据）",
+                        "Optional": false
+                      },
+                      {
+                        "Caption": "Similarity",
+                        "DataType": "Double",
+                        "Describe": "颜色相似度（范围：0.1~1）",
+                        "Optional": false
+                      }
+                    ]
+                  }
+                },
+                {
+                  "Caption": "Filter_Tailor",
+                  "Remark": "延伸裁剪",
+                  "Icon": "函数",
+                  "Templet": "command",
+                  "Visible": true,
+                  "Function": true,
+                  "InsCode": "TURING.Filter_Tailor(Left, Top, Right, Bottom)",
+                  "Help": {
+                    "Caption": "Filter_Tailor",
+                    "Define": "TURING.Filter_Tailor(Left, Top, Right, Bottom)",
+                    "Describe": "(通用图像处理)指定任意范围对内部图像数据进行裁剪",
+                    "RetType": "Null",
+                    "Return": "无",
+                    "Param": [
+                      {
+                        "Caption": "Left",
+                        "DataType": "Integer",
+                        "Describe": "范围左上角X坐标（可以负数）",
+                        "Optional": false
+                      },
+                      {
+                        "Caption": "Top",
+                        "DataType": "Integer",
+                        "Describe": "范围左上角Y坐标（可以负数）",
+                        "Optional": false
+                      },
+                      {
+                        "Caption": "Right",
+                        "DataType": "Integer",
+                        "Describe": "范围右下角X坐标（可以超过原图大小）",
+                        "Optional": false
+                      },
+                      {
+                        "Caption": "Bottom",
+                        "DataType": "Integer",
+                        "Describe": "范围右下角Y坐标（可以超过原图大小）",
+                        "Optional": false
+                      }
+                    ]
+                  }
+                },
+                {
+                  "Caption": "Filter_Rotate",
+                  "Remark": "固定旋转",
+                  "Icon": "函数",
+                  "Templet": "command",
+                  "Visible": true,
+                  "Function": true,
+                  "InsCode": "TURING.Filter_Rotate(angle)",
+                  "Help": {
+                    "Caption": "Filter_Rotate",
+                    "Define": "TURING.Filter_Rotate(angle)",
+                    "Describe": "(通用图像处理)按一定角度旋转图像",
+                    "RetType": "Null",
+                    "Return": "无",
+                    "Param": [
+                      {
+                        "Caption": "angle",
+                        "DataType": "Integer",
+                        "Describe": "旋转的正负度数值，正数顺时针（默认45，范围：正负0~360）",
+                        "Optional": false
+                      }
+                    ]
+                  }
+                },
+                {
+                  "Caption": "Filter_Mirror",
+                  "Remark": "固定镜像",
+                  "Icon": "函数",
+                  "Templet": "command",
+                  "Visible": true,
+                  "Function": true,
+                  "InsCode": "TURING.Filter_Mirror(Direction)",
+                  "Help": {
+                    "Caption": "Filter_Mirror",
+                    "Define": "TURING.Filter_Mirror(Direction)",
+                    "Describe": "(通用图像处理)按一定方向镜像图像",
+                    "RetType": "",
+                    "Return": "",
+                    "Param": [
+                      {
+                        "Caption": "Direction",
+                        "DataType": "Integer",
+                        "Describe": "镜像的方向（默认0水平镜像，1垂直镜像，2水平和垂直同时镜像）",
+                        "Optional": false
+                      }
+                    ]
+                  }
+                },
+                {
+                  "Caption": "Filter_Shift",
+                  "Remark": "固定移位",
+                  "Icon": "函数",
+                  "Templet": "command",
+                  "Visible": true,
+                  "Function": true,
+                  "InsCode": "TURING.Filter_Shift(Value, Direction)",
+                  "Help": {
+                    "Caption": "Filter_Shift",
+                    "Define": "TURING.Filter_Shift(Value, Direction)",
+                    "Describe": "(通用图像处理)指定每(行/列)的移动数量组成特征串进行扭正图像",
+                    "RetType": "Null",
+                    "Return": "无",
+                    "Param": [
+                      {
+                        "Caption": "Value",
+                        "DataType": "String",
+                        "Describe": "像素移位特征串|开始行列数（移动数值：正数向左移动，负数向右移动）",
+                        "Optional": false
+                      },
+                      {
+                        "Caption": "Direction",
+                        "DataType": "Integer",
+                        "Describe": "像素移位方向（默认0，0水平，1垂直）",
+                        "Optional": false
+                      }
+                    ]
+                  }
+                },
+                {
+                  "Caption": "Filter_Complementary",
+                  "Remark": "查找互补色",
+                  "Icon": "函数",
+                  "Templet": "command",
+                  "Visible": true,
+                  "Function": true,
+                  "InsCode": "TURING.Filter_Complementary()",
+                  "Help": {
+                    "Caption": "Filter_Complementary",
+                    "Define": "Colors = TURING.Filter_Complementary()",
+                    "Describe": "(通用图像处理)右下对角点的互补颜色查找滤镜",
+                    "RetType": "String",
+                    "Return": "互补色颜色串，竖线分隔",
+                    "Param": []
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "Caption": "步骤3：字符切割",
+          "Icon": "文件夹",
+          "Templet": "index",
+          "Visible": true,
+          "Function": false,
+          "Help": {},
+          "Child": [
+            {
+              "Caption": "Incise_FixedLocation",
+              "Remark": "固定位置切割",
+              "Icon": "函数",
+              "Templet": "command",
+              "Visible": true,
+              "Function": true,
+              "InsCode": "TURING.Incise_FixedLocation(qx, qy, width, height, interval, num)",
+              "Help": {
+                "Caption": "Incise_FixedLocation",
+                "Define": "CharNum = TURING.Incise_FixedLocation(qx, qy, width, height, interval, num)",
+                "Describe": "固定位置字符切割 ",
+                "RetType": "Integer",
+                "Return": "字符切割数量",
+                "Param": [
+                  {
+                    "Caption": "qx",
+                    "DataType": "Integer",
+                    "Describe": "起点X坐标",
+                    "Optional": false
+                  },
+                  {
+                    "Caption": "qy",
+                    "DataType": "Integer",
+                    "Describe": "起点Y坐标",
+                    "Optional": false
+                  },
+                  {
+                    "Caption": "width",
+                    "DataType": "Integer",
+                    "Describe": "字符宽度",
+                    "Optional": false
+                  },
+                  {
+                    "Caption": "height",
+                    "DataType": "Integer",
+                    "Describe": "字符高度",
+                    "Optional": false
+                  },
+                  {
+                    "Caption": "interval",
+                    "DataType": "Integer",
+                    "Describe": "字间距",
+                    "Optional": false
+                  },
+                  {
+                    "Caption": "num",
+                    "DataType": "Integer",
+                    "Describe": "字符数量",
+                    "Optional": false
+                  }
+                ]
+              }
+            },
+            {
+              "Caption": "Incise_RandomOrientation",
+              "Remark": "随机方位切割",
+              "Icon": "函数",
+              "Templet": "command",
+              "Visible": true,
+              "Function": true,
+              "InsCode": "TURING.Incise_RandomOrientation(Width, Height)",
+              "Help": {
+                "Caption": "Incise_RandomOrientation",
+                "Define": "CharNum = TURING.Incise_RandomOrientation(Width, Height)",
+                "Describe": "随机方位字符切割",
+                "RetType": "Integer",
+                "Return": "字符切割数量",
+                "Param": [
+                  {
+                    "Caption": "Width",
+                    "DataType": "String",
+                    "Describe": "保留字符切割宽度范围（例：\\\"50-150\\\"）。",
+                    "Optional": true
+                  },
+                  {
+                    "Caption": "Height",
+                    "DataType": "String",
+                    "Describe": "保留字符切割高度范围（例：\\\"30-100\\\"）。",
+                    "Optional": true
+                  }
+                ]
+              }
+            },
+            {
+              "Caption": "Incise_ConnectedArea",
+              "Remark": "连通区域切割",
+              "Icon": "函数",
+              "Templet": "command",
+              "Visible": true,
+              "Function": true,
+              "InsCode": "TURING.Incise_ConnectedArea(through, Width, Height)",
+              "Help": {
+                "Caption": "Incise_ConnectedArea",
+                "Define": "CharNum = TURING.Incise_ConnectedArea(through, Width, Height)",
+                "Describe": "连通区域字符切割 ",
+                "RetType": "Integer",
+                "Return": "字符切割数量",
+                "Param": [
+                  {
+                    "Caption": "through",
+                    "DataType": "Boolean",
+                    "Describe": "是否八通方向（八向：True）",
+                    "Optional": false
+                  },
+                  {
+                    "Caption": "Width",
+                    "DataType": "String",
+                    "Describe": "保留字符切割宽度范围（例：\\\"50-150\\\"）。",
+                    "Optional": true
+                  },
+                  {
+                    "Caption": "Height",
+                    "DataType": "String",
+                    "Describe": "保留字符切割高度范围（例：\\\"30-100\\\"）。",
+                    "Optional": true
+                  }
+                ]
+              }
+            },
+            {
+              "Caption": "Incise_ScopeAisle",
+              "Remark": "范围投影切割",
+              "Icon": "函数",
+              "Templet": "command",
+              "Visible": true,
+              "Function": true,
+              "InsCode": "TURING.Incise_ScopeAisle(Row, Column, Width, Height)",
+              "Help": {
+                "Caption": "Incise_ScopeAisle",
+                "Define": "CharNum = TURING.Incise_ScopeAisle(Row, Column, Width, Height)",
+                "Describe": "范围投影字符切割",
+                "RetType": "Integer",
+                "Return": "字符切割数量",
+                "Param": [
+                  {
+                    "Caption": "Row",
+                    "DataType": "Integer",
+                    "Describe": "行间距",
+                    "Optional": false
+                  },
+                  {
+                    "Caption": "Column",
+                    "DataType": "Integer",
+                    "Describe": "列间距",
+                    "Optional": false
+                  },
+                  {
+                    "Caption": "Width",
+                    "DataType": "String",
+                    "Describe": "保留字符切割宽度范围（例：\\\"50-150\\\"）。",
+                    "Optional": true
+                  },
+                  {
+                    "Caption": "Height",
+                    "DataType": "String",
+                    "Describe": "保留字符切割高度范围（例：\\\"30-100\\\"）。",
+                    "Optional": true
+                  }
+                ]
+              }
+            },
+            {
+              "Caption": "Incise_ColorLayered",
+              "Remark": "颜色分层切割",
+              "Icon": "函数",
+              "Templet": "command",
+              "Visible": true,
+              "Function": true,
+              "InsCode": "TURING.Incise_ColorLayered(interval, num, Width, Height, Value, Row, Column)",
+              "Help": {
+                "Caption": "Incise_ColorLayered",
+                "Define": "CharNum = TURING.Incise_ColorLayered(interval, num, Width, Height, Value, Row, Column)",
+                "Describe": "颜色分层字符切割（体验版--组合式）",
+                "RetType": "Integer",
+                "Return": "字符切割数量",
+                "Param": [
+                  {
+                    "Caption": "interval",
+                    "DataType": "Integer",
+                    "Describe": "颜色值之间的距离",
+                    "Optional": false
+                  },
+                  {
+                    "Caption": "num",
+                    "DataType": "Integer",
+                    "Describe": "过滤掉点数的数量",
+                    "Optional": false
+                  },
+                  {
+                    "Caption": "Width",
+                    "DataType": "String",
+                    "Describe": "保留字符切割宽度范围（例：\\\"50-150\\\"）",
+                    "Optional": true
+                  },
+                  {
+                    "Caption": "Height",
+                    "DataType": "String",
+                    "Describe": "保留字符切割高度范围（例：\\\"30-100\\\"）",
+                    "Optional": true
+                  },
+                  {
+                    "Caption": "value",
+                    "DataType": "Integer",
+                    "Describe": "点数阈值（默认6，范围：1~8）",
+                    "Optional": true
+                  },
+                  {
+                    "Caption": "Row",
+                    "DataType": "Integer",
+                    "Describe": "行间距（默认3）",
+                    "Optional": true
+                  },
+                  {
+                    "Caption": "Column",
+                    "DataType": "Integer",
+                    "Describe": "列间距（默认2）",
+                    "Optional": true
+                  }
+                ]
+              }
+            },
+            {
+              "Caption": "Incise_Adaptive",
+              "Remark": "自适应矩形切割",
+              "Icon": "函数",
+              "Templet": "command",
+              "Visible": true,
+              "Function": true,
+              "InsCode": "TURING.Incise_Adaptive(Width, Height)",
+              "Help": {
+                "Caption": "Incise_Adaptive",
+                "Define": "CharNum = TURING.Incise_Adaptive(Width, Height)",
+                "Describe": "自适应矩形字符切割（体验版）",
+                "RetType": "Integer",
+                "Return": "字符切割数量",
+                "Param": [
+                  {
+                    "Caption": "Width",
+                    "DataType": "String",
+                    "Describe": "保留字符切割宽度范围（例：\\\"50-150\\\"）",
+                    "Optional": true
+                  },
+                  {
+                    "Caption": "Height",
+                    "DataType": "String",
+                    "Describe": "保留字符切割高度范围（例：\\\"30-100\\\"）",
+                    "Optional": true
+                  }
+                ]
+              }
+            },
+            {
+              "Caption": "Incise_Preview",
+              "Remark": "切割字符预览",
+              "Icon": "函数",
+              "Templet": "command",
+              "Visible": true,
+              "Function": true,
+              "InsCode": "TURING.Incise_Preview(index)",
+              "Help": {
+                "Caption": "Incise_Preview",
+                "Define": "[x,y] = TURING.Incise_Preview(index)",
+                "Describe": "对切割的字符像素数据进行显示查看",
+                "RetType": "String",
+                "Return": "[点击图像位置的坐标，格式：x,y]<br>x：返回图像上点击位置的X坐标<br>y：返回图像上点击位置的Y坐标",
+                "Param": [
+                  {
+                    "Caption": "index",
+                    "DataType": "Integer",
+                    "Describe": "切割字符索引号",
+                    "Optional": false
+                  }
+                ]
+              }
+            },
+            {
+              "Caption": "配置字符数据",
+              "Icon": "文件夹",
+              "Templet": "index",
+              "Visible": true,
+              "Function": false,
+              "Help": {},
+              "Child": [
+                {
+                  "Caption": "Incise_GetCharData",
+                  "Remark": "获取切割字符数据",
+                  "Icon": "函数",
+                  "Templet": "command",
+                  "Visible": true,
+                  "Function": true,
+                  "InsCode": "TURING.Incise_GetCharData()",
+                  "Help": {
+                    "Caption": "Incise_GetCharData",
+                    "Define": "CharData = TURING.Incise_GetCharData()",
+                    "Describe": "获取切割字符的数据结构信息",
+                    "RetType": "String",
+                    "Return": "字符切割数据信息，格式：左,上,宽,高,点阵|左,上,宽,高,点阵|…）",
+                    "Param": []
+                  }
+                },
+                {
+                  "Caption": "Incise_CharSizeOne",
+                  "Remark": "切割字符大小归一化",
+                  "Icon": "函数",
+                  "Templet": "command",
+                  "Visible": true,
+                  "Function": true,
+                  "InsCode": "TURING.Incise_CharSizeOne(iWidth, iHeight)",
+                  "Help": {
+                    "Caption": "Incise_CharSizeOne",
+                    "Define": "TURING.Incise_CharSizeOne(iWidth, iHeight)",
+                    "Describe": "对切割的字符像素数据进行统一大小",
+                    "RetType": "Null",
+                    "Return": "无",
+                    "Param": [
+                      {
+                        "Caption": "iWidth",
+                        "DataType": "Integer",
+                        "Describe": "统一大小的宽度值",
+                        "Optional": false
+                      },
+                      {
+                        "Caption": "iHeight",
+                        "DataType": "Integer",
+                        "Describe": "统一大小的高度值",
+                        "Optional": false
+                      }
+                    ]
+                  }
+                },
+                {
+                  "Caption": "Incise_ModifyCharData",
+                  "Remark": "修改切割字符数据",
+                  "Icon": "函数",
+                  "Templet": "command",
+                  "Visible": true,
+                  "Function": true,
+                  "InsCode": "TURING.Incise_ModifyCharData(Index, Left, Top)",
+                  "Help": {
+                    "Caption": "Incise_ModifyCharData",
+                    "Define": "TURING.Incise_ModifyCharData(Index, Left, Top)",
+                    "Describe": "修改图像中切割的字符数据",
+                    "RetType": "Null",
+                    "Return": "无",
+                    "Param": [
+                      {
+                        "Caption": "Index",
+                        "DataType": "Integer",
+                        "Describe": "切割字符数据对应的索引号",
+                        "Optional": false
+                      },
+                      {
+                        "Caption": "Left",
+                        "DataType": "Integer",
+                        "Describe": "设置左边坐标（默认0）",
+                        "Optional": true
+                      },
+                      {
+                        "Caption": "Top",
+                        "DataType": "Integer",
+                        "Describe": "设置顶上坐标（默认0）",
+                        "Optional": true
+                      }
+                    ]
+                  }
+                },
+                {
+                  "Caption": "Incise_EraseData",
+                  "Remark": "清除切割字符数据",
+                  "Icon": "函数",
+                  "Templet": "command",
+                  "Visible": true,
+                  "Function": true,
+                  "InsCode": "TURING.Incise_EraseData()",
+                  "Help": {
+                    "Caption": "Incise_EraseData",
+                    "Define": "TURING.Incise_EraseData()",
+                    "Describe": "清除图像中切割的字符所有数据",
+                    "RetType": "Null",
+                    "Return": "无",
+                    "Param": []
+                  }
+                },
+                {
+                  "Caption": "Incise_AddCharData",
+                  "Remark": "追加图像数据为切割数据",
+                  "Icon": "函数",
+                  "Templet": "command",
+                  "Visible": true,
+                  "Function": true,
+                  "InsCode": "TURING.Incise_AddCharData(Left, Top)",
+                  "Help": {
+                    "Caption": "Incise_AddCharData",
+                    "Define": "CharNum = TURING.Incise_AddCharData(Left, Top)",
+                    "Describe": "追加图像数据为切割字符数据 ",
+                    "RetType": "Integer",
+                    "Return": "字符切割数量",
+                    "Param": [
+                      {
+                        "Caption": "Left",
+                        "DataType": "Integer",
+                        "Describe": "设置左边坐标（默认0）",
+                        "Optional": true
+                      },
+                      {
+                        "Caption": "Top",
+                        "DataType": "Integer",
+                        "Describe": "设置顶上坐标（默认0）",
+                        "Optional": true
+                      }
+                    ]
+                  }
+                },
+                {
+                  "Caption": "Incise_JoinCharData",
+                  "Remark": "合并切割字符",
+                  "Icon": "函数",
+                  "Templet": "command",
+                  "Visible": true,
+                  "Function": true,
+                  "InsCode": "TURING.Incise_JoinCharData(index1, index2)",
+                  "Help": {
+                    "Caption": "Incise_JoinCharData",
+                    "Define": "CharNum = TURING.Incise_JoinCharData(index1, index2)",
+                    "Describe": "对切割的两个字符像素数据进行合并处理",
+                    "RetType": "Integer",
+                    "Return": "字符切割数量",
+                    "Param": [
+                      {
+                        "Caption": "index1",
+                        "DataType": "Integer",
+                        "Describe": "切割字符索引号1<br>",
+                        "Optional": false
+                      },
+                      {
+                        "Caption": "index2",
+                        "DataType": "Integer",
+                        "Describe": "切割字符索引号2（合并后删除此字符图像）",
+                        "Optional": false
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "Caption": "步骤4：加载字库",
+          "Icon": "文件夹",
+          "Templet": "index",
+          "Visible": true,
+          "Function": false,
+          "Help": {},
+          "Child": [
+            {
+              "Caption": "Lib_Load",
+              "Remark": "加载识别字库",
+              "Icon": "函数",
+              "Templet": "command",
+              "Visible": true,
+              "Function": true,
+              "InsCode": "TURING.Lib_Load(LibPath)",
+              "Help": {
+                "Caption": "Lib_Load",
+                "Define": "num = TURING.Lib_Load(LibPath)",
+                "Describe": "加载识别字库文件数据",
+                "RetType": "Integer",
+                "Return": "字库的数量",
+                "Param": [
+                  {
+                    "Caption": "LibPath",
+                    "DataType": "String",
+                    "Describe": "识别字库文件路径",
+                    "Optional": false
+                  }
+                ]
+              }
+            },
+            {
+              "Caption": "Lib_Create",
+              "Remark": "创建识别字库",
+              "Icon": "函数",
+              "Templet": "command",
+              "Visible": true,
+              "Function": true,
+              "InsCode": "TURING.Lib_Create(Font, Size, Text)",
+              "Help": {
+                "Caption": "Lib_Create",
+                "Define": "num = TURING.Lib_Create(Font, Size, Text)",
+                "Describe": "创建系统的字体作为识别字库文件数据",
+                "RetType": "Integer",
+                "Return": "字库的数量",
+                "Param": [
+                  {
+                    "Caption": "Font",
+                    "DataType": "String",
+                    "Describe": "系统中的字体名称|字体样式(默认0。数值：0正常，1粗体，2斜体。其他依次叠加数字)",
+                    "Optional": false
+                  },
+                  {
+                    "Caption": "Size",
+                    "DataType": "Integer",
+                    "Describe": "字体的字号大小",
+                    "Optional": false
+                  },
+                  {
+                    "Caption": "Text",
+                    "DataType": "String",
+                    "Describe": "设置字库内容，默认含有3500个汉字和英文数字符号。",
+                    "Optional": true
+                  }
+                ]
+              }
+            },
+            {
+              "Caption": "Lib_Add",
+              "Remark": "添加新的识别字库",
+              "Icon": "函数",
+              "Templet": "command",
+              "Visible": true,
+              "Function": true,
+              "InsCode": "TURING.Lib_Add(Serial)",
+              "Help": {
+                "Caption": "Lib_Add",
+                "Define": "TURING.Lib_Add(Serial)",
+                "Describe": "添加新的识别字库数据到指定编号",
+                "RetType": "Null",
+                "Return": "无",
+                "Param": [
+                  {
+                    "Caption": "Serial",
+                    "DataType": "Integer",
+                    "Describe": "字库编号（默认1，上限10）",
+                    "Optional": true
+                  }
+                ]
+              }
+            },
+            {
+              "Caption": "Lib_Use",
+              "Remark": "使用指定识别字库",
+              "Icon": "函数",
+              "Templet": "command",
+              "Visible": true,
+              "Function": true,
+              "InsCode": "TURING.Lib_Use(Serial)",
+              "Help": {
+                "Caption": "Lib_Use",
+                "Define": "TURING.Lib_Use(Serial)",
+                "Describe": "使用指定编号的识别字库数据",
+                "RetType": "Null",
+                "Return": "无",
+                "Param": [
+                  {
+                    "Caption": "Serial",
+                    "DataType": "Integer",
+                    "Describe": "字库编号（默认1，上限10）",
+                    "Optional": true
+                  }
+                ]
+              }
+            },
+            {
+              "Caption": "Lib_AddImageData",
+              "Remark": "图像数据追加为字库",
+              "Icon": "函数",
+              "Templet": "command",
+              "Visible": true,
+              "Function": true,
+              "InsCode": "TURING.Lib_AddImageData(text)",
+              "Help": {
+                "Caption": "Lib_AddImageData",
+                "Define": "TURING.Lib_AddImageData(text)",
+                "Describe": "内部的图像数据追加为识别字库",
+                "RetType": "Null",
+                "Return": "无",
+                "Param": [
+                  {
+                    "Caption": "text",
+                    "DataType": "String",
+                    "Describe": "字符点阵对应的识别文字",
+                    "Optional": false
+                  }
+                ]
+              }
+            },
+            {
+              "Caption": "Lib_UBound",
+              "Remark": "获得字库数量",
+              "Icon": "函数",
+              "Templet": "command",
+              "Visible": true,
+              "Function": true,
+              "InsCode": "TURING.Lib_UBound()",
+              "Help": {
+                "Caption": "Lib_UBound",
+                "Define": "Num = TURING.Lib_UBound()",
+                "Describe": "获得识别字库数量下标值",
+                "RetType": "Integer",
+                "Return": "字库数量下标值",
+                "Param": []
+              }
+            },
+            {
+              "Caption": "Lib_AnalyzeFontSize",
+              "Remark": "分析切割字符的字体与字号",
+              "Icon": "函数",
+              "Templet": "command",
+              "Visible": true,
+              "Function": true,
+              "InsCode": "TURING.Lib_AnalyzeFontSize(Text, Mode)",
+              "Help": {
+                "Caption": "Lib_AnalyzeFontSize",
+                "Define": "FontSize = TURING.Lib_AnalyzeFontSize(Text, Mode)",
+                "Describe": "分析切割字符的字体与字号",
+                "RetType": "String",
+                "Return": "字体与字号（格式：字体,字号,相似度|字体,字号,相似度|…）",
+                "Param": [
+                  {
+                    "Caption": "Text",
+                    "DataType": "String",
+                    "Describe": "切割字符对应的文字",
+                    "Optional": false
+                  },
+                  {
+                    "Caption": "Mode",
+                    "DataType": "String",
+                    "Describe": "样式，默认\\\"0|0\\\"（格式：0正常,1粗体,2斜体,3粗斜体|0中文字体，1英文字体）",
+                    "Optional": false
+                  }
+                ]
+              }
+            },
+            {
+              "Caption": "Lib_Preview",
+              "Remark": "字库点阵预览",
+              "Icon": "函数",
+              "Templet": "command",
+              "Visible": true,
+              "Function": true,
+              "InsCode": "TURING.Lib_Preview(index)",
+              "Help": {
+                "Caption": "Lib_Preview",
+                "Define": "[x,y] = TURING.Lib_Preview(index)",
+                "Describe": "对加载的识别字库点阵进行显示查看",
+                "RetType": "String",
+                "Return": "[点击图像位置的坐标，格式：x,y]<br>x：返回图像上点击位置的X坐标<br>y：返回图像上点击位置的Y坐标",
+                "Param": [
+                  {
+                    "Caption": "index",
+                    "DataType": "Integer",
+                    "Describe": "字库索引号",
+                    "Optional": false
+                  }
+                ]
+              }
+            },
+            {
+              "Caption": "制作识别字库",
+              "Icon": "文件夹",
+              "Templet": "index",
+              "Visible": true,
+              "Function": false,
+              "Help": {},
+              "Child": [
+                {
+                  "Caption": "Lib_Share",
+                  "Remark": "分享识别字库",
+                  "Icon": "函数",
+                  "Templet": "command",
+                  "Visible": true,
+                  "Function": true,
+                  "InsCode": "TURING.Lib_Share(LibPath)",
+                  "Help": {
+                    "Caption": "Lib_Share",
+                    "Define": "TURING.Lib_Share(LibPath)",
+                    "Describe": "将已加载的识别字库重新生成一个新的字库文件",
+                    "RetType": "Null",
+                    "Return": "无",
+                    "Param": [
+                      {
+                        "Caption": "LibPath",
+                        "DataType": "String",
+                        "Describe": "保存识别字库文件路径",
+                        "Optional": false
+                      }
+                    ]
+                  }
+                },
+                {
+                  "Caption": "Lib_Generate",
+                  "Remark": "生成字符串点阵",
+                  "Icon": "函数",
+                  "Templet": "command",
+                  "Visible": true,
+                  "Function": true,
+                  "InsCode": "TURING.Lib_Generate()",
+                  "Help": {
+                    "Caption": "Lib_Generate",
+                    "Define": "bit = TURING.Lib_Generate()",
+                    "Describe": "生成二进制字符串点阵",
+                    "RetType": "String",
+                    "Return": "二进制字符串点阵",
+                    "Param": []
+                  }
+                },
+                {
+                  "Caption": "Lib_OneCharData",
+                  "Remark": "字符切割数据",
+                  "Icon": "函数",
+                  "Templet": "command",
+                  "Visible": true,
+                  "Function": true,
+                  "InsCode": "TURING.Lib_OneCharData(index)",
+                  "Help": {
+                    "Caption": "Lib_OneCharData",
+                    "Define": "lattice = TURING.Lib_OneCharData(index)",
+                    "Describe": "获取图像切割的字符点阵库内容",
+                    "RetType": "String",
+                    "Return": "字符点阵（格式：字符宽,高|二进制字符串点阵）",
+                    "Param": [
+                      {
+                        "Caption": "index",
+                        "DataType": "Integer",
+                        "Describe": "切割字符索引号",
+                        "Optional": false
+                      }
+                    ]
+                  }
+                },
+                {
+                  "Caption": "Lib_Save",
+                  "Remark": "存储识别字库",
+                  "Icon": "函数",
+                  "Templet": "command",
+                  "Visible": true,
+                  "Function": true,
+                  "InsCode": "TURING.Lib_Save(text, lattice, LibPath)",
+                  "Help": {
+                    "Caption": "Lib_Save",
+                    "Define": "TURING.Lib_Save(text, lattice, LibPath)",
+                    "Describe": "切割字符存储为识别字库 ",
+                    "RetType": "Null",
+                    "Return": "无",
+                    "Param": [
+                      {
+                        "Caption": "text",
+                        "DataType": "String",
+                        "Describe": "字符点阵对应的识别文字",
+                        "Optional": false
+                      },
+                      {
+                        "Caption": "lattice",
+                        "DataType": "String",
+                        "Describe": "字符点阵（格式：字符宽,高|二进制字符串点阵）",
+                        "Optional": false
+                      },
+                      {
+                        "Caption": "LibPath",
+                        "DataType": "String",
+                        "Describe": "识别字库文件路径",
+                        "Optional": false
+                      }
+                    ]
+                  }
+                },
+                {
+                  "Caption": "Lib_SaveEx",
+                  "Remark": "存储识别字库_扩展",
+                  "Icon": "函数",
+                  "Templet": "command",
+                  "Visible": true,
+                  "Function": true,
+                  "InsCode": "TURING.Lib_SaveEx(text, Index, LibPath)",
+                  "Help": {
+                    "Caption": "Lib_SaveEx",
+                    "Define": "TURING.Lib_SaveEx(text, Index, LibPath)",
+                    "Describe": "切割字符存储为识别字库（扩展）",
+                    "RetType": "Null",
+                    "Return": "无",
+                    "Param": [
+                      {
+                        "Caption": "text",
+                        "DataType": "String",
+                        "Describe": "字符点阵对应的识别文字",
+                        "Optional": false
+                      },
+                      {
+                        "Caption": "Index",
+                        "DataType": "Integer",
+                        "Describe": "切割字符索引号（从0开始）",
+                        "Optional": false
+                      },
+                      {
+                        "Caption": "LibPath",
+                        "DataType": "String",
+                        "Describe": "识别字库文件路径",
+                        "Optional": false
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "Caption": "步骤5：识别对比",
+          "Icon": "文件夹",
+          "Templet": "index",
+          "Visible": true,
+          "Function": false,
+          "Help": {},
+          "Child": [
+            {
+              "Caption": "OCR",
+              "Remark": "识别",
+              "Icon": "函数",
+              "Templet": "command",
+              "Visible": true,
+              "Function": true,
+              "InsCode": "TURING.OCR(Similar, Mode)",
+              "Help": {
+                "Caption": "OCR",
+                "Define": "text = TURING.OCR(Similar, Mode)",
+                "Describe": "进行图像文字识别",
+                "RetType": "String",
+                "Return": "识别得到的文字内容",
+                "Param": [
+                  {
+                    "Caption": "Similar",
+                    "DataType": "Integer",
+                    "Describe": "点数匹配相似度",
+                    "Optional": false
+                  },
+                  {
+                    "Caption": "Mode",
+                    "DataType": "Integer",
+                    "Describe": "设置返回结果内容，格式：默认0:识别文字，1:识别文字|第1个字x坐标,y坐标|第2个字x坐标,y坐标|…，2:第1个文字,x坐标,y坐标|第2个文字,x坐标,y坐标|…",
+                    "Optional": false
+                  }
+                ]
+              }
+            },
+            {
+              "Caption": "OCRex",
+              "Remark": "识别_增强版",
+              "Icon": "函数",
+              "Templet": "command",
+              "Visible": true,
+              "Function": true,
+              "InsCode": "TURING.OCRex(Similar, Mode)",
+              "Help": {
+                "Caption": "OCRex",
+                "Define": "text = TURING.OCRex(Similar, Mode)",
+                "Describe": "进行图像文字识别（对拆分的文字识别，效率比较慢）",
+                "RetType": "String",
+                "Return": "识别得到的文字内容",
+                "Param": [
+                  {
+                    "Caption": "Similar",
+                    "DataType": "Integer",
+                    "Describe": "点数匹配相似度",
+                    "Optional": false
+                  },
+                  {
+                    "Caption": "Mode",
+                    "DataType": "Integer",
+                    "Describe": "设置返回结果内容，格式：默认0:识别文字，1:识别文字|第1个字x坐标,y坐标|第2个字x坐标,y坐标|…，2:第1个文字,x坐标,y坐标|第2个文字,x坐标,y坐标|…",
+                    "Optional": false
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Caption": "屏幕打印",
+      "Icon": "文件夹",
+      "Templet": "index",
+      "Visible": true,
+      "Function": false,
+      "Help": {},
+      "Child": [
+        {
+          "Caption": "Screen_PrintImage",
+          "Remark": "屏幕打印图像",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "InsCode": "TURING.Screen_PrintImage(x, y)",
+          "Help": {
+            "Caption": "Screen_PrintImage",
+            "Define": "TURING.Screen_PrintImage(x, y)",
+            "Describe": "直接在屏幕上打印图像像素数据",
+            "RetType": "Null",
+            "Return": "无",
+            "Param": [
+              {
+                "Caption": "x",
+                "DataType": "Integer",
+                "Describe": "屏幕X坐标(默认0)",
+                "Optional": true
+              },
+              {
+                "Caption": "y",
+                "DataType": "Integer",
+                "Describe": "屏幕Y坐标(默认0)",
+                "Optional": true
+              }
+            ]
+          }
+        },
+        {
+          "Caption": "Screen_PrintText",
+          "Remark": "屏幕打印文字",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "InsCode": "TURING.Screen_PrintText(Text, x, y, FBcolor, FontNameSize, Mode)",
+          "Help": {
+            "Caption": "Screen_PrintText",
+            "Define": "TURING.Screen_PrintText(Text, x, y, FBcolor, FontNameSize, Mode)",
+            "Describe": "直接在屏幕上打印文字内容",
+            "RetType": "Null",
+            "Return": "无",
+            "Param": [
+              {
+                "Caption": "Text",
+                "DataType": "String",
+                "Describe": "文字内容",
+                "Optional": false
+              },
+              {
+                "Caption": "x",
+                "DataType": "Integer",
+                "Describe": "屏幕X坐标(默认0)",
+                "Optional": true
+              },
+              {
+                "Caption": "y",
+                "DataType": "Integer",
+                "Describe": "屏幕Y坐标(默认0)",
+                "Optional": true
+              },
+              {
+                "Caption": "FBcolor",
+                "DataType": "String",
+                "Describe": "文字颜色|背景色(默认\\\"0000FF|000000\\\")",
+                "Optional": true
+              },
+              {
+                "Caption": "FontNameSize",
+                "DataType": "String",
+                "Describe": "字体名称|字号大小(默认\\\"宋体|9\\\")",
+                "Optional": true
+              },
+              {
+                "Caption": "Mode",
+                "DataType": "String",
+                "Describe": "字体样式和精度，默认：\\\"0|0\\\"(格式：模式<0正常，1粗体，2斜体，4下划线，8删除线。其他依次叠加数字>|精度<0抗锯齿，1清晰>)",
+                "Optional": true
+              }
+            ]
+          }
+        },
+        {
+          "Caption": "Screen_Refresh",
+          "Remark": "刷新屏幕",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "InsCode": "TURING.Screen_Refresh()",
+          "Help": {
+            "Caption": "Screen_Refresh",
+            "Define": "TURING.Screen_Refresh()",
+            "Describe": "对屏幕上显示的打印内容进行强制刷新清除",
+            "RetType": "Null",
+            "Return": "无",
+            "Param": []
+          }
+        }
+      ]
+    },
+    {
+      "Caption": "数学统计",
+      "Icon": "文件夹",
+      "Templet": "index",
+      "Visible": true,
+      "Function": false,
+      "Help": {},
+      "Child": [
+        {
+          "Caption": "Different",
+          "Remark": "与众不同",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "InsCode": "TURING.Different()",
+          "Help": {
+            "Caption": "Different",
+            "Define": "[x,y] = TURING.Different()",
+            "Describe": "计算图像中颜色最小的区域范围",
+            "RetType": "String",
+            "Return": "[坐标]<br>x：返回X坐标<br>y：返回Y坐标",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "EvalVariance",
+          "Remark": "统计差平方",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "InsCode": "TURING.EvalVariance()",
+          "Help": {
+            "Caption": "EvalVariance",
+            "Define": "num = TURING.EvalVariance()",
+            "Describe": "评价图像清晰度（对图像进行差平方的统计）",
+            "RetType": "Integer",
+            "Return": "清晰度数值",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "GetLineAllPos",
+          "Remark": "取直线上所有坐标",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "InsCode": "TURING.GetLineAllPos(x1, y1, x2, y2)",
+          "Help": {
+            "Caption": "GetLineAllPos",
+            "Define": "AllPos = TURING.GetLineAllPos(x1, y1, x2, y2)",
+            "Describe": "获取两点间的直线上所有坐标",
+            "RetType": "String",
+            "Return": "直线上所有坐标（格式:x坐标,y坐标|x坐标,y坐标|…）",
+            "Param": [
+              {
+                "Caption": "x1",
+                "DataType": "Integer",
+                "Describe": "起点X坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "y1",
+                "DataType": "Integer",
+                "Describe": "起点Y坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "x2",
+                "DataType": "Integer",
+                "Describe": "终点X坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "y2",
+                "DataType": "Integer",
+                "Describe": "终点Y坐标",
+                "Optional": false
+              }
+            ]
+          }
+        },
+        {
+          "Caption": "GetAllPoints",
+          "Remark": "获取所有端点坐标",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "InsCode": "TURING.GetAllPoints(Value)",
+          "Help": {
+            "Caption": "GetAllPoints",
+            "Define": "Pos = TURING.GetAllPoints(Value)",
+            "Describe": "获取内部图像数据上的所有认为是端点的坐标",
+            "RetType": "String",
+            "Return": "所有端点的坐标（格式:x坐标,y坐标|…）",
+            "Param": [
+              {
+                "Caption": "Value",
+                "DataType": "Integer",
+                "Describe": "阈值（默认7，1~上限8）",
+                "Optional": true
+              }
+            ]
+          }
+        },
+        {
+          "Caption": "GetOneLine",
+          "Remark": "指定端点之间的线段",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "InsCode": "TURING.GetOneLine(x1,y1,x2,y2)",
+          "Help": {
+            "Caption": "GetOneLine",
+            "Define": "Pos = TURING.GetOneLine(x1,y1,x2,y2)",
+            "Describe": "获取内部图像数据上的指定两端点之间的线条坐标",
+            "RetType": "String",
+            "Return": "线条上所有坐标（格式:x坐标,y坐标-x坐标,y坐标…）",
+            "Param": [
+              {
+                "Caption": "x1",
+                "DataType": "Boolean",
+                "Describe": "起点X坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "y1",
+                "DataType": "Integer",
+                "Describe": "起点Y坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "x2",
+                "DataType": "Integer",
+                "Describe": "终点X坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "y2",
+                "DataType": "Integer",
+                "Describe": "终点Y坐标",
+                "Optional": false
+              }
+            ]
+          }
+        },
+        {
+          "Caption": "GetAllLines",
+          "Remark": "所有端点之间的线段",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "InsCode": "TURING.GetAllLines(Value, Num)",
+          "Help": {
+            "Caption": "GetAllLines",
+            "Define": "Pos = TURING.GetAllLines(Value, Num)",
+            "Describe": "获取内部图像数据上的所有端点之间的线条坐标<br>【注意】需要配合“GetAllPoints 获取所有端点坐标”命令使用",
+            "RetType": "String",
+            "Return": "线条上所有坐标（格式:x坐标,y坐标-x坐标,y坐标…）",
+            "Param": [
+              {
+                "Caption": "Value",
+                "DataType": "Integer",
+                "Describe": "阈值（默认7，1~上限8）",
+                "Optional": true
+              },
+              {
+                "Caption": "Num",
+                "DataType": "Integer",
+                "Describe": "像素点数量（大于此数量保留坐标）",
+                "Optional": true
+              }
+            ]
+          }
+        },
+        {
+          "Caption": "TwoLinesCrossPos",
+          "Remark": "取两直线相交坐标",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "InsCode": "TURING.TwoLinesCrossPos(ax1,ay1,ax2,ay2,bx1,by1,bx2,by2)",
+          "Help": {
+            "Caption": "TwoLinesCrossPos",
+            "Define": "Pos = TURING.TwoLinesCrossPos(ax1,ay1,ax2,ay2,bx1,by1,bx2,by2)",
+            "Describe": "获取两条件直线相交的坐标（理论上的相交线）",
+            "RetType": "String",
+            "Return": "两线相交的坐标（格式:x坐标,y坐标）",
+            "Param": [
+              {
+                "Caption": "ax1",
+                "DataType": "Integer",
+                "Describe": "第1条线起点X坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "ay1",
+                "DataType": "Integer",
+                "Describe": "第1条线起点Y坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "ax2",
+                "DataType": "Integer",
+                "Describe": "第1条线终点X坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "ay2",
+                "DataType": "Integer",
+                "Describe": "第1条线终点Y坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "bx1",
+                "DataType": "Integer",
+                "Describe": "第2条线起点X坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "by1",
+                "DataType": "Integer",
+                "Describe": "第2条线起点Y坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "bx2",
+                "DataType": "Integer",
+                "Describe": "第2条线终点X坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "by2",
+                "DataType": "Integer",
+                "Describe": "第2条线终点Y坐标",
+                "Optional": false
+              }
+            ]
+          }
+        },
+        {
+          "Caption": "GetColorPoints",
+          "Remark": "统计每种颜色点数量",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "InsCode": "TURING.GetColorPoints(Mode)",
+          "Help": {
+            "Caption": "GetColorPoints",
+            "Define": "Nums = TURING.GetColorPoints(Mode)",
+            "Describe": "统计内部图像数据上的每一种颜色点数量",
+            "RetType": "String",
+            "Return": "每种颜色点数量（数量：从大到小排序）",
+            "Param": [
+              {
+                "Caption": "Mode",
+                "DataType": "String",
+                "Describe": "指定颜色格式（默认：BGR，RGB，HSV：H.S.V）",
+                "Optional": false
+              }
+            ]
+          }
+        },
+        {
+          "Caption": "CountColorNum",
+          "Remark": "统计指定颜色点数量",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "InsCode": "TURING.CountColorNum(Color)",
+          "Help": {
+            "Caption": "CountColorNum",
+            "Define": "Num = TURING.CountColorNum(Color)",
+            "Describe": "统计内部图像数据上的颜色点数量",
+            "RetType": "Integer",
+            "Return": "颜色点数量",
+            "Param": [
+              {
+                "Caption": "Color",
+                "DataType": "String",
+                "Describe": "指定统计的颜色串BBGGRR-BDGDRD（例：\\\"0000FF-000080|00FFFF\\\"）",
+                "Optional": false
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Caption": "图色查找",
+      "Icon": "文件夹",
+      "Templet": "index",
+      "Visible": true,
+      "Function": false,
+      "Help": {},
+      "Child": [
+        {
+          "Caption": "GetPixelColor",
+          "Remark": "得到指定点的颜色",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "InsCode": "TURING.GetPixelColor(x, y, mode)",
+          "Help": {
+            "Caption": "GetPixelColor",
+            "Define": "color = TURING.GetPixelColor(x, y, mode)",
+            "Describe": "得到屏幕指定位置点的颜色",
+            "RetType": "String",
+            "Return": "16进制颜色值",
+            "Param": [
+              {
+                "Caption": "x",
+                "DataType": "Integer",
+                "Describe": "屏幕X坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "y",
+                "DataType": "Integer",
+                "Describe": "屏幕Y坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "mode",
+                "DataType": "Integer",
+                "Describe": "取色模式（默认0：普通取色，1：增强取色（半透明窗体），2：取内部图像数据颜色）",
+                "Optional": false
+              }
+            ]
+          }
+        },
+        {
+          "Caption": "FindColor",
+          "Remark": "区域找色",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "InsCode": "TURING.FindColor(left, top, right, bottom, color, direction, similarity)",
+          "Help": {
+            "Caption": "FindColor",
+            "Define": "[x, y] = TURING.FindColor(left, top, right, bottom, color, direction, similarity)",
+            "Describe": "屏幕指定区域内查找颜色",
+            "RetType": "String",
+            "Return": "[坐标，格式：x,y]<br>x：返回屏幕X坐标<br>y：返回屏幕Y坐标",
+            "Param": [
+              {
+                "Caption": "left",
+                "DataType": "Integer",
+                "Describe": "屏幕左上角X坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "top",
+                "DataType": "Integer",
+                "Describe": "屏幕左上角Y坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "right",
+                "DataType": "Integer",
+                "Describe": "屏幕右下角X坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "bottom",
+                "DataType": "Integer",
+                "Describe": "屏幕右下角Y坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "color",
+                "DataType": "String",
+                "Describe": "16进制颜色值",
+                "Optional": false
+              },
+              {
+                "Caption": "direction",
+                "DataType": "Integer",
+                "Describe": "查找方向（0从左上往右下，1从左下往右上，2从右上往左下，3从右下往左上，4从上左往下右，5从上右往下左，6从下左往上右，7从下右往上左）",
+                "Optional": false
+              },
+              {
+                "Caption": "similarity",
+                "DataType": "Double",
+                "Describe": "颜色相似度（范围：0.1~1）",
+                "Optional": false
+              }
+            ]
+          }
+        },
+        {
+          "Caption": "FindColorExS",
+          "Remark": "区域找多色",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "InsCode": "TURING.FindColorExS(left, top, right, bottom, colorS, direction, similarity)",
+          "Help": {
+            "Caption": "FindColorExS",
+            "Define": "xyS = TURING.FindColorExS(left, top, right, bottom, colorS, direction, similarity)",
+            "Describe": "屏幕指定区域内查找多个颜色及多个坐标",
+            "RetType": "Boolean",
+            "Return": "0: 失败，1: 成功",
+            "Param": [
+              {
+                "Caption": "left",
+                "DataType": "Integer",
+                "Describe": "屏幕左上角X坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "top",
+                "DataType": "Integer",
+                "Describe": "屏幕左上角Y坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "right",
+                "DataType": "Integer",
+                "Describe": "屏幕右下角X坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "bottom",
+                "DataType": "Integer",
+                "Describe": "屏幕右下角Y坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "colorS",
+                "DataType": "String",
+                "Describe": "16进制颜色值，多色用竖线|分隔",
+                "Optional": false
+              },
+              {
+                "Caption": "direction",
+                "DataType": "Integer",
+                "Describe": "查找方向（0从左上往右下，1从左下往右上，2从右上往左下，3从右下往左上，4从上左往下右，5从上右往下左，6从下左往上右，7从下右往上左）",
+                "Optional": false
+              },
+              {
+                "Caption": "similarity",
+                "DataType": "Double",
+                "Describe": "颜色相似度（范围：0.1~1）",
+                "Optional": false
+              }
+            ]
+          }
+        },
+        {
+          "Caption": "FindImage",
+          "Remark": "区域找图",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "InsCode": "TURING.FindImage(left, top, right, bottom, ImagePath, similarity)",
+          "Help": {
+            "Caption": "FindImage",
+            "Define": "[x, y] = TURING.FindImage(left, top, right, bottom, ImagePath, similarity)",
+            "Describe": "屏幕指定区域内查找图片（同按键精灵）",
+            "RetType": "String",
+            "Return": "[坐标，格式：x,y]<br>x：返回屏幕X坐标<br>y：返回屏幕Y坐标",
+            "Param": [
+              {
+                "Caption": "left",
+                "DataType": "Integer",
+                "Describe": "屏幕左上角X坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "top",
+                "DataType": "Integer",
+                "Describe": "屏幕左上角Y坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "right",
+                "DataType": "Integer",
+                "Describe": "屏幕右下角X坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "bottom",
+                "DataType": "Integer",
+                "Describe": "屏幕右下角Y坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "ImagePath",
+                "DataType": "String",
+                "Describe": "需要查找的图片路径",
+                "Optional": false
+              },
+              {
+                "Caption": "similarity",
+                "DataType": "Double",
+                "Describe": "颜色相似度（范围：0.1~1）<br>或传递字符串型数据,颜色偏色值（范围：000000~FFFFFF）",
+                "Optional": false
+              }
+            ]
+          }
+        },
+        {
+          "Caption": "FindImageS",
+          "Remark": "区域找所有图",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "InsCode": "TURING.FindImageS(left, top, right, bottom, ImagePath, similarity)",
+          "Help": {
+            "Caption": "FindImageS",
+            "Define": "xyS = TURING.FindImageS(left, top, right, bottom, ImagePath, similarity)",
+            "Describe": "屏幕指定区域内查找图片的所有坐标",
+            "RetType": "String",
+            "Return": "[坐标，格式：x,y|x,y|…]<br>xyS：返回屏幕多个坐标（格式：x坐标,y坐标|x坐标,y坐标|…）",
+            "Param": [
+              {
+                "Caption": "left",
+                "DataType": "Integer",
+                "Describe": "屏幕左上角X坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "top",
+                "DataType": "Integer",
+                "Describe": "屏幕左上角Y坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "right",
+                "DataType": "Integer",
+                "Describe": "屏幕右下角X坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "bottom",
+                "DataType": "Integer",
+                "Describe": "屏幕右下角Y坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "ImagePath",
+                "DataType": "String",
+                "Describe": "需要查找的图片路径",
+                "Optional": false
+              },
+              {
+                "Caption": "similarity",
+                "DataType": "Double",
+                "Describe": "颜色相似度（范围：0.1~1）",
+                "Optional": false
+              }
+            ]
+          }
+        },
+        {
+          "Caption": "FindImageEx",
+          "Remark": "区域找其中图",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "InsCode": "TURING.FindImageEx(left, top, right, bottom, ImagePathS, similarity)",
+          "Help": {
+            "Caption": "FindImageEx",
+            "Define": "[id, x, y] = TURING.FindImageEx(left, top, right, bottom, ImagePathS, similarity)",
+            "Describe": "屏幕指定区域内查找所有图片的其中一张（不兼容2.6.7及以下的版本）",
+            "RetType": "Boolean",
+            "Return": "0: 没绑定,或者窗口不存在，1: 已经绑定.",
+            "Param": [
+              {
+                "Caption": "left",
+                "DataType": "Integer",
+                "Describe": "屏幕左上角X坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "top",
+                "DataType": "Integer",
+                "Describe": "屏幕左上角Y坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "right",
+                "DataType": "Integer",
+                "Describe": "屏幕右下角X坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "bottom",
+                "DataType": "Integer",
+                "Describe": "屏幕右下角Y坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "ImagePathS",
+                "DataType": "String",
+                "Describe": "需要查找的图片路径，多图用竖线|分隔",
+                "Optional": false
+              },
+              {
+                "Caption": "similarity",
+                "DataType": "Double",
+                "Describe": "颜色相似度（范围：0.1~1）",
+                "Optional": false
+              }
+            ]
+          }
+        },
+        {
+          "Caption": "FindImageExS",
+          "Remark": "区域找所有图所有坐标",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "InsCode": "TURING.FindImageExS(left, top, right, bottom, ImagePathS, similarity)",
+          "Help": {
+            "Caption": "FindImageExS",
+            "Define": "idxyS = TURING.FindImageExS(left, top, right, bottom, ImagePathS, similarity)",
+            "Describe": "屏幕指定区域内查找所有图片的每一张图的所有坐标",
+            "RetType": "String",
+            "Return": "[坐标，格式：id,x,y|id,x,y|…]<br>idxyS：返回屏幕多个坐标（格式：id图片标识,x坐标,y坐标|id图片标识,x坐标,y坐标|…）",
+            "Param": [
+              {
+                "Caption": "left",
+                "DataType": "Integer",
+                "Describe": "屏幕左上角X坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "top",
+                "DataType": "Integer",
+                "Describe": "屏幕左上角Y坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "right",
+                "DataType": "Integer",
+                "Describe": "屏幕右下角X坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "bottom",
+                "DataType": "Integer",
+                "Describe": "屏幕右下角Y坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "ImagePathS",
+                "DataType": "String",
+                "Describe": "需要查找的图片路径，多图用竖线|分隔",
+                "Optional": false
+              },
+              {
+                "Caption": "similarity",
+                "DataType": "Integer",
+                "Describe": "颜色相似度（范围：0.1~1）",
+                "Optional": false
+              }
+            ]
+          }
+        },
+        {
+          "Caption": "FindMouseShape",
+          "Remark": "鼠标形状识别",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "InsCode": "TURING.FindMouseShape(Mode)",
+          "Help": {
+            "Caption": "FindMouseShape",
+            "Define": "shape = TURING.FindMouseShape(Mode)",
+            "Describe": "获取当前鼠标光标的形状特征码",
+            "RetType": "Integer",
+            "Return": "鼠标特征码",
+            "Param": [
+              {
+                "Caption": "Mode",
+                "DataType": "Integer",
+                "Describe": "特征方式",
+                "Optional": false
+              }
+            ]
+          }
+        },
+        {
+          "Caption": "FindShape",
+          "Remark": "多边形识别",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "InsCode": "TURING.FindShape(distance, length)",
+          "Help": {
+            "Caption": "FindShape",
+            "Define": "shape = TURING.FindShape(distance, length)",
+            "Describe": "对二维多边形的图形进行识别（体验版）",
+            "RetType": "String",
+            "Return": "图形名称（三角形、多边形、矩形和圆形）",
+            "Param": [
+              {
+                "Caption": "distance",
+                "DataType": "Integer",
+                "Describe": "两顶点之间的距离",
+                "Optional": false
+              },
+              {
+                "Caption": "length",
+                "DataType": "Integer",
+                "Describe": "两顶点之间的线条长度",
+                "Optional": false
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Caption": "绘画图形",
+      "Icon": "文件夹",
+      "Templet": "index",
+      "Visible": true,
+      "Function": false,
+      "Help": {},
+      "Child": [
+        {
+          "Caption": "Draw_CreateCanvas",
+          "Remark": "创建空白画布",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "InsCode": "TURING.Draw_CreateCanvas(Width, Height, R, G, B)",
+          "Help": {
+            "Caption": "Draw_CreateCanvas",
+            "Define": "TURING.Draw_CreateCanvas(Width, Height, R, G, B)",
+            "Describe": "创建一个空白的内部图像数据的画布",
+            "RetType": "Null",
+            "Return": "无",
+            "Param": [
+              {
+                "Caption": "Width",
+                "DataType": "Integer",
+                "Describe": "画布的宽度",
+                "Optional": false
+              },
+              {
+                "Caption": "Height",
+                "DataType": "Integer",
+                "Describe": "画布的高度",
+                "Optional": false
+              },
+              {
+                "Caption": "R",
+                "DataType": "Integer",
+                "Describe": "默认0，10进制红色分量值",
+                "Optional": true
+              },
+              {
+                "Caption": "G",
+                "DataType": "Integer",
+                "Describe": "默认0，10进制绿色分量值",
+                "Optional": true
+              },
+              {
+                "Caption": "B",
+                "DataType": "Integer",
+                "Describe": "默认0，10进制蓝色分量值",
+                "Optional": true
+              }
+            ]
+          }
+        },
+        {
+          "Caption": "Draw_Point",
+          "Remark": "绘图画点",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "InsCode": "TURING.Draw_Point(x, y, R, G, B)",
+          "Help": {
+            "Caption": "Draw_Point",
+            "Define": "TURING.Draw_Point(x, y, R, G, B)",
+            "Describe": "在内部的图像数据上画了一个点",
+            "RetType": "Null",
+            "Return": "无",
+            "Param": [
+              {
+                "Caption": "x",
+                "DataType": "Integer",
+                "Describe": "X坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "y",
+                "DataType": "Integer",
+                "Describe": "Y坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "R",
+                "DataType": "Integer",
+                "Describe": "默认255，10进制红色分量值",
+                "Optional": true
+              },
+              {
+                "Caption": "G",
+                "DataType": "Integer",
+                "Describe": "默认0，10进制绿色分量值",
+                "Optional": true
+              },
+              {
+                "Caption": "B",
+                "DataType": "Integer",
+                "Describe": "默认0，10进制蓝色分量值",
+                "Optional": true
+              }
+            ]
+          }
+        },
+        {
+          "Caption": "Draw_Line",
+          "Remark": "绘图画线",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "InsCode": "TURING.Draw_Line(x1, y1, x2, y2, R, G, B)",
+          "Help": {
+            "Caption": "Draw_Line",
+            "Define": "TURING.Draw_Line(x1, y1, x2, y2, R, G, B)",
+            "Describe": "在内部的图像数据上画一条直线",
+            "RetType": "Null",
+            "Return": "无",
+            "Param": [
+              {
+                "Caption": "x1",
+                "DataType": "Integer",
+                "Describe": "起点X坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "y1",
+                "DataType": "Integer",
+                "Describe": "起点Y坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "x2",
+                "DataType": "Integer",
+                "Describe": "终点X坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "y2",
+                "DataType": "Integer",
+                "Describe": "终点Y坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "R",
+                "DataType": "Integer",
+                "Describe": "默认255，10进制红色分量值",
+                "Optional": true
+              },
+              {
+                "Caption": "G",
+                "DataType": "Integer",
+                "Describe": "默认0，10进制绿色分量值",
+                "Optional": true
+              },
+              {
+                "Caption": "B",
+                "DataType": "Integer",
+                "Describe": "默认0，10进制蓝色分量值",
+                "Optional": true
+              }
+            ]
+          }
+        },
+        {
+          "Caption": "Draw_Rectangle",
+          "Remark": "绘图矩形",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "InsCode": "TURING.Draw_Rectangle(left, top, right, bottom, R, G, B)",
+          "Help": {
+            "Caption": "Draw_Rectangle",
+            "Define": "TURING.Draw_Rectangle(left, top, right, bottom, R, G, B)",
+            "Describe": "在内部的图像数据上画一个矩形框",
+            "RetType": "Null",
+            "Return": "无",
+            "Param": [
+              {
+                "Caption": "left",
+                "DataType": "Integer",
+                "Describe": "左上角X坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "top",
+                "DataType": "Integer",
+                "Describe": "左上角Y坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "right",
+                "DataType": "Integer",
+                "Describe": "右下角X坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "bottom",
+                "DataType": "Integer",
+                "Describe": "右下角Y坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "R",
+                "DataType": "Integer",
+                "Describe": "默认255，10进制红色分量值",
+                "Optional": true
+              },
+              {
+                "Caption": "G",
+                "DataType": "Integer",
+                "Describe": "默认0，10进制绿色分量值",
+                "Optional": true
+              },
+              {
+                "Caption": "B",
+                "DataType": "Integer",
+                "Describe": "默认0，10进制蓝色分量值",
+                "Optional": true
+              }
+            ]
+          }
+        },
+        {
+          "Caption": "Draw_Block",
+          "Remark": "绘图方块",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "InsCode": "TURING.Draw_Block(left, top, right, bottom, R, G, B, Alpha)",
+          "Help": {
+            "Caption": "Draw_Block",
+            "Define": "TURING.Draw_Block(left, top, right, bottom, R, G, B, Alpha)",
+            "Describe": "在内部的图像数据上画一个实心矩形方块",
+            "RetType": "Null",
+            "Return": "无",
+            "Param": [
+              {
+                "Caption": "left",
+                "DataType": "Integer",
+                "Describe": "左上角X坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "top",
+                "DataType": "Integer",
+                "Describe": "左上角Y坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "right",
+                "DataType": "Integer",
+                "Describe": "右下角X坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "bottom",
+                "DataType": "Integer",
+                "Describe": "右下角Y坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "R",
+                "DataType": "Integer",
+                "Describe": "默认255，10进制红色分量值",
+                "Optional": true
+              },
+              {
+                "Caption": "G",
+                "DataType": "Integer",
+                "Describe": "默认0，10进制绿色分量值",
+                "Optional": true
+              },
+              {
+                "Caption": "B",
+                "DataType": "Integer",
+                "Describe": "默认0，10进制蓝色分量值",
+                "Optional": true
+              },
+              {
+                "Caption": "Alpha",
+                "DataType": "Integer",
+                "Describe": "透明度（默认100不透明）",
+                "Optional": true
+              }
+            ]
+          }
+        },
+        {
+          "Caption": "Draw_Circle",
+          "Remark": "绘图画圆",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "InsCode": "TURING.Draw_Circle(x, y, Radius, R, G, B, Full, Alpha)",
+          "Help": {
+            "Caption": "Draw_Circle",
+            "Define": "TURING.Draw_Circle(x, y, Radius, R, G, B, Full, Alpha)",
+            "Describe": "在内部的图像数据上画一个圆形",
+            "RetType": "Null",
+            "Return": "无",
+            "Param": [
+              {
+                "Caption": "x",
+                "DataType": "Integer",
+                "Describe": "圆心X坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "y",
+                "DataType": "Integer",
+                "Describe": "圆心Y坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "Radius",
+                "DataType": "Integer",
+                "Describe": "圆的半径",
+                "Optional": false
+              },
+              {
+                "Caption": "R",
+                "DataType": "Integer",
+                "Describe": "可选，默认255，10进制红色分量值",
+                "Optional": true
+              },
+              {
+                "Caption": "G",
+                "DataType": "Integer",
+                "Describe": "默认0，10进制绿色分量值",
+                "Optional": true
+              },
+              {
+                "Caption": "B",
+                "DataType": "Integer",
+                "Describe": "默认0，10进制蓝色分量值",
+                "Optional": true
+              },
+              {
+                "Caption": "Full",
+                "DataType": "Boolean",
+                "Describe": "默认False，填充实心为True",
+                "Optional": true
+              },
+              {
+                "Caption": "Alpha",
+                "DataType": "Integer",
+                "Describe": "透明度（默认100不透明，需要填充实心才能生效）",
+                "Optional": true
+              }
+            ]
+          }
+        },
+        {
+          "Caption": "Draw_Text",
+          "Remark": "绘图文字",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "InsCode": "TURING.Draw_Text(x, y, Text, Mode, R, G, B)",
+          "Help": {
+            "Caption": "Draw_Text",
+            "Define": "TURING.Draw_Text(x, y, Text, Mode, R, G, B)",
+            "Describe": "在内部的图像数据上进行打字文本内容",
+            "RetType": "Null",
+            "Return": "无",
+            "Param": [
+              {
+                "Caption": "x",
+                "DataType": "Integer",
+                "Describe": "X坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "y",
+                "DataType": "Integer",
+                "Describe": "Y坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "Text",
+                "DataType": "String",
+                "Describe": "文本内容",
+                "Optional": false
+              },
+              {
+                "Caption": "Mode",
+                "DataType": "String",
+                "Describe": "样式，默认：\\\"宋体|9|0|0\\\"（格式：字体|字号|模式<0正常，1粗体，2斜体，4下划线，8删除线。其他依次叠加数字>|精度<0抗锯齿，1清晰>）",
+                "Optional": true
+              },
+              {
+                "Caption": "R",
+                "DataType": "Integer",
+                "Describe": "默认255，10进制红色分量值",
+                "Optional": true
+              },
+              {
+                "Caption": "G",
+                "DataType": "Integer",
+                "Describe": "默认0，10进制绿色分量值",
+                "Optional": true
+              },
+              {
+                "Caption": "B",
+                "DataType": "Integer",
+                "Describe": "默认0，10进制蓝色分量值",
+                "Optional": true
+              }
+            ]
+          }
+        },
+        {
+          "Caption": "Draw_Fill",
+          "Remark": "绘图填充",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "InsCode": "TURING.Draw_Fill(x, y, Through, R, G, B)",
+          "Help": {
+            "Caption": "Draw_Fill",
+            "Define": "Area = TURING.Draw_Fill(x, y, Through, R, G, B)",
+            "Describe": "在内部的图像数据上对指定坐标开始进行颜色填充",
+            "RetType": "String",
+            "Return": "返回填充区域范围（格式：左,上,右,下）",
+            "Param": [
+              {
+                "Caption": "x",
+                "DataType": "Integer",
+                "Describe": "开始X坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "y",
+                "DataType": "Integer",
+                "Describe": "开始Y坐标",
+                "Optional": false
+              },
+              {
+                "Caption": "Through",
+                "DataType": "Boolean",
+                "Describe": "是否八向,默认False",
+                "Optional": true
+              },
+              {
+                "Caption": "R",
+                "DataType": "Integer",
+                "Describe": "默认255，10进制红色分量值",
+                "Optional": true
+              },
+              {
+                "Caption": "G",
+                "DataType": "Integer",
+                "Describe": "默认0，10进制绿色分量值",
+                "Optional": true
+              },
+              {
+                "Caption": "B",
+                "DataType": "Integer",
+                "Describe": "默认0，10进制蓝色分量值",
+                "Optional": false
+              }
+            ]
+          }
+        },
+        {
+          "Caption": "Draw_Backups",
+          "Remark": "图像数据备份",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "InsCode": "TURING.Draw_Backups(Serial, Mode)",
+          "Help": {
+            "Caption": "Draw_Backups",
+            "Define": "iRet = GetForegroundWindow()",
+            "Describe": "将内部的图像数据进行一次备份",
+            "RetType": "Null",
+            "Return": "无",
+            "Param": [
+              {
+                "Caption": "Serial",
+                "DataType": "Integer",
+                "Describe": "备份编号（范围：1~64）",
+                "Optional": false
+              },
+              {
+                "Caption": "Mode",
+                "DataType": "Integer",
+                "Describe": "模式（默认0：内部图像数据，1：图中图数据，2：绘图数据）",
+                "Optional": true
+              }
+            ]
+          }
+        },
+        {
+          "Caption": "Draw_Recover",
+          "Remark": "图像数据恢复",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "InsCode": "TURING.Draw_Recover(Serial, Mode)",
+          "Help": {
+            "Caption": "Draw_Recover",
+            "Define": "TURING.Draw_Recover(Serial, Mode)",
+            "Describe": "恢复一次内部的图像数据 ",
+            "RetType": "Null",
+            "Return": "无",
+            "Param": [
+              {
+                "Caption": "Serial",
+                "DataType": "Integer",
+                "Describe": "备份编号（范围：1~64）",
+                "Optional": false
+              },
+              {
+                "Caption": "Mode",
+                "DataType": "Integer",
+                "Describe": "模式（默认0：内部图像数据，1：图中图数据，2：绘图数据）",
+                "Optional": false
+              }
+            ]
+          }
+        },
+        {
+          "Caption": "Draw_CAPTCHA",
+          "Remark": "绘图生成验证码",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "InsCode": "TURING.Draw_CAPTCHA()",
+          "Help": {
+            "Caption": "Draw_CAPTCHA",
+            "Define": "Num = TURING.Draw_CAPTCHA()",
+            "Describe": "随机生成一个数学（加减乘）计算的验证码",
+            "RetType": "Integer",
+            "Return": "返回验证码中计算的结果",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "FileSaveGIF",
+          "Remark": "生成GIF文件",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "InsCode": "TURING.FileSaveGIF(LoadName, SaveName, Delay)",
+          "Help": {
+            "Caption": "FileSaveGIF",
+            "Define": "TURING.FileSaveGIF(LoadName, SaveName, Delay)",
+            "Describe": "对多张图片合成GIF文件",
+            "RetType": "Null",
+            "Return": "无",
+            "Param": [
+              {
+                "Caption": "LoadName",
+                "DataType": "String",
+                "Describe": "加载多张图片（jpg,bmp,png），但必须是同尺寸文件（格式：图片1|图片2|…）",
+                "Optional": false
+              },
+              {
+                "Caption": "SaveName",
+                "DataType": "String",
+                "Describe": "保存文件路径",
+                "Optional": false
+              },
+              {
+                "Caption": "Delay",
+                "DataType": "Integer",
+                "Describe": "延迟时间（默认100毫秒）",
+                "Optional": false
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Caption": "加密解密",
+      "Icon": "文件夹",
+      "Templet": "index",
+      "Visible": true,
+      "Function": false,
+      "Help": {},
+      "Child": [
+        {
+          "Caption": "RGBtoHSV",
+          "Remark": "RGB转HSV",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "InsCode": "TURING.RGBtoHSV(color)",
+          "Help": {
+            "Caption": "RGBtoHSV",
+            "Define": "[h, s, v] = TURING.RGBtoHSV(color)",
+            "Describe": "RGB转换为HSV空间颜色值",
+            "RetType": "String",
+            "Return": "[HSV颜色，格式：H,S,V]<br>h：返回颜色H分量<br>s：返回颜色S分量<br>v：返回颜色V分量",
+            "Param": [
+              {
+                "Caption": "color",
+                "DataType": "String",
+                "Describe": "16进制颜色值",
+                "Optional": false
+              }
+            ]
+          }
+        },
+        {
+          "Caption": "HSVtoRGB",
+          "Remark": "HSV转RGB",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "InsCode": "TURING.HSVtoRGB(h, s, v)",
+          "Help": {
+            "Caption": "HSVtoRGB",
+            "Define": "color = TURING.HSVtoRGB(h, s, v)",
+            "Describe": "HSV转换为RGB空间颜色值",
+            "RetType": "String",
+            "Return": "16进制颜色值",
+            "Param": [
+              {
+                "Caption": "h",
+                "DataType": "Integer",
+                "Describe": "颜色H分量",
+                "Optional": false
+              },
+              {
+                "Caption": "s",
+                "DataType": "Integer",
+                "Describe": "颜色S分量",
+                "Optional": false
+              },
+              {
+                "Caption": "v",
+                "DataType": "Integer",
+                "Describe": "颜色V分量",
+                "Optional": false
+              }
+            ]
+          }
+        },
+        {
+          "Caption": "BGRvsRGB",
+          "Remark": "BGR与RGB互转",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "InsCode": "TURING.BGRvsRGB(Color1)",
+          "Help": {
+            "Caption": "BGRvsRGB",
+            "Define": "Color2 = TURING.BGRvsRGB(Color1)",
+            "Describe": "BGR格式与RGB格式互相转换颜色空间",
+            "RetType": "String",
+            "Return": "16进制颜色值",
+            "Param": [
+              {
+                "Caption": "color1",
+                "DataType": "String",
+                "Describe": "16进制颜色值",
+                "Optional": false
+              }
+            ]
+          }
+        },
+        {
+          "Caption": "BITtoHEX",
+          "Remark": "二进制转十六进制字符串",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "InsCode": "TURING.BITtoHEX(BitStr)",
+          "Help": {
+            "Caption": "BITtoHEX",
+            "Define": "HexStr = TURING.BITtoHEX(BitStr)",
+            "Describe": "二进制转十六进制字符串",
+            "RetType": "String",
+            "Return": "十六进制字符串内容",
+            "Param": [
+              {
+                "Caption": "BitStr",
+                "DataType": "String",
+                "Describe": "二进制字符串内容",
+                "Optional": false
+              }
+            ]
+          }
+        },
+        {
+          "Caption": "HEXtoBIT",
+          "Remark": "十六进制转二进制字符串",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "InsCode": "TURING.HEXtoBIT(HexStr)",
+          "Help": {
+            "Caption": "HEXtoBIT",
+            "Define": "BitStr = TURING.HEXtoBIT(HexStr)",
+            "Describe": "十六进制转二进制字符串",
+            "RetType": "String",
+            "Return": "二进制字符串内容",
+            "Param": [
+              {
+                "Caption": "HexStr",
+                "DataType": "String",
+                "Describe": "十六进制字符串内容",
+                "Optional": false
+              }
+            ]
+          }
+        },
+        {
+          "Caption": "Image_Base64Encode",
+          "Remark": "图片Base64编码",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "InsCode": "TURING.Image_Base64Encode(FilePath, IsHead)",
+          "Help": {
+            "Caption": "Image_Base64Encode",
+            "Define": "cipher = TURING.Image_Base64Encode(FilePath, IsHead)",
+            "Describe": "对图片进行Base64编码（支持bmp/png/jpg/gif等）",
+            "RetType": "String",
+            "Return": "编码的文本内容",
+            "Param": [
+              {
+                "Caption": "FilePath",
+                "DataType": "String",
+                "Describe": "图片文件路径",
+                "Optional": false
+              },
+              {
+                "Caption": "IsHead",
+                "DataType": "Boolean",
+                "Describe": "默认False，True为含包头（格式：“data:image/<后缀名>;base64,”）",
+                "Optional": false
+              }
+            ]
+          }
+        },
+        {
+          "Caption": "Pass_MD5String",
+          "Remark": "字符串MD5加密",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "InsCode": "TURING.Pass_MD5String(Text, Code)",
+          "Help": {
+            "Caption": "Pass_MD5String",
+            "Define": "cipher = TURING.Pass_MD5String(Text, Code)",
+            "Describe": "字符串MD5加密",
+            "RetType": "String",
+            "Return": "加密的文字内容",
+            "Param": [
+              {
+                "Caption": "Text",
+                "DataType": "String",
+                "Describe": "字符串内容",
+                "Optional": false
+              },
+              {
+                "Caption": "Code",
+                "DataType": "Integer",
+                "Describe": "编码，默认3（格式：0:ANSI，1:ANSI-UTF8，2:GB2312，3:GB2312-UTF8）",
+                "Optional": false
+              }
+            ]
+          }
+        },
+        {
+          "Caption": "Pass_Encode",
+          "Remark": "字符串加密",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "InsCode": "TURING.Pass_Encode(text, password)",
+          "Help": {
+            "Caption": "Pass_Encode",
+            "Define": "cipher = TURING.Pass_Encode(text, password)",
+            "Describe": "字符串加密",
+            "RetType": "String",
+            "Return": "加密的文字内容",
+            "Param": [
+              {
+                "Caption": "text",
+                "DataType": "String",
+                "Describe": "文字内容",
+                "Optional": false
+              },
+              {
+                "Caption": "password",
+                "DataType": "String",
+                "Describe": "10位密码（每位范围：1~255）",
+                "Optional": false
+              }
+            ]
+          }
+        },
+        {
+          "Caption": "Pass_Uncode",
+          "Remark": "字符串解密",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "InsCode": "TURING.Pass_Uncode(cipher, password)",
+          "Help": {
+            "Caption": "Pass_Uncode",
+            "Define": "cipher = TURING.Pass_Uncode(cipher, password)",
+            "Describe": "字符串解密",
+            "RetType": "String",
+            "Return": "文字内容",
+            "Param": [
+              {
+                "Caption": "cipher",
+                "DataType": "String",
+                "Describe": "加密的文字内容",
+                "Optional": false
+              },
+              {
+                "Caption": "password",
+                "DataType": "String",
+                "Describe": "10位密码（每位范围：1~255）",
+                "Optional": false
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Caption": "系统信息",
+      "Icon": "文件夹",
+      "Templet": "index",
+      "Visible": true,
+      "Function": false,
+      "Help": {},
+      "Child": [
+        {
+          "Caption": "Memory_Clear",
+          "Remark": "内存清理",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "InsCode": "TURING.Memory_Clear()",
+          "Help": {
+            "Caption": "Memory_Clear",
+            "Define": "TURING.Memory_Clear()",
+            "Describe": "进行物理内存垃圾清理",
+            "RetType": "Null",
+            "Return": "无",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "Memory_GetInfo",
+          "Remark": "获取内存信息",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "InsCode": "TURING.Memory_GetInfo()",
+          "Help": {
+            "Caption": "Memory_GetInfo",
+            "Define": "Info = TURING.Memory_GetInfo()",
+            "Describe": "获取物理内存相关信息",
+            "RetType": "String",
+            "Return": "获取内存信息（总共物理内存KB|可用物理内存KB|已用内存比率%）",
+            "Param": []
+          }
+        }
+      ]
+    },
+    {
+      "Caption": "运行命令行",
+      "Icon": "文件夹",
+      "Templet": "index",
+      "Visible": true,
+      "Function": false,
+      "Help": {},
+      "Child": [
+        {
+          "Caption": "Run",
+          "Remark": "运行",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "InsCode": "TURING.Run(CmdLine)",
+          "Help": {
+            "Caption": "Run",
+            "Define": "ret = TURING.Run(CmdLine)",
+            "Describe": "运行Cmd命令行功能",
+            "RetType": "String",
+            "Return": "执行结果信息内容",
+            "Param": [
+              {
+                "Caption": "CmdLine",
+                "DataType": "String",
+                "Describe": "命令行内容",
+                "Optional": false
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "ModuleName": "TuRing"
+}

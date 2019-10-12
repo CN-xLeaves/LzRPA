@@ -9,7 +9,7 @@ Begin ControlID
   %bOpen
 End ControlID
 
-function Main()
+function TBMain()
   DIM hDlg    AS LONG
   DIM sFile   AS string
   

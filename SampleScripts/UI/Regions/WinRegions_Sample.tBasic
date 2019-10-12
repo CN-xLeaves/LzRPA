@@ -22,7 +22,7 @@
   '------------------------------------------------------------------------------
   ' Main function entry point
   '------------------------------------------------------------------------------
-  FUNCTION Main() as long
+  FUNCTION TBMain() as long
     LOCAL hDlg AS DWORD
 
     randomize

@@ -27,7 +27,7 @@ End ControlID
   Dim hDlgVP1     As DWord
 
 ' -- Create dialog here
-Function Main()
+Function TBMain()
   Local Count     As Long
     
   Local sImageBackground As String = APP_SourcePath+"Image_Background.bmp"

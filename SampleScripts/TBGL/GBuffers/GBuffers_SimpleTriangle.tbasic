@@ -5,7 +5,7 @@
 
 Uses "TBGL"
 
-Function Main()
+Function TBMAIN()
   Local hWnd      As DWord
   Local FrameRate As Double
   

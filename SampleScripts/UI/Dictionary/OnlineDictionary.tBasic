@@ -29,7 +29,7 @@ End ControlID
 '------------------------------------------------------------------------------
 ' Main thinBasic function
 '------------------------------------------------------------------------------
-Function Main() As Long
+Function TBMain() As Long
 
 	MainWindow_Create(%HWND_DESKTOP)
 

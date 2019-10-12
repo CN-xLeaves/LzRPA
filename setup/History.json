@@ -2,295 +2,31 @@
   {
     "Icon": "代码",
     "Title": "boot",
-    "Date": "2019-08-10 01:52:56",
-    "Path": "E:\\Git\\LzRPA\\发布目录\\Modules\\cJson\\boot.tbs"
-  },
-  {
-    "Icon": "代码",
-    "Title": "lzbot_test_boot",
-    "Date": "2019-08-10 01:52:18",
-    "Path": "E:\\Git\\LzRPA\\发布目录\\范例代码\\JSON文件读取\\发布目录\\lzbot_test_boot.tbasic"
-  },
-  {
-    "Icon": "标准应用",
-    "Title": "JSON文件读取",
-    "Date": "2019-08-10 01:44:43",
-    "Path": "E:\\Git\\LzRPA\\发布目录\\范例代码\\JSON文件读取\\JSON文件读取.lzp"
-  },
-  {
-    "Icon": "代码",
-    "Title": "bootD",
-    "Date": "2019-08-10 12:50:41",
-    "Path": "E:\\Git\\LzRPA\\发布目录\\setup\\bootD.tbs"
-  },
-  {
-    "Icon": "代码",
-    "Title": "Console_Full",
-    "Date": "2019-08-10 12:42:08",
-    "Path": "E:\\Git\\LzRPA\\发布目录\\范例代码\\Console\\Console_Full.tBasicc"
-  },
-  {
-    "Icon": "代码",
-    "Title": "FileAssociation",
-    "Date": "2019-08-10 12:41:29",
-    "Path": "E:\\Git\\LzRPA\\Tools\\FileAssociation.tbs"
-  },
-  {
-    "Icon": "代码",
-    "Title": "Test_FTP",
-    "Date": "2019-08-10 12:40:16",
-    "Path": "E:\\Git\\LzRPA\\发布目录\\范例代码\\FTP\\Test_FTP.tBasic"
-  },
-  {
-    "Icon": "代码",
-    "Title": "Test_INI",
-    "Date": "2019-08-10 12:20:03",
-    "Path": "E:\\Git\\LzRPA\\发布目录\\范例代码\\INI\\Test_INI.tBasic"
-  },
-  {
-    "Icon": "标准应用",
-    "Title": "JSON文件读取",
-    "Date": "2019-08-10 12:10:48",
-    "Path": "E:\\Git\\LzRPA\\发布目录\\Project\\JSON文件读取\\JSON文件读取.lzp"
-  },
-  {
-    "Icon": "代码",
-    "Title": "lzbot_test_boot",
-    "Date": "2019-08-09 11:54:03",
-    "Path": "E:\\Git\\LzRPA\\发布目录\\Project\\JSON文件读取\\发布目录\\lzbot_test_boot.tbasic"
-  },
-  {
-    "Icon": "代码",
-    "Title": "cjson_test",
-    "Date": "2019-08-09 11:50:19",
-    "Path": "E:\\Git\\LzRPA\\发布目录\\范例代码\\CJSon\\cjson_test.tbasic"
-  },
-  {
-    "Icon": "代码",
-    "Title": "cjson_array",
-    "Date": "2019-08-09 11:44:21",
-    "Path": "E:\\Git\\LzRPA\\发布目录\\范例代码\\CJSon\\cjson_array.tbasic"
-  },
-  {
-    "Icon": "标准应用",
-    "Title": "新建项目1",
-    "Date": "2019-08-09 11:35:55",
-    "Path": "E:\\Git\\LzRPA\\发布目录\\Project\\新建项目1\\新建项目1.lzp"
-  },
-  {
-    "Icon": "标准应用",
-    "Title": "多线程演示",
-    "Date": "2019-08-09 11:35:28",
-    "Path": "E:\\Git\\LzRPA\\发布目录\\范例代码\\多线程演示\\多线程演示.lzp"
-  },
-  {
-    "Icon": "代码",
-    "Title": "boot",
-    "Date": "2019-08-09 07:58:56",
-    "Path": "E:\\Git\\LzRPA\\发布目录\\setup\\boot.tbs"
-  },
-  {
-    "Icon": "代码",
-    "Title": "cjson_array",
-    "Date": "2019-08-09 05:27:22",
-    "Path": "E:\\Git\\LzRPA\\发布目录\\SampleScripts\\CJSon\\cjson_array.tbasic"
-  },
-  {
-    "Icon": "代码",
-    "Title": "调用范例",
-    "Date": "2019-08-09 02:22:16",
-    "Path": "E:\\Git\\LzRPA\\发布目录\\范例代码\\懒人插件\\调用范例.tbs"
-  },
-  {
-    "Icon": "代码",
-    "Title": "1",
-    "Date": "2019-08-09 02:14:16",
-    "Path": "C:\\Users\\Administrator\\Desktop\\1.tbs"
-  },
-  {
-    "Icon": "代码",
-    "Title": "boot",
-    "Date": "2019-08-09 01:55:36",
-    "Path": "E:\\Git\\LzRPA\\发布目录\\Modules\\FTP\\boot.tbs"
-  },
-  {
-    "Icon": "代码",
-    "Title": "TURING",
-    "Date": "2019-08-08 07:13:03",
-    "Path": "E:\\Git\\LzRPA\\发布目录\\范例代码\\虹鱼图灵识别\\TURING.tbs"
-  },
-  {
-    "Icon": "代码",
-    "Title": "WinApp_SDK",
-    "Date": "2019-08-08 05:57:26",
-    "Path": "E:\\Git\\LzRPA\\发布目录\\SampleScripts\\UI\\SDK\\WinApp_SDK.tbasic"
-  },
-  {
-    "Icon": "代码",
-    "Title": "boot",
-    "Date": "2019-08-08 05:28:07",
-    "Path": "E:\\Git\\LzRPA\\发布目录\\Modules\\dm3.1233\\boot.tbs"
-  },
-  {
-    "Icon": "代码",
-    "Title": "ProjectMake",
-    "Date": "2019-08-08 05:07:38",
-    "Path": "E:\\Git\\LzRPA\\Tools\\ProjectMake.tbs"
-  },
-  {
-    "Icon": "代码",
-    "Title": "Calculator_Simple_Events",
-    "Date": "2019-08-08 02:34:54",
-    "Path": "E:\\Git\\LzRPA\\发布目录\\SampleScripts\\UI\\Events\\Calculator_Simple_Events.tbasic"
-  },
-  {
-    "Icon": "代码",
-    "Title": "神途装备生成",
-    "Date": "2019-08-08 02:33:24",
-    "Path": "E:\\Git\\codest\\神途装备生成.tbs"
-  },
-  {
-    "Icon": "代码",
-    "Title": "Calculator_Events",
-    "Date": "2019-08-08 01:16:53",
-    "Path": "E:\\Git\\LzRPA\\发布目录\\SampleScripts\\UI\\Events\\Calculator_Events.tbasic"
-  },
-  {
-    "Icon": "代码",
-    "Title": "PropertyRoot",
-    "Date": "2019-08-08 01:15:37",
-    "Path": "E:\\Git\\LzRPA\\发布目录\\SampleScripts\\UI\\PropertyList\\PropertyRoot.tbasic"
-  },
-  {
-    "Icon": "代码",
-    "Title": "PropertyList",
-    "Date": "2019-08-08 01:15:08",
-    "Path": "E:\\Git\\LzRPA\\发布目录\\SampleScripts\\UI\\PropertyList\\PropertyList.tbasic"
-  },
-  {
-    "Icon": "代码",
-    "Title": "TextBox",
-    "Date": "2019-08-08 05:57:09",
-    "Path": "E:\\Git\\LzRPA\\发布目录\\SampleScripts\\UI\\TextBox\\TextBox.tBasic"
-  },
-  {
-    "Icon": "代码",
-    "Title": "TextBox2",
-    "Date": "2019-08-08 05:56:56",
-    "Path": "E:\\Git\\LzRPA\\发布目录\\SampleScripts\\UI\\TextBox\\TextBox2.tBasic"
-  },
-  {
-    "Icon": "标准应用",
-    "Title": "大漠插件使用范例",
-    "Date": "2019-08-08 05:52:54",
-    "Path": "E:\\Git\\LzRPA\\发布目录\\范例代码\\大漠插件使用范例\\大漠插件使用范例.lzp"
-  },
-  {
-    "Icon": "标准应用",
-    "Title": "Redis范例",
-    "Date": "2019-08-08 04:21:19",
-    "Path": "E:\\Git\\LzRPA\\发布目录\\范例代码\\Redis范例\\Redis范例.lzp"
-  },
-  {
-    "Icon": "代码",
-    "Title": "多线程项目",
-    "Date": "2019-08-08 03:38:06",
-    "Path": "E:\\Git\\LzRPA\\发布目录\\template\\多线程项目.tbs"
-  },
-  {
-    "Icon": "标准应用",
-    "Title": "新建项目1",
-    "Date": "2019-08-08 03:37:26",
-    "Path": "E:\\Sapce Test\\新建项目1\\新建项目1.lzp"
-  },
-  {
-    "Icon": "代码",
-    "Title": "boot",
-    "Date": "2019-08-08 02:59:30",
-    "Path": "E:\\Git\\LzRPA\\发布目录\\Modules\\GlobalData\\boot.tbs"
-  },
-  {
-    "Icon": "标准应用",
-    "Title": "中控",
-    "Date": "2019-08-07 07:16:31",
-    "Path": "E:\\Git\\LzRPA\\发布目录\\Project\\中控\\中控.lzp"
-  },
-  {
-    "Icon": "代码",
-    "Title": "Build",
-    "Date": "2019-08-07 06:07:04",
-    "Path": "E:\\Git\\LzRPA\\Tools\\Build.tbs"
-  },
-  {
-    "Icon": "代码",
-    "Title": "Global",
-    "Date": "2019-08-07 05:25:54",
-    "Path": "E:\\Git\\LzRPA\\发布目录\\范例代码\\多线程演示\\代码\\Global.tbs"
-  },
-  {
-    "Icon": "标准应用",
-    "Title": "神梦填表",
-    "Date": "2019-08-07 04:14:43",
-    "Path": "E:\\Git\\LzRPA\\发布目录\\范例代码\\神梦填表\\神梦填表.lzp"
-  },
-  {
-    "Icon": "代码",
-    "Title": "文件关联工具代码",
-    "Date": "2019-08-07 04:07:24",
-    "Path": "E:\\Git\\LzRPA\\发布目录\\范例代码\\文件关联工具代码.tbs"
-  },
-  {
-    "Icon": "标准应用",
-    "Title": "多线程演示",
-    "Date": "2019-08-07 05:45:05",
-    "Path": "E:\\Git\\LzRPA\\发布目录\\Project\\多线程演示\\多线程演示.lzp"
-  },
-  {
-    "Icon": "标准应用",
-    "Title": "新建项目3",
-    "Date": "2019-08-07 05:38:51",
-    "Path": "E:\\Git\\LzRPA\\发布目录\\Project\\新建项目3\\新建项目3.lzp"
-  },
-  {
-    "Icon": "标准应用",
-    "Title": "新建项目2",
-    "Date": "2019-08-07 05:19:57",
-    "Path": "E:\\Git\\LzRPA\\发布目录\\Project\\新建项目2\\新建项目2.lzp"
-  },
-  {
-    "Icon": "代码",
-    "Title": "LogServer",
-    "Date": "2019-08-07 05:06:27",
-    "Path": "E:\\Git\\LzRPA\\Tools\\LogServer.tbs"
-  },
-  {
-    "Icon": "代码",
-    "Title": "boot",
-    "Date": "2019-08-07 04:27:23",
+    "Date": "2019-10-12 11:19:36",
     "Path": "E:\\Git\\LzRPA\\发布目录\\Modules\\Redis\\boot.tbs"
   },
   {
-    "Icon": "代码",
-    "Title": "多任务功能演示",
-    "Date": "2019-08-07 03:29:19",
-    "Path": "E:\\Git\\LzRPA\\发布目录\\范例代码\\多任务功能演示.tbs"
-  },
-  {
-    "Icon": "代码",
-    "Title": "boot",
-    "Date": "2019-08-07 03:27:53",
-    "Path": "E:\\Git\\LzRPA\\发布目录\\Modules\\RedisServer\\boot.tbs"
-  },
-  {
     "Icon": "标准应用",
-    "Title": "Redis范例",
-    "Date": "2019-08-07 03:20:58",
-    "Path": "E:\\Git\\LzRPA\\发布目录\\Project\\Redis范例\\Redis范例.lzp"
+    "Title": "Redis测试",
+    "Date": "2019-10-12 11:19:33",
+    "Path": "E:\\Git\\LzRPA\\发布目录\\范例代码\\Redis测试\\Redis测试.lzp"
   },
   {
     "Icon": "代码",
-    "Title": "lzbot_test_boot",
-    "Date": "2019-08-05 03:19:28",
-    "Path": "E:\\Git\\LzRPA\\发布目录\\范例代码\\大漠插件使用范例\\发布目录\\lzbot_test_boot.tbasic"
+    "Title": "时间库测试",
+    "Date": "2019-10-12 05:16:10",
+    "Path": "E:\\Git\\LzRPA\\发布目录\\范例代码\\时间库测试.tbs"
+  },
+  {
+    "Icon": "代码",
+    "Title": "Example_003",
+    "Date": "2019-10-12 04:45:05",
+    "Path": "E:\\Git\\LzRPA\\发布目录\\SampleScripts\\OOP\\Example_003.tbasic"
+  },
+  {
+    "Icon": "代码",
+    "Title": "Example_002",
+    "Date": "2019-10-12 04:40:33",
+    "Path": "E:\\Git\\LzRPA\\发布目录\\SampleScripts\\OOP\\Example_002.tbasic"
   }
 ]

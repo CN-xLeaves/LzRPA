@@ -18,7 +18,7 @@ END CONST
  
 GLOBAL FrameRate AS DOUBLE
  
-FUNCTION Main()
+FUNCTION TBMAIN()
   LOCAL hWnd As DWORD
   
   ' -- Create and show window

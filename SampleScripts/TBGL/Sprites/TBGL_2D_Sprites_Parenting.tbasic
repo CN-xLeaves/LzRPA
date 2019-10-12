@@ -8,7 +8,7 @@
 
 Uses "TBGL"
 
-FUNCTION Main()
+FUNCTION TBMAIN()
   local hWnd AS DWORD
   local FrameRate AS DOUBLE
   local dirTextures       as string = "Textures\"

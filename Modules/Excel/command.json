@@ -4,7 +4,7 @@
     "ModuleName": "Excel",
     "Icon": "公文包",
     "Visible": true,
-    "Templet": "index.html",
+    "Templet": "index",
     "Help": {
         "Caption": ""
     },
@@ -13,7 +13,7 @@
             "Caption": "单文件使用扩展库",
             "Icon": "信息",
             "Visible": true,
-            "Templet": "document.html",
+            "Templet": "document",
             "Help": {
                 "Caption": "扩展库使用帮助",
                 "Document": "在项目中使用扩展库功能会自动将扩展库引入项目，项目编译或运行时，自动加入扩展库依赖代码和文件。<br><br>如果您在单文件中希望使用本扩展库，则必须编写扩展库依赖代码才能调用扩展库中的函数，否则会报错，LzRPA 建议使用工程方式编写程序，但仍保留单文件使用扩展库的方法。<br><br>扩展库依赖代码：<br>&nbsp;&nbsp;Uses &quot;Excel&quot;<br><br>建议将引用扩展库代码统一添加到全局代码块，也就是代码的最上面。"
@@ -24,7 +24,7 @@
             "Remark": "Excel应用程序",
             "Icon": "类",
             "Visible": true,
-            "Templet": "index.html",
+            "Templet": "index",
             "Help": {
                 "Caption": ""
             },
@@ -36,7 +36,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "ActiveWindow",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "ActiveWindow",
                         "Define": "objWindow = Excel_Application.ActiveWindow",
@@ -53,7 +53,7 @@
                             "Visible": true,
                             "Function": true,
                             "InsCode": "Close",
-                            "Templet": "command.html",
+                            "Templet": "command",
                             "Help": {
                                 "Caption": "Close",
                                 "Define": "Excel_Application.ActiveWindow.Close",
@@ -73,7 +73,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "ActiveWorkbook",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "ActiveWorkbook",
                         "Define": "objWorkBook = Excel_Application.ActiveWorkbook",
@@ -91,7 +91,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "ActiveSheet",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "ActiveSheet",
                         "Define": "objWorkSheet = Excel_Application.ActiveSheet",
@@ -109,7 +109,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "ActiveCell",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "ActiveCell",
                         "Define": "objCell = Excel_Application.ActiveCell",
@@ -127,7 +127,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "Selection",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "Selection",
                         "Define": "obj = Excel_Application.Selection",
@@ -145,7 +145,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "Visible",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "Visible",
                         "Define": "bRet = Excel_Application.Visible",
@@ -163,7 +163,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "DisplayAlerts",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "DisplayAlerts",
                         "Define": "bRet = Excel_Application.DisplayAlerts",
@@ -181,7 +181,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "AlertBeforeOverwriting",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "AlertBeforeOverwriting",
                         "Define": "bRet = Excel_Application.AlertBeforeOverwriting",
@@ -199,7 +199,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "Version",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "Version",
                         "Define": "sRet = Excel_Application.Version",
@@ -216,7 +216,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "Quit",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "Quit",
                         "Define": "Excel_Application.Quit",
@@ -233,7 +233,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "IsNothing",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "IsNothing",
                         "Define": "Excel_Application.IsNothing",
@@ -250,7 +250,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "SendKeys(\"Keys\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "SendKeys",
                         "Define": "Excel_Application.SendKeys(sKeys)",
@@ -272,7 +272,7 @@
                     "Remark": "工作簿集合对象",
                     "Icon": "类",
                     "Visible": true,
-                    "Templet": "index.html",
+                    "Templet": "index",
                     "Help": {
                         "Caption": ""
                     },
@@ -284,7 +284,7 @@
                             "Visible": true,
                             "Function": true,
                             "InsCode": "Count",
-                            "Templet": "command.html",
+                            "Templet": "command",
                             "Help": {
                                 "Caption": "Count",
                                 "Define": "iRet = Excel_Application.Workbooks.Count",
@@ -301,7 +301,7 @@
                             "Visible": true,
                             "Function": true,
                             "InsCode": "Add",
-                            "Templet": "command.html",
+                            "Templet": "command",
                             "Help": {
                                 "Caption": "Add",
                                 "Define": "Excel_Application.Add",
@@ -318,7 +318,7 @@
                             "Visible": true,
                             "Function": true,
                             "InsCode": "Open(\"文件路径\", 2, false, 5, \"\")",
-                            "Templet": "command.html",
+                            "Templet": "command",
                             "Help": {
                                 "Caption": "Open",
                                 "Define": "Excel_Application.Open(sFile[, iUpdateLinks[, bReadOnly[, iFormat[, sPassword[, WriteResPassword]]]]])",
@@ -371,7 +371,7 @@
                             "Visible": true,
                             "Function": true,
                             "InsCode": "Close",
-                            "Templet": "command.html",
+                            "Templet": "command",
                             "Help": {
                                 "Caption": "Close",
                                 "Define": "Excel_Application.Close",
@@ -391,7 +391,7 @@
             "Remark": "Excel工作簿",
             "Icon": "类",
             "Visible": true,
-            "Templet": "index.html",
+            "Templet": "index",
             "Help": {
                 "Caption": ""
             },
@@ -403,7 +403,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "ActiveSheet",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "ActiveSheet",
                         "Define": "objWorkSheet = Excel_Workbook.ActiveSheet",
@@ -421,7 +421,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "FullName",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "FullName",
                         "Define": "sRet = Excel_Workbook.FullName",
@@ -439,7 +439,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "Name",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "Name",
                         "Define": "sRet = Excel_Workbook.Name",
@@ -457,7 +457,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "Saved",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "Saved",
                         "Define": "bRet = Excel_Workbook.Saved",
@@ -474,7 +474,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "Activate",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "Activate",
                         "Define": "Excel_Workbook.Activate",
@@ -491,7 +491,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "Save",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "Save",
                         "Define": "Excel_Workbook.Save",
@@ -508,7 +508,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "SaveAs",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "SaveAs",
                         "Define": "Excel_Workbook.SaveAs",
@@ -524,7 +524,7 @@
                     "Remark": "工作表集合对象",
                     "Icon": "类",
                     "Visible": true,
-                    "Templet": "index.html",
+                    "Templet": "index",
                     "Help": {
                         "Caption": ""
                     },
@@ -536,7 +536,7 @@
                             "Visible": true,
                             "Function": true,
                             "InsCode": "Count",
-                            "Templet": "command.html",
+                            "Templet": "command",
                             "Help": {
                                 "Caption": "Count",
                                 "Define": "iRet = Excel_Workbook.Worksheets.Count",
@@ -553,7 +553,7 @@
                             "Visible": true,
                             "Function": true,
                             "InsCode": "Add(\"工作表标题\")",
-                            "Templet": "command.html",
+                            "Templet": "command",
                             "Help": {
                                 "Caption": "Add",
                                 "Define": "Excel_Workbook.Add(sTitle)",
@@ -576,7 +576,7 @@
                             "Visible": true,
                             "Function": true,
                             "InsCode": "(Index).Select",
-                            "Templet": "command.html",
+                            "Templet": "command",
                             "Help": {
                                 "Caption": "Select",
                                 "Define": "iRet = Excel_Workbook.Worksheets(Index).Select",
@@ -602,7 +602,7 @@
             "Remark": "Excel工作表",
             "Icon": "类",
             "Visible": true,
-            "Templet": "index.html",
+            "Templet": "index",
             "Help": {
                 "Caption": ""
             },
@@ -614,7 +614,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "Name",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "Name",
                         "Define": "sRet = Excel_Worksheet.Name",
@@ -631,7 +631,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "Cells(行编号, 列编号)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "Cells",
                         "Define": "Excel_Worksheet.Cells(iRow, icolumn)",
@@ -661,7 +661,7 @@
                             "Visible": true,
                             "Function": true,
                             "InsCode": "Value",
-                            "Templet": "command.html",
+                            "Templet": "command",
                             "Help": {
                                 "Caption": "Value",
                                 "Define": "sRet = Excel_Worksheet.Cells(iRow, icolumn).Value<br>Excel_Worksheet.Cells(iRow, icolumn).Value = NewValue",
@@ -680,7 +680,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "Range(\"A3:C5\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "Range",
                         "Define": "Excel_Worksheet.Range(sRange)",
@@ -704,7 +704,7 @@
                             "Visible": true,
                             "Function": true,
                             "InsCode": "Value",
-                            "Templet": "command.html",
+                            "Templet": "command",
                             "Help": {
                                 "Caption": "Value",
                                 "Define": "Excel_Worksheet.Range(sRange).Value = NewValue",
@@ -722,7 +722,7 @@
                             "Visible": true,
                             "Function": true,
                             "InsCode": "Formula",
-                            "Templet": "command.html",
+                            "Templet": "command",
                             "Help": {
                                 "Caption": "Formula",
                                 "Define": "Excel_Worksheet.Range(sRange).Formula = NewValue",
@@ -739,7 +739,7 @@
                             "Visible": true,
                             "Function": true,
                             "InsCode": "Select",
-                            "Templet": "command.html",
+                            "Templet": "command",
                             "Help": {
                                 "Caption": "Select",
                                 "Define": "sRet = Excel_Worksheet.Range(sRange).Select<br>Excel_Worksheet.Range(sRange).Select = NewValue",
@@ -756,7 +756,7 @@
                             "Visible": true,
                             "Function": true,
                             "InsCode": "Clear",
-                            "Templet": "command.html",
+                            "Templet": "command",
                             "Help": {
                                 "Caption": "Clear",
                                 "Define": "Excel_Worksheet.Range(sRange).Clear",
@@ -775,7 +775,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "Activate",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "Activate",
                         "Define": "Excel_Worksheet.Activate",
@@ -792,7 +792,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "PrintPreview",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "PrintPreview",
                         "Define": "ADODB_Connection.PrintPreview",
@@ -810,7 +810,7 @@
             "Remark": "Excel选区",
             "Icon": "类",
             "Visible": true,
-            "Templet": "index.html",
+            "Templet": "index",
             "Help": {
                 "Caption": ""
             },
@@ -822,7 +822,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "Value",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "Value",
                         "Define": "Excel_Range.Range(sRange).Value = NewValue",
@@ -840,7 +840,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "Formula",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "Formula",
                         "Define": "Excel_Range.Range(sRange).Formula = NewValue",
@@ -858,7 +858,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "HorizontalAlignment",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "HorizontalAlignment",
                         "Define": "Excel_Range.Range(sRange).HorizontalAlignment = NewValue",
@@ -876,7 +876,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "NumberFormat",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "NumberFormat",
                         "Define": "Excel_Range.Range(sRange).NumberFormat = NewValue",
@@ -894,7 +894,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "Address",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "Address",
                         "Define": "sRet = Excel_Range.Address",
@@ -912,7 +912,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "ColumnWidth",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "ColumnWidth",
                         "Define": "sRet = Excel_Range.ColumnWidth<br>Excel_Range.ColumnWidth = NewValue",
@@ -929,7 +929,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "Clear",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "Clear",
                         "Define": "Excel_Range.Clear",
@@ -946,7 +946,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "ClearComments",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "ClearComments",
                         "Define": "Excel_Range.ClearComments",
@@ -963,7 +963,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "ClearContents",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "ClearContents",
                         "Define": "Excel_Range.ClearContents",
@@ -980,7 +980,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "ClearFormats",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "ClearFormats",
                         "Define": "Excel_Range.ClearFormats",
@@ -997,7 +997,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "ClearNotes",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "ClearNotes",
                         "Define": "Excel_Range.ClearNotes",
@@ -1014,7 +1014,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "Select",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "Select",
                         "Define": "Excel_Range.Select",

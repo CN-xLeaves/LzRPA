@@ -13,7 +13,7 @@
                   %DS_3DLOOK      Or %DS_NOFAILCREATE Or %DS_SETFONT
 
   '------------------------------------------------------------------------------
-  Function Main() as long
+  Function TBMain() as long
   '------------------------------------------------------------------------------
     Local hDlg As Dword
 

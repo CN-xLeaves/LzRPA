@@ -1,6 +1,6 @@
 Uses "PC"
 
-Function Main () As Long  
+Function TBMAIN () As Long  
 
 	PC_LOCK()
 

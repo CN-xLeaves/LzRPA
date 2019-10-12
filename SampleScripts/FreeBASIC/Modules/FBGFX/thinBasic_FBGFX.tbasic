@@ -1,0 +1,480 @@
+﻿'----------------------------------------------------------------------------
+' Thanks to FreeBASIC compiler and thinBasic #FBCode/#EndFBCode option
+' to include and compile FreeBASIC source code ...
+'
+' this script will create a thinBasic module called thinBasic_FBGFX.dll
+'----------------------------------------------------------------------------
+' How:
+'      1. execute the script
+'      2. if no error check into script path for a new dll named 
+'         thinBasic_FBGFX.dll 
+'      3. use Test_FBGFX_Screen.tBasic to test this new module
+'----------------------------------------------------------------------------
+
+#Compiled language = freebasic
+	'----------------------------------------------------------------------------
+	' In order to interface with thinBasic Core engine, include thinBasic/thinCore.bi
+	'----------------------------------------------------------------------------
+	#include Once "thinBasic/thinCore.bi"
+
+	'----------------------------------------------------------------------------
+	'	Define here any global variable needed by this module
+	'----------------------------------------------------------------------------
+
+
+	sub Exec_FBGFX_Screen()
+	'----------------------------------------------------------------------------
+	'
+	'----------------------------------------------------------------------------
+		Dim pp              As Long
+		Dim lDeptPresent    As Long
+		Dim lNPagesPresent  As Long
+		Dim lMode           As Long
+		Dim lDept           As Long
+		Dim lNPages         As Long
+		
+		'---Check if open parens is present
+		pp = thinBasic_CheckOpenParens_Optional
+
+		thinBasic_ParseLong(Lmode)
+
+		If thinBasic_CheckComma_Optional Then
+			lDeptPresent = TB_TRUE
+			thinBasic_ParseLong(lDept)
+			If thinBasic_CheckComma_Optional Then
+				lNPagesPresent = TB_TRUE
+				thinBasic_ParseLong(lNPages)
+			End if
+		End if
+		
+		If lDeptPresent = TB_TRUE Then
+			If lNPAgesPresent = TB_TRUE Then
+				Screen lMode, lDept, lNPages
+			else
+				Screen lMode, lDept
+			End if
+		else
+			Screen lMode
+		EndIf
+
+		If pp Then thinBasic_CheckCloseParens_Mandatory
+
+	End sub
+
+	sub Exec_FBGFX_ScreenRes()
+	'----------------------------------------------------------------------------
+	'
+	'----------------------------------------------------------------------------
+		Dim pp              As Long
+		Dim lDeptPresent    As Long
+		Dim lNPagesPresent  As Long
+		Dim lWidth          As Long
+		Dim lHeight         As Long
+		Dim lDept           As Long
+		Dim lNPages         As Long
+
+		'---Check if open parens is present
+		pp = thinBasic_CheckOpenParens_Optional
+
+		thinBasic_ParseLong(lWidth)
+
+		If thinBasic_CheckComma_Mandatory Then
+			thinBasic_ParseLong(lHeight)
+
+			If thinBasic_CheckComma_Optional Then
+				lDeptPresent = TB_TRUE
+				thinBasic_ParseLong(lDept)
+				If thinBasic_CheckComma_Optional Then
+					lNPagesPresent = TB_TRUE
+					thinBasic_ParseLong(lNPages)
+				End if
+			End if
+			
+			If lDeptPresent = TB_TRUE Then
+				If lNPAgesPresent = TB_TRUE Then
+					ScreenRes lWidth, lHeight, lDept, lNPages
+				else
+					ScreenRes lWidth, lHeight, lDept
+				End if
+			else
+				ScreenRes lWidth, lHeight
+			EndIf
+		End If
+		
+		If pp Then thinBasic_CheckCloseParens_Mandatory
+
+	End sub
+
+	sub Exec_FBGFX_ScreenSet()
+	'----------------------------------------------------------------------------
+	'
+	'----------------------------------------------------------------------------
+		Dim pp                As Long
+		Dim lVisiblePresent   As Long
+		Dim lWorkPresent      As Long
+		Dim lWork             As Long
+		Dim lVisible          As Long
+		
+		'---Check if open parens is present
+		pp = thinBasic_CheckOpenParens_Optional
+
+		lWorkPresent = thinBasic_ParseLong_Optional(lWork)
+
+		If lWorkPresent = TB_TRUE then
+			If thinBasic_CheckComma_Optional Then
+				lVisiblePresent = TB_TRUE
+				thinBasic_ParseLong(lVisible)
+			End if
+			
+			If lVisiblePresent = TB_TRUE Then
+				ScreenSet lWork, lVisible
+			else
+				ScreenSet lWork
+			EndIf
+		Else
+			ScreenSet
+		End If
+		
+		If pp Then thinBasic_CheckCloseParens_Mandatory
+
+	End sub
+
+	sub Exec_FBGFX_Locate()
+	'----------------------------------------------------------------------------
+	'
+	'----------------------------------------------------------------------------
+		Dim pp    As Long
+		Dim lX    As Long
+		Dim lY    As Long
+		
+		'---Check if open parens is present
+		pp = thinBasic_CheckOpenParens_Optional
+
+		thinBasic_ParseLong(lX)
+		If thinBasic_CheckComma_Mandatory Then
+			thinBasic_ParseLong(lY)
+			Locate lX, lY
+		EndIf
+
+		If pp Then thinBasic_CheckCloseParens_Mandatory
+
+	End sub
+	
+	sub Exec_FBGFX_Print()
+	'----------------------------------------------------------------------------
+	'
+	'----------------------------------------------------------------------------
+		Static pp   As Long
+		Dim sBuffer As thinstring'BSTR
+
+		'---Check if open parens is present
+		pp = thinBasic_CheckOpenParens_Optional
+
+		thinBasic_ParseString(sBuffer)
+ 
+		Print sBuffer.text'*cast(ZString Ptr, sBuffer)
+		
+		If pp Then thinBasic_CheckCloseParens_Mandatory
+
+	End sub
+
+	sub Exec_FBGFX_WindowTitle()
+	'----------------------------------------------------------------------------
+	'
+	'----------------------------------------------------------------------------
+		Dim pp      As Long
+		Dim sBSTR   As thinstring 'BSTR
+
+		'---Check if open parens is present
+		pp = thinBasic_CheckOpenParens_Optional
+
+		thinBasic_ParseString(sBSTR)
+		
+		WindowTitle sBSTR.text'*cast( Zstring Ptr, sBSTR )
+
+		If pp Then thinBasic_CheckCloseParens_Mandatory
+
+	End sub
+
+	sub Exec_FBGFX_Sleep()
+	'----------------------------------------------------------------------------
+	'
+	'----------------------------------------------------------------------------
+		Dim pp      As Long
+		Dim lMSec   As Long
+		
+		'---Check if open parens is present
+		pp = thinBasic_CheckOpenParens_Optional
+
+		thinBasic_ParseLong(lMSec)
+		If lMSec > 0 then
+			Sleep lMSec
+		Else
+			Sleep
+		End if
+
+		If pp Then thinBasic_CheckCloseParens_Mandatory
+
+	End sub
+
+	sub Exec_FBGFX_Cls()
+	'----------------------------------------------------------------------------
+	'
+	'----------------------------------------------------------------------------
+		Dim pp      As Long
+		Dim lMode   As Long
+		
+		'---Check if open parens is present
+		pp = thinBasic_CheckOpenParens_Optional
+
+		thinBasic_ParseLong(lMode)
+		If lMode > 0 then
+			cls lMode
+		Else
+			cls
+		End if
+
+		If pp Then thinBasic_CheckCloseParens_Mandatory
+
+	End sub
+
+	function Exec_FBGFX_Color() As Long
+	'----------------------------------------------------------------------------
+	'
+	'----------------------------------------------------------------------------
+		Dim pp      As Long
+		Dim lFore   As Long
+		Dim lBack   As Long
+		
+		'---Check if open parens is present
+		pp = thinBasic_CheckOpenParens_Optional
+
+		thinBasic_ParseLong(lFore)
+		If thinBasic_CheckComma_Mandatory Then
+			thinBasic_ParseLong(lBack)
+
+			Function = Color(lFore, lBack)
+		EndIf
+
+		If pp Then thinBasic_CheckCloseParens_Mandatory
+
+	End function
+
+	function Exec_FBGFX_RGB() As Long
+	'----------------------------------------------------------------------------
+	'
+	'----------------------------------------------------------------------------
+		Dim pp    As Long
+		Dim lR    As Long
+		Dim lG    As Long
+		Dim lB    As Long
+		
+		'---Check if open parens is present
+		pp = thinBasic_CheckOpenParens_Optional
+
+		thinBasic_ParseLong(lR)
+		If thinBasic_CheckComma_Mandatory Then
+			thinBasic_ParseLong(lG)
+			If thinBasic_CheckComma_Mandatory Then
+				thinBasic_ParseLong(lB)
+
+				Function = RGB(lR, lG, lB)
+			End if
+		EndIf
+
+		If pp Then thinBasic_CheckCloseParens_Mandatory
+
+	End function
+
+	function Exec_FBGFX_RGBA() As Long
+	'----------------------------------------------------------------------------
+	'
+	'----------------------------------------------------------------------------
+		Static pp   As Long
+		Static lR   As Long
+		Static lG   As Long
+		Static lB   As Long
+		Static lA   As Long
+		
+		'---Check if open parens is present
+		pp = thinBasic_CheckOpenParens_Optional
+
+		thinBasic_ParseLong(lR)
+		If thinBasic_CheckComma_Mandatory Then
+			thinBasic_ParseLong(lG)
+			If thinBasic_CheckComma_Mandatory Then
+				thinBasic_ParseLong(lB)
+				If thinBasic_CheckComma_Mandatory Then
+					thinBasic_ParseLong(lA)
+	
+					Function = RGBA(lR, lG, lB, lA)
+				End if
+			End if
+		EndIf
+
+		If pp Then thinBasic_CheckCloseParens_Mandatory
+
+	End function
+
+	sub Exec_FBGFX_PSet()
+	'----------------------------------------------------------------------------
+	'
+	'----------------------------------------------------------------------------
+		Static pp     As Long
+		Static lX     As Long 
+		Static lY     As Long 
+		Static lColor As Long
+		
+		'---Check if open parens is present
+		pp = thinBasic_CheckOpenParens_Optional
+
+		thinBasic_ParseLong(lX)
+		If thinBasic_CheckComma_Mandatory Then
+			thinBasic_ParseLong(lY)
+			If thinBasic_CheckComma_Mandatory Then
+				thinBasic_ParseLong(lColor)
+				PSet (lX, lY), lColor
+			EndIf
+		EndIf
+
+		If pp Then thinBasic_CheckCloseParens_Mandatory
+
+	End sub
+
+	sub Exec_FBGFX_Circle()
+	'----------------------------------------------------------------------------
+	'
+	'----------------------------------------------------------------------------
+		Static pp             As Long
+		Static lX             As double
+		Static lY             As double
+		Static lRadius        As Double
+		Static lColorPresent  As Long
+		Static lColor         As double
+		
+		'---Check if open parens is present
+		pp = thinBasic_CheckOpenParens_Optional
+
+		thinBasic_ParseDouble(lX)
+		If thinBasic_CheckComma_Mandatory Then
+			thinBasic_ParseDouble(lY)
+			If thinBasic_CheckComma_Mandatory Then
+				thinBasic_ParseDouble(lRadius)
+				If thinBasic_CheckComma_Optional Then
+					lColorPresent = TB_TRUE
+					thinBasic_ParseDouble(lColor)
+				End if
+				If lCOlorPresent Then
+					Circle (lX, lY), lRadius, lColor
+				else
+					Circle (lX, lY), lRadius
+				EndIf
+			EndIf
+		EndIf
+
+		If pp Then thinBasic_CheckCloseParens_Mandatory
+
+	End sub
+
+	Function Exec_FBGFX_InKey() As BSTR
+	'----------------------------------------------------------------------------
+	' This function returns a OLE string
+	'----------------------------------------------------------------------------
+		Dim pp      As Long
+
+		'---Check if open parens is present
+		pp = thinBasic_CheckOpenParens_Optional
+
+		Dim sBSTR       As BSTR       '---OLE string will be used to return value to thinCore
+
+		'---String will be used internally and than assigned to OLE string
+		'---Here we use a dynamic string (that in reality is a pointer to a structure whose first
+		'---4 bytes are a pointer to a buffer containing the real string
+		'---In this case also a fized ZString would be ok
+		Dim InKeyString As String
+		
+		'---Check inkey
+		InKeyString = InKey
+		'---If something was returned than we use it to allocate an OLE string
+		If Len(InKeyString) Then
+			'---Allocate OLE string using specific APIs. In this case we use SysAllocStringByteLen
+			'---in order to also pass an initial value string
+			sBSTR = SysAllocStringByteLen( InKeyString, Len(InKeyString) )
+		End If
+		
+		'---If initial parens was present that final one is mandatory
+		If pp Then thinBasic_CheckCloseParens_Mandatory
+
+		Function = sBSTR
+
+	End Function
+
+	FUNCTION LoadLocalSymbols Cdecl ALIAS "LoadLocalSymbols" (BYVAL sPath AS STRING) AS Long EXPORT 
+	'----------------------------------------------------------------------------
+	' This function is automatically called by thinCore whenever this DLL module is loaded.
+	' This function MUST (repeat MUST) be present in every external DLL module you want to use
+	' with thinBasic
+	' Use this function to initialize every you need and for loading the
+	' new symbol (read Keyword) you have created.
+	'----------------------------------------------------------------------------
+    	
+		thinBasic_LoadSymbol "FBGFX_Screen"       , thinBasic_ReturnNone        , @Exec_FBGFX_Screen      , thinBasic_ForceOverWrite
+		thinBasic_LoadSymbol "FBGFX_ScreenRes"    , thinBasic_ReturnNone        , @Exec_FBGFX_ScreenRes   , thinBasic_ForceOverWrite
+		thinBasic_LoadSymbol "FBGFX_Locate"       , thinBasic_ReturnNone        , @Exec_FBGFX_Locate      , thinBasic_ForceOverWrite
+		thinBasic_LoadSymbol "FBGFX_Print"        , thinBasic_ReturnNone        , @Exec_FBGFX_Print       , thinBasic_ForceOverWrite
+		thinBasic_LoadSymbol "FBGFX_WindowTitle"  , thinBasic_ReturnNone        , @Exec_FBGFX_WindowTitle , thinBasic_ForceOverWrite
+		thinBasic_LoadSymbol "FBGFX_Sleep"        , thinBasic_ReturnNone        , @Exec_FBGFX_Sleep       , thinBasic_ForceOverWrite
+		thinBasic_LoadSymbol "FBGFX_PSet"         , thinBasic_ReturnNone        , @Exec_FBGFX_PSet        , thinBasic_ForceOverWrite
+		thinBasic_LoadSymbol "FBGFX_Circle"       , thinBasic_ReturnNone        , @Exec_FBGFX_Circle      , thinBasic_ForceOverWrite
+		thinBasic_LoadSymbol "FBGFX_Cls"          , thinBasic_ReturnNone        , @Exec_FBGFX_Cls	        , thinBasic_ForceOverWrite
+		thinBasic_LoadSymbol "FBGFX_Color"        , thinBasic_ReturnCodeLong    , @Exec_FBGFX_Color       , thinBasic_ForceOverWrite
+		thinBasic_LoadSymbol "FBGFX_RGB"          , thinBasic_ReturnCodeLong    , @Exec_FBGFX_RGB         , thinBasic_ForceOverWrite
+		thinBasic_LoadSymbol "FBGFX_RGBA"         , thinBasic_ReturnCodeLong    , @Exec_FBGFX_RGBA        , thinBasic_ForceOverWrite
+
+		thinBasic_LoadSymbol "FBGFX_ScreenSet"    , thinBasic_ReturnNone        , @Exec_FBGFX_ScreenSet   , thinBasic_ForceOverWrite
+		thinBasic_LoadSymbol "FBGFX_Inkey"        , thinBasic_ReturnString      , @Exec_FBGFX_InKey       , thinBasic_ForceOverWrite
+
+
+ 		FUNCTION = 0
+	END FUNCTION
+
+	Function UnLoadLocalSymbols Cdecl ALIAS "UnLoadLocalSymbols" (BYVAL sPath AS STRING) AS Long EXPORT 
+	'----------------------------------------------------------------------------
+	' This function is automatically called by thinCore whenever this DLL module is unloaded.
+	' This function CAN be present but in general it is not necessary.
+	' Only for modules developed with FreeBasic this function MUST be present and have
+	' a call to FreeBasic "End" statement. This is necessary in order to unload module from memory.
+	' Use this function to perform uninitialize process, if needed.
+	'----------------------------------------------------------------------------
+
+		'---Do whatever de-initialization here
+
+
+		'---Important for FreeBasic modules: always call End here otherwise process will
+		'---remain open in memory
+			End
+		'---
+    
+		FUNCTION = 0&
+
+  END FUNCTION
+
+#EndCompiled
+
+'-----------------------------------------------------------------------
+' Check if module was created
+'-----------------------------------------------------------------------
+'uses "FILE"
+'
+'string sModuleName = left$(APP_SourceFullName, -6) + "DLL"
+'
+'if FILE_Exists(sModuleName) Then
+'  msgbox "Module " & sModuleName & " created!", %MB_ICONINFORMATION
+'Else
+'  msgbox "ERROR creating Module " & sModuleName & $crlf &
+'          "Compiler error code: " & Compiled_LastCompile_Result & $crlf & 
+'          "Compiler output:" & $crlf &
+'          Compiled_LastCompile_Output, %MB_ICONERROR
+'End If
+
+ 

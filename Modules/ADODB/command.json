@@ -4,7 +4,7 @@
     "ModuleName": "ADODB",
     "Icon": "公文包",
     "Visible": true,
-    "Templet": "index.html",
+    "Templet": "index",
     "Help": {
         "Caption": ""
     },
@@ -13,7 +13,7 @@
             "Caption": "单文件使用扩展库",
             "Icon": "信息",
             "Visible": true,
-            "Templet": "document.html",
+            "Templet": "document",
             "Help": {
                 "Caption": "扩展库使用帮助",
                 "Document": "在项目中使用扩展库功能会自动将扩展库引入项目，项目编译或运行时，自动加入扩展库依赖代码和文件。<br><br>如果您在单文件中希望使用本扩展库，则必须编写扩展库依赖代码才能调用扩展库中的函数，否则会报错，LzRPA 建议使用工程方式编写程序，但仍保留单文件使用扩展库的方法。<br><br>单文件在代码中添加扩展库依赖代码：<br>&nbsp;&nbsp;Uses &quot;ADODB&quot;<br><br>建议将引用扩展库代码统一添加到全局代码块，也就是代码的最上面。"
@@ -24,7 +24,7 @@
             "Remark": "连接对象",
             "Icon": "类",
             "Visible": true,
-            "Templet": "index.html",
+            "Templet": "index",
             "Help": {
                 "Caption": ""
             },
@@ -36,7 +36,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "CommandTimeOut",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "CommandTimeOut",
                         "Define": "iRet = ADODB_Connection.CommandTimeOut<br>ADODB_Connection.CommandTimeOut = iSeconds",
@@ -54,7 +54,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "ConnectionString",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "ConnectionString",
                         "Define": "sRet = ADODB_Connection.ConnectionString<br>ADODB_Connection.ConnectionString = sConnectionString",
@@ -72,7 +72,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "ConnectionTimeOut",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "ConnectionTimeOut",
                         "Define": "iRet = ADODB_Connection.ConnectionTimeOut<br>ADODB_Connection.ConnectionTimeOut = iSeconds",
@@ -90,7 +90,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "CursorLocation",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "CursorLocation",
                         "Define": "iRet = ADODB_Connection.CursorLocation<br>ADODB_Connection.CursorLocation = CursorLocation",
@@ -108,7 +108,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "DefaultDatabase",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "DefaultDatabase",
                         "Define": "sRet = ADODB_Connection.DefaultDatabase<br>ADODB_Connection.DefaultDatabase = DefaultDatabase",
@@ -126,7 +126,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "Provider",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "Provider",
                         "Define": "sRet = ADODB_Connection.Provider<br>ADODB_Connection.Provider = sProvider",
@@ -144,7 +144,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "State",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "State",
                         "Define": "iRet = ADODB_Connection.State",
@@ -162,7 +162,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "Version",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "Version",
                         "Define": "object = ADODB_Connection.Version",
@@ -179,7 +179,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "Open()",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "Open",
                         "Define": "ADODB_Connection.Open([sConnectionString[, sUserId[, sPassword[, Options]]]])",
@@ -220,7 +220,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "Close",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "Close",
                         "Define": "ADODB_Connection.Close",
@@ -237,7 +237,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "Execute()",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "Execute",
                         "Define": "ADODB_Connection.Execute(sCommandText[, lRecordsEffected[, lOptions]])",
@@ -272,7 +272,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "LookUp()",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "LookUp",
                         "Define": "ADODB_Connection.LookUp(sSQL, sFieldName)",
@@ -301,7 +301,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "BeginTrans",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "BeginTrans",
                         "Define": "ADODB_Connection.BeginTrans",
@@ -318,7 +318,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "CommitTrans",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "CommitTrans",
                         "Define": "ADODB_Connection.CommitTrans",
@@ -335,7 +335,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "RollbackTrans",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "RollbackTrans",
                         "Define": "ADODB_Connection.RollbackTrans",
@@ -351,7 +351,7 @@
                     "Remark": "错误集合对象",
                     "Icon": "类",
                     "Visible": true,
-                    "Templet": "index.html",
+                    "Templet": "index",
                     "Help": {
                         "Caption": ""
                     },
@@ -363,7 +363,7 @@
                             "Visible": true,
                             "Function": true,
                             "InsCode": "Count",
-                            "Templet": "command.html",
+                            "Templet": "command",
                             "Help": {
                                 "Caption": "Count",
                                 "Define": "iRet = ADODB_Connection.Errors.Count",
@@ -381,7 +381,7 @@
                             "Visible": true,
                             "Function": true,
                             "InsCode": "Msg",
-                            "Templet": "command.html",
+                            "Templet": "command",
                             "Help": {
                                 "Caption": "Msg",
                                 "Define": "sRet = ADODB_Connection.Errors.Msg",
@@ -398,7 +398,7 @@
                             "Visible": true,
                             "Function": true,
                             "InsCode": "Clear",
-                            "Templet": "command.html",
+                            "Templet": "command",
                             "Help": {
                                 "Caption": "Clear",
                                 "Define": "ADODB_Connection.Errors.Clear",
@@ -415,7 +415,7 @@
                             "Visible": true,
                             "Function": true,
                             "InsCode": "(Index).Number",
-                            "Templet": "command.html",
+                            "Templet": "command",
                             "Help": {
                                 "Caption": "Number",
                                 "Define": "iRet = ADODB_Connection.Errors(Index).Number",
@@ -438,7 +438,7 @@
                             "Visible": true,
                             "Function": true,
                             "InsCode": "(Index).Description",
-                            "Templet": "command.html",
+                            "Templet": "command",
                             "Help": {
                                 "Caption": "Description",
                                 "Define": "iRet = ADODB_Connection.Errors(Index).Description",
@@ -461,7 +461,7 @@
                             "Visible": true,
                             "Function": true,
                             "InsCode": "(Index).Source",
-                            "Templet": "command.html",
+                            "Templet": "command",
                             "Help": {
                                 "Caption": "Source",
                                 "Define": "iRet = ADODB_Connection.Errors(Index).Source",
@@ -484,7 +484,7 @@
                             "Visible": true,
                             "Function": true,
                             "InsCode": "(Index).SQLState",
-                            "Templet": "command.html",
+                            "Templet": "command",
                             "Help": {
                                 "Caption": "SQLState",
                                 "Define": "iRet = ADODB_Connection.Errors(Index).SQLState",
@@ -507,7 +507,7 @@
                             "Visible": true,
                             "Function": true,
                             "InsCode": "(Index).NativeError",
-                            "Templet": "command.html",
+                            "Templet": "command",
                             "Help": {
                                 "Caption": "NativeError",
                                 "Define": "iRet = ADODB_Connection.Errors(Index).NativeError",
@@ -533,7 +533,7 @@
             "Remark": "记录集对象",
             "Icon": "类",
             "Visible": true,
-            "Templet": "index.html",
+            "Templet": "index",
             "Help": {
                 "Caption": ""
             },
@@ -545,7 +545,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "BOF",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "BOF",
                         "Define": "bRet = ADODB_Recordset.BOF",
@@ -563,7 +563,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "EOF",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "EOF",
                         "Define": "bRet = ADODB_Recordset.EOF",
@@ -581,7 +581,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "RecordCount",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "RecordCount",
                         "Define": "iRet = ADODB_Recordset.RecordCount",
@@ -599,7 +599,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "Collect",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "Collect",
                         "Define": "sRet = ADODB_Recordset.Collect(sFieldName)",
@@ -623,7 +623,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "CollectD",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "CollectD",
                         "Define": "sRet = ADODB_Recordset.CollectD(sFieldName)<br>ADODB_Recordset.CollectD(sFieldName) = NewValue",
@@ -653,7 +653,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "CollectN",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "CollectN",
                         "Define": "nRet = ADODB_Recordset.CollectN(sFieldName)<br>ADODB_Recordset.CollectN(sFieldName) = NewValue",
@@ -683,7 +683,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "CollectS",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "CollectS",
                         "Define": "sRet = ADODB_Recordset.CollectS(sFieldName)<br>ADODB_Recordset.CollectS(sFieldName) = NewValue",
@@ -713,7 +713,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "UpdateD",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "UpdateD",
                         "Define": "ADODB_Recordset.UpdateD(sFieldName) = NewValue",
@@ -743,7 +743,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "UpdateN",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "UpdateN",
                         "Define": "ADODB_Recordset.UpdateN(sFieldName) = NewValue",
@@ -773,7 +773,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "UpdateS",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "UpdateS",
                         "Define": "ADODB_Recordset.UpdateS(sFieldName) = NewValue",
@@ -803,7 +803,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "CursorLocation",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "CursorLocation",
                         "Define": "iRet = ADODB_Recordset.CursorLocation<br>ADODB_Recordset.CursorLocation = iCursor",
@@ -821,7 +821,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "CursorType",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "CursorType",
                         "Define": "iRet = ADODB_Recordset.CursorType<br>ADODB_Recordset.CursorType = iCursor",
@@ -839,7 +839,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "Sort",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "Sort",
                         "Define": "sRet = ADODB_Recordset.Sort<br>ADODB_Recordset.Sort = sSort",
@@ -857,7 +857,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "State",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "State",
                         "Define": "iRet = ADODB_Recordset.State",
@@ -874,7 +874,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "AddNew",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "AddNew",
                         "Define": "ADODB_Recordset.AddNew",
@@ -891,7 +891,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "Close",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "Close",
                         "Define": "ADODB_Recordset.Close",
@@ -908,7 +908,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "Move",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "Move",
                         "Define": "ADODB_Recordset.Move(lNumRec[, lStart])",
@@ -937,7 +937,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "MoveFirst",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "MoveFirst",
                         "Define": "ADODB_Recordset.MoveFirst",
@@ -954,7 +954,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "MoveLast",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "MoveLast",
                         "Define": "ADODB_Recordset.MoveLast",
@@ -971,7 +971,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "MoveNext",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "MoveNext",
                         "Define": "ADODB_Recordset.MoveNext",
@@ -988,7 +988,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "MovePrevious",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "MovePrevious",
                         "Define": "ADODB_Recordset.MovePrevious",
@@ -1005,7 +1005,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "Update",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "Update",
                         "Define": "ADODB_Recordset.Update",
@@ -1022,7 +1022,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "Expand",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "Expand",
                         "Define": "ADODB_Recordset.Expand(sDataFormat)",
@@ -1045,7 +1045,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "GetString",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetString",
                         "Define": "ADODB_Recordset.GetString([lFormat[, nRec[, sColDelim[, sRowDelim[, nullexpr]]]]])",
@@ -1092,7 +1092,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "Open",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "Open",
                         "Define": "ADODB_Recordset.Open(sSource, pConnection[, CursorType[, lLockType[, lCommandType]]])",
@@ -1139,7 +1139,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "Save",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "Save",
                         "Define": "ADODB_Recordset.Save(sDestination[, PersistFormat])",
@@ -1168,7 +1168,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "Find",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "Find",
                         "Define": "ADODB_Recordset.Find(sCriteria[, skiprows[, direction[, start]]])",
@@ -1208,7 +1208,7 @@
                     "Remark": "字段集合对象",
                     "Icon": "类",
                     "Visible": true,
-                    "Templet": "index.html",
+                    "Templet": "index",
                     "Help": {
                         "Caption": ""
                     },
@@ -1220,7 +1220,7 @@
                             "Visible": true,
                             "Function": true,
                             "InsCode": "Count",
-                            "Templet": "command.html",
+                            "Templet": "command",
                             "Help": {
                                 "Caption": "Count",
                                 "Define": "iRet = ADODB_Recordset.Fields.Count",
@@ -1238,7 +1238,7 @@
                             "Visible": true,
                             "Function": true,
                             "InsCode": "(Index).ActualSize",
-                            "Templet": "command.html",
+                            "Templet": "command",
                             "Help": {
                                 "Caption": "ActualSize",
                                 "Define": "iRet = ADODB_Recordset.Fields(Index).ActualSize",
@@ -1262,7 +1262,7 @@
                             "Visible": true,
                             "Function": true,
                             "InsCode": "(Index).DefinedSize",
-                            "Templet": "command.html",
+                            "Templet": "command",
                             "Help": {
                                 "Caption": "DefinedSize",
                                 "Define": "iRet = ADODB_Recordset.Fields(Index).DefinedSize",
@@ -1287,7 +1287,7 @@
                             "Visible": true,
                             "Function": true,
                             "InsCode": "(Index).Name",
-                            "Templet": "command.html",
+                            "Templet": "command",
                             "Help": {
                                 "Caption": "Name",
                                 "Define": "iRet = ADODB_Recordset.Fields(Index).Name",
@@ -1311,7 +1311,7 @@
                             "Visible": true,
                             "Function": true,
                             "InsCode": "(Index).Type",
-                            "Templet": "command.html",
+                            "Templet": "command",
                             "Help": {
                                 "Caption": "Type",
                                 "Define": "iRet = ADODB_Recordset.Fields(Index).Type",
@@ -1335,7 +1335,7 @@
                             "Visible": true,
                             "Function": true,
                             "InsCode": "(Index).Type$",
-                            "Templet": "command.html",
+                            "Templet": "command",
                             "Help": {
                                 "Caption": "Type$",
                                 "Define": "iRet = ADODB_Recordset.Fields(Index).Type$",
@@ -1359,7 +1359,7 @@
                             "Visible": true,
                             "Function": true,
                             "InsCode": "(Index).Value",
-                            "Templet": "command.html",
+                            "Templet": "command",
                             "Help": {
                                 "Caption": "Value",
                                 "Define": "iRet = ADODB_Recordset.Fields(Index).Value",
@@ -1386,7 +1386,7 @@
             "Remark": "SQL执行对象",
             "Icon": "类",
             "Visible": true,
-            "Templet": "index.html",
+            "Templet": "index",
             "Help": {
                 "Caption": ""
             },
@@ -1398,7 +1398,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "ActiveConnection",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "ActiveConnection",
                         "Define": "object = ADODB_Command.ActiveConnection<br>ADODB_Command.ActiveConnection = ADODB_Connection",
@@ -1416,7 +1416,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "CommandText",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "CommandText",
                         "Define": "sRet = ADODB_Command.CommandText<br>ADODB_Command.CommandText = sCommandText",
@@ -1434,7 +1434,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "CommandType",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "CommandType",
                         "Define": "iRet = ADODB_Command.CommandType<br>ADODB_Command.CommandType = CommandType",
@@ -1451,7 +1451,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "Execute()",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "Execute",
                         "Define": "ADODB_Command.Execute([lRecordsEffected])",

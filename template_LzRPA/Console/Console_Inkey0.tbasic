@@ -1,0 +1,26 @@
+Uses "Console" 
+
+DIM s AS STRING 
+DIM i AS LONG      
+DIM Count AS QUAD
+
+
+Console_WriteLine("Please press 'q' to exit or any other key to test.") 
+
+DO
+  s = Console_InKey
+  DOEVENTS
+  i = LEN(s)
+  SELECT CASE i
+    CASE 0    
+      INCR Count
+      Console_Printat("No events: " & Count , 60, 1, %Console_FOREGROUND_RED OR %Console_FOREGROUND_INTENSITY)
+    CASE 1
+      Console_WriteLine("You pressed the " + s + " key.") 
+    CASE 2
+      Console_WriteLine("You pressed an extended key.") 
+    CASE 3
+      Console_WriteLine("You used the mouse.")
+  END SELECT
+LOOP UNTIL (i OR s = "q")
+

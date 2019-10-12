@@ -9,7 +9,7 @@ Begin Const
 End Const
 
 
-Function Main() As Long
+Function TBMain() As Long
  Local xsize,ysize As Long          
  Local hdlg As Long
  Local mygraf As Long

@@ -18,7 +18,7 @@ BEGIN CONST
   %eFan2       
 END CONST 
 
-FUNCTION Main()
+FUNCTION TBMAIN()
   LOCAL hWnd As DWORD
   GLOBAL FrameRate AS DOUBLE
   

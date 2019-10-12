@@ -1,0 +1,13 @@
+[
+	{
+		"Caption": "Wait ...",
+		"Icon": "文件夹",
+		"Visible": true,
+		"Templet": "index.html",
+		"Help": {
+			"Caption": ""
+		},
+		"Child": [
+		]
+	}
+]

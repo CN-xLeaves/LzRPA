@@ -9,7 +9,7 @@ Uses "TBGL"
 %h = 512 
 %total = %w * %h
 
-Function Main()
+Function TBMAIN()
   Local hWnd      As DWord
   Local FrameRate As Double
   

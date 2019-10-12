@@ -6,7 +6,7 @@
 
 Uses "TBGL", "TBDI"
 
-Function Main()
+Function TBMain()
   Dim hWnd As DWord
   Dim i,j As Long
   Dim ns As String

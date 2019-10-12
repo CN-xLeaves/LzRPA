@@ -2,7 +2,7 @@ uses "Stat", "Console"
 
 %ELEMENTS = 10
 
-function Main()
+function TBMain()
   dim aData(%ELEMENTS) as ext
 
   Stat_Random(aData, 1, %ELEMENTS)

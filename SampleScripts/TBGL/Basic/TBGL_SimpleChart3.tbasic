@@ -23,7 +23,7 @@
   dim Angle, Angle2 as double
   dim hWnd As Dword 
 
-  function Main()
+  function TBMain()
     dim i, j as long
 
     for i = 1 to %MYDATADIM1      

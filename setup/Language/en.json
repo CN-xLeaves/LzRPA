@@ -1,30 +1,230 @@
 {
     "MainWindow":
     {
+        "Title": "LzRPA",
 
+        "Menu_File": "File (&F)",
+        "Menu_File_NewProj": "New Project (&P)",
+        "Menu_File_NewFile": "New File (&N)",
+        "Menu_File_Open": "Open (&O)",
+        "Menu_File_Save": "Save (&S)",
+        "Menu_File_SaveAs": "SaveAs (&A)",
+        "Menu_File_SaveAll": "SaveAll (&L)",
+        "Menu_File_Close": "Close (&C)",
+        "Menu_File_CloseAll": "CloseAll (&E)",
+        "Menu_File_Quit": "Quit (&X)",
+
+        "Menu_Edit": "Edit (&E)",
+        "Menu_Edit_Undo": "Undo (&u)",
+        "Menu_Edit_Redo": "Redo (&R)",
+        "Menu_Edit_Cut": "Cut (&T)",
+        "Menu_Edit_Copy": "Copy (&C)",
+        "Menu_Edit_Paste": "Paste (&P)",
+        "Menu_Edit_Delete": "Delete (&D)",
+        "Menu_Edit_SelectAll": "SelectAll (&A)",
+        "Menu_Edit_IncrIndent": "Incr Indent",
+        "Menu_Edit_DecrIndent": "Decr Indent",
+        "Menu_Edit_QuickFind": "Quick Find",
+        "Menu_Edit_Find": "Find (&F)",
+        "Menu_Edit_Replace": "Replace (&R)",
+        "Menu_Edit_ToUpper": "To Upper",
+        "Menu_Edit_ToLower": "To Lower",
+
+        "Menu_View": "View (&V)",
+        "Menu_View_Home": "Home (&M)",
+        "Menu_View_FuncList": "Function List (&C)",
+        "Menu_View_Help": "Help (&H)",
+        "Menu_View_Log": "Log (&L)",
+        "Menu_View_Project": "Work Space (&P)",
+        "Menu_View_ZoomIn": "Zoom + (&I)",
+        "Menu_View_ZoomOut": "Zoom - (&O)",
+        "Menu_View_Zoom100": "Zoom 100%",
+
+        "Menu_Run": "Run (&R)",
+        "Menu_Run_Run": "Run (&R)",
+        "Menu_Run_Debug": "Debug (&D)",
+        "Menu_Run_Build": "Build (&B)",
+
+        "Menu_Tool": "Tool (&T)",
+        "Menu_Tool_EditUI": "Visual Designer (&D)",
+        "Menu_Tool_FileAssociation": "File Association (&A)",
+
+        "Menu_Help": "Help (&H)",
+        "Menu_Help_ThinBasic": "ThinBasic (&H)",
+        "Menu_Help_LzRPA": "LzRPA (&A)",
+
+        "Tool_Home": "Home",
+        "Tool_NewProj": "New Project",
+        "Tool_NewFile": "New File",
+        "Tool_Open": "Open",
+        "Tool_Save": "Save",
+        "Tool_SaveAll": "SaveAll",
+        "Tool_Cut": "Cut",
+        "Tool_Copy": "Copy",
+        "Tool_Paste": "Paste",
+        "Tool_Delete": "Delete",
+        "Tool_Undo": "Undo",
+        "Tool_Redo": "Redo",
+        "Tool_Find": "Find",
+        "Tool_Replace": "Replace",
+        "Tool_AddFlag": "Add Flag",
+        "Tool_PrevFlag": "Prev Flag",
+        "Tool_NextFlag": "Next Flag",
+        "Tool_DelFlag": "Del Flag",
+        "Tool_IncrIndent": "Incr Indent",
+        "Tool_DecrIndent": "Decr Indent",
+        "Tool_AddCommant": "Add Commant",
+        "Tool_DelCommant": "Del Commant",
+        "Tool_EditUI": "Visual Designer",
+        "Tool_Run": "Run",
+        "Tool_Build": "Build",
+
+        "AboutLzRPA": "LzRPA Ver 0.96 - Power By xLeaves (QQ：605072846)",
+        "StatusText": "This program has not added online update function, and is currently in the fast update iteration phase. For the latest version, please visit https://www.thinbasic.com"
     },
+
+
+
     "Panel_CommandList":
     {
+        "Title": "Command Tree",
 
+        "View_OnlyName": "Only Name",
+        "View_OnlyRemark": "Only Remark",
+        "View_NameRemark": "Name (Remark)",
+        "View_RemarkName": "Remark (Name)",
+
+        "Tree_Command": "Commands",
+        "Tree_Document": "Documents",
+        "Tree_Extend": "Extends"
     },
+
+
+
     "Panel_Help":
     {
-
+        "Title": "Help"
     },
+
+
+
     "Panel_Home":
     {
+        "Title": "Home",
 
+        "NewProj": "New Project (&P)",
+        "NewFile": "New File (&F)",
+        "Open": "Open (&O)",
+
+        "History_List": "History List (Double click on the list to open the file) :",
+        "History_Clear": "Clear History",
+
+        "List_Name": "Name",
+        "List_Time": "Access time",
+        "List_Path": "File path"
     },
+
+
+
     "Panel_Log":
     {
-
+        "Title": "Log"
     },
+
+
+
+    "Panel_Project":
+    {
+        "Title": "WorkSpace",
+
+        "Tree_Root": "WorkSpace",
+        "Tree_Temp": " [Temp]",
+        "Tree_Src": "Scripts",
+        "Tree_Lib": "Extends",
+
+        "Menu_WorkSpace_SaveAll": "SaveAll (&L)",
+        "Menu_WorkSpace_CloseAll": "CloseAll (&E)",
+
+        "Menu_Project_NewFile": "New File (&A)",
+        "Menu_Project_IncFile": "Import File (&I)",
+        "Menu_Project_Option": "Project Option (&P)",
+        "Menu_Project_Explorer": "Open Directory (&E)",
+
+        "Menu_File_NewFile": "New File (&A)",
+        "Menu_File_IncFile": "Import File (&I)",
+        "Menu_File_Option": "Delete File (&D)",
+        "Menu_File_Explorer": "Open Directory (&E)",
+
+        "Menu_Extend_Append": "Add  Extend (&A)",
+        "Menu_Extend_Delete": "Remove Extend (&R)",
+
+        "Menu_OnlyFile_Close": "Close (&C)",
+        "Menu_OnlyFile_IncFile": "Open Directory (&E)"
+    },
+
+
+
     "Win_CodeEdit":
     {
-
+        "Menu_Undo": "Undo (&U)",
+        "Menu_Redo": "Redo (&R)",
+        "Menu_Cut": "Cut (&T)",
+        "Menu_Copy": "Copy (&C)",
+        "Menu_Paste": "Paste (&P)",
+        "Menu_Delete": "Delete (&D)",
+        "Menu_SelectAll": "SelectAll (&A)"
     },
+
+
+
     "Win_ProjEdit":
     {
+        "Title": " - Option",
 
+        "Tabs_Project": "Project",
+        "Tabs_Project_Name": "Name :",
+
+        "Tabs_Build": "Build",
+        "Tabs_Build_Path": "Path :",
+        "Tabs_Build_File": "File :",
+        "Tabs_Build_Icon": "Icon :",
+        "Tabs_Build_ProcessName": "Process :",
+        
+        "Tabs_Version": "Version",
+        "Tabs_Version_FileDescription": "FileDescription",
+        "Tabs_Version_ProductName": "ProductName",
+        "Tabs_Version_ProductVersion": "ProductVersion",
+        "Tabs_Version_LegalCopyright": "LegalCopyright",
+        "Tabs_Version_LegalTrademarks": "LegalTrademarks",
+        "Tabs_Version_OriginalFilename": "OriginalFilename",
+        "Tabs_Version_CompanyName": "CompanyName",
+        "Tabs_Version_Comments": "Comments",
+        "Tabs_Version_FileVersion": "FileVersion",
+        "Tabs_Version_UseFileVersion": "Use FileVersion",
+
+        "Save": "Save"
+    },
+
+
+
+    "NewProject": 
+    {
+        "Title": "Home",
+
+        "Label_Name": "Name :",
+        "Label_Path": "Path :",
+        "Label_WorkSpaceType": "Work Space :",
+        "Label_WorkSpaceName": "Work Space Name :",
+
+        "Check_CreateProjFolder": "Create Project Subdirectory",
+        "Check_CreateWorkFolder": "Create WorkSpace Subdirectory",
+
+        "Button_SelectPath": "Browse",
+        "Button_Submit": "Create",
+        "Button_Close": "Close",
+
+        "Tree_Local": "Local",
+        "Tree_Online": "Online",
+        "Tree_Wait": "Wait ..."
     }
 }

@@ -17,7 +17,7 @@ End Const
 Global sprRobot As Long       
 Global width, height As Long
        
-Function Main()    
+Function TBMAIN()    
   Local hWnd As DWord
   Local dirTextures As String = APP_SourcePath+"Textures\"   
 

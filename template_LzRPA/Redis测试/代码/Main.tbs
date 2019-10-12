@@ -1,0 +1,139 @@
+
+Function Main() As Long
+	
+    ' 启动本地 Redis 服务器，端口 6379（在 redis.conf 中配置）
+    Dim PID As Long = RedisServer_Run()
+    
+    ' 创建 Redis 客户端对象
+    Dim r As Redis
+    
+    ' 连接到 Redis 服务器
+    r.Connect("127.0.0.1", 6379)
+    
+    /*
+    ' 执行命令
+    TracePrint r.Command("Ping test")
+    
+    ' Ping
+    TracePrint r.Ping("Ping")
+    
+    ' Echo
+    TracePrint r.Echo("Text")
+    
+    ' 取随机键
+    TracePrint r.RandomKey()
+    
+    ' 取键数量
+    TracePrint r.DBSize()
+    
+    ' 取键列表 [可能比较长，测试过没问题就先注释掉]
+    'TracePrint r.Keys("*")
+    
+    ' 取最后保存的时间
+    TracePrint Format(FromUnixTime(r.LastSave()), "yyyy-mm-dd hh:mm:ss")
+    
+    ' 服务器信息 [可能比较长，测试过没问题就先注释掉]
+    'TracePrint r.Info("all")
+    
+    ' 获取服务器时间
+    TracePrint Format(FromUnixTime(r.ServerTime()), "yyyy-mm-dd hh:mm:ss")
+    
+    ' 设置当前客户端名字
+    r.Client_SetName("Client1")
+    
+    ' 获取当前客户端名字
+    TracePrint r.Client_GetName()
+    
+    ' 修改服务端配置
+    r.Config_Set("slowlog-max-len", "10086")
+    
+    ' 获取服务端配置 [可能比较长，测试过没问题就先注释掉]
+    'TracePrint r.Config_Get("slowlog-max-len")
+    
+    ' 获取客户端列表 [可能比较长，测试过没问题就先注释掉]
+    'TracePrint r.Client_List()
+    
+    ' 写入数据
+    r.Key_Set("a", "字符串值")
+    r.Key_SetInt("b", 123)
+    r.Key_SetNum("c", 3.14)
+    
+    ' 读取数据
+    TracePrint r.Key_Get("a")
+    TracePrint r.Key_GetInt("b")
+    TracePrint r.Key_GetNum("c")
+    */
+    
+    ' 写入限时数据 [测试时间较长，测试过没问题就先注释掉]
+    /*
+    r.Key_SetEX("d", 1, "Value")
+    r.Key_PSetEX("e", 500, "Value")
+    Delay 1200
+    TracePrint r.Key_Get("d")
+    TracePrint r.Key_Get("e")
+    */
+    
+    ' 获取旧值写新值
+    TracePrint r.Key_GetSet("c", "NewValue")
+    TracePrint r.Key_Get("c")
+    
+    ' 获取字符串长度
+    TracePrint r.Key_StrLen("c")
+    
+    ' 追加写入字符串
+    r.Key_Append("c", "Append")
+    TracePrint r.Key_Get("c")
+    
+    ' 范围写字符串
+    r.Key_SetRange("c", 10, "从10字节处开始写字符串")
+    TracePrint r.Key_Get("c")
+    
+    ' 范围读字符串
+    TracePrint r.Key_GetRange("c", 3, 8)
+    
+    ' 原子累加累减
+    TracePrint r.Key_Incr("b")
+    TracePrint r.Key_IncrBy("b", 10)
+    TracePrint r.Key_IncrByFloat("b", 0.1)
+    r.Key_SetInt("b", 100)
+    TracePrint r.Key_Decr("b")
+    TracePrint r.Key_DecrBy("b", 10)
+    
+    ' 判断元素是否存在
+    TracePrint r.Key_Exists("c")
+    TracePrint r.Key_Exists("f")
+    
+    ' 获取元素的数据类型
+    TracePrint r.Key_Type("c")
+    
+    ' 重命名
+    r.Key_Set("xxx", "Value")
+    r.Key_Rename("xxx", "d")
+    TracePrint r.Key_Get("d")
+    
+    ' 删除键
+    r.Key_Del("d")
+    TracePrint r.Key_Exists("d")
+    
+    ' 列表整体测试
+    r.List_Clear("tbl")
+    r.List_LPushX("tbl", "1")
+    r.List_LPush("tbl", "2")
+    r.List_LPushX("tbl", "3")
+    r.List_RPush("tbl", "4")
+    r.List_RPushX("tbl", "5")
+    TracePrint r.List_Range("tbl", 0, -1)
+    
+    ' 哈希表整体测试
+    r.HTbl_Set("Dict", "key", "value")
+    TracePrint r.HTbl_Get("Dict", "key")
+    r.HTbl_Set("Dict", "key2", "value2")
+    TracePrint r.HTbl_Get("Dict", "key2")
+    r.HTbl_Set("Dict", "key3", "value3")
+    TracePrint r.HTbl_Get("Dict", "key3")
+    TracePrint r.HTbl_GetAll("Dict")
+    
+    ' 通过客户端关闭服务器 (会在服务器关闭之前保存数据)
+    r.Shutdown()
+    
+End Function

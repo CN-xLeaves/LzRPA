@@ -4,7 +4,7 @@
     "ModuleName": "INI",
     "Icon": "公文包",
     "Visible": true,
-    "Templet": "index.html",
+    "Templet": "index",
     "Help": {
         "Caption": ""
     },
@@ -13,7 +13,7 @@
             "Caption": "单文件使用扩展库",
             "Icon": "信息",
             "Visible": true,
-            "Templet": "document.html",
+            "Templet": "document",
             "Help": {
                 "Caption": "扩展库使用帮助",
                 "Document": "在项目中使用扩展库功能会自动将扩展库引入项目，项目编译或运行时，自动加入扩展库依赖代码和文件。<br><br>如果您在单文件中希望使用本扩展库，则必须编写扩展库依赖代码才能调用扩展库中的函数，否则会报错，LzRPA 建议使用工程方式编写程序，但仍保留单文件使用扩展库的方法。<br><br>扩展库依赖代码：<br>&nbsp;&nbsp;Uses &quot;INI&quot;<br><br>建议将引用扩展库代码统一添加到全局代码块，也就是代码的最上面。"
@@ -25,7 +25,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "INI_GetKey(\"文件路径\", \"小节名\", \"键名\")",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "INI_GetKey",
                 "Define": "sRet = INI_GetKey(sFile, sSection, sKey[, sDefault])",
@@ -66,7 +66,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "INI_SetKey(\"文件路径\", \"小节名\", \"键名\", \"键值\")",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "INI_SetKey",
                 "Define": "iRet = INI_SetKey(sFile, sSection, sKey, sValue)",
@@ -107,7 +107,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "INI_GetSectionsList(\"文件路径\")",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "INI_GetSectionsList",
                 "Define": "sRet = INI_GetSectionsList(sFile[, Separator])",
@@ -136,7 +136,7 @@
             "Visible": true,
             "Function": true,
             "InsCode": "INI_GetSectionKeyList(\"文件路径\", \"小节名\")",
-            "Templet": "command.html",
+            "Templet": "command",
             "Help": {
                 "Caption": "INI_GetSectionKeyList",
                 "Define": "sRet = INI_GetSectionKeyList(sFile, sSection[, Separator])",
@@ -171,7 +171,7 @@
             "Icon": "类",
             "Visible": true,
             "InsCode": "Dim MyIni As cIniFile(\"文件路径\")",
-            "Templet": "index.html",
+            "Templet": "index",
             "Help": {
                 "Caption": ""
             },
@@ -183,7 +183,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "MyIni.FileName",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "FileName",
                         "Define": "sRet = cIniFile.FileName<br>cIniFile.FileName = NewValue",
@@ -200,7 +200,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "MyIni.GetKey(\"小节名\", \"键名\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetKey",
                         "Define": "sRet = cIniFile.GetKey(sSection, sKey[, sDefault])",
@@ -235,7 +235,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "MyIni.SetKey(\"小节名\", \"键名\", \"键值\")",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "SetKey",
                         "Define": "iRet = cIniFile.SetKey(sSection, sKey, sValue)",
@@ -271,7 +271,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "MyIni.Sections(1)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "Sections",
                         "Define": "sRet = cIniFile.Sections(iIndex)",
@@ -295,7 +295,7 @@
                             "Visible": true,
                             "Function": true,
                             "InsCode": "MyIni.Sections.Count",
-                            "Templet": "command.html",
+                            "Templet": "command",
                             "Help": {
                                 "Caption": "Count",
                                 "Define": "sRet = cIniFile.Sections.Count",
@@ -312,7 +312,7 @@
                             "Visible": true,
                             "Function": true,
                             "InsCode": "MyIni.Sections.List($CRLF)",
-                            "Templet": "command.html",
+                            "Templet": "command",
                             "Help": {
                                 "Caption": "List",
                                 "Define": "sRet = cIniFile.Sections.List(Separator)",
@@ -337,7 +337,7 @@
                     "Visible": true,
                     "Function": true,
                     "InsCode": "MyIni.GetKeys(\"小节名\", $CRLF)",
-                    "Templet": "command.html",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "GetKeys",
                         "Define": "sRet = cIniFile.GetKeys(sSection[, Separator])",

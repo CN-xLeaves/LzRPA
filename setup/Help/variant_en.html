@@ -1,0 +1,59 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<title>命令帮助</title>
+	<style type="text/css">
+		/* =====css reset===== */
+		body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, a, big, em, font, img, strong, tt, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, table, caption, tbody, tfoot, thead, tr, th, td { padding: 0; margin: 0; }
+		table { border-collapse: collapse; border-spacing: 0; }
+		button, input, select, textarea { font-size: 12px;font-family:"SimSun";}
+
+		/* =====public===== */
+		body {border:0px; color:#293955; margin: 0 auto; font-size: 12px; font-family:"Simsun"; padding:8px; overflow: auto; }
+		td { font-size: 12px; line-height: 120%; }
+		a { outline: none; text-decoration: none; }
+		.wrap table{width: 100%;}
+		.wrap table tr{ margin:2px 0; display:block}
+		.wrap table tr .tab_left{width: 48px; text-align:right}
+		.blue{color:#293955; font-weight:bold; font-size: 14px}
+		.gray{color:#747474; }
+		pre{margin:0; font-size: 12px; font-family:"Simsun";}
+	</style>
+	<script type="text/javascript">
+		function AiBot_Help(sJson){
+			var xTbl = eval('(' + sJson + ')');
+			if (xTbl.Caption)
+			{
+				var ele = document.getElementById("HelpTitle")
+				ele.innerHTML = xTbl.Caption.replace("\\n", "<br>")
+			}
+			if (xTbl.Define)
+			{
+				var ele = document.getElementById("HelpDefine")
+				ele.innerHTML = xTbl.Define.replace("\\n", "<br>")
+			}
+			if (xTbl.Describe)
+			{
+				var ele = document.getElementById("HelpDescribe")
+				ele.innerHTML = xTbl.Describe.replace("\\n", "<br>")
+			}
+		}
+	</script>
+</head>
+<body>
+<div class="wrap">
+	<td><span class="blue" id="HelpTitle"></span></td>
+	<table>
+		<tr>
+			<td class="tab_left" valign="top">Data Type：</td>
+			<td><span class="gray" id="HelpDefine"></span></td>
+		</tr>
+		<tr>
+			<td class="tab_left" valign="top">Description：</td>
+			<td><span class="gray" id="HelpDescribe"></td>
+		</tr>
+	</table>
+</div>
+</body>
+</html>

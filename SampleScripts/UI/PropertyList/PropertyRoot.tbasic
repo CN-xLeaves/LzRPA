@@ -16,7 +16,7 @@ global pRoot_01     as long
 global pRoot_02     as long
 
 '----------------------------------------------------------------------------
-function Main() as long
+function TBMain() as long
 '----------------------------------------------------------------------------
     local lRslt as long
                     

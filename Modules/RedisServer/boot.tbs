@@ -9,15 +9,6 @@ Function RedisServer_Run(Optional sExePath As String, Optional sOptPath As Strin
     End If
     Return RunApp("""" & sExePath & """ """ & sOptPath & """", iShow)
 End Function
-Function RedisServer_RunEx(Optional sExePath As String, Optional sOptPath As String, Optional iShow As Integer) As Integer
-	If sExePath = "" Then
-		sExePath = APP_ScriptPath & "redis_server.exe"
-    End If
-    If sOptPath = "" Then
-		sOptPath = APP_ScriptPath & "redis.conf"
-    End If
-    Return RunApp("""" & sExePath & """ """ & sOptPath & """", iShow)
-End Function
 
 // 暴力结束 Redis 服务器
 Sub RedisServer_ForceClose(ByVal PID As Long)

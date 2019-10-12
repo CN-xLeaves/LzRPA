@@ -1,3 +1,6 @@
+
+
+
 ' Redis API 声明
 Declare Function RedisConnect Lib "hiredis.dll" Alias "LzBot_Redis_Connect" (ByVal ip As ZString, ByVal port As Long) As Long
 Declare Function RedisConnectWithTimeout Lib "hiredis.dll" Alias "LzBot_Redis_ConnectWithTimeout" (ByVal ip As ZString, ByVal port As Long, ByVal ms As Long) As Long
@@ -6,21 +9,6 @@ Declare Function Redis_Command Lib "hiredis.dll" Alias "LzBot_Redis_Command" (By
 Declare Function RedisLastError Lib "hiredis.dll" Alias "LzBot_Redis_LastError" () As String
 Declare Function Redis_RetStr Lib "hiredis.dll" Alias "LzBot_Redis_RetStr" () As String
 Declare Function Redis_RetInt Lib "hiredis.dll" Alias "LzBot_Redis_RetInt" () As Int64
-Declare Function Redis_Ping Lib "hiredis.dll" Alias "LzBot_Redis_Ping" (ByVal c As Long, ByVal s As ZString) As String
-Declare Function Redis_Set Lib "hiredis.dll" Alias "LzBot_Redis_Set" (ByVal c As Long, ByVal k As ZString, ByVal v As ZString) As String
-Declare Function Redis_SetBin Lib "hiredis.dll" Alias "LzBot_Redis_SetBin" (ByVal c As Long, ByVal k As ZString, ByVal kl As Long, ByVal v As ZString, ByVal vl As Long) As String
-Declare Function Redis_Get Lib "hiredis.dll" Alias "LzBot_Redis_Get" (ByVal c As Long, ByVal k As ZString) As String
-Declare Function Redis_Append Lib "hiredis.dll" Alias "LzBot_Redis_Append" (ByVal c As Long, ByVal k As ZString, ByVal v As ZString) As String
-Declare Sub Redis_Del Lib "hiredis.dll" Alias "LzBot_Redis_Del" (ByVal c As Long, ByVal k As ZString)
-Declare Sub Redis_Rename Lib "hiredis.dll" Alias "LzBot_Redis_Rename" (ByVal c As Long, ByVal k As ZString, ByVal nk As ZString)
-Declare Function Redis_Exists Lib "hiredis.dll" Alias "LzBot_Redis_Exists" (ByVal c As Long, ByVal k As ZString) As Long
-Declare Function Redis_Incr Lib "hiredis.dll" Alias "LzBot_Redis_Incr" (ByVal c As Long, ByVal k As ZString) As Int64
-Declare Function Redis_Incrby Lib "hiredis.dll" Alias "LzBot_Redis_Incrby" (ByVal c As Long, ByVal k As ZString, ByVal v As Long) As Int64
-Declare Function Redis_Decr Lib "hiredis.dll" Alias "LzBot_Redis_Decr" (ByVal c As Long, ByVal k As ZString) As Int64
-Declare Function Redis_Decrby Lib "hiredis.dll" Alias "LzBot_Redis_Decrby" (ByVal c As Long, ByVal k As ZString, ByVal v As Long) As Int64
-Declare Function Redis_Type Lib "hiredis.dll" Alias "LzBot_Redis_Type" (ByVal c As Long, ByVal s As ZString) As String
-Declare Function Redis_Info Lib "hiredis.dll" Alias "LzBot_Redis_Info" (ByVal c As Long, ByVal s As ZString) As String
-Declare Function Redis_Keys Lib "hiredis.dll" Alias "LzBot_Redis_Keys" (ByVal c As Long, ByVal s As ZString) As String
 
 const %REDIS_REPLY_STRING As Long = 1
 const %REDIS_REPLY_ARRAY As Long = 2
@@ -40,10 +28,6 @@ Function RedisCommand(ByVal c As Long, ByVal cmd As String) As String
     End Select
 End Function
 
-Function RedisOnServer(ByVal sExePath As String, ByVal sOptPath As String, ByVal iShow As String) As Integer
-	
-End Function
-
 Type Redis
 
 	' 属性
@@ -52,7 +36,7 @@ Type Redis
 	' 析构函数
 	Sub _Destroy()
 		If Me.redisContext Then
-			RedisFree(Me.redisContext)
+			Close()
         End If
 	End Sub
     
@@ -66,84 +50,461 @@ Type Redis
         Return Me.redisContext
     End Function
     
+    ' 断开服务器
+    Sub Close()
+		RedisFree(Me.redisContext)
+        Me.redisContext = 0
+    End Sub
+    
     ' 执行命令
     Function Command(ByVal cmd As String) As String
 		Return RedisCommand(Me.redisContext, cmd)
 	End Function
     
     ' Ping
-    Function Ping(ByVal s As ZString) As String
-		Return Redis_Ping(Me.redisContext, s)
+    Function Ping(ByVal sText As ZString) As String
+		Return RedisCommand(Me.redisContext, "PING " & sText)
     End Function
     
-    ' 获取键值
-    Function GetVal(ByVal k As ZString) As String
-		Return Redis_Get(Me.redisContext, k)
+    ' 打印字符串
+    Function Echo(ByVal sText As String) As String
+		Return RedisCommand(Me.redisContext, "ECHO " & sText)
     End Function
     
-    ' 设置键值
-    Function SetVal(ByVal k As ZString, ByVal v As ZString) As String
-		Return Redis_Set(Me.redisContext, k, v)
+    
+    
+    ' 从当前数据库中随机返回(不删除)一个 key
+    Function RandomKey() As String
+		Return RedisCommand(Me.redisContext, "RANDOMKEY")
     End Function
     
-    ' 追加键值
-    Function AppendVal(ByVal k As ZString, ByVal v As ZString) As String
-		Return Redis_Append(Me.redisContext, k, v)
-    End Function
-    
-    ' 原子累加
-    Function IncrVal(ByVal k As ZString) As String
-		Return Redis_Incr(Me.redisContext, k)
-    End Function
-    
-    ' 原子累加 [特定值]
-    Function Incrby(ByVal k As ZString, ByVal v As ZString) As String
-		Return Redis_Incrby(Me.redisContext, k, v)
-    End Function
-    
-    ' 原子累减
-    Function DecrVal(ByVal k As ZString) As String
-		Return Redis_Decr(Me.redisContext, k)
-    End Function
-    
-    ' 原子累减 [特定值]
-    Function Decrby(ByVal k As ZString, ByVal v As ZString) As String
-		Return Redis_Decrby(Me.redisContext, k, v)
-    End Function
-    
-    ' 判断键是否存在
-    Function Exists(ByVal k As ZString) As String
-		Return Redis_Exists(Me.redisContext, k)
-    End Function
-    
-    ' 删除键值
-    Function Del(ByVal k As ZString) As String
-		Return Redis_Del(Me.redisContext, k)
-    End Function
-    
-    ' 重命名键
-    Function Rename(ByVal sName As ZString, ByVal sNewName As ZString) As String
-		Return Redis_Rename(Me.redisContext, sName, sNewName)
-    End Function
-    
-    ' 获取键的数据类型
-    Function DataType(ByVal k As ZString) As String
-		Return Redis_Type(Me.redisContext, k)
+    ' 返回当前数据库的 key 的数量
+    Function DBSize() As Long
+		Return CLng(RedisCommand(Me.redisContext, "DBSIZE"))
     End Function
     
     ' 获取键列表
     Function Keys(ByVal s As ZString) As String
-		Return Redis_Keys(Me.redisContext, s)
+		Return RedisCommand(Me.redisContext, "KEYS " & s)
+    End Function
+    
+    ' 数据迭代器
+	Function Redis.Scan(ByVal iCursor As Long, Optional sParam As String) As String
+		Return RedisCommand(Me.redisContext, "SCAN " & iCursor & iif$(sParam = "", "", " " & sParam))
+	End Function
+    
+    ' 返回或保存给定列表、集合、有序集合 key 中经过排序的元素
+	Function Redis.Sort(ByVal sKey As String, Optional sParam As String) As String
+		Return RedisCommand(Me.redisContext, "SORT " & sKey & iif$(sParam = "", "", " " & sParam))
+	End Function
+    
+    ' 清空当前数据库中的所有 key
+    Function FlushDB() As Long
+		Return CLng(RedisCommand(Me.redisContext, "FLUSHDB"))
+    End Function
+    
+    ' 清空整个 Redis 服务器的数据(删除所有数据库的所有 key )
+    Function FlushAll() As Long
+		Return CLng(RedisCommand(Me.redisContext, "FLUSHALL"))
+    End Function
+    
+    ' 切换到指定的数据库，数据库索引号 index 用数字值指定，以 0 作为起始索引值
+    Function SelectDB(ByVal iIndex As Long) As String
+		Return RedisCommand(Me.redisContext, "SELECT " & iIndex)
+    End Function
+    
+    ' 对换指定的两个数据库， 使得两个数据库的数据立即互换
+    Function SwapDB(ByVal iIndex1 As Long, ByVal iIndex2 As Long) As String
+		Return RedisCommand(Me.redisContext, "SWAPDB " & iIndex1 & " " & iIndex2)
+    End Function
+    
+    
+    
+    ' SAVE 命令执行一个同步保存操作，将当前 Redis 实例的所有数据快照(snapshot)以 RDB 文件的形式保存到硬盘
+    Function Save() As String
+		Return RedisCommand(Me.redisContext, "SAVE")
+    End Function
+    
+    ' 在后台异步(Asynchronously)保存当前数据库的数据到磁盘
+    Function BGSave() As String
+		Return RedisCommand(Me.redisContext, "BGSAVE")
+    End Function
+    
+    ' 执行一个 AOF文件 重写操作。重写会创建一个当前 AOF 文件的体积优化版本
+    Function BGReWriteAOF() As String
+		Return RedisCommand(Me.redisContext, "BGREWRITEAOF")
+    End Function
+    
+    ' 返回最近一次 Redis 成功将数据保存到磁盘上的时间，以 UNIX 时间戳格式表示
+    Function LastSave() As Long
+		Return CLng(RedisCommand(Me.redisContext, "LASTSAVE"))
+    End Function
+    
+    
+    
+    ' 通过设置配置文件中 requirepass 项的值(使用命令 CONFIG SET requirepass password )，可以使用密码来保护 Redis 服务器
+    Function Auth(ByVal sPwd As String) As String
+		Return RedisCommand(Me.redisContext, "AUTH " & sPwd)
+    End Function
+    
+    ' 请求服务器关闭与当前客户端的连接
+    Function Quit() As Long
+		Return CLng(RedisCommand(Me.redisContext, "QUIT"))
     End Function
     
     ' 获取服务器信息
-    Function Info(ByVal s As ZString) As String
-		Return Redis_Info(Me.redisContext, s)
+    Function Info(ByVal sSection As String) As String
+		Return RedisCommand(Me.redisContext, "INFO " & sSection)
     End Function
     
     ' 关闭服务器
     Function Shutdown() As String
 		Return RedisCommand(Me.redisContext, "SHUTDOWN SAVE")
     End Function
-
+    
+    ' 返回当前服务器时间 (以 UNIX 时间戳格式表示)
+    Function ServerTime() As Long
+		Return CLng(RedisCommand(Me.redisContext, "TIME"))
+    End Function
+    
+    ' 为当前连接分配一个名字
+    Function Client_SetName(ByVal sName As String) As String
+		Return RedisCommand(Me.redisContext, "CLIENT SETNAME " & sName)
+    End Function
+    
+    ' 返回 CLIENT SETNAME 命令为连接设置的名字
+    Function Client_GetName() As String
+		Return RedisCommand(Me.redisContext, "CLIENT GETNAME")
+    End Function
+    
+    ' 以人类可读的格式，返回所有连接到服务器的客户端信息和统计数据
+    Function Client_List() As String
+		Return RedisCommand(Me.redisContext, "CLIENT LIST")
+    End Function
+    
+    ' 关闭地址为 ip:port 的客户端
+    Function Client_Kill(ByVal sAddr As String) As String
+		Return RedisCommand(Me.redisContext, "CLIENT KILL " & sAddr)
+    End Function
+    
+    ' 动态地调整 Redis 服务器的配置(configuration)而无须重启
+    Function Config_Set(ByVal sParameter As String, ByVal sValue As String) As String
+		Return RedisCommand(Me.redisContext, "CONFIG SET " & sParameter & " " & sValue)
+    End Function
+    
+    ' 取得运行中的 Redis 服务器的配置参数(configuration parameters)
+    Function Config_Get(ByVal sParameter As String) As String
+		Return RedisCommand(Me.redisContext, "CONFIG GET " & sParameter)
+    End Function
+    
+    ' 重置 INFO 命令中的某些统计数据
+    Function Config_ReSetStat() As String
+		Return RedisCommand(Me.redisContext, "CONFIG RESETSTAT")
+    End Function
+    
+    ' 对启动 Redis 服务器时所指定的 redis.conf 文件进行改写
+    Function Config_ReWrite() As String
+		Return RedisCommand(Me.redisContext, "CONFIG REWRITE")
+    End Function
+	
+    
+	
+    ' 设置字符串值
+	Function Key_Set(ByVal sKey As String, ByVal sValue As String) As String
+		Return RedisCommand(Me.redisContext, "SET " & sKey & " " & sValue)
+	End Function
+	
+    ' 设置整数值
+	Function Key_SetInt(ByVal sKey As String, ByVal iValue As Long) As String
+		Return RedisCommand(Me.redisContext, "SET " & sKey & " " & iValue)
+	End Function
+	
+    ' 设置数字值 [Double]
+	Function Key_SetNum(ByVal sKey As String, ByVal dValue As Double) As String
+		Return RedisCommand(Me.redisContext, "SET " & sKey & " " & dValue)
+	End Function
+	
+    ' 只有在 key 不存在时设置 key 的值
+	Function Key_SetNX(ByVal sKey As String, ByVal sValue As String) As String
+		Return RedisCommand(Me.redisContext, "SETNX " & sKey & " " & sValue)
+	End Function
+	
+    ' 将值 value 关联到 key ，并将 key 的过期时间设为 seconds (以秒为单位)
+	Function Key_SetEX(ByVal sKey As String, ByVal iSeconds As Long, ByVal sValue As String) As String
+		Return RedisCommand(Me.redisContext, "SETEX " & sKey & " " & iSeconds & " " & sValue)
+	End Function
+	
+    ' 这个命令和 SETEX 命令相似，但它以毫秒为单位设置 key 的生存时间，而不是像 SETEX 命令那样，以秒为单位
+	Function Key_PSetEX(ByVal sKey As String, ByVal iMilliSeconds As Long, ByVal sValue As String) As String
+		Return RedisCommand(Me.redisContext, "PSETEX " & sKey & " " & iMilliSeconds & " " & sValue)
+	End Function
+	
+    ' 获取指定 key 的值
+	Function Key_Get(ByVal sKey As String) As String
+		Return RedisCommand(Me.redisContext, "GET " & sKey)
+	End Function
+	
+    ' 获取指定 key 的值 [整数]
+	Function Key_GetInt(ByVal sKey As String) As Long
+		Return CLng(RedisCommand(Me.redisContext, "GET " & sKey))
+	End Function
+	
+    ' 获取指定 key 的值 [Double]
+	Function Key_GetNum(ByVal sKey As String) As Double
+		Return CDbl(RedisCommand(Me.redisContext, "GET " & sKey))
+	End Function
+	
+    ' 将给定 key 的值设为 value ，并返回 key 的旧值(old value)
+	Function Key_GetSet(ByVal sKey As String, ByVal sValue As String) As String
+		Return RedisCommand(Me.redisContext, "GETSET " & sKey & " " & sValue)
+	End Function
+    
+	' 返回 key 所储存的字符串值的长度
+	Function Key_StrLen(ByVal sKey As String) As Long
+		Return CLng(RedisCommand(Me.redisContext, "STRLEN " & sKey))
+	End Function
+	
+    ' 如果 key 已经存在并且是一个字符串， APPEND 命令将 value 追加到 key 原来的值的末尾
+	Function Key_Append(ByVal sKey As String, ByVal sValue As String) As String
+		Return RedisCommand(Me.redisContext, "APPEND " & sKey & " " & sValue)
+	End Function
+	
+    ' 用 value 参数覆写给定 key 所储存的字符串值，从偏移量 offset 开始
+	Function Key_SetRange(ByVal sKey As String, ByVal iOffset As Long, ByVal sValue As String) As Long
+		Return CLng(RedisCommand(Me.redisContext, "SETRANGE " & sKey & " " & iOffset & " " & sValue))
+	End Function
+	
+    ' 返回 key 中字符串值的子字符
+	Function Key_GetRange(ByVal sKey As String, ByVal iStart As Long, ByVal iEnd As Long) As String
+		Return RedisCommand(Me.redisContext, "GETRANGE " & sKey & " " & iStart & " " & iEnd)
+	End Function
+	
+	' 数据累加 1
+	Function Key_Incr(ByVal sKey As ZString) As Long
+		Return CLng(RedisCommand(Me.redisContext, "INCR " & sKey))
+	End Function
+	
+	' 数据累加 [特定整数]
+	Function Key_IncrBy(ByVal sKey As ZString, ByVal iValue As Long) As Long
+		Return CLng(RedisCommand(Me.redisContext, "INCRBY " & sKey & " " & iValue))
+	End Function
+	
+    ' 数据累加 [特定数字 Double ]
+	Function Key_IncrByFloat(ByVal sKey As ZString, ByVal dValue As Double) As Double
+		Return CDbl(RedisCommand(Me.redisContext, "INCRBYFLOAT " & sKey & " " & dValue))
+	End Function
+	
+	' 数据累减 1
+	Function Key_Decr(ByVal sKey As ZString) As Long
+		Return CLng(RedisCommand(Me.redisContext, "DECR " & sKey))
+	End Function
+	
+	' 数据累减 [特定整数]
+	Function Key_DecrBy(ByVal sKey As ZString, ByVal iValue As Long) As Long
+		Return CLng(RedisCommand(Me.redisContext, "DECRBY " & sKey & " " & iValue))
+	End Function
+	
+	' MSET 暂未实现 [参数传递问题]
+	
+	' MSETNX 暂未实现 [参数传递问题]
+	
+	' MGET 暂未实现 [参数传递问题]
+    
+    ' 判断键是否存在
+    Function Key_Exists(ByVal sKey As ZString) As String
+		Return CLng(RedisCommand(Me.redisContext, "EXISTS " & sKey))
+    End Function
+    
+    ' 获取键的数据类型
+    Function Key_Type(ByVal sKey As ZString) As String
+		Return RedisCommand(Me.redisContext, "TYPE " & sKey)
+    End Function
+    
+    ' 重命名键
+    Function Key_Rename(ByVal sKey As String, ByVal sNewKey As String) As String
+		Return RedisCommand(Me.redisContext, "RENAME " & sKey & " " & sNewKey)
+    End Function
+    
+    ' 当且仅当 newkey 不存在时，将 key 改名为 newkey
+    Function Key_RenameNX(ByVal sKey As String, ByVal sNewKey As String) As String
+		Return RedisCommand(Me.redisContext, "RENAMENX " & sKey & " " & sNewKey)
+    End Function
+    
+    ' 将当前数据库的 key 移动到给定的数据库 db 当中
+    Function Key_Move(ByVal sKey As String, ByVal iDB As Long) As Long
+		Return CLng(RedisCommand(Me.redisContext, "MOVE " & sKey & " " & iDB))
+    End Function
+    
+    ' 删除键值
+    Function Key_Del(ByVal sKey As String) As String
+		Return RedisCommand(Me.redisContext, "DEL " & sKey)
+    End Function
+	
+	
+	
+    ' 将一个或多个值 value 插入到列表 key 的表头
+	Function List_LPush(ByVal sKey As String, ByVal sItem As String) As Long
+		Return CLng(RedisCommand(Me.redisContext, "LPUSH " & sKey & " " & sItem))
+	End Function
+	
+    ' 将值 value 插入到列表 key 的表头，当且仅当 key 存在并且是一个列表
+	Function List_LPushX(ByVal sKey As String, ByVal sItem As String) As Long
+		Return CLng(RedisCommand(Me.redisContext, "LPUSHX " & sKey & " " & sItem))
+	End Function
+	
+    ' 将一个或多个值 value 插入到列表 key 的表尾(最右边)
+	Function List_RPush(ByVal sKey As String, ByVal sItem As String) As Long
+		Return CLng(RedisCommand(Me.redisContext, "RPUSH " & sKey & " " & sItem))
+	End Function
+	
+    ' 将值 value 插入到列表 key 的表尾，当且仅当 key 存在并且是一个列表
+	Function List_RPushX(ByVal sKey As String, ByVal sItem As String) As Long
+		Return CLng(RedisCommand(Me.redisContext, "RPUSHX " & sKey & " " & sItem))
+	End Function
+	
+    ' 移除并返回列表 key 的头元素
+	Function List_LPop(ByVal sKey As String) As String
+		Return RedisCommand(Me.redisContext, "LPOP " & sKey)
+	End Function
+	
+    ' 移除并返回列表 key 的尾元素
+	Function List_RPop(ByVal sKey As String) As String
+		Return RedisCommand(Me.redisContext, "RPOP " & sKey)
+	End Function
+	
+    ' 命令 RPOPLPUSH 在一个原子时间内，执行以下两个动作：
+    '     将列表 source 中的最后一个元素(尾元素)弹出，并返回给客户端。
+    '     将 source 弹出的元素插入到列表 destination ，作为 destination 列表的的头元素
+	Function List_RPopLPush(ByVal sKey As String, ByVal sItem As String) As String
+		Return RedisCommand(Me.redisContext, "RPOPLPUSH " & sKey & " " & sItem)
+	End Function
+	
+    ' 根据参数 count 的值，移除列表中与参数 value 相等的元素
+	Function List_LRem(ByVal sKey As String, ByVal iCount As Long, ByVal sValue As String) As Long
+		Return CLng(RedisCommand(Me.redisContext, "LREM " & sKey & " " & iCount & " " & sValue))
+	End Function
+	
+    ' 返回列表 key 的长度
+	Function List_Len(ByVal sKey As String) As Long
+		Return CLng(RedisCommand(Me.redisContext, "LLEN " & sKey))
+	End Function
+	
+    ' 返回列表 key 中，下标为 index 的元素，下标(index)参数 start 和 stop 都以 0 为底
+	Function List_Index(ByVal sKey As String, ByVal iIndex As Long) As String
+		Return RedisCommand(Me.redisContext, "LINDEX " & sKey & " " & iIndex)
+	End Function
+	
+    ' 将值 value 插入到列表 key 当中，位于值 pivot 之前或之后
+	Function List_Insert(ByVal sKey As String, ByVal sPivot As String, ByVal sValue As String, Optional bBefore As Boolean) As Long
+		Return CLng(RedisCommand(Me.redisContext, "LINSERT " & sKey & iif$(bBefore, " BEFORE ", " AFTER ") & sPivot & " " & sValue))
+	End Function
+	
+    ' 将列表 key 下标为 index 的元素的值设置为 value
+	Function List_Set(ByVal sKey As String, ByVal iIndex As Long, ByVal sValue As String) As String
+		Return RedisCommand(Me.redisContext, "LSET " & sKey & " " & iIndex & " " & sValue)
+	End Function
+	
+    ' 返回列表 key 中指定区间内的元素，区间以偏移量 start 和 stop 指定
+	Function List_Range(ByVal sKey As String, ByVal iStart As Long, ByVal iStop As Long) As String
+		Return RedisCommand(Me.redisContext, "LRANGE " & sKey & " " & iStart & " " & iStop)
+	End Function
+	
+    ' 对一个列表进行修剪(trim)，就是说，让列表只保留指定区间内的元素，不在指定区间之内的元素都将被删除
+	Function List_Trim(ByVal sKey As String, ByVal iStart As Long, ByVal iStop As Long) As String
+		Return RedisCommand(Me.redisContext, "LTRIM " & sKey & " " & iStart & " " & iStop)
+	End Function
+	
+    ' 它是 LPOP key 命令的阻塞版本，当给定列表内没有任何元素可供弹出的时候，连接将被 BLPOP 命令阻塞，直到等待超时或发现可弹出元素为止
+	Function List_BLPop(ByVal sKey As String, ByVal iTimeOut As Long) As String
+		Return RedisCommand(Me.redisContext, "BLPOP " & sKey & " " & iTimeOut)
+	End Function
+	
+    ' 它是 RPOP key 命令的阻塞版本，当给定列表内没有任何元素可供弹出的时候，连接将被 BRPOP 命令阻塞，直到等待超时或发现可弹出元素为止
+	Function List_BRPop(ByVal sKey As String, ByVal iTimeOut As Long) As String
+		Return RedisCommand(Me.redisContext, "BRPOP " & sKey & " " & iTimeOut)
+	End Function
+	
+    ' BRPOPLPUSH 是 RPOPLPUSH source destination 的阻塞版本，当给定列表 source 不为空时， BRPOPLPUSH 的表现和 RPOPLPUSH source destination 一样
+	Function List_BRPopLPush(ByVal sKey As String, ByVal sItem As String, ByVal iTimeOut As Long) As String
+		Return RedisCommand(Me.redisContext, "BRPOPLPUSH " & sKey & " " & sItem & " " & iTimeOut)
+	End Function
+    
+    ' 清空列表
+    Function List_Clear(ByVal sKey As String) As String
+		Return RedisCommand(Me.redisContext, "LTRIM " & sKey & " 1 0")
+    End Function
+	
+    ' 将哈希表 hash 中域 field 的值设置为 value
+	Function HTbl_Set(ByVal sKey As String, ByVal sField As String, ByVal sValue As String) As Long
+		Return CLng(RedisCommand(Me.redisContext, "HSET " & sKey & " " & sField & " " & sValue))
+	End Function
+	
+    ' 返回哈希表中给定域的值
+	Function HTbl_Get(ByVal sKey As String, ByVal sField As String) As String
+		Return RedisCommand(Me.redisContext, "HGET " & sKey & " " & sField)
+	End Function
+	
+    ' 当且仅当域 field 尚未存在于哈希表的情况下， 将它的值设置为 value
+	Function HTbl_SetNX(ByVal sKey As String, ByVal sField As String, ByVal sValue As String) As Long
+		Return CLng(RedisCommand(Me.redisContext, "HSETNX " & sKey & " " & sField & " " & sValue))
+	End Function
+	
+    ' 检查给定域 field 是否存在于哈希表 hash 当中
+	Function HTbl_Exists(ByVal sKey As String, ByVal sField As String) As Long
+		Return CLng(RedisCommand(Me.redisContext, "HEXISTS " & sKey & " " & sField))
+	End Function
+	
+    ' 删除哈希表 key 中的一个或多个指定域，不存在的域将被忽略
+	Function HTbl_Del(ByVal sKey As String, ByVal sField As String) As Long
+		Return CLng(RedisCommand(Me.redisContext, "HDEL " & sKey & " " & sField))
+	End Function
+	
+    ' 返回哈希表 key 中域的数量
+	Function HTbl_Len(ByVal sKey As String) As Long
+		Return CLng(RedisCommand(Me.redisContext, "HLEN " & sKey))
+	End Function
+	
+    ' 返回哈希表 key 中， 与给定域 field 相关联的值的字符串长度（string length）
+	Function HTbl_StrLen(ByVal sKey As String, ByVal sField As String) As Long
+		Return CLng(RedisCommand(Me.redisContext, "HSTRLEN " & sKey & " " & sField))
+	End Function
+	
+    ' 为哈希表 key 中的域 field 的值加上增量 increment
+	Function HTbl_IncrBy(ByVal sKey As String, ByVal sField As String, ByVal iIncrement As Long) As Long
+		Return CLng(RedisCommand(Me.redisContext, "HINCRBY " & sKey & " " & sField & " " & iIncrement))
+	End Function
+	
+    ' 为哈希表 key 中的域 field 加上浮点数增量 increment
+	Function HTbl_IncrByFloat(ByVal sKey As String, ByVal sField As String, ByVal dIncrement As Double) As Double
+		Return CDbl(RedisCommand(Me.redisContext, "HINCRBYFLOAT " & sKey & " " & sField & " " & dIncrement))
+	End Function
+	
+	' HMSET 暂未实现 [参数传递问题]
+	
+	' HMGET 暂未实现 [参数传递问题]
+	
+    ' 返回哈希表 key 中的所有域
+	Function HTbl_Keys(ByVal sKey As String) As String
+		Return RedisCommand(Me.redisContext, "HKEYS " & sKey)
+	End Function
+	
+    ' 返回哈希表 key 中所有域的值
+	Function HTbl_Vals(ByVal sKey As String) As String
+		Return RedisCommand(Me.redisContext, "HVALS " & sKey)
+	End Function
+	
+    ' 返回哈希表 key 中，所有的域和值
+	Function HTbl_GetAll(ByVal sKey As String) As String
+		Return RedisCommand(Me.redisContext, "HGETALL " & sKey)
+	End Function
+	
+    ' 哈希表数据迭代器
+	Function HTbl_Scan(ByVal sKey As String, ByVal iCursor As Long, Optional sParam As String) As String
+		Return RedisCommand(Me.redisContext, "HSCAN " & sKey & " " & iCursor & iif$(sParam = "", "", " " & sParam))
+	End Function
+	
+    
+    
 End Type
+
+

@@ -19,7 +19,7 @@ Begin Const
   %eBlue
 End Const 
          
-Function Main()
+Function TBMAIN()
   Local hWnd As DWord
   Local FrameRate As Double
   

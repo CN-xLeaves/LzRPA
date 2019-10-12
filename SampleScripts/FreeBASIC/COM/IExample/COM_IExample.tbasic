@@ -1,0 +1,308 @@
+﻿
+#Compiled  
+
+  ' // Free Basic source code to a simple COM object, compiled into an ordinary
+  ' // dynamic link library (DLL).
+  '    https://www.freebasic.net/forum/viewtopic.php?t=26254&start=105
+
+  #include once "windows.bi"
+  #include once "win/ocidl.bi"
+
+  ' // Our IExample object's GUID
+  ' // {6899A2A3-405B-44d4-A415-E08CEE2A97CB}
+  DIM SHARED CLSID_IExample AS GUID = TYPE(&h6899A2A3, &h405B, &h44D4, {&hA4, &h15, &hE0, &h8C, &hEE, &h2A, &h97, &hCB})
+
+  ' // Our IExample VTable's GUID
+  ' // {74666CAC-C2B1-4FA8-A049-97F3214802F0}
+  DIM SHARED IID_IExample AS GUID = TYPE(&h74666CAC, &hC2B1, &h4FA8, {&hA0, &h49, &h97, &hF3, &h21, &h48, &h02, &hF0})
+
+  ' // A count of how many objects our DLL has created (by some
+  ' // app calling our IClassFactory object's CreateInstance())
+  ' // which have not yet been Release()'d by the app
+  STATIC SHARED OutstandingObjects AS DWORD
+
+  ' // A count of how many apps have locked our DLL via calling our
+  ' // IClassFactory object's LockServer()
+  STATIC SHARED LockCount AS DWORD
+
+  ' ========================================================================================
+  ' IExample object
+  ' ========================================================================================
+
+  TYPE IExampleVtbl_ As IExampleVtbl
+  TYPE IExample
+     lpvtbl AS IExampleVtbl_ Ptr
+     ' // Additional variables
+     count AS DWORD
+     buffer AS WSTRING * 80
+  END TYPE
+
+  TYPE IExampleVTbl
+     ' Functions for the IUnknown Interface
+     QueryInterface AS FUNCTION (BYVAL pthis AS IExample PTR, BYVAL vTableGuid AS CONST IID CONST PTR, BYVAL ppv AS ANY PTR PTR) AS HRESULT
+     AddRef AS FUNCTION (BYVAL pthis AS IExample PTR) AS ULONG
+     Release AS FUNCTION (BYVAL pthis AS IExample PTR) AS ULONG
+     ' Our functions
+     SetString AS Function (BYVAL pthis AS IExample PTR, BYVAL pwsz AS WSTRING PTR) AS HRESULT
+     GetString AS FUNCTION (BYVAL pthis AS IExample PTR, BYVAL pbuffer AS WSTRING PTR, BYVAL cch AS DWORD) AS HRESULT
+  END TYPE
+
+  ' ========================================================================================
+  ' IExample methods
+  ' ========================================================================================
+
+  ' // IExample's QueryInterface()
+  FUNCTION QueryInterface (BYVAL pthis AS IExample PTR, BYVAL vTableGuid AS CONST IID CONST PTR, BYVAL ppv AS ANY PTR PTR) AS HRESULT
+     ' // Check if the GUID matches IExample VTable's GUID. We gave the C variable name
+     ' // IID_IExample to our VTable GUID. We can use an OLE function called
+     ' // IsEqualIID to do the comparison for us. Also, if the caller passed a
+     ' // IUnknown GUID, then we'll likewise return the IExample, since it can
+     ' // masquerade as an IUnknown object too
+     IF IsEqualIID(vTableGuid, @IID_IUnknown) = FALSE AND IsEqualIID(vTableGuid, @IID_IExample) = FALSE THEN
+        ' // We don't recognize the GUID passed to us. Let the caller know this,
+        ' // by clearing his handle, and returning E_NOINTERFACE.
+        *ppv = 0
+        RETURN E_NOINTERFACE
+     END IF
+
+     ' // Fill in the caller's handle
+     *ppv = pthis
+
+     ' // Increment the count of callers who have an outstanding pointer to this object
+     pthis->lpVtbl->AddRef(pthis)
+
+     RETURN NOERROR
+  END FUNCTION
+
+  ' // IExample's AddRef()
+  FUNCTION AddRef(BYVAL pthis AS IExample PTR) AS ULONG
+     ' // Increment IExample's reference count, and return the updated value.
+     ' // NOTE: We have to typecast to gain access to any data members. These
+     ' // members are not defined in our .H file (so that an app can't directly
+     ' // access them). Rather they are defined only above in our MyRealIExample
+     ' // struct. So typecast to that in order to access those data members
+     pthis->count += 1
+     RETURN pthis->count
+  END FUNCTION
+
+  ' // IExample's Release()
+  FUNCTION Release (BYVAL pthis AS IExample PTR) AS ULONG
+     ' // Decrement IExample's reference count. If 0, then we can safely free
+     ' // this IExample now
+     pthis->count -= 1
+     IF pthis->count = 0 THEN
+        GlobalFree(pthis)
+        InterlockedDecrement(@OutstandingObjects)
+        RETURN 0
+     END IF
+     RETURN pthis->count
+  END FUNCTION
+
+  ' // IExample's SetString(). This copies the passed string to IExample's buffer
+  FUNCTION SetString (BYVAL pthis AS IExample PTR, BYVAL pwsz AS WSTRING PTR) AS HRESULT
+     ' // Make sure that caller passed a buffer
+     IF pwsz = NULL THEN RETURN E_POINTER
+     ' // Copy the passed str to IExample's buffer
+     pthis->buffer = *pwsz
+     RETURN NOERROR
+  END FUNCTION
+
+  ' // IExample's GetString(). This retrieves IExample's buffer,
+  ' // and stores its contents in a buffer passed by the caller
+  FUNCTION GetString(BYVAL pthis AS IExample PTR, BYVAL pbuffer AS WSTRING PTR, BYVAL cch AS DWORD) AS HRESULT
+     ' // Make sure that caller passed a buffer
+     IF pbuffer = NULL THEN RETURN E_POINTER
+     IF cch THEN
+        ' // Let's copy IExample's buffer to the passed buffer
+        IF cch > 79 THEN cch = 79
+        memcpy(pbuffer, @pthis->buffer, cch)
+     END IF
+     RETURN NOERROR
+  END FUNCTION
+
+  ' // Here's IExample's VTable. It never changes so we can declare it static
+  STATIC SHARED IExample_Vtbl AS IExampleVtbl = TYPE(@QueryInterface, @AddRef, @Release, @SetString, @GetString)
+
+  ' ========================================================================================
+  ' // The IClassFactory object ////////////////////////////////////////////////////////////
+  ' ========================================================================================
+
+  ' // Since we only ever need one IClassFactory object, we declare
+  ' // it static. The only requirement is that we ensure any
+  ' // access to its members is thread-safe
+  STATIC SHARED MyIClassFactoryObj As IClassFactory
+
+  ' // IClassFactory's AddRef()
+  FUNCTION classAddRef (BYVAL pthis AS IClassFactory PTR) AS ULONG
+     ' // Someone is obtaining my IClassFactory, so inc the count of
+     ' // pointers that I've returned which some app needs to Release()
+     InterlockedIncrement(@OutstandingObjects)
+
+     ' // Since we never actually allocate/free an IClassFactory (ie, we
+     ' // use just 1 static one), we don't need to maintain a separate
+     ' // reference count for our IClassFactory. We'll just tell the caller
+     ' // that there's at least one of our IClassFactory objects in existance
+     RETURN 1
+  END FUNCTION
+
+  ' // IClassFactory's QueryInterface()
+  FUNCTION classQueryInterface (BYVAL pthis AS IClassFactory PTR, BYVAL factoryGuid AS CONST IID CONST PTR, BYVAL ppv AS ANY PTR PTR) AS HRESULT
+     ' // Make sure the caller wants either an IUnknown or an IClassFactory.
+     ' // In either case, we return the same IClassFactory pointer passed to
+     ' // us since it can also masquerade as an IUnknown
+     IF IsEqualIID(factoryGuid, @IID_IUnknown) OR IsEqualIID(factoryGuid, @IID_IClassFactory) THEN
+        ' // Call my IClassFactory's AddRef
+        pthis->lpVtbl->AddRef(pthis)
+        ' // Return (to the caller) a ptr to my IClassFactory
+        *ppv = pthis
+        RETURN NOERROR
+     END IF
+
+     ' // We don't know about any other GUIDs
+     *ppv = 0
+     RETURN E_NOINTERFACE
+  END FUNCTION
+
+  ' // IClassFactory's Release()
+  FUNCTION classRelease(BYVAL pthis AS IClassFactory PTR) AS ULONG
+     ' // One less object that an app has not yet Release()'ed
+     RETURN InterlockedDecrement(@OutstandingObjects)
+  END FUNCTION
+
+  ' // IClassFactory's CreateInstance() function. It is called by
+  ' // someone who has a pointer to our IClassFactory object and now
+  ' // wants to create and retrieve a pointer to our IExample
+  FUNCTION classCreateInstance(BYVAL pthis AS IClassFactory PTR, BYVAL punkOuter AS IUnknown PTR, _
+     BYVAL vTableGuid AS CONST IID CONST PTR, BYVAL objHandle AS ANY PTR PTR) AS HRESULT
+
+     DIM hr AS HRESULT
+     DIM thisObj AS IExample PTR
+
+     ' // Assume an error by clearing caller's handle
+     *objHandle = 0
+
+     ' // We don't support aggregation in this example
+     IF punkOuter THEN RETURN CLASS_E_NOAGGREGATION
+     ' // Allocate our IExample object
+     thisObj = GlobalAlloc(GMEM_FIXED, SIZEOF(IExample))
+     IF thisObj = NULL THEN RETURN E_OUTOFMEMORY
+     ' // Store IExample's VTable in the object
+     thisobj->lpVtbl = @IExample_Vtbl
+     ' // Increment the reference count so we can call Release() below and
+     '  // it will deallocate only if there is an error with QueryInterface()
+     thisobj->count = 1
+     ' // Initialize any other members we added to the IExample. We added
+     ' // a buffer member
+     thisobj->buffer = ""
+     ' // Fill in the caller's handle with a pointer to the IExample we just
+     ' // allocated above. We'll let IExample's QueryInterface do that, because
+     ' // it also checks the GUID the caller passed, and also increments the
+     ' // reference count (to 2) if all goes well
+     hr = thisObj->lpVtbl->QueryInterface(thisobj, vTableGuid, objHandle)
+     ' // Decrement reference count. NOTE: If there was an error in QueryInterface()
+     ' // then Release() will be decrementing the count back to 0 and will free the
+     ' // IExample for us. One error that may occur is that the caller is asking for
+     ' // some sort of object that we don't support (ie, it's a GUID we don't recognize)
+     thisObj->lpVtbl->Release(thisobj)
+     ' // If success, inc static object count to keep this DLL loaded
+     IF hr = S_OK THEN InterlockedIncrement(@OutstandingObjects)
+
+     RETURN hr
+  END FUNCTION
+
+  ' // IClassFactory's LockServer(). It is called by someone
+  ' // who wants to lock this DLL in memory
+  FUNCTION classLockServer (BYVAL pthis AS IClassFactory PTR, BYVAL flock AS WINBOOL) AS HRESULT
+     IF flock THEN InterlockedIncrement(@LockCount) ELSE InterlockedDecrement(@LockCount)
+     RETURN NOERROR
+  END FUNCTION
+
+  STATIC SHARED MyClassFactoryVTbl AS IClassFactoryVTbl = TYPE(@classQueryInterface, _
+     @classAddRef, @classRelease, @classCreateInstance, @classLockServer)
+
+  ' ========================================================================================
+  ' Implementation of the DllGetClassObject and DllCanUnloadNow functions.
+  ' ========================================================================================
+
+  EXTERN "windows-ms"
+
+    #UNDEF DllGetClassObject
+    FUNCTION DllGetClassObject ALIAS "DllGetClassObject" ( _
+       BYVAL objGuid AS CLSID PTR, _
+       BYVAL factoryGuid AS IID PTR, _
+       BYVAL factoryHandle As VOID PTR PTR _
+       ) AS HRESULT EXPORT
+
+       DIM hr AS HRESULT
+
+       ' // Check that the caller is passing our IExample GUID. That's the
+       ' // only object our DLL implements
+       IF IsEqualCLSID(objGuid, @CLSID_IExample) THEN
+          ' // Fill in the caller's handle with a pointer to our IClassFactory object.
+          ' // We'll let our IClassFactory's QueryInterface do that, because it also
+          ' // checks the IClassFactory GUID and does other book-keeping
+          hr = classQueryInterface(@MyIClassFactoryObj, factoryGuid, factoryHandle)
+       ELSE
+          ' // We don't understand this GUID. It's obviously not for our DLL.
+          ' // Let the caller know this by clearing his handle and returning
+          ' // CLASS_E_CLASSNOTAVAILABLE
+          *factoryHandle = 0
+          hr = CLASS_E_CLASSNOTAVAILABLE
+       END IF
+
+       RETURN hr
+
+    END FUNCTION
+
+    ' * This is called by some OLE function in order to determine
+    ' * whether it is safe to unload our DLL from memory.
+    ' *
+    ' * RETURNS: S_OK if safe to unload, or S_FALSE if not.
+
+    ' // If someone has retrieved pointers to any of our objects, and
+    ' // not yet Release()'ed them, then we return S_FALSE to indicate
+    ' // not to unload this DLL. Also, if someone has us locked, return
+    ' // S_FALSE
+
+    #UNDEF DllCanUnloadNow
+    FUNCTION DllCanUnloadNow ALIAS "DllCanUnloadNow" () AS HRESULT EXPORT
+       RETURN IIF(OutstandingObjects OR LockCount, S_FALSE, S_OK)
+    END FUNCTION
+
+    ' ========================================================================================
+
+  END EXTERN
+
+  ' ========================================================================================
+  ' Constructor and destructor of the module
+  ' ========================================================================================
+  SUB ctor () CONSTRUCTOR
+     OutputDebugString "DLL loaded"
+     ' // Clear static counts
+     OutstandingObjects = 0
+     LockCount = 0
+     ' // Initialize my IClassFactory with the pointer to its VTable
+     MyIClassFactoryObj.lpVtbl = @MyClassFactoryVTbl
+  END SUB
+
+  SUB dtor () DESTRUCTOR
+      OutputDebugString "DLL unloaded"
+  END SUB
+  ' ========================================================================================
+
+#EndCompiled
+
+uses "console"
+
+dim oExample as iDispatch = NEWCOM CLSID "{6899A2A3-405B-44D4-A415-E08CEE2A97CB}" LIB Compiled_DLL_FileName
+
+if IsComObject(oExample) Then
+  printl "Object created"
+Else
+  printl "It was not possibile to create the object"
+end If
+
+printl "Press a key to end"
+WaitKey
+ 
+ 

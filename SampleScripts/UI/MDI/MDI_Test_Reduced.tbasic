@@ -43,7 +43,7 @@ GLOBAL ExStyle AS LONG
 '----------------------------------------------------------------
 '               Main Dialog (called a MDI Frame)
 '----------------------------------------------------------------
-SUB Main() AS LONG
+SUB TBMain() AS LONG
  
     Style = _
             %WS_OVERLAPPEDWINDOW  | _

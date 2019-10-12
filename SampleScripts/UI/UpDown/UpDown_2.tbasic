@@ -5,7 +5,7 @@
     %ID_UPDOWN 
   End ControlID
 
-  FUNCTION Main() as long
+  FUNCTION TBMAIN() as long
     DIM hDlg AS LONG
 
     DIALOG NEW 0, "Up-Down demo", -1, -1, 130, 70, %WS_OVERLAPPED OR %WS_SYSMENU OR %WS_DLGFRAME TO hDlg

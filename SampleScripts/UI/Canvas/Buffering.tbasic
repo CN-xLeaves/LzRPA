@@ -14,7 +14,7 @@ Begin ControlID
 End ControlID
 
 ' -- Create dialog here
-FUNCTION Main()
+FUNCTION TBMAIN()
   LOCAL hDlg AS DWORD
 
   DIALOG New 0, "Canvas in single buffer and double buffermode",-1,-1, 282, 170, _

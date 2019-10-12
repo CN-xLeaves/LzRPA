@@ -20,7 +20,7 @@ End ControlID
 '------------------------------------------------------------------------------
 ' Main entry point for the application
 '------------------------------------------------------------------------------
-FUNCTION Main () AS LONG
+FUNCTION TBMAIN () AS LONG
 
   local hDlg              as long
   local x                 AS LONG

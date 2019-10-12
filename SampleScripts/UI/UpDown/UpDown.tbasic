@@ -12,7 +12,7 @@
   'いいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいい
   ' Main entrance
   'いいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいい
-  FUNCTION Main() as long
+  FUNCTION TBMAIN() as long
     LOCAL hDlg AS LONG
    
    

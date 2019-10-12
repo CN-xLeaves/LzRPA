@@ -9,7 +9,7 @@ Begin ControlID
 End ControlID
 
 '----------------------------------------------------------------------------
-function Main() as long
+function TBMain() as long
 '----------------------------------------------------------------------------
     local lRslt as long
                     

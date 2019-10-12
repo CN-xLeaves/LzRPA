@@ -11,7 +11,7 @@ End ControlID
 global MaxItems as long = 100
 global lx, ly, wx, hy AS LONG
 
-FUNCTION Main() AS LONG
+FUNCTION TBMAIN() AS LONG
 
   LOCAL hDlg    AS DWORD
   DIALOG NEW 0, "Wait while loading resources ...", -1, -1, 330, 150, %WS_DLGFRAME          | _

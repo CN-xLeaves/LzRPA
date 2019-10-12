@@ -12,7 +12,7 @@ Begin ControlID
   %lText
 End ControlID
 
-Function Main()
+Function TBMain()
   
   '------------------------------------------------------------------------------
   ' Create dialog

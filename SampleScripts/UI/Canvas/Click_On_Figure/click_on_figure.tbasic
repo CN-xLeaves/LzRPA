@@ -47,7 +47,7 @@
 
   '------------------
   ' -- Main entry point function
-  Function Main()
+  Function TBMain()
   '------------------
     Local hMainDialog As Long
     Local Count As Long

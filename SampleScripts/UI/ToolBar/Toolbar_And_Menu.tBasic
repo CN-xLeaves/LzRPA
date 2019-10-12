@@ -49,7 +49,7 @@ MENU ADD STRING, hPopup2, "&About", %ID_MENU_ABOUT, %MF_ENABLED
 '------------------------------------------------------------------------------
 ' Main entry point for the application
 '------------------------------------------------------------------------------
-FUNCTION Main () AS LONG
+FUNCTION TBMAIN () AS LONG
 
 ' 
 local x       AS LONG

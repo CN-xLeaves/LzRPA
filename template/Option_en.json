@@ -1,0 +1,47 @@
+[
+    {
+        "Caption": "Basic",
+        "Icon": "文件夹",
+        "Default": true,
+        "Child": [
+            {
+                "Caption": "Blank Project",
+                "Icon": "空项目",
+                "ProjName": "Project",
+                "WorkName": "Woorkspace",
+                "MakeFile": "ProjectMake.exe",
+                "MakeParam": "空白项目"
+            },
+            {
+                "Caption": "Standard Project",
+                "Icon": "标准项目",
+                "ProjName": "Project",
+                "WorkName": "Woorkspace",
+                "MakeFile": "ProjectMake.exe",
+                "MakeParam": "标准项目"
+            },
+            {
+                "Caption": "Console Project",
+                "Icon": "控制台项目",
+                "ProjName": "Project",
+                "WorkName": "Woorkspace",
+                "MakeFile": "ProjectMake.exe",
+                "MakeParam": "控制台项目"
+            },
+            {
+                "Caption": "Thread Project",
+                "Icon": "中控项目",
+                "ProjName": "Project",
+                "WorkName": "Woorkspace",
+                "MakeFile": "ProjectMake.exe",
+                "MakeParam": "多线程项目"
+            }
+        ]
+    },
+    {
+        "Caption": "Central Control",
+        "Icon": "中控",
+        "Child": [
+        ]
+    }
+]

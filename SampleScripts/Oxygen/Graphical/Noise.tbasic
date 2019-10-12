@@ -11,7 +11,7 @@ Begin Const
   %tBricks = 1
 End Const
 
-Function Main()
+Function TBMAIN()
   Local i,j,k     As Long
   Local hWnd      As DWord
   Local FrameRate As Double

@@ -14,7 +14,7 @@ DIM xdiff as single
 DIM width, height as long
 
 '*****************************************************************
-FUNCTION Main()
+FUNCTION TBMAIN()
 '*****************************************************************
   local sprBackGround as long
   local dirTextures       as string = "Textures\"

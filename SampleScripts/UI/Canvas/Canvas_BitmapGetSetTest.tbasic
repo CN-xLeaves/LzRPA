@@ -15,7 +15,7 @@ Type BGRA
 End Type
 
 ' -- Create dialog here
-FUNCTION Main()
+FUNCTION TBMAIN()
   LOCAL hDlg AS DWORD
 
   Dialog NEW 0, "Managing canvas bitmap",-1,-1, 200, 140, _

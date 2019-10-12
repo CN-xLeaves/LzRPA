@@ -7,7 +7,7 @@
   '------------------------------------------------------------------------------
   ' Main function
   '------------------------------------------------------------------------------
-  FUNCTION Main() as long
+  FUNCTION TBMain() as long
     LOCAL hDlg AS DWORD
             
     DIALOG NEW 0, "Power Management helper function", -1, -1, 300, 80, %WS_OVERLAPPEDWINDOW or %WS_CLIPCHILDREN TO hDlg

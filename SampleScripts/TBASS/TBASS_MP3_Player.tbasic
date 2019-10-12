@@ -38,7 +38,7 @@ End ControlID
 '============================================================================
 '---Script execution start
 '------
-function Main()
+function TBMain()
   '---Test if sound initialization is ok
   gRetCode = Sound_Init
 

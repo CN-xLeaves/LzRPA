@@ -1,0 +1,28 @@
+
+// 创建插件对象
+dim 图灵 as Object
+图灵 = CreateObject("TURING.FISR")
+
+Uses " console"
+Dim m as long = 图灵.Lib_Load(APP_ScriptPath & "识别字库.lib")
+dim n as long, 数量 as long
+For n = 0 To 517
+    If n= 517 then
+        图灵.Pixel_FromPicture(APP_ScriptPath & "验证码\test.jpg")
+    Else
+        图灵.Pixel_FromPicture(APP_ScriptPath & "验证码\" & n & ".jpg")
+    End if
+    图灵.Filter_Binaryzation("128-255")
+    图灵.Filter_Despeckle(6)
+    数量 = 图灵.Incise_FixedLocation(7, 2, 17, 25, 18, 4)
+    Printl "图片" & n & "：" & 图灵.OCR(75)
+    //生成字库应用：
+    //For i = 0 To 数量
+    //    图灵.Incise_Preview(i)
+    //    字符点阵 = 图灵.Lib_OneCharData(i)
+    //    图灵.Lib_Save("", 字符点阵, APP_ScriptPath & "识别字库.lib")
+    //Next
+    //图灵.Lib_Save(n, vbCRLF, APP_ScriptPath & "识别字库.lib")
+Next
+
+WaitKey

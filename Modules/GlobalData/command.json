@@ -4,7 +4,7 @@
     "ModuleName": "GlobalData",
     "Icon": "公文包",
     "Visible": true,
-    "Templet": "index.html",
+    "Templet": "index",
     "Help": {
         "Caption": ""
     },
@@ -13,7 +13,7 @@
             "Caption": "单文件使用扩展库",
             "Icon": "信息",
             "Visible": true,
-            "Templet": "document.html",
+            "Templet": "document",
             "Help": {
                 "Caption": "扩展库使用帮助",
                 "Document": "在项目中使用扩展库功能会自动将扩展库引入项目，项目编译或运行时，自动加入扩展库依赖代码和文件。<br><br>如果您在单文件中希望使用本扩展库，则必须编写扩展库依赖代码才能调用扩展库中的函数，否则会报错，LzRPA 建议使用工程方式编写程序，但仍保留单文件使用扩展库的方法。<br><br>扩展库依赖代码：<br>&nbsp;&nbsp;#Include &quot;%APP_PATH%\\\\..\\\\Modules\\\\GlobalData\\\\boot.tbs&quot;<br><br>建议将引用扩展库代码统一添加到全局代码块，也就是代码的最上面。<br><br>使用 GlobalData 扩展库除了要引用扩展库文件外，还需要引用依赖扩展库 Redis、RedisServer，并将 templet.redis.conf 文件复制到生成的 exe 或脚本文件同一目录下，templet.redis.conf 文件保存在软件安装目录下的 Modules\\\\GlobalData 子目录内。"
@@ -24,7 +24,7 @@
             "Remark": "全局数据对象",
             "Icon": "类",
             "Visible": true,
-            "Templet": "index.html",
+            "Templet": "index",
             "Help": {
                 "Caption": ""
             },
@@ -34,8 +34,8 @@
                     "Remark": "执行命令",
                     "Visible": true,
                     "Function": true,
-                    "InsCode": "G.Command(\"Ping test\")",
-                    "Templet": "command.html",
+                    "InsCode": "Command(\"Ping test\")",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "Command",
                         "Define": "sRet = Command(sCommand)",
@@ -57,8 +57,8 @@
                     "Remark": "测试服务器连接",
                     "Visible": true,
                     "Function": true,
-                    "InsCode": "G.Ping(\"test\")",
-                    "Templet": "command.html",
+                    "InsCode": "Ping(\"test\")",
+                    "Templet": "command",
                     "Help": {
                         "Caption": "Ping",
                         "Define": "sRet = Ping(sText)",
@@ -69,45 +69,577 @@
                             {
                                 "Caption": "sText",
                                 "DataType": "String",
-                                "Describe": "发送个服务器的文本",
+                                "Describe": "发送给服务器的文本",
                                 "Optional": false
                             }
                         ]
                     }
                 },
                 {
-                    "Caption": "GetVal",
-                    "Remark": "读字符串",
+                    "Caption": "Echo",
+                    "Remark": "文字回显",
                     "Visible": true,
                     "Function": true,
-                    "InsCode": "G.GetVal(\"key\")",
-                    "Templet": "command.html",
+                    "InsCode": "Echo(\"test\")",
+                    "Templet": "command",
                     "Help": {
-                        "Caption": "GetVal",
-                        "Define": "sRet = GetVal(sKey)",
-                        "Describe": "读取一个字符串键值",
+                        "Caption": "Echo",
+                        "Define": "sRet = Echo(sText)",
+                        "Describe": "文字回显，返回 sText 参数传入的文字",
                         "RetType": "String",
-                        "Return": "返回键值",
+                        "Return": "能够连通服务器时会返回 sText 参数的文本",
                         "Param": [
                             {
-                                "Caption": "sKey",
+                                "Caption": "sText",
                                 "DataType": "String",
-                                "Describe": "要读取的键",
+                                "Describe": "发送给服务器的文本",
                                 "Optional": false
                             }
                         ]
                     }
                 },
                 {
-                    "Caption": "SetVal",
+                    "Caption": "RandomKey",
+                    "Remark": "取随机键",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "RandomKey()",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "RandomKey",
+                        "Define": "sRet = RandomKey()",
+                        "Describe": "从当前数据库中随机返回(不删除)一个 key",
+                        "RetType": "String",
+                        "Return": "返回服务器中存在的随机键名",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "DBSize",
+                    "Remark": "取键数量",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "DBSize()",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "DBSize",
+                        "Define": "sRet = DBSize()",
+                        "Describe": "返回当前数据库的 key 的数量",
+                        "RetType": "Integer",
+                        "Return": "返回服务器中存在的键数量",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Keys",
+                    "Remark": "获取键列表",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Keys(\"*\")",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "Keys",
+                        "Define": "sRet = Keys(sFilter)",
+                        "Describe": "获取 Redis 服务器中所有的键列表",
+                        "RetType": "String",
+                        "Return": "返回键列表，使用 $crlf 分割",
+                        "Param": [
+                            {
+                                "Caption": "sFilter",
+                                "DataType": "String",
+                                "Describe": "过滤规则，可以使用通配符， * 表示获取所有键",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Scan",
+                    "Remark": "键迭代器",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Scan(iCursor)",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "Scan",
+                        "Define": "sRet = Scan(iCursor, sParam)",
+                        "Describe": "Redis 服务器数据迭代器，用于遍历所有键",
+                        "RetType": "String",
+                        "Return": "返回键列表，使用 $crlf 分割",
+                        "Param": [
+                            {
+                                "Caption": "iCursor",
+                                "DataType": "String",
+                                "Describe": "迭代位置游标，当游标参数为 0 时，将开始一次新的迭代，而当服务器向用户返回值为 0 的游标时， 表示迭代已结束",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "sParam",
+                                "DataType": "String",
+                                "Describe": "附加可选参数",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Sort",
+                    "Remark": "数据排序",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Sort(iCursor)",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "Sort",
+                        "Define": "sRet = Sort(iCursor, sParam)",
+                        "Describe": "返回或保存给定列表、集合、有序集合 key 中经过排序的元素",
+                        "RetType": "String",
+                        "Return": "返回键列表，使用 $crlf 分割",
+                        "Param": [
+                            {
+                                "Caption": "iCursor",
+                                "DataType": "String",
+                                "Describe": "迭代位置游标，当游标参数为 0 时，将开始一次新的迭代，而当服务器向用户返回值为 0 的游标时， 表示迭代已结束",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "sParam",
+                                "DataType": "String",
+                                "Describe": "附加可选参数",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "FlushDB",
+                    "Remark": "清空数据库",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "FlushDB()",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "FlushDB",
+                        "Define": "sRet = FlushDB()",
+                        "Describe": "清空当前数据库中的所有 key",
+                        "RetType": "String",
+                        "Return": "成功返回 OK",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "FlushAll",
+                    "Remark": "清空所有数据库",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "FlushAll()",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "FlushAll",
+                        "Define": "sRet = FlushAll()",
+                        "Describe": "清空所有数据库中的所有 key",
+                        "RetType": "String",
+                        "Return": "成功返回 OK",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "SelectDB",
+                    "Remark": "切换数据库",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "SelectDB(Index)",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "SelectDB",
+                        "Define": "sRet = SelectDB(iIndex)",
+                        "Describe": "切换到指定的数据库，数据库索引号 iIndex 用数字值指定，以 0 作为起始索引值",
+                        "RetType": "String",
+                        "Return": "成功返回 OK",
+                        "Param": [
+                            {
+                                "Caption": "iIndex",
+                                "DataType": "Integer",
+                                "Describe": "数据库索引号",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "SwapDB",
+                    "Remark": "对换数据库数据",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "SwapDB(Index1, Index2)",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "SwapDB",
+                        "Define": "sRet = SwapDB(iIndex1, iIndex2)",
+                        "Describe": "对换指定的两个数据库， 使得两个数据库的数据立即互换",
+                        "RetType": "String",
+                        "Return": "成功返回 OK",
+                        "Param": [
+                            {
+                                "Caption": "iIndex1",
+                                "DataType": "Integer",
+                                "Describe": "数据库索引号1",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "iIndex2",
+                                "DataType": "Integer",
+                                "Describe": "数据库索引号2",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Save",
+                    "Remark": "保存数据库",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Save()",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "Save",
+                        "Define": "sRet = Save()",
+                        "Describe": "执行一个同步保存操作，将当前 Redis 实例的所有数据快照(snapshot)以 RDB 文件的形式保存到硬盘",
+                        "RetType": "String",
+                        "Return": "成功返回 OK",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "BGSave",
+                    "Remark": "后台保存数据库",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "BGSave()",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "BGSave",
+                        "Define": "sRet = BGSave()",
+                        "Describe": "在后台异步(Asynchronously)保存当前数据库的数据到磁盘",
+                        "RetType": "String",
+                        "Return": "成功返回 OK",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "BGReWriteAOF",
+                    "Remark": "重写AOF文件",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "BGReWriteAOF()",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "BGReWriteAOF",
+                        "Define": "sRet = BGReWriteAOF()",
+                        "Describe": "执行一个 AOF文件 重写操作。重写会创建一个当前 AOF 文件的体积优化版本",
+                        "RetType": "String",
+                        "Return": "成功返回 OK",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "LastSave",
+                    "Remark": "最后保存时间",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "LastSave()",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "LastSave",
+                        "Define": "sRet = LastSave()",
+                        "Describe": "返回最近一次 Redis 成功将数据保存到磁盘上的时间，以 UNIX 时间戳格式表示",
+                        "RetType": "Integer",
+                        "Return": "返回最后一次保存数据库的 Unix 时间戳",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Auth",
+                    "Remark": "密码登录",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Auth(sPwd)",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "Auth",
+                        "Define": "sRet = Auth(sPwd)",
+                        "Describe": "使用配置文件中 requirepass 项的值(使用命令 CONFIG SET requirepass password )，登录到用密码保护 Redis 服务器",
+                        "RetType": "Integer",
+                        "Return": "密码匹配时返回 OK ，否则返回一个错误",
+                        "Param": [
+                            {
+                                "Caption": "sPwd",
+                                "DataType": "String",
+                                "Describe": "登录密码",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Quit",
+                    "Remark": "断开连接",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Quit()",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "Quit",
+                        "Define": "sRet = Quit()",
+                        "Describe": "请求服务器关闭与当前客户端的连接",
+                        "RetType": "String",
+                        "Return": "返回字符串 OK",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Info",
+                    "Remark": "获取服务器信息",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Info(\"all\")",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "Info",
+                        "Define": "sRet = Info(sPart)",
+                        "Describe": "获取 Redis 服务器的信息和配置",
+                        "RetType": "String",
+                        "Return": "返回服务器信息",
+                        "Param": [
+                            {
+                                "Caption": "sPart",
+                                "DataType": "String",
+                                "Describe": "要获取哪一项服务器信息，使用字符串 all 可以获取全部信息",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Shutdown",
+                    "Remark": "关闭服务器",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Shutdown()",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "Shutdown",
+                        "Define": "sRet = Shutdown()",
+                        "Describe": "关闭服务器",
+                        "RetType": "String",
+                        "Return": "操作成功返回字符串 OK",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Time",
+                    "Remark": "服务器时间",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Time()",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "Time",
+                        "Define": "sRet = Time()",
+                        "Describe": "返回当前服务器时间 (以 UNIX 时间戳格式表示)",
+                        "RetType": "Integer",
+                        "Return": "返回服务器 Unix 时间戳",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Client_SetName",
+                    "Remark": "设置客户端名字",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Client_SetName(\"客户端名字\")",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "Client_SetName",
+                        "Define": "sRet = Client_SetName(sName)",
+                        "Describe": "为当前连接分配一个名字",
+                        "RetType": "String",
+                        "Return": "成功返回 OK",
+                        "Param": [
+                            {
+                                "Caption": "sName",
+                                "DataType": "String",
+                                "Describe": "客户端名字",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Client_GetName",
+                    "Remark": "获取客户端名字",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Client_GetName()",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "Client_GetName",
+                        "Define": "sRet = Client_GetName()",
+                        "Describe": "返回 CLIENT SETNAME 命令为连接设置的名字",
+                        "RetType": "String",
+                        "Return": "返回 CLIENT SETNAME 命令为连接设置的名字",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Client_List",
+                    "Remark": "获取客户端列表",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Client_List()",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "Client_List",
+                        "Define": "sRet = Client_List()",
+                        "Describe": "返回所有连接到服务器的客户端信息和统计数据",
+                        "RetType": "String",
+                        "Return": "返回所有连接到服务器的客户端信息和统计数据",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Client_Kill",
+                    "Remark": "断开客户端连接",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Client_Kill(\"127.0.0.1:12345\")",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "Client_Kill",
+                        "Define": "sRet = Client_Kill(sAddr)",
+                        "Describe": "关闭地址为 ip:port 的客户端",
+                        "RetType": "String",
+                        "Return": "成功返回 OK",
+                        "Param": [
+                            {
+                                "Caption": "sAddr",
+                                "DataType": "String",
+                                "Describe": "客户端连接信息 ip:port",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Config_Set",
+                    "Remark": "设置服务器配置",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Config_Set(\"slowlog-max-len\", \"10086\")",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "Config_Set",
+                        "Define": "sRet = Config_Set(sParameter, sValue)",
+                        "Describe": "动态地调整 Redis 服务器的配置(configuration)而无须重启服务器",
+                        "RetType": "String",
+                        "Return": "成功返回 OK",
+                        "Param": [
+                            {
+                                "Caption": "sParameter",
+                                "DataType": "String",
+                                "Describe": "配置参数",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "sValue",
+                                "DataType": "String",
+                                "Describe": "参数的新值",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Config_Get",
+                    "Remark": "获取服务器配置",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Config_Get(\"slowlog-max-len\")",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "Config_Get",
+                        "Define": "sRet = Config_Get(sParameter)",
+                        "Describe": "取得运行中的 Redis 服务器的配置参数(configuration parameters)",
+                        "RetType": "String",
+                        "Return": "返回对应配置参数的值",
+                        "Param": [
+                            {
+                                "Caption": "sParameter",
+                                "DataType": "String",
+                                "Describe": "配置参数",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Config_ReSetStat",
+                    "Remark": "重置统计数据",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Config_ReSetStat()",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "Config_ReSetStat",
+                        "Define": "sRet = Config_ReSetStat()",
+                        "Describe": "重置 INFO 命令中的某些统计数据，包括：<br>Keyspace hits (键空间命中次数)<br>Keyspace misses (键空间不命中次数)<br>Number of commands processed (执行命令的次数)<br>Number of connections received (连接服务器的次数)<br>Number of expired keys (过期key的数量)<br>Number of rejected connections (被拒绝的连接数量)<br>Latest fork(2) time(最后执行 fork(2) 的时间)<br>The aof_delayed_fsync counter(aof_delayed_fsync 计数器的值)",
+                        "RetType": "String",
+                        "Return": "成功返回 OK",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Config_ReWrite",
+                    "Remark": "重写配置文件",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Config_ReWrite()",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "Config_ReWrite",
+                        "Define": "sRet = Config_ReWrite()",
+                        "Describe": "对启动 Redis 服务器时所指定的 redis.conf 文件进行改写",
+                        "RetType": "String",
+                        "Return": "成功返回 OK",
+                        "Param": [
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Key_Set",
                     "Remark": "写字符串",
                     "Visible": true,
                     "Function": true,
-                    "InsCode": "G.SetVal(\"key\", \"Value\")",
-                    "Templet": "command.html",
+                    "InsCode": "Key_Set(\"key\", \"Value\")",
+                    "Templet": "command",
                     "Help": {
-                        "Caption": "SetVal",
-                        "Define": "sRet = SetVal(sKey, sValue)",
+                        "Caption": "Key_Set",
+                        "Define": "sRet = Key_Set(sKey, sValue)",
                         "Describe": "写入一个字符串键值，如果键不存在，则会创建。",
                         "RetType": "String",
                         "Return": "写入成功返回字符串 OK",
@@ -128,15 +660,293 @@
                     }
                 },
                 {
-                    "Caption": "AppendVal",
+                    "Caption": "Key_SetInt",
+                    "Remark": "写整数",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Key_SetInt(\"key\", 123)",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "Key_SetInt",
+                        "Define": "sRet = Key_SetInt(sKey, iValue)",
+                        "Describe": "写入一个整数键值，如果键不存在，则会创建。",
+                        "RetType": "String",
+                        "Return": "写入成功返回字符串 OK",
+                        "Param": [
+                            {
+                                "Caption": "sKey",
+                                "DataType": "String",
+                                "Describe": "要写的键",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "iValue",
+                                "DataType": "Integer",
+                                "Describe": "要写的值",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Key_SetNum",
+                    "Remark": "写数字",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Key_SetNum(\"key\", 3.14)",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "Key_SetNum",
+                        "Define": "sRet = Key_SetNum(sKey, dValue)",
+                        "Describe": "写入一个数字键值，如果键不存在，则会创建。",
+                        "RetType": "String",
+                        "Return": "写入成功返回字符串 OK",
+                        "Param": [
+                            {
+                                "Caption": "sKey",
+                                "DataType": "String",
+                                "Describe": "要写的键",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "dValue",
+                                "DataType": "Double",
+                                "Describe": "要写的值",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Key_SetNX",
+                    "Remark": "只在Key不存在时写字符串",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Key_SetNX(\"key\", \"Value\")",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "Key_SetNX",
+                        "Define": "sRet = Key_SetNX(sKey, sValue)",
+                        "Describe": "只有在 key 不存在时设置 key 的值。",
+                        "RetType": "String",
+                        "Return": "写入成功返回字符串 OK",
+                        "Param": [
+                            {
+                                "Caption": "sKey",
+                                "DataType": "String",
+                                "Describe": "要写的键",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "sValue",
+                                "DataType": "String",
+                                "Describe": "要写的值",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Key_SetEX",
+                    "Remark": "写字符串并设置超时时间",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Key_SetEX(\"key\", 5, \"Value\")",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "Key_SetEX",
+                        "Define": "sRet = Key_SetEX(sKey, iSeconds, sValue)",
+                        "Describe": "将值 value 关联到 key ，并将 key 的过期时间设为 seconds (以秒为单位)",
+                        "RetType": "String",
+                        "Return": "写入成功返回字符串 OK",
+                        "Param": [
+                            {
+                                "Caption": "sKey",
+                                "DataType": "String",
+                                "Describe": "要写的键",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "iSeconds",
+                                "DataType": "Integer",
+                                "Describe": "超时时间（秒）",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "sValue",
+                                "DataType": "String",
+                                "Describe": "要写的值",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Key_PSetEX",
+                    "Remark": "写字符串并设置超时时间",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Key_PSetEX(\"key\", 5000, \"Value\")",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "Key_PSetEX",
+                        "Define": "sRet = Key_PSetEX(sKey, iMilliSeconds, sValue)",
+                        "Describe": "这个命令和 SETEX 命令相似，但它以毫秒为单位设置 key 的生存时间，而不是像 SETEX 命令那样，以秒为单位",
+                        "RetType": "String",
+                        "Return": "写入成功返回字符串 OK",
+                        "Param": [
+                            {
+                                "Caption": "sKey",
+                                "DataType": "String",
+                                "Describe": "要写的键",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "iMilliSeconds",
+                                "DataType": "Integer",
+                                "Describe": "超时时间（毫秒）",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "sValue",
+                                "DataType": "String",
+                                "Describe": "要写的值",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Key_Get",
+                    "Remark": "读字符串",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Key_Get(\"key\")",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "Key_Get",
+                        "Define": "sRet = Key_Get(sKey)",
+                        "Describe": "读取一个字符串键值",
+                        "RetType": "String",
+                        "Return": "返回键值",
+                        "Param": [
+                            {
+                                "Caption": "sKey",
+                                "DataType": "String",
+                                "Describe": "要读取的键",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Key_GetInt",
+                    "Remark": "读整数",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Key_GetInt(\"key\")",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "Key_GetInt",
+                        "Define": "sRet = Key_GetInt(sKey)",
+                        "Describe": "读取一个整数键值",
+                        "RetType": "Integer",
+                        "Return": "返回键值",
+                        "Param": [
+                            {
+                                "Caption": "sKey",
+                                "DataType": "String",
+                                "Describe": "要读取的键",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Key_GetNum",
+                    "Remark": "读数字",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Key_GetNum(\"key\")",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "Key_GetNum",
+                        "Define": "sRet = Key_GetNum(sKey)",
+                        "Describe": "读取一个数字键值",
+                        "RetType": "Double",
+                        "Return": "返回键值",
+                        "Param": [
+                            {
+                                "Caption": "sKey",
+                                "DataType": "String",
+                                "Describe": "要读取的键",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Key_GetSet",
+                    "Remark": "获取旧值并写字符串",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Key_GetSet(\"key\", \"Value\")",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "Key_GetSet",
+                        "Define": "sRet = Key_GetSet(sKey, sValue)",
+                        "Describe": "将给定 key 的值设为 value ，并返回 key 的旧值(old value)。",
+                        "RetType": "String",
+                        "Return": "返回 sKey 的旧值",
+                        "Param": [
+                            {
+                                "Caption": "sKey",
+                                "DataType": "String",
+                                "Describe": "要写的键",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "sValue",
+                                "DataType": "String",
+                                "Describe": "要写的值",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Key_StrLen",
+                    "Remark": "获取字符串长度",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Key_StrLen(\"key\")",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "Key_StrLen",
+                        "Define": "sRet = Key_StrLen(sKey)",
+                        "Describe": "返回 key 所储存的字符串值的长度。",
+                        "RetType": "String",
+                        "Return": "返回 sKey 的旧值",
+                        "Param": [
+                            {
+                                "Caption": "sKey",
+                                "DataType": "String",
+                                "Describe": "键",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Key_Append",
                     "Remark": "追加写字符串",
                     "Visible": true,
                     "Function": true,
-                    "InsCode": "G.AppendVal(\"key\", \"Value\")",
-                    "Templet": "command.html",
+                    "InsCode": "Key_Append(\"key\", \"Value\")",
+                    "Templet": "command",
                     "Help": {
-                        "Caption": "AppendVal",
-                        "Define": "sRet = AppendVal(sKey, sValue)",
+                        "Caption": "Key_Append",
+                        "Define": "sRet = Key_Append(sKey, sValue)",
                         "Describe": "追加写入一个字符串键值，如果键不存在，则会创建。",
                         "RetType": "String",
                         "Return": "写入成功返回字符串 OK",
@@ -157,18 +967,88 @@
                     }
                 },
                 {
-                    "Caption": "IncrVal",
+                    "Caption": "Key_SetRange",
+                    "Remark": "根据范围写字符串",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Key_SetRange(\"key\", 10, \"从10字节处开始写字符串\")",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "Key_SetRange",
+                        "Define": "sRet = Key_SetRange(sKey, iOffset, sValue)",
+                        "Describe": "用 value 参数覆写给定 key 所储存的字符串值，从偏移量 offset 开始。",
+                        "RetType": "String",
+                        "Return": "写入成功返回字符串 OK",
+                        "Param": [
+                            {
+                                "Caption": "sKey",
+                                "DataType": "String",
+                                "Describe": "要写的键",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "iOffset",
+                                "DataType": "Integer",
+                                "Describe": "偏移位置",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "sValue",
+                                "DataType": "String",
+                                "Describe": "要写的值",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Key_GetRange",
+                    "Remark": "根据范围读字符串",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Key_GetRange(\"key\", 10, 20)",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "Key_GetRange",
+                        "Define": "sRet = Key_GetRange(sKey, iStart, iEnd)",
+                        "Describe": "返回 key 中字符串值的子字符。",
+                        "RetType": "String",
+                        "Return": "返回读取到的字符串内容",
+                        "Param": [
+                            {
+                                "Caption": "sKey",
+                                "DataType": "String",
+                                "Describe": "要写的键",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "iStart",
+                                "DataType": "Integer",
+                                "Describe": "偏移位置",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "iEnd",
+                                "DataType": "Integer",
+                                "Describe": "结束位置",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Key_Incr",
                     "Remark": "原子累加",
                     "Visible": true,
                     "Function": true,
-                    "InsCode": "G.IncrVal(\"key\")",
-                    "Templet": "command.html",
+                    "InsCode": "Key_Incr(\"key\")",
+                    "Templet": "command",
                     "Help": {
-                        "Caption": "IncrVal",
-                        "Define": "sRet = IncrVal(sKey)",
+                        "Caption": "Key_Incr",
+                        "Define": "sRet = Key_Incr(sKey)",
                         "Describe": "将一个包含数值的键值累加 1，这个操作是原子性的，多个客户端同时操作一个值不会出现混乱。",
-                        "RetType": "String",
-                        "Return": "累加成功返回字符串 OK",
+                        "RetType": "Integer",
+                        "Return": "累加成功返回累加后的整数",
                         "Param": [
                             {
                                 "Caption": "sKey",
@@ -180,18 +1060,18 @@
                     }
                 },
                 {
-                    "Caption": "Incrby",
-                    "Remark": "原子累加数值",
+                    "Caption": "Key_IncrBy",
+                    "Remark": "原子累加整数",
                     "Visible": true,
                     "Function": true,
-                    "InsCode": "G.Incrby(\"key\", 10)",
-                    "Templet": "command.html",
+                    "InsCode": "Key_IncrBy(\"key\", 10)",
+                    "Templet": "command",
                     "Help": {
-                        "Caption": "Incrby",
-                        "Define": "sRet = Incrby(sKey, iNumber)",
-                        "Describe": "将一个包含数值的键值累加特定数值，这个操作是原子性的，多个客户端同时操作一个值不会出现混乱。",
-                        "RetType": "String",
-                        "Return": "累加成功返回字符串 OK",
+                        "Caption": "Key_IncrBy",
+                        "Define": "sRet = Key_IncrBy(sKey, iValue)",
+                        "Describe": "将一个包含数值的键值累加特定整数，这个操作是原子性的，多个客户端同时操作一个值不会出现混乱。",
+                        "RetType": "Integer",
+                        "Return": "累加成功返回累加后的整数",
                         "Param": [
                             {
                                 "Caption": "sKey",
@@ -200,7 +1080,7 @@
                                 "Optional": false
                             },
                             {
-                                "Caption": "iNumber",
+                                "Caption": "iValue",
                                 "DataType": "Integer",
                                 "Describe": "要累加的值",
                                 "Optional": false
@@ -209,18 +1089,47 @@
                     }
                 },
                 {
-                    "Caption": "DecrVal",
+                    "Caption": "Key_IncrByFloat",
+                    "Remark": "原子累加数值",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Key_IncrByFloat(\"key\", 0.1)",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "Key_IncrByFloat",
+                        "Define": "sRet = Key_IncrByFloat(sKey, dValue)",
+                        "Describe": "将一个包含数值的键值累加特定数值，这个操作是原子性的，多个客户端同时操作一个值不会出现混乱。",
+                        "RetType": "Integer",
+                        "Return": "累加成功返回累加后的整数",
+                        "Param": [
+                            {
+                                "Caption": "sKey",
+                                "DataType": "String",
+                                "Describe": "要累加的键",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "dValue",
+                                "DataType": "Double",
+                                "Describe": "要累加的值",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Key_Decr",
                     "Remark": "原子累减",
                     "Visible": true,
                     "Function": true,
-                    "InsCode": "G.DecrVal(\"key\")",
-                    "Templet": "command.html",
+                    "InsCode": "Key_Decr(\"key\")",
+                    "Templet": "command",
                     "Help": {
-                        "Caption": "DecrVal",
-                        "Define": "sRet = DecrVal(sKey)",
+                        "Caption": "Key_Decr",
+                        "Define": "sRet = Key_Decr(sKey)",
                         "Describe": "将一个包含数值的键值累减 1，这个操作是原子性的，多个客户端同时操作一个值不会出现混乱。",
-                        "RetType": "String",
-                        "Return": "累减成功返回字符串 OK",
+                        "RetType": "Integer",
+                        "Return": "累减成功返回累加后的整数",
                         "Param": [
                             {
                                 "Caption": "sKey",
@@ -232,18 +1141,18 @@
                     }
                 },
                 {
-                    "Caption": "Decrby",
-                    "Remark": "原子累减数值",
+                    "Caption": "Key_DecrBy",
+                    "Remark": "原子累减整数",
                     "Visible": true,
                     "Function": true,
-                    "InsCode": "G.Decrby(\"key\", 10)",
-                    "Templet": "command.html",
+                    "InsCode": "Key_DecrBy(\"key\", 10)",
+                    "Templet": "command",
                     "Help": {
-                        "Caption": "Decrby",
-                        "Define": "sRet = Decrby(sKey, iNumber)",
-                        "Describe": "将一个包含数值的键值累减特定数值，这个操作是原子性的，多个客户端同时操作一个值不会出现混乱。",
-                        "RetType": "String",
-                        "Return": "累减成功返回字符串 OK",
+                        "Caption": "Key_DecrBy",
+                        "Define": "sRet = Key_DecrBy(sKey, iValue)",
+                        "Describe": "将一个包含数值的键值累减特定整数，这个操作是原子性的，多个客户端同时操作一个值不会出现混乱。",
+                        "RetType": "Integer",
+                        "Return": "累减成功返回累加后的整数",
                         "Param": [
                             {
                                 "Caption": "sKey",
@@ -252,7 +1161,7 @@
                                 "Optional": false
                             },
                             {
-                                "Caption": "iNumber",
+                                "Caption": "iValue",
                                 "DataType": "Integer",
                                 "Describe": "要累减的值",
                                 "Optional": false
@@ -261,15 +1170,15 @@
                     }
                 },
                 {
-                    "Caption": "Exists",
+                    "Caption": "Key_Exists",
                     "Remark": "检查键是否存在",
                     "Visible": true,
                     "Function": true,
-                    "InsCode": "G.Exists(\"key\")",
-                    "Templet": "command.html",
+                    "InsCode": "Key_Exists(\"key\")",
+                    "Templet": "command",
                     "Help": {
-                        "Caption": "Exists",
-                        "Define": "sRet = Exists(sKey)",
+                        "Caption": "Key_Exists",
+                        "Define": "sRet = Key_Exists(sKey)",
                         "Describe": "检查某个键是否存在。",
                         "RetType": "String",
                         "Return": "键存在返回字符串 1，否则返回字符串 0",
@@ -284,67 +1193,15 @@
                     }
                 },
                 {
-                    "Caption": "Del",
-                    "Remark": "删除键值",
-                    "Visible": true,
-                    "Function": true,
-                    "InsCode": "G.Del(\"key\")",
-                    "Templet": "command.html",
-                    "Help": {
-                        "Caption": "Del",
-                        "Define": "sRet = Del(sKey)",
-                        "Describe": "删除某个键值。",
-                        "RetType": "String",
-                        "Return": "操作成功返回字符串 OK",
-                        "Param": [
-                            {
-                                "Caption": "sKey",
-                                "DataType": "String",
-                                "Describe": "要删除的键",
-                                "Optional": false
-                            }
-                        ]
-                    }
-                },
-                {
-                    "Caption": "Rename",
-                    "Remark": "重命名键",
-                    "Visible": true,
-                    "Function": true,
-                    "InsCode": "G.Rename(\"skeyName\", \"sNewName\")",
-                    "Templet": "command.html",
-                    "Help": {
-                        "Caption": "Rename",
-                        "Define": "sRet = Rename(sKey)",
-                        "Describe": "重命名某个键。",
-                        "RetType": "String",
-                        "Return": "操作成功返回字符串 OK",
-                        "Param": [
-                            {
-                                "Caption": "skeyName",
-                                "DataType": "String",
-                                "Describe": "要重命名的键",
-                                "Optional": false
-                            },
-                            {
-                                "Caption": "skeyName",
-                                "DataType": "String",
-                                "Describe": "新的键名",
-                                "Optional": false
-                            }
-                        ]
-                    }
-                },
-                {
-                    "Caption": "DataType",
+                    "Caption": "Key_Type",
                     "Remark": "获取键值的数据类型",
                     "Visible": true,
                     "Function": true,
-                    "InsCode": "G.DataType(\"key\")",
-                    "Templet": "command.html",
+                    "InsCode": "Key_Type(\"key\")",
+                    "Templet": "command",
                     "Help": {
-                        "Caption": "DataType",
-                        "Define": "sRet = DataType(sKey)",
+                        "Caption": "Key_Type",
+                        "Define": "sRet = Key_Type(sKey)",
                         "Describe": "获取某个键值的数据类型。",
                         "RetType": "String",
                         "Return": "返回键值的数据类型",
@@ -359,47 +1216,1011 @@
                     }
                 },
                 {
-                    "Caption": "Keys",
-                    "Remark": "获取键列表",
+                    "Caption": "Key_Rename",
+                    "Remark": "重命名键",
                     "Visible": true,
                     "Function": true,
-                    "InsCode": "G.Keys(\"*\")",
-                    "Templet": "command.html",
+                    "InsCode": "Key_Rename(\"skeyName\", \"sNewName\")",
+                    "Templet": "command",
                     "Help": {
-                        "Caption": "Keys",
-                        "Define": "sRet = Keys(sFilter)",
-                        "Describe": "获取 Redis 服务器中所有的键列表",
+                        "Caption": "Key_Rename",
+                        "Define": "sRet = Key_Rename(skeyName, sNewkeyName)",
+                        "Describe": "重命名某个键。",
                         "RetType": "String",
-                        "Return": "返回键列表，使用 $crlf 分割",
+                        "Return": "操作成功返回字符串 OK",
                         "Param": [
                             {
-                                "Caption": "sFilter",
+                                "Caption": "skeyName",
                                 "DataType": "String",
-                                "Describe": "过滤规则，可以使用通配符， * 表示获取所有键",
+                                "Describe": "要重命名的键",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "sNewkeyName",
+                                "DataType": "String",
+                                "Describe": "新的键名",
                                 "Optional": false
                             }
                         ]
                     }
                 },
                 {
-                    "Caption": "Info",
-                    "Remark": "获取服务器信息",
+                    "Caption": "Key_RenameNX",
+                    "Remark": "当新键名不存在时重命名键",
                     "Visible": true,
                     "Function": true,
-                    "InsCode": "G.Info(\"all\")",
-                    "Templet": "command.html",
+                    "InsCode": "Key_RenameNX(\"skeyName\", \"sNewName\")",
+                    "Templet": "command",
                     "Help": {
-                        "Caption": "Info",
-                        "Define": "sRet = Info(sPart)",
-                        "Describe": "获取 Redis 服务器的信息和配置",
+                        "Caption": "Key_RenameNX",
+                        "Define": "sRet = Key_RenameNX(skeyName, sNewkeyName)",
+                        "Describe": "当且仅当 newkey 不存在时，将 key 改名为 newkey",
                         "RetType": "String",
-                        "Return": "返回服务器信息",
+                        "Return": "操作成功返回字符串 OK",
                         "Param": [
                             {
-                                "Caption": "sPart",
+                                "Caption": "skeyName",
                                 "DataType": "String",
-                                "Describe": "要获取哪一项服务器信息，使用字符串 all 可以获取全部信息",
+                                "Describe": "要重命名的键",
                                 "Optional": false
+                            },
+                            {
+                                "Caption": "sNewkeyName",
+                                "DataType": "String",
+                                "Describe": "新的键名",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Key_Move",
+                    "Remark": "移动键到另一个数据库",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Key_Move(\"skeyName\", 2)",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "Key_Move",
+                        "Define": "sRet = Key_Move(skeyName, iDB)",
+                        "Describe": "将当前数据库的 key 移动到给定的数据库 db 当中",
+                        "RetType": "String",
+                        "Return": "操作成功返回字符串 OK",
+                        "Param": [
+                            {
+                                "Caption": "skeyName",
+                                "DataType": "String",
+                                "Describe": "要重命名的键",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "iDB",
+                                "DataType": "Integer",
+                                "Describe": "数据库ID",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Key_Del",
+                    "Remark": "删除键值",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Key_Del(\"key\")",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "Key_Del",
+                        "Define": "sRet = Key_Del(sKey)",
+                        "Describe": "删除某个键值。",
+                        "RetType": "String",
+                        "Return": "操作成功返回字符串 OK",
+                        "Param": [
+                            {
+                                "Caption": "sKey",
+                                "DataType": "String",
+                                "Describe": "要删除的键",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "List_LPush",
+                    "Remark": "将数据插入到表头",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "List_LPush(\"key\", \"数据\")",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "List_LPush",
+                        "Define": "sRet = List_LPush(sKey, sItem)",
+                        "Describe": "将一个或多个值 value 插入到列表 key 的表头",
+                        "RetType": "String",
+                        "Return": "操作成功返回字符串 OK",
+                        "Param": [
+                            {
+                                "Caption": "sKey",
+                                "DataType": "String",
+                                "Describe": "键",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "sItem",
+                                "DataType": "String",
+                                "Describe": "要添加的数据，多个数据用空格分开",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "List_LPushX",
+                    "Remark": "当表存在时将数据插入到表头",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "List_LPushX(\"key\", \"数据\")",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "List_LPushX",
+                        "Define": "sRet = List_LPushX(sKey, sItem)",
+                        "Describe": "将值 value 插入到列表 key 的表头，当且仅当 key 存在并且是一个列表",
+                        "RetType": "String",
+                        "Return": "操作成功返回字符串 OK",
+                        "Param": [
+                            {
+                                "Caption": "sKey",
+                                "DataType": "String",
+                                "Describe": "键",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "sItem",
+                                "DataType": "String",
+                                "Describe": "要添加的数据，多个数据用空格分开",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "List_RPush",
+                    "Remark": "将数据插入到表尾",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "List_RPush(\"key\", \"数据\")",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "List_RPush",
+                        "Define": "sRet = List_RPush(sKey, sItem)",
+                        "Describe": "将一个或多个值 value 插入到列表 key 的表尾",
+                        "RetType": "String",
+                        "Return": "操作成功返回字符串 OK",
+                        "Param": [
+                            {
+                                "Caption": "sKey",
+                                "DataType": "String",
+                                "Describe": "键",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "sItem",
+                                "DataType": "String",
+                                "Describe": "要添加的数据，多个数据用空格分开",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "List_RPushX",
+                    "Remark": "当表存在时将数据插入到表尾",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "List_RPushX(\"key\", \"数据\")",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "List_RPushX",
+                        "Define": "sRet = List_RPushX(sKey, sItem)",
+                        "Describe": "将值 value 插入到列表 key 的表尾，当且仅当 key 存在并且是一个列表",
+                        "RetType": "String",
+                        "Return": "操作成功返回字符串 OK",
+                        "Param": [
+                            {
+                                "Caption": "sKey",
+                                "DataType": "String",
+                                "Describe": "键",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "sItem",
+                                "DataType": "String",
+                                "Describe": "要添加的数据，多个数据用空格分开",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "List_LPop",
+                    "Remark": "弹出表头元素",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "List_LPop(\"key\")",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "List_LPop",
+                        "Define": "sRet = List_LPop(sKey)",
+                        "Describe": "移除并返回列表 key 的头元素",
+                        "RetType": "String",
+                        "Return": "返回元素的值",
+                        "Param": [
+                            {
+                                "Caption": "sKey",
+                                "DataType": "String",
+                                "Describe": "键",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "List_RPop",
+                    "Remark": "弹出表尾元素",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "List_RPop(\"key\")",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "List_RPop",
+                        "Define": "sRet = List_RPop(sKey)",
+                        "Describe": "移除并返回列表 key 的尾元素",
+                        "RetType": "String",
+                        "Return": "返回元素的值",
+                        "Param": [
+                            {
+                                "Caption": "sKey",
+                                "DataType": "String",
+                                "Describe": "键",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "List_RPopLPush",
+                    "Remark": "弹出表尾元素并插入一个头元素",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "List_RPopLPush(\"key\", \"数据\")",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "List_RPopLPush",
+                        "Define": "sRet = List_RPopLPush(sKey, sItem)",
+                        "Describe": "命令 RPOPLPUSH 在一个原子时间内，执行以下两个动作：<br>将列表 source 中的最后一个元素(尾元素)弹出，并返回给客户端。<br>将 source 弹出的元素插入到列表 destination ，作为 destination 列表的的头元素",
+                        "RetType": "String",
+                        "Return": "返回元素的值",
+                        "Param": [
+                            {
+                                "Caption": "sKey",
+                                "DataType": "String",
+                                "Describe": "键",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "sItem",
+                                "DataType": "String",
+                                "Describe": "要添加的数据",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "List_LRem",
+                    "Remark": "移除列表元素",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "List_LRem(\"key\", -2, \"数据\")",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "List_LRem",
+                        "Define": "sRet = List_LRem(sKey, iCount, sValue)",
+                        "Describe": "根据参数 iCount 的值，移除列表中与参数 sValue 相等的元素",
+                        "RetType": "String",
+                        "Return": "操作成功返回字符串 OK",
+                        "Param": [
+                            {
+                                "Caption": "sKey",
+                                "DataType": "String",
+                                "Describe": "键",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "iCount",
+                                "DataType": "Integer",
+                                "Describe": "要添加的数据",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "sValue",
+                                "DataType": "String",
+                                "Describe": "要添加的数据",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "List_Len",
+                    "Remark": "移除列表元素",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "List_Len(\"key\")",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "List_Len",
+                        "Define": "sRet = List_Len(sKey)",
+                        "Describe": "返回列表 key 的长度（键的数量）",
+                        "RetType": "Integer",
+                        "Return": "返回列表的长度",
+                        "Param": [
+                            {
+                                "Caption": "sKey",
+                                "DataType": "String",
+                                "Describe": "键",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "List_Index",
+                    "Remark": "获取列表元素",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "List_Index(\"key\", 1)",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "List_Index",
+                        "Define": "sRet = List_Index(sKey, iIndex)",
+                        "Describe": "返回列表 key 中，下标为 index 的元素，下标(index)参数 start 和 stop 都以 0 为底",
+                        "RetType": "Integer",
+                        "Return": "返回列表元素的值",
+                        "Param": [
+                            {
+                                "Caption": "sKey",
+                                "DataType": "String",
+                                "Describe": "键",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "iIndex",
+                                "DataType": "Integer",
+                                "Describe": "索引",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "List_Insert",
+                    "Remark": "插入元素",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "List_Insert(\"key\", \"参考值\", \"值\")",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "List_Insert",
+                        "Define": "sRet = List_Insert(sKey, sPivot, sValue[, bBefore])",
+                        "Describe": "将值 value 插入到列表 key 当中，位于值 pivot 之前或之后",
+                        "RetType": "Integer",
+                        "Return": "如果命令执行成功，返回插入操作完成之后，列表的长度。 如果没有找到指定元素 ，返回 -1 。 如果 key 不存在或为空列表，返回 0",
+                        "Param": [
+                            {
+                                "Caption": "sKey",
+                                "DataType": "String",
+                                "Describe": "键",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "sPivot",
+                                "DataType": "String",
+                                "Describe": "插入的位置（根据值确定位置）",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "sValue",
+                                "DataType": "String",
+                                "Describe": "值",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "bBefore",
+                                "DataType": "Boolean",
+                                "Describe": "插入到前面还是后面",
+                                "Optional": true
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "List_Set",
+                    "Remark": "设置列表项值",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "List_Set(\"key\", 1, \"值\")",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "List_Set",
+                        "Define": "sRet = List_Set(sKey, iIndex, sValue)",
+                        "Describe": "将列表 key 下标为 index 的元素的值设置为 value",
+                        "RetType": "String",
+                        "Return": "操作成功返回 ok ，否则返回错误信息",
+                        "Param": [
+                            {
+                                "Caption": "sKey",
+                                "DataType": "String",
+                                "Describe": "键",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "iIndex",
+                                "DataType": "Integer",
+                                "Describe": "索引",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "sValue",
+                                "DataType": "String",
+                                "Describe": "值",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "List_Range",
+                    "Remark": "获取列表的部分值",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "List_Range(\"key\", 0, 3)",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "List_Range",
+                        "Define": "sRet = List_Range(sKey, iStart, iStop)",
+                        "Describe": "返回列表中指定区间内的元素，区间以偏移量 START 和 END 指定。 其中 0 表示列表的第一个元素， 1 表示列表的第二个元素，以此类推。 你也可以使用负数下标，以 -1 表示列表的最后一个元素， -2 表示列表的倒数第二个元素，以此类推",
+                        "RetType": "String",
+                        "Return": "返回列表项的值列表",
+                        "Param": [
+                            {
+                                "Caption": "sKey",
+                                "DataType": "String",
+                                "Describe": "键",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "iStart",
+                                "DataType": "Integer",
+                                "Describe": "开始索引",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "iStop",
+                                "DataType": "Integer",
+                                "Describe": "结束索引",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "List_Trim",
+                    "Remark": "修剪列表",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "List_Trim(\"key\", 0, 3)",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "List_Trim",
+                        "Define": "sRet = List_Trim(sKey, iStart, iStop)",
+                        "Describe": "对一个列表进行修剪(trim)，就是说，让列表只保留指定区间内的元素，不在指定区间之内的元素都将被删除",
+                        "RetType": "String",
+                        "Return": "命令执行成功时，返回 OK",
+                        "Param": [
+                            {
+                                "Caption": "sKey",
+                                "DataType": "String",
+                                "Describe": "键",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "iStart",
+                                "DataType": "Integer",
+                                "Describe": "开始索引",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "iStop",
+                                "DataType": "Integer",
+                                "Describe": "结束索引",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "List_BLPop",
+                    "Remark": "阻塞弹出表头元素",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "List_BLPop(\"key\", 60)",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "List_BLPop",
+                        "Define": "sRet = List_BLPop(sKey, iTimeOut)",
+                        "Describe": "它是 LPOP key 命令的阻塞版本，当给定列表内没有任何元素可供弹出的时候，连接将被 BLPOP 命令阻塞，直到等待超时或发现可弹出元素为止",
+                        "RetType": "String",
+                        "Return": "返回元素的值",
+                        "Param": [
+                            {
+                                "Caption": "sKey",
+                                "DataType": "String",
+                                "Describe": "键",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "iTimeOut",
+                                "DataType": "Integer",
+                                "Describe": "超时时间（秒）",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "List_BRPop",
+                    "Remark": "阻塞弹出表尾元素",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "List_BRPop(\"key\", 60)",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "List_BRPop",
+                        "Define": "sRet = List_BRPop(sKey, iTimeOut)",
+                        "Describe": "它是 RPOP key 命令的阻塞版本，当给定列表内没有任何元素可供弹出的时候，连接将被 BRPOP 命令阻塞，直到等待超时或发现可弹出元素为止",
+                        "RetType": "String",
+                        "Return": "返回元素的值",
+                        "Param": [
+                            {
+                                "Caption": "sKey",
+                                "DataType": "String",
+                                "Describe": "键",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "iTimeOut",
+                                "DataType": "Integer",
+                                "Describe": "超时时间（秒）",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "List_BRPopLPush",
+                    "Remark": "阻塞弹出表尾元素并插入一个头元素",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "List_BRPopLPush(\"key\", \"数据\", 60)",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "List_BRPopLPush",
+                        "Define": "sRet = List_BRPopLPush(sKey, sItem, iTimeOut)",
+                        "Describe": "BRPOPLPUSH 是 RPOPLPUSH source destination 的阻塞版本，当给定列表 source 不为空时， BRPOPLPUSH 的表现和 RPOPLPUSH source destination 一样",
+                        "RetType": "String",
+                        "Return": "返回元素的值",
+                        "Param": [
+                            {
+                                "Caption": "sKey",
+                                "DataType": "String",
+                                "Describe": "键",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "sItem",
+                                "DataType": "String",
+                                "Describe": "要添加的数据",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "iTimeOut",
+                                "DataType": "Integer",
+                                "Describe": "超时时间（秒）",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Hash_Set",
+                    "Remark": "设置键值",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Hash_Set(\"key\", \"Field\", \"Value\")",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "Hash_Set",
+                        "Define": "sRet = Hash_Set(sKey, sField, sValue)",
+                        "Describe": "将哈希表 hash 中域 field 的值设置为 value",
+                        "RetType": "Integer",
+                        "Return": "如果字段是哈希表中的一个新建字段，并且值设置成功，返回 1 。 如果哈希表中域字段已经存在且旧值已被新值覆盖，返回 0",
+                        "Param": [
+                            {
+                                "Caption": "sKey",
+                                "DataType": "String",
+                                "Describe": "键",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "sField",
+                                "DataType": "String",
+                                "Describe": "表内的键名",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "sValue",
+                                "DataType": "String",
+                                "Describe": "值",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Hash_SetNX",
+                    "Remark": "当键不存在时设置键值",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Hash_SetNX(\"key\", \"Field\", \"Value\")",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "Hash_SetNX",
+                        "Define": "sRet = Hash_SetNX(sKey, sField, sValue)",
+                        "Describe": "当且仅当域 field 尚未存在于哈希表的情况下， 将它的值设置为 value",
+                        "RetType": "Integer",
+                        "Return": "设置成功，返回 1 。 如果给定字段已经存在且没有操作被执行，返回 0",
+                        "Param": [
+                            {
+                                "Caption": "sKey",
+                                "DataType": "String",
+                                "Describe": "键",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "sField",
+                                "DataType": "String",
+                                "Describe": "表内的键名",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "sValue",
+                                "DataType": "String",
+                                "Describe": "值",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Hash_Get",
+                    "Remark": "获取键值",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Hash_Get(\"key\", \"Field\")",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "Hash_Get",
+                        "Define": "sRet = Hash_Get(sKey, sField)",
+                        "Describe": "返回哈希表中给定域的值",
+                        "RetType": "String",
+                        "Return": "返回键值数据",
+                        "Param": [
+                            {
+                                "Caption": "sKey",
+                                "DataType": "String",
+                                "Describe": "键",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "sField",
+                                "DataType": "String",
+                                "Describe": "表内的键名",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Hash_Exists",
+                    "Remark": "判断键是否存在",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Hash_Exists(\"key\", \"Field\")",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "Hash_Exists",
+                        "Define": "sRet = Hash_Exists(sKey, sField)",
+                        "Describe": "检查给定域 field 是否存在于哈希表 hash 当中",
+                        "RetType": "String",
+                        "Return": "存在返回 true，不存在返回 false",
+                        "Param": [
+                            {
+                                "Caption": "sKey",
+                                "DataType": "String",
+                                "Describe": "键",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "sField",
+                                "DataType": "String",
+                                "Describe": "表内的键名",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Hash_Del",
+                    "Remark": "删除键值",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Hash_Del(\"key\", \"Field\")",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "Hash_Del",
+                        "Define": "sRet = Hash_Del(sKey, sField)",
+                        "Describe": "删除哈希表 key 中的一个或多个指定域，不存在的域将被忽略",
+                        "RetType": "Integer",
+                        "Return": "被成功删除字段的数量，不包括被忽略的字段",
+                        "Param": [
+                            {
+                                "Caption": "sKey",
+                                "DataType": "String",
+                                "Describe": "键",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "sField",
+                                "DataType": "String",
+                                "Describe": "表内的键名",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Hash_Len",
+                    "Remark": "键值对数量",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Hash_Len(\"key\")",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "Hash_Len",
+                        "Define": "sRet = Hash_Len(sKey)",
+                        "Describe": "返回哈希表 key 中域的数量",
+                        "RetType": "Integer",
+                        "Return": "哈希表中字段的数量。 当 key 不存在时，返回 0",
+                        "Param": [
+                            {
+                                "Caption": "sKey",
+                                "DataType": "String",
+                                "Describe": "键",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Hash_StrLen",
+                    "Remark": "获取字符串长度",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Hash_StrLen(\"key\", \"Field\")",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "Hash_StrLen",
+                        "Define": "sRet = Hash_StrLen(sKey, sField)",
+                        "Describe": "返回哈希表 key 中， 与给定域 field 相关联的值的字符串长度（string length）",
+                        "RetType": "Integer",
+                        "Return": "返回对应键值的字符串长度",
+                        "Param": [
+                            {
+                                "Caption": "sKey",
+                                "DataType": "String",
+                                "Describe": "键",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "sField",
+                                "DataType": "String",
+                                "Describe": "表内的键名",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Hash_IncrBy",
+                    "Remark": "原子累加整数",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Hash_IncrBy(\"key\", \"Field\", 10)",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "Hash_IncrBy",
+                        "Define": "sRet = Hash_IncrBy(sKey, sField, iIncrement)",
+                        "Describe": "为哈希表 key 中的域 field 的值加上增量 increment",
+                        "RetType": "Integer",
+                        "Return": "返回累加后的数据",
+                        "Param": [
+                            {
+                                "Caption": "sKey",
+                                "DataType": "String",
+                                "Describe": "键",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "sField",
+                                "DataType": "String",
+                                "Describe": "表内的键名",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "iIncrement",
+                                "DataType": "Integer",
+                                "Describe": "累加值",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Hash_IncrByFloat",
+                    "Remark": "原子累加数字",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Hash_IncrByFloat(\"key\", \"Field\", 0.1)",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "Hash_IncrByFloat",
+                        "Define": "sRet = Hash_IncrByFloat(sKey, sField, dIncrement)",
+                        "Describe": "为哈希表 key 中的域 field 加上浮点数增量 increment",
+                        "RetType": "Double",
+                        "Return": "返回累加后的数据",
+                        "Param": [
+                            {
+                                "Caption": "sKey",
+                                "DataType": "String",
+                                "Describe": "键",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "sField",
+                                "DataType": "String",
+                                "Describe": "表内的键名",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "dIncrement",
+                                "DataType": "Double",
+                                "Describe": "累加值",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Hash_Keys",
+                    "Remark": "获取表中所有键",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Hash_Keys(\"key\")",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "Hash_Keys",
+                        "Define": "sRet = Hash_Keys(sKey)",
+                        "Describe": "返回哈希表 key 中的所有域",
+                        "RetType": "String",
+                        "Return": "返回键列表，用 $CRLF 分割",
+                        "Param": [
+                            {
+                                "Caption": "sKey",
+                                "DataType": "String",
+                                "Describe": "键",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Hash_Vals",
+                    "Remark": "获取表中所有值",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Hash_Vals(\"key\")",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "Hash_Vals",
+                        "Define": "sRet = Hash_Vals(sKey)",
+                        "Describe": "返回哈希表 key 中所有域的值",
+                        "RetType": "String",
+                        "Return": "返回值列表，用 $CRLF 分割",
+                        "Param": [
+                            {
+                                "Caption": "sKey",
+                                "DataType": "String",
+                                "Describe": "键",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Hash_GetAll",
+                    "Remark": "获取表中所有键值",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Hash_GetAll(\"key\")",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "Hash_GetAll",
+                        "Define": "sRet = Hash_GetAll(sKey)",
+                        "Describe": "返回哈希表 key 中，所有的域和值",
+                        "RetType": "String",
+                        "Return": "返回键值列表，用 $CRLF 分割",
+                        "Param": [
+                            {
+                                "Caption": "sKey",
+                                "DataType": "String",
+                                "Describe": "键",
+                                "Optional": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Caption": "Hash_Scan",
+                    "Remark": "哈希表数据迭代器",
+                    "Visible": true,
+                    "Function": true,
+                    "InsCode": "Hash_Scan(\"key\", iCursor)",
+                    "Templet": "command",
+                    "Help": {
+                        "Caption": "Hash_Scan",
+                        "Define": "sRet = Hash_Scan(sKey, iCursor[, sParam])",
+                        "Describe": "哈希表数据迭代器，用于遍历所有键",
+                        "RetType": "String",
+                        "Return": "返回每次迭代的键值结果",
+                        "Param": [
+                            {
+                                "Caption": "sKey",
+                                "DataType": "String",
+                                "Describe": "键",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "iCursor",
+                                "DataType": "String",
+                                "Describe": "迭代位置游标，当游标参数为 0 时，将开始一次新的迭代，而当服务器向用户返回值为 0 的游标时， 表示迭代已结束",
+                                "Optional": false
+                            },
+                            {
+                                "Caption": "sParam",
+                                "DataType": "String",
+                                "Describe": "附加可选参数",
+                                "Optional": true
                             }
                         ]
                     }

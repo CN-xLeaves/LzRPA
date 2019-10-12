@@ -1,6 +1,6 @@
 uses "LL", "Console"
 
-function Main()
+function TBMain()
 
   local llRoot, llItem  as dword
   local Counter         as long

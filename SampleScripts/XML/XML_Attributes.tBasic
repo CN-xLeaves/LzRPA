@@ -14,7 +14,7 @@ Uses "Console"
 ' ========================================================================================
 ' Main
 ' ========================================================================================
-Function Main() As Long
+Function TBMAIN() As Long
 
    Local pXmlDoc        As DWord
    Local pRootNode      As DWord

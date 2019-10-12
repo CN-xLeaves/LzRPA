@@ -15,7 +15,7 @@ uses "Console"
 ' ========================================================================================
 ' Main
 ' ========================================================================================
-Function Main() As Long
+Function TBMain() As Long
 
    LOCAL pXmlDoc        AS DWORD
    LOCAL pBookNode      AS DWORD

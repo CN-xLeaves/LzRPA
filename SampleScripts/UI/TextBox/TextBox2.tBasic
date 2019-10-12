@@ -20,7 +20,7 @@
   global AreaText(3, 3) AS STRING                          ' Multidimensional array to hold the text
   global PlayerPositionX, PlayerPositionY AS LONG = 2      ' Initial position will be 2, 2
 
-  function Main()
+  function TBMain()
     DIM hDlg AS DWORD 
 
 

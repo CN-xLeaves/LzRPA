@@ -1,6 +1,6 @@
 Uses "PC"
 
-Function Main () As Long  
+Function TBMAIN () As Long  
     Local nError As Number
 
     nError = PC_EJECTCD()

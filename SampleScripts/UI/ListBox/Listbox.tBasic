@@ -17,7 +17,7 @@
     %Butt01
   End ControlID  
 
-  function Main()
+  function TBMain()
     DIM hDlg    AS LONG
   
     '---Create a new dialog

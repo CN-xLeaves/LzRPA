@@ -13,7 +13,7 @@ End ControlID
 Global hDlg, hDC_canvas, colrVal As Long
  
 ' -- Create dialog here
-Function Main()
+Function TBMain()
   Local sImageBackground As String = APP_SourcePath + "Image_Background\ColorGradient.bmp"
   Local nWidth, nHeight As Long
    

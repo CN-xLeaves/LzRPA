@@ -73,7 +73,7 @@ end type
 '----------------------------------------------------------------
 '               Main Dialog (called a MDI Frame)
 '----------------------------------------------------------------
-Sub Main() as long
+Sub TBMain() as long
   randomize
   
     Style = _

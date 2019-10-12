@@ -12,7 +12,7 @@
   
   randomize
   
-  function Main()
+  function TBMain()
     dim hDlg      as long  
     DIALOG NEW 0, "thinBasic Progress bar demo", -1, -1, 300, 160, _
                                           %WS_DLGFRAME          |  _

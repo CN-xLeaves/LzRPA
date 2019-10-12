@@ -1,3 +1,48 @@
+2019.10.25 LzRPA(灵智机器人) v0.98 发布（计划中）：
+	支持载入 utf8 格式的文件（工程可设置编码类型）
+	新增 Task（计划任务） 扩展库
+
+
+
+2019.10.13 LzRPA(灵智机器人) v0.96 发布（计划中）：
+	初步实现了多语言的支持（暂只添加了英文版语言文件）
+
+
+
+2019.10.12 LzRPA(灵智机器人) v0.95 发布：
+
+	编辑器打开文件功能支持 tbasicc、tbasicu 格式（之前没添加后缀）
+	单文件运行、编译时，如果后缀使用 tbasic、tbasicc、tbasicu，则不添加任何代码（与ThinBasic自带编辑器相同）
+	更新 ThinBasic 自带范例代码（SimpleScript）
+	更新 ThinBasic 版本到 1.11.0.1 (支持内嵌FreeBasic代码)
+	已保存文件现在运行时生成的路径不会带有多个 . 符号（替换为下划线）
+	hiredis.dll 更新，去掉了一些封装函数
+	Redis 库删除函数：GetVal、GetInt、GetNum、SetVal、SetInt、SetNum、AppendVal、IncrVal、Incrby、DecrVal、Decrby [命名标准不够统一]
+	Redis 库函数 DataType 更名为 Key_Type
+	Redis 库函数 Exists 更名为 Key_Exists
+	Redis 库函数 Rename 更名为 Key_Rename
+	Redis 库函数 Del 更名为 Key_Del
+	Redis 库重构，增加了大量新功能，集成帮助同步更新
+	GlobalData 库同步 Redis 集成帮助
+	新增 Redis 测试范例
+
+
+
+2019.09.04 LzRPA(灵智机器人) v0.94 发布：
+
+	Redis 客户端新增 GetInt、GetNum、SetInt、SetNum 四个函数，用于直接获取数字数据
+	Redis 客户端 IncrVal、IncrBy、DecrVal、DecrBy 四个函数现在返回整数值，为累加后的数据
+	Redis 客户端删除无效代码
+	Redis 服务端删除无效代码
+	新增时间函数 21 个，配套集成帮助文档
+	新增运行脚本前清空调试输出配置选项（Option - AutoClearTracePrint），默认打开
+	新增默认加载命令树的展示方式配置选项（Option - CommandListView），默认为3
+	新增图灵插件命令文档，共124条命令
+	插件命令已经比较多了，标准库分类现在折叠起来节省空间
+	图灵插件范例重做（现在使用工程了）
+
+
+
 2019.08.10 LzRPA(灵智机器人) v0.93 发布：
 
 	修复了在关闭命令树后关闭软件，再次启动软件加载工程和文件会报错的问题

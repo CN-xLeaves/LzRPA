@@ -114,7 +114,7 @@ For i=3 To 29
  
       
 
-Function Main()
+Function TBMain()
   Local hWnd      As DWord
   Local FrameRate As Double  
   Local hk As Single

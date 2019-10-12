@@ -25,15 +25,13 @@
     formula as string
   end type
   
-  
-  
   global Formulas(1) as tFormula
   global FormulasCount as long
 
   global hGrid    as long
   
   '----------------------------------------------------------------------------
-  FUNCTION Main() as long
+  FUNCTION TBMain() as long
   '----------------------------------------------------------------------------
     LOCAL hDlg AS LONG    
     '---Create a new dialog

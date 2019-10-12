@@ -1,0 +1,26 @@
+uses "CGI"
+uses "Console"
+
+'---
+Console_WriteLine("Attention!  Attention!  Attention!  Attention!") 
+Console_WriteLine("Attention!  Attention!  Attention!  Attention!") 
+'---
+Console_WriteLine("url was taken from a real phising example") 
+Console_WriteLine("DO NOT USE !!!!!!") 
+'---
+
+DIM s AS STRING
+DIM i AS number
+
+s = "http://wpop17.libero.it/cgi-bin/vlink.cgi?Link=http%3A//www.google.lt/url%3Fq%3Dhttp%3A//go.msn.com/HML/1/6.asp%3Ftarget%3Dhttp%3A//5%2564%2566psr%2570%25%25%252eDa%25%252Er%25%2509%25%25%25%2575/"
+
+Console_WriteLine($CRLF + "Url encoded  : " + s + $CRLF)
+
+WHILE (INSTR(1, s, "%"))
+  s = CGI_UrlDecodeString(s)
+  i = i + 1
+  Console_WriteLine("Url decode pass " + i + " : " + s + $CRLF)
+WEND
+
+Console_WriteLine("Press any key to continue.")
+Console_WaitKey

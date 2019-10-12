@@ -24,7 +24,7 @@ Function Out(ByVal sMessage As String, Optional lLevel As Long, ByVal Wait As Lo
 End Function
 
 '--------------------------------------------------------------------
-Function Main() As Long
+Function TBMain() As Long
 '--------------------------------------------------------------------
   Dim sXlsFileName  As String
   Dim xApp          As Excel_Application    '---This will instantiate the real Excel Application

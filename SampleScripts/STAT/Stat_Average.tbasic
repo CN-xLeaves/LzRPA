@@ -2,7 +2,7 @@ uses "Stat", "Console"
 
 %ELEMENTS = 100
 
-function Main()
+function TBMain()
   dim aData(%ELEMENTS) as ext
   dim aResults(2) as ext
   dim i as long

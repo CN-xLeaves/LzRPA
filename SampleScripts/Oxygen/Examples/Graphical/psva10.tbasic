@@ -64,7 +64,7 @@ Uses "TBGL", "OXYGEN","FILE"
 '  #         #
 '
 '----------------
-Function Main()
+Function TBMAIN()
 '================
 ' ##############
 '  ############

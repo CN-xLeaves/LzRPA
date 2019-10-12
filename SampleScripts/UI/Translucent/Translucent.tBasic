@@ -22,7 +22,7 @@
   '------------------------------------------------------------------
   ' Main script entry point
   '------------------------------------------------------------------
-  function Main() as long
+  function TBMain() as long
     DIM hDlg    AS LONG
 
     '---Create a new window

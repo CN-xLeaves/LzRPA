@@ -10,7 +10,7 @@
     %ID_LBLENTER              '---Input field label
     %ID_TXTENTER              '---Input field  
   End ControlID
-  function Main()    
+  function TBMain()    
     DIM hDlg      AS LONG         '---Dialog handle
     
     '---Set starting width and height of the window

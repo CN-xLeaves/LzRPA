@@ -3,7 +3,7 @@
 ' Main function
 '==============
 
-function Main() as long
+function TBMAIN() as long
   
   dim hctrl01 as long
   dim t as string

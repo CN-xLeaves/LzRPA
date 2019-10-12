@@ -10,7 +10,7 @@ Uses "TBGL"
 dim hWnd AS DWORD
 dim FrameRate AS DOUBLE
 
-FUNCTION Main()
+FUNCTION TBMAIN()
   local sprBackGround, width, height as long
   local dirTextures       as string = "Textures\"
   local mySprite as long

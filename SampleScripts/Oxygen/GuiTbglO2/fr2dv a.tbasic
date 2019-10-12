@@ -74,7 +74,7 @@ Begin Const
 End Const
 
 ' -- Create dialog here
-Function Main()
+Function TBMain()
   Global hDlg As DWord
 
   Dialog New Pixels, 0, "Fresnel 2D",-1,-1, %MAIN_WIDTH, %MAIN_HEIGHT, _

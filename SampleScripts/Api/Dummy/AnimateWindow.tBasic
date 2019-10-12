@@ -7,7 +7,7 @@ begin const
   %ID_BLEND         = 1000
 end const
 
-Function Main()                          
+Function TBMain()                          
 
   DIM hwnd      AS Dword
   

@@ -10,7 +10,7 @@
     %ID_Url
   End ControlID
     
-  function Main()  
+  function TBMain()  
     DIM hDlg    AS LONG
     
     DIALOG NEW 0, "TextBox example", -1, -1, 195, 250, _

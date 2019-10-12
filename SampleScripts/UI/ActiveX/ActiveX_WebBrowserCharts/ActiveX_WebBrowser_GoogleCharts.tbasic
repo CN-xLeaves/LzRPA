@@ -58,7 +58,7 @@ long htGoogleCharts
 '------------------------------------------------
 ' Create main window and show The rest will be handled by functions events
 '------------------------------------------------
-Function Main() as Long
+Function TBMain() as Long
 '------------------------------------------------
 
   DIALOG New Pixels, Name frmMain, 0, ""

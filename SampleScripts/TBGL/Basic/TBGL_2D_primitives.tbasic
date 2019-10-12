@@ -7,7 +7,7 @@
 
 Uses "TBGL" 
 
-FUNCTION Main()
+FUNCTION TBMAIN()
   LOCAL hWnd AS DWORD
   LOCAL FrameRate AS DOUBLE
 

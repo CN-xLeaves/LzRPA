@@ -1,6 +1,6 @@
 Uses "TBASS", "UI", "FILE"
 
-function Main()
+function TBMain()
   DIM sFile   AS STRING   '---Filename to load
   DIM sSample as STRING   '---The Sample File Storage
   DIM Channel AS DWORD    '---Audio channel to use

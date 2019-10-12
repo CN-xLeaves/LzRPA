@@ -8,7 +8,7 @@
   End ControlID
 
   '------------------------------------------------------------------
-  function Main() as long
+  function TBMain() as long
   '------------------------------------------------------------------
     local hDlg    AS LONG
     local Count   as long
