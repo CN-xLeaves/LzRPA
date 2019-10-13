@@ -12,9 +12,9 @@ Function Main() As Long
     TracePrint "主进程已启动"
     
     TracePrint "设置变量 a 的数据为 1234"
-    G.SetVal("a", 1234)
+    G.Key_Set("a", 1234)
     
-    TracePrint "变量 a 的值为 " & G.GetVal("a")
+    TracePrint "变量 a 的值为 " & G.Key_Get("a")
     
     ' 创建第一个任务，保存任务句柄 (之后控制任务时会使用)
     Dim Work1 As Long = Work_Create("Proc1", "参数")
@@ -51,5 +51,5 @@ End Function
 ' 第二个任务执行的代码
 Function Work_Proc2(ByVal sParam As String) As Long
 	TracePrint "第二类工作进程创建：" & sParam
-	TracePrint "访问变量 a : " & G.GetVal("a")
+	TracePrint "访问变量 a : " & G.Key_Get("a")
 End Function

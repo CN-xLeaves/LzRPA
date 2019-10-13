@@ -5949,7 +5949,7 @@
 				"Templet": "document",
 				"Help": {
 					"Caption": "Work function usage warning",
-					"Document": "In the source code structure of the smart robot, the code that does not belong to any function (Global Block) will be executed in all tasks, the Main function will only be executed in the main process, so when creating the task, do not write the code in the Main function. In addition, otherwise it will cause the task to create an infinite loop, which may cause the user or the developer's machine to be stuck, resulting in loss of document data."
+					"Document": "In the source code structure of the smart robot, the code that does not belong to any function (Global Block) will be executed in all tasks, the Main function will only be executed in the main process, so when creating the task, do not write the code in the Main function. In addition, otherwise it will cause the task to create an infinite loop, which may cause the user or the developer&apos;s machine to be stuck, resulting in loss of document data."
 				}
 			},
 			{
