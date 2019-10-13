@@ -172,7 +172,24 @@
         "Menu_Copy": "Copy (&C)",
         "Menu_Paste": "Paste (&P)",
         "Menu_Delete": "Delete (&D)",
-        "Menu_SelectAll": "SelectAll (&A)"
+        "Menu_SelectAll": "SelectAll (&A)",
+
+        "Tips_Type_Long": "[Long]",
+        "Tips_Type_String": "[String]",
+        "Tips_Type_Number": "[Double]",
+        "Tips_Type_Boolean": "[Boolean]",
+        "Tips_Type_Object": "[Object]",
+        "Tips_Type_Time": "[Time]",
+        "Tips_Type_Array": "[Array]",
+        "Tips_Type_Any": "[Any]",
+        "Tips_Type_Ptr": "[Pointer]",
+
+        "Tips_Define": "Declare :",
+        "Tips_Describe": "Description :",
+        "Tips_Param": "Parameter :",
+        "Tips_Param_Optional": " (Optional)",
+        "Tips_Param_Mandatory": " (Mandatory)",
+        "Tips_Return": "Return :"
     },
 
 
@@ -202,11 +219,15 @@
         "Tabs_Version_FileVersion": "FileVersion",
         "Tabs_Version_UseFileVersion": "Use FileVersion",
 
+        "VerAdd_NoAutoAdd": "Do not automatically accumulate versions",
+        "VerAdd_BuildAdd": "Compile automatic accumulation version",
+        "VerAdd_RunBuildAdd": "Compile and run the automatic accumulation version",
+
         "Save": "Save"
     },
-
-
-
+    
+    
+    
     "NewProject": 
     {
         "Title": "Home",
@@ -225,6 +246,12 @@
 
         "Tree_Local": "Local",
         "Tree_Online": "Online",
-        "Tree_Wait": "Wait ..."
+        "Tree_Wait": "Wait ...",
+
+        "Workspace_NoUse": "Do not use workspace",
+        "Workspace_Create": "Create a new workspace",
+        "Workspace_Join": "Join the current workspace"
     }
 }
+
+
