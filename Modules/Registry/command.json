@@ -23,7 +23,7 @@
             "Caption": "Registry_KeyExists",
             "Remark": "判断键是否存在",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "Registry_KeyExists(%HKEY_CLASSES_ROOT, \"路径\", \"键名\")",
             "Templet": "command",
             "Help": {
@@ -58,7 +58,7 @@
             "Caption": "Registry_PathExists",
             "Remark": "判断路径是否存在",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "Registry_PathExists(%HKEY_CLASSES_ROOT, \"路径\")",
             "Templet": "command",
             "Help": {
@@ -87,7 +87,7 @@
             "Caption": "Registry_GetValue",
             "Remark": "读文本键值",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "Registry_GetValue(%HKEY_CLASSES_ROOT, \"路径\", \"键名\")",
             "Templet": "command",
             "Help": {
@@ -122,7 +122,7 @@
             "Caption": "Registry_GetDWord",
             "Remark": "读整数键值",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "Registry_GetDWord(%HKEY_CLASSES_ROOT, \"路径\", \"键名\")",
             "Templet": "command",
             "Help": {
@@ -157,7 +157,7 @@
             "Caption": "Registry_SetValue",
             "Remark": "写文本键值",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "Registry_SetValue(%HKEY_CLASSES_ROOT, \"路径\", \"键名\", \"值\")",
             "Templet": "command",
             "Help": {
@@ -198,7 +198,7 @@
             "Caption": "Registry_SetDWord",
             "Remark": "写整数键值",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "Registry_SetDWord(%HKEY_CLASSES_ROOT, \"路径\", \"键名\", 1)",
             "Templet": "command",
             "Help": {
@@ -239,7 +239,7 @@
             "Caption": "Registry_DelKey",
             "Remark": "删除路径",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "Registry_DelKey(%HKEY_CLASSES_ROOT, \"路径\")",
             "Templet": "command",
             "Help": {
@@ -268,7 +268,7 @@
             "Caption": "Registry_DelValue",
             "Remark": "删除键值",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "Registry_DelValue(%HKEY_CLASSES_ROOT, \"路径\", \"键名\")",
             "Templet": "command",
             "Help": {
@@ -303,7 +303,7 @@
             "Caption": "Registry_GetAllKeys",
             "Remark": "列出键值",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "Registry_GetAllKeys(%HKEY_CLASSES_ROOT, \"路径\")",
             "Templet": "command",
             "Help": {

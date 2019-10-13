@@ -1,14 +1,20 @@
-产品交流QQ群：648830275
+Product Exchange QQ Group: 648830275 (China's general-purpose IM software)
 
 
 
-运行 LzBot.exe 启动软件编辑器，如果软件启动时弹出类似以下内容的窗口：
+Run LzBot.exe to launch the software editor. If the software starts, a window similar to the following pops up:
 
-若要运行此应用程序，您必须首先安装 .NET Framework 的以下版本之一： v4.0.30319 有关如何获取 .NET Framework 的适当版本的说明，请与应用程序发行者联系。
+To run this application, you must first install one of the following versions of the .NET Framework: v4.0.30319 For instructions on how to obtain the appropriate version of the .NET Framework, contact the application publisher.
 
 
-可运行位于软件 Tool 目录下的 dotNet4.exe 下载安装，或打开网页：
+You can run dotNet4.exe located in the Software Tool directory to download and install, or open the web page:
 
-https://dotnet.microsoft.com/download/dotnet-framework
+Https://dotnet.microsoft.com/download/dotnet-framework
 
-下载 4.0 以上的版本安装
+Download version 4.0 or higher to install
+
+
+
+Tips:
+
+	After launching the software, click the Tools menu, click the Create File Type Association menu, and then you can easily double-click to open the LzRPA related files.

@@ -70,7 +70,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": true,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "TURING.Version()",
       "Help": {
         "Caption": "Version",
@@ -95,7 +95,7 @@
           "Icon": "函数",
           "Templet": "command",
           "Visible": true,
-          "Function": true,
+          "Keyword": true,
           "InsCode": "TURING.Link(hwnd, mode)",
           "Help": {
             "Caption": "Link",
@@ -125,7 +125,7 @@
           "Icon": "函数",
           "Templet": "command",
           "Visible": true,
-          "Function": true,
+          "Keyword": true,
           "InsCode": "TURING.UnLink()",
           "Help": {
             "Caption": "UnLink",
@@ -142,7 +142,7 @@
           "Icon": "函数",
           "Templet": "command",
           "Visible": true,
-          "Function": true,
+          "Keyword": true,
           "InsCode": "TURING.Window_GetSize()",
           "Help": {
             "Caption": "Window_GetSize",
@@ -159,7 +159,7 @@
           "Icon": "函数",
           "Templet": "command",
           "Visible": true,
-          "Function": true,
+          "Keyword": true,
           "InsCode": "TURING.Window_GetAncestor(iHwnd)",
           "Help": {
             "Caption": "Window_GetAncestor",
@@ -183,7 +183,7 @@
           "Icon": "函数",
           "Templet": "command",
           "Visible": true,
-          "Function": true,
+          "Keyword": true,
           "InsCode": "TURING.Window_GetPointHwnd(x, y)",
           "Help": {
             "Caption": "Window_GetPointHwnd",
@@ -213,7 +213,7 @@
           "Icon": "函数",
           "Templet": "command",
           "Visible": true,
-          "Function": true,
+          "Keyword": true,
           "InsCode": "TURING.Window_MoveTo(iHwnd, iLeft, iTop)",
           "Help": {
             "Caption": "Window_MoveTo",
@@ -267,7 +267,7 @@
               "Icon": "函数",
               "Templet": "command",
               "Visible": true,
-              "Function": true,
+              "Keyword": true,
               "InsCode": "TURING.Pixel_FromScreen(left, top, right, bottom, Mode)",
               "Help": {
                 "Caption": "Pixel_FromScreen",
@@ -315,7 +315,7 @@
               "Icon": "函数",
               "Templet": "command",
               "Visible": true,
-              "Function": true,
+              "Keyword": true,
               "InsCode": "TURING.Pixel_FromPicture(ImagePath, Mode)",
               "Help": {
                 "Caption": "Pixel_FromPicture",
@@ -345,7 +345,7 @@
               "Icon": "函数",
               "Templet": "command",
               "Visible": true,
-              "Function": true,
+              "Keyword": true,
               "InsCode": "TURING.Pixel_FromMouse(Width, Height)",
               "Help": {
                 "Caption": "Pixel_FromMouse",
@@ -375,7 +375,7 @@
               "Icon": "函数",
               "Templet": "command",
               "Visible": true,
-              "Function": true,
+              "Keyword": true,
               "InsCode": "TURING.Pixel_Preview(Mode,subline)",
               "Help": {
                 "Caption": "Pixel_Preview",
@@ -413,7 +413,7 @@
                   "Icon": "函数",
                   "Templet": "command",
                   "Visible": true,
-                  "Function": true,
+                  "Keyword": true,
                   "InsCode": "TURING.SaveImageData(ImagePath)",
                   "Help": {
                     "Caption": "SaveImageData",
@@ -437,7 +437,7 @@
                   "Icon": "函数",
                   "Templet": "command",
                   "Visible": true,
-                  "Function": true,
+                  "Keyword": true,
                   "InsCode": "TURING.Pixel_ColorImageData(Interval, Value)",
                   "Help": {
                     "Caption": "Pixel_ColorImageData",
@@ -467,7 +467,7 @@
                   "Icon": "函数",
                   "Templet": "command",
                   "Visible": true,
-                  "Function": true,
+                  "Keyword": true,
                   "InsCode": "TURING.Pixel_ChannelImageData()",
                   "Help": {
                     "Caption": "Pixel_ChannelImageData",
@@ -484,7 +484,7 @@
                   "Icon": "函数",
                   "Templet": "command",
                   "Visible": true,
-                  "Function": true,
+                  "Keyword": true,
                   "InsCode": "TURING.Pixel_CutImageData(left, top, right, bottom, Serial)",
                   "Help": {
                     "Caption": "Pixel_CutImageData",
@@ -532,7 +532,7 @@
                   "Icon": "函数",
                   "Templet": "command",
                   "Visible": true,
-                  "Function": true,
+                  "Keyword": true,
                   "InsCode": "TURING.Pixel_SetImageData(Serial)",
                   "Help": {
                     "Caption": "Pixel_SetImageData",
@@ -556,7 +556,7 @@
                   "Icon": "函数",
                   "Templet": "command",
                   "Visible": true,
-                  "Function": true,
+                  "Keyword": true,
                   "InsCode": "TURING.Pixel_SetImageDataCut(index)",
                   "Help": {
                     "Caption": "Pixel_SetImageDataCut",
@@ -580,7 +580,7 @@
                   "Icon": "函数",
                   "Templet": "command",
                   "Visible": true,
-                  "Function": true,
+                  "Keyword": true,
                   "InsCode": "TURING.Pixel_SetSceneImageData(Mode)",
                   "Help": {
                     "Caption": "Pixel_SetSceneImageData",
@@ -604,7 +604,7 @@
                   "Icon": "函数",
                   "Templet": "command",
                   "Visible": true,
-                  "Function": true,
+                  "Keyword": true,
                   "InsCode": "TURING.Pixel_SetLayerImageData(Index)",
                   "Help": {
                     "Caption": "Pixel_SetLayerImageData",
@@ -628,7 +628,7 @@
                   "Icon": "函数",
                   "Templet": "command",
                   "Visible": true,
-                  "Function": true,
+                  "Keyword": true,
                   "InsCode": "TURING.GetImageData()",
                   "Help": {
                     "Caption": "GetImageData",
@@ -645,7 +645,7 @@
                   "Icon": "函数",
                   "Templet": "command",
                   "Visible": true,
-                  "Function": true,
+                  "Keyword": true,
                   "InsCode": "TURING.LoadImageData(ImageData)",
                   "Help": {
                     "Caption": "LoadImageData",
@@ -669,7 +669,7 @@
                   "Icon": "函数",
                   "Templet": "command",
                   "Visible": true,
-                  "Function": true,
+                  "Keyword": true,
                   "InsCode": "TURING.GetImageSize(FilePath)",
                   "Help": {
                     "Caption": "GetImageSize",
@@ -693,7 +693,7 @@
                   "Icon": "函数",
                   "Templet": "command",
                   "Visible": true,
-                  "Function": true,
+                  "Keyword": true,
                   "InsCode": "TURING.ImageFormatConverter(ImagePath, ImageSavePath, Value)",
                   "Help": {
                     "Caption": "ImageFormatConverter",
@@ -739,7 +739,7 @@
                   "Icon": "函数",
                   "Templet": "command",
                   "Visible": true,
-                  "Function": true,
+                  "Keyword": true,
                   "InsCode": "TURING.Pixel_GetClpImageData()",
                   "Help": {
                     "Caption": "Pixel_GetClpImageData",
@@ -756,7 +756,7 @@
                   "Icon": "函数",
                   "Templet": "command",
                   "Visible": true,
-                  "Function": true,
+                  "Keyword": true,
                   "InsCode": "TURING.Pixel_SetClpImageData()",
                   "Help": {
                     "Caption": "Pixel_SetClpImageData",
@@ -773,7 +773,7 @@
                   "Icon": "函数",
                   "Templet": "command",
                   "Visible": true,
-                  "Function": true,
+                  "Keyword": true,
                   "InsCode": "TURING.Pixel_SetClpScreenData(left, top, right, bottom)",
                   "Help": {
                     "Caption": "Pixel_SetClpScreenData",
@@ -815,7 +815,7 @@
                   "Icon": "函数",
                   "Templet": "command",
                   "Visible": true,
-                  "Function": true,
+                  "Keyword": true,
                   "InsCode": "TURING.Pixel_SetClpPictureData(ImagePath)",
                   "Help": {
                     "Caption": "Pixel_SetClpPictureData",
@@ -839,7 +839,7 @@
                   "Icon": "函数",
                   "Templet": "command",
                   "Visible": true,
-                  "Function": true,
+                  "Keyword": true,
                   "InsCode": "TURING.Pixel_SaveClpImageData(ImagePath)",
                   "Help": {
                     "Caption": "Pixel_SaveClpImageData",
@@ -883,7 +883,7 @@
                   "Icon": "函数",
                   "Templet": "command",
                   "Visible": true,
-                  "Function": true,
+                  "Keyword": true,
                   "InsCode": "TURING.Filter_Binaryzation(value)",
                   "Help": {
                     "Caption": "Filter_Binaryzation",
@@ -907,7 +907,7 @@
                   "Icon": "函数",
                   "Templet": "command",
                   "Visible": true,
-                  "Function": true,
+                  "Keyword": true,
                   "InsCode": "TURING.Filter_Gray(mode)",
                   "Help": {
                     "Caption": "Filter_Gray",
@@ -931,7 +931,7 @@
                   "Icon": "函数",
                   "Templet": "command",
                   "Visible": true,
-                  "Function": true,
+                  "Keyword": true,
                   "InsCode": "TURING.Filter_Posterization(value)",
                   "Help": {
                     "Caption": "Filter_Posterization",
@@ -965,7 +965,7 @@
                   "Icon": "函数",
                   "Templet": "command",
                   "Visible": true,
-                  "Function": true,
+                  "Keyword": true,
                   "InsCode": "TURING.Filter_Despeckle(Value, Interval, Mode)",
                   "Help": {
                     "Caption": "Filter_Despeckle",
@@ -1001,7 +1001,7 @@
                   "Icon": "函数",
                   "Templet": "command",
                   "Visible": true,
-                  "Function": true,
+                  "Keyword": true,
                   "InsCode": "TURING.Filter_EraseLine(value)",
                   "Help": {
                     "Caption": "Filter_EraseLine",
@@ -1025,7 +1025,7 @@
                   "Icon": "函数",
                   "Templet": "command",
                   "Visible": true,
-                  "Function": true,
+                  "Keyword": true,
                   "InsCode": "TURING.Filter_Outline()",
                   "Help": {
                     "Caption": "Filter_Outline",
@@ -1042,7 +1042,7 @@
                   "Icon": "函数",
                   "Templet": "command",
                   "Visible": true,
-                  "Function": true,
+                  "Keyword": true,
                   "InsCode": "TURING.Filter_ExtractBlock(width, height, num)",
                   "Help": {
                     "Caption": "Filter_ExtractBlock",
@@ -1078,7 +1078,7 @@
                   "Icon": "函数",
                   "Templet": "command",
                   "Visible": true,
-                  "Function": true,
+                  "Keyword": true,
                   "InsCode": "TURING.Filter_SlantCorrect()",
                   "Help": {
                     "Caption": "Filter_SlantCorrect",
@@ -1095,7 +1095,7 @@
                   "Icon": "函数",
                   "Templet": "command",
                   "Visible": true,
-                  "Function": true,
+                  "Keyword": true,
                   "InsCode": "TURING.Filter_RotateCorrect(angle, value)",
                   "Help": {
                     "Caption": "Filter_RotateCorrect",
@@ -1125,7 +1125,7 @@
                   "Icon": "函数",
                   "Templet": "command",
                   "Visible": true,
-                  "Function": true,
+                  "Keyword": true,
                   "InsCode": "TURING.Filter_InverseColor(Mode)",
                   "Help": {
                     "Caption": "Filter_InverseColor",
@@ -1149,7 +1149,7 @@
                   "Icon": "函数",
                   "Templet": "command",
                   "Visible": true,
-                  "Function": true,
+                  "Keyword": true,
                   "InsCode": "TURING.Filter_DilationErosion(Mode)",
                   "Help": {
                     "Caption": "Filter_DilationErosion",
@@ -1173,7 +1173,7 @@
                   "Icon": "函数",
                   "Templet": "command",
                   "Visible": true,
-                  "Function": true,
+                  "Keyword": true,
                   "InsCode": "TURING.Filter_ThinBone()",
                   "Help": {
                     "Caption": "Filter_ThinBone",
@@ -1200,7 +1200,7 @@
                   "Icon": "函数",
                   "Templet": "command",
                   "Visible": true,
-                  "Function": true,
+                  "Keyword": true,
                   "InsCode": "TURING.Filter_Zoom(xTimes, yTimes)",
                   "Help": {
                     "Caption": "Filter_Zoom",
@@ -1230,7 +1230,7 @@
                   "Icon": "函数",
                   "Templet": "command",
                   "Visible": true,
-                  "Function": true,
+                  "Keyword": true,
                   "InsCode": "TURING.Filter_ZoomOne(width, height)",
                   "Help": {
                     "Caption": "Filter_ZoomOne",
@@ -1260,7 +1260,7 @@
                   "Icon": "函数",
                   "Templet": "command",
                   "Visible": true,
-                  "Function": true,
+                  "Keyword": true,
                   "InsCode": "TURING.Filter_ValidCut(Value)",
                   "Help": {
                     "Caption": "Filter_ValidCut",
@@ -1284,7 +1284,7 @@
                   "Icon": "函数",
                   "Templet": "command",
                   "Visible": true,
-                  "Function": true,
+                  "Keyword": true,
                   "InsCode": "TURING.Filter_ColorChoose(value, bColor)",
                   "Help": {
                     "Caption": "Filter_ColorChoose",
@@ -1314,7 +1314,7 @@
                   "Icon": "函数",
                   "Templet": "command",
                   "Visible": true,
-                  "Function": true,
+                  "Keyword": true,
                   "InsCode": "TURING.Filter_DispelSpot(Sensitivity, Num)",
                   "Help": {
                     "Caption": "Filter_DispelSpot",
@@ -1344,7 +1344,7 @@
                   "Icon": "函数",
                   "Templet": "command",
                   "Visible": true,
-                  "Function": true,
+                  "Keyword": true,
                   "InsCode": "TURING.Filter_DiffeExtract(ImgData1, ImgData2, Similarity)",
                   "Help": {
                     "Caption": "Filter_DiffeExtract",
@@ -1380,7 +1380,7 @@
                   "Icon": "函数",
                   "Templet": "command",
                   "Visible": true,
-                  "Function": true,
+                  "Keyword": true,
                   "InsCode": "TURING.Filter_Tailor(Left, Top, Right, Bottom)",
                   "Help": {
                     "Caption": "Filter_Tailor",
@@ -1422,7 +1422,7 @@
                   "Icon": "函数",
                   "Templet": "command",
                   "Visible": true,
-                  "Function": true,
+                  "Keyword": true,
                   "InsCode": "TURING.Filter_Rotate(angle)",
                   "Help": {
                     "Caption": "Filter_Rotate",
@@ -1446,7 +1446,7 @@
                   "Icon": "函数",
                   "Templet": "command",
                   "Visible": true,
-                  "Function": true,
+                  "Keyword": true,
                   "InsCode": "TURING.Filter_Mirror(Direction)",
                   "Help": {
                     "Caption": "Filter_Mirror",
@@ -1470,7 +1470,7 @@
                   "Icon": "函数",
                   "Templet": "command",
                   "Visible": true,
-                  "Function": true,
+                  "Keyword": true,
                   "InsCode": "TURING.Filter_Shift(Value, Direction)",
                   "Help": {
                     "Caption": "Filter_Shift",
@@ -1500,7 +1500,7 @@
                   "Icon": "函数",
                   "Templet": "command",
                   "Visible": true,
-                  "Function": true,
+                  "Keyword": true,
                   "InsCode": "TURING.Filter_Complementary()",
                   "Help": {
                     "Caption": "Filter_Complementary",
@@ -1529,7 +1529,7 @@
               "Icon": "函数",
               "Templet": "command",
               "Visible": true,
-              "Function": true,
+              "Keyword": true,
               "InsCode": "TURING.Incise_FixedLocation(qx, qy, width, height, interval, num)",
               "Help": {
                 "Caption": "Incise_FixedLocation",
@@ -1583,7 +1583,7 @@
               "Icon": "函数",
               "Templet": "command",
               "Visible": true,
-              "Function": true,
+              "Keyword": true,
               "InsCode": "TURING.Incise_RandomOrientation(Width, Height)",
               "Help": {
                 "Caption": "Incise_RandomOrientation",
@@ -1613,7 +1613,7 @@
               "Icon": "函数",
               "Templet": "command",
               "Visible": true,
-              "Function": true,
+              "Keyword": true,
               "InsCode": "TURING.Incise_ConnectedArea(through, Width, Height)",
               "Help": {
                 "Caption": "Incise_ConnectedArea",
@@ -1649,7 +1649,7 @@
               "Icon": "函数",
               "Templet": "command",
               "Visible": true,
-              "Function": true,
+              "Keyword": true,
               "InsCode": "TURING.Incise_ScopeAisle(Row, Column, Width, Height)",
               "Help": {
                 "Caption": "Incise_ScopeAisle",
@@ -1691,7 +1691,7 @@
               "Icon": "函数",
               "Templet": "command",
               "Visible": true,
-              "Function": true,
+              "Keyword": true,
               "InsCode": "TURING.Incise_ColorLayered(interval, num, Width, Height, Value, Row, Column)",
               "Help": {
                 "Caption": "Incise_ColorLayered",
@@ -1751,7 +1751,7 @@
               "Icon": "函数",
               "Templet": "command",
               "Visible": true,
-              "Function": true,
+              "Keyword": true,
               "InsCode": "TURING.Incise_Adaptive(Width, Height)",
               "Help": {
                 "Caption": "Incise_Adaptive",
@@ -1781,7 +1781,7 @@
               "Icon": "函数",
               "Templet": "command",
               "Visible": true,
-              "Function": true,
+              "Keyword": true,
               "InsCode": "TURING.Incise_Preview(index)",
               "Help": {
                 "Caption": "Incise_Preview",
@@ -1813,7 +1813,7 @@
                   "Icon": "函数",
                   "Templet": "command",
                   "Visible": true,
-                  "Function": true,
+                  "Keyword": true,
                   "InsCode": "TURING.Incise_GetCharData()",
                   "Help": {
                     "Caption": "Incise_GetCharData",
@@ -1830,7 +1830,7 @@
                   "Icon": "函数",
                   "Templet": "command",
                   "Visible": true,
-                  "Function": true,
+                  "Keyword": true,
                   "InsCode": "TURING.Incise_CharSizeOne(iWidth, iHeight)",
                   "Help": {
                     "Caption": "Incise_CharSizeOne",
@@ -1860,7 +1860,7 @@
                   "Icon": "函数",
                   "Templet": "command",
                   "Visible": true,
-                  "Function": true,
+                  "Keyword": true,
                   "InsCode": "TURING.Incise_ModifyCharData(Index, Left, Top)",
                   "Help": {
                     "Caption": "Incise_ModifyCharData",
@@ -1896,7 +1896,7 @@
                   "Icon": "函数",
                   "Templet": "command",
                   "Visible": true,
-                  "Function": true,
+                  "Keyword": true,
                   "InsCode": "TURING.Incise_EraseData()",
                   "Help": {
                     "Caption": "Incise_EraseData",
@@ -1913,7 +1913,7 @@
                   "Icon": "函数",
                   "Templet": "command",
                   "Visible": true,
-                  "Function": true,
+                  "Keyword": true,
                   "InsCode": "TURING.Incise_AddCharData(Left, Top)",
                   "Help": {
                     "Caption": "Incise_AddCharData",
@@ -1943,7 +1943,7 @@
                   "Icon": "函数",
                   "Templet": "command",
                   "Visible": true,
-                  "Function": true,
+                  "Keyword": true,
                   "InsCode": "TURING.Incise_JoinCharData(index1, index2)",
                   "Help": {
                     "Caption": "Incise_JoinCharData",
@@ -1985,7 +1985,7 @@
               "Icon": "函数",
               "Templet": "command",
               "Visible": true,
-              "Function": true,
+              "Keyword": true,
               "InsCode": "TURING.Lib_Load(LibPath)",
               "Help": {
                 "Caption": "Lib_Load",
@@ -2009,7 +2009,7 @@
               "Icon": "函数",
               "Templet": "command",
               "Visible": true,
-              "Function": true,
+              "Keyword": true,
               "InsCode": "TURING.Lib_Create(Font, Size, Text)",
               "Help": {
                 "Caption": "Lib_Create",
@@ -2045,7 +2045,7 @@
               "Icon": "函数",
               "Templet": "command",
               "Visible": true,
-              "Function": true,
+              "Keyword": true,
               "InsCode": "TURING.Lib_Add(Serial)",
               "Help": {
                 "Caption": "Lib_Add",
@@ -2069,7 +2069,7 @@
               "Icon": "函数",
               "Templet": "command",
               "Visible": true,
-              "Function": true,
+              "Keyword": true,
               "InsCode": "TURING.Lib_Use(Serial)",
               "Help": {
                 "Caption": "Lib_Use",
@@ -2093,7 +2093,7 @@
               "Icon": "函数",
               "Templet": "command",
               "Visible": true,
-              "Function": true,
+              "Keyword": true,
               "InsCode": "TURING.Lib_AddImageData(text)",
               "Help": {
                 "Caption": "Lib_AddImageData",
@@ -2117,7 +2117,7 @@
               "Icon": "函数",
               "Templet": "command",
               "Visible": true,
-              "Function": true,
+              "Keyword": true,
               "InsCode": "TURING.Lib_UBound()",
               "Help": {
                 "Caption": "Lib_UBound",
@@ -2134,7 +2134,7 @@
               "Icon": "函数",
               "Templet": "command",
               "Visible": true,
-              "Function": true,
+              "Keyword": true,
               "InsCode": "TURING.Lib_AnalyzeFontSize(Text, Mode)",
               "Help": {
                 "Caption": "Lib_AnalyzeFontSize",
@@ -2164,7 +2164,7 @@
               "Icon": "函数",
               "Templet": "command",
               "Visible": true,
-              "Function": true,
+              "Keyword": true,
               "InsCode": "TURING.Lib_Preview(index)",
               "Help": {
                 "Caption": "Lib_Preview",
@@ -2196,7 +2196,7 @@
                   "Icon": "函数",
                   "Templet": "command",
                   "Visible": true,
-                  "Function": true,
+                  "Keyword": true,
                   "InsCode": "TURING.Lib_Share(LibPath)",
                   "Help": {
                     "Caption": "Lib_Share",
@@ -2220,7 +2220,7 @@
                   "Icon": "函数",
                   "Templet": "command",
                   "Visible": true,
-                  "Function": true,
+                  "Keyword": true,
                   "InsCode": "TURING.Lib_Generate()",
                   "Help": {
                     "Caption": "Lib_Generate",
@@ -2237,7 +2237,7 @@
                   "Icon": "函数",
                   "Templet": "command",
                   "Visible": true,
-                  "Function": true,
+                  "Keyword": true,
                   "InsCode": "TURING.Lib_OneCharData(index)",
                   "Help": {
                     "Caption": "Lib_OneCharData",
@@ -2261,7 +2261,7 @@
                   "Icon": "函数",
                   "Templet": "command",
                   "Visible": true,
-                  "Function": true,
+                  "Keyword": true,
                   "InsCode": "TURING.Lib_Save(text, lattice, LibPath)",
                   "Help": {
                     "Caption": "Lib_Save",
@@ -2297,7 +2297,7 @@
                   "Icon": "函数",
                   "Templet": "command",
                   "Visible": true,
-                  "Function": true,
+                  "Keyword": true,
                   "InsCode": "TURING.Lib_SaveEx(text, Index, LibPath)",
                   "Help": {
                     "Caption": "Lib_SaveEx",
@@ -2345,7 +2345,7 @@
               "Icon": "函数",
               "Templet": "command",
               "Visible": true,
-              "Function": true,
+              "Keyword": true,
               "InsCode": "TURING.OCR(Similar, Mode)",
               "Help": {
                 "Caption": "OCR",
@@ -2375,7 +2375,7 @@
               "Icon": "函数",
               "Templet": "command",
               "Visible": true,
-              "Function": true,
+              "Keyword": true,
               "InsCode": "TURING.OCRex(Similar, Mode)",
               "Help": {
                 "Caption": "OCRex",
@@ -2417,7 +2417,7 @@
           "Icon": "函数",
           "Templet": "command",
           "Visible": true,
-          "Function": true,
+          "Keyword": true,
           "InsCode": "TURING.Screen_PrintImage(x, y)",
           "Help": {
             "Caption": "Screen_PrintImage",
@@ -2447,7 +2447,7 @@
           "Icon": "函数",
           "Templet": "command",
           "Visible": true,
-          "Function": true,
+          "Keyword": true,
           "InsCode": "TURING.Screen_PrintText(Text, x, y, FBcolor, FontNameSize, Mode)",
           "Help": {
             "Caption": "Screen_PrintText",
@@ -2501,7 +2501,7 @@
           "Icon": "函数",
           "Templet": "command",
           "Visible": true,
-          "Function": true,
+          "Keyword": true,
           "InsCode": "TURING.Screen_Refresh()",
           "Help": {
             "Caption": "Screen_Refresh",
@@ -2528,7 +2528,7 @@
           "Icon": "函数",
           "Templet": "command",
           "Visible": true,
-          "Function": true,
+          "Keyword": true,
           "InsCode": "TURING.Different()",
           "Help": {
             "Caption": "Different",
@@ -2545,7 +2545,7 @@
           "Icon": "函数",
           "Templet": "command",
           "Visible": true,
-          "Function": true,
+          "Keyword": true,
           "InsCode": "TURING.EvalVariance()",
           "Help": {
             "Caption": "EvalVariance",
@@ -2562,7 +2562,7 @@
           "Icon": "函数",
           "Templet": "command",
           "Visible": true,
-          "Function": true,
+          "Keyword": true,
           "InsCode": "TURING.GetLineAllPos(x1, y1, x2, y2)",
           "Help": {
             "Caption": "GetLineAllPos",
@@ -2604,7 +2604,7 @@
           "Icon": "函数",
           "Templet": "command",
           "Visible": true,
-          "Function": true,
+          "Keyword": true,
           "InsCode": "TURING.GetAllPoints(Value)",
           "Help": {
             "Caption": "GetAllPoints",
@@ -2628,7 +2628,7 @@
           "Icon": "函数",
           "Templet": "command",
           "Visible": true,
-          "Function": true,
+          "Keyword": true,
           "InsCode": "TURING.GetOneLine(x1,y1,x2,y2)",
           "Help": {
             "Caption": "GetOneLine",
@@ -2670,7 +2670,7 @@
           "Icon": "函数",
           "Templet": "command",
           "Visible": true,
-          "Function": true,
+          "Keyword": true,
           "InsCode": "TURING.GetAllLines(Value, Num)",
           "Help": {
             "Caption": "GetAllLines",
@@ -2700,7 +2700,7 @@
           "Icon": "函数",
           "Templet": "command",
           "Visible": true,
-          "Function": true,
+          "Keyword": true,
           "InsCode": "TURING.TwoLinesCrossPos(ax1,ay1,ax2,ay2,bx1,by1,bx2,by2)",
           "Help": {
             "Caption": "TwoLinesCrossPos",
@@ -2766,7 +2766,7 @@
           "Icon": "函数",
           "Templet": "command",
           "Visible": true,
-          "Function": true,
+          "Keyword": true,
           "InsCode": "TURING.GetColorPoints(Mode)",
           "Help": {
             "Caption": "GetColorPoints",
@@ -2790,7 +2790,7 @@
           "Icon": "函数",
           "Templet": "command",
           "Visible": true,
-          "Function": true,
+          "Keyword": true,
           "InsCode": "TURING.CountColorNum(Color)",
           "Help": {
             "Caption": "CountColorNum",
@@ -2824,7 +2824,7 @@
           "Icon": "函数",
           "Templet": "command",
           "Visible": true,
-          "Function": true,
+          "Keyword": true,
           "InsCode": "TURING.GetPixelColor(x, y, mode)",
           "Help": {
             "Caption": "GetPixelColor",
@@ -2860,7 +2860,7 @@
           "Icon": "函数",
           "Templet": "command",
           "Visible": true,
-          "Function": true,
+          "Keyword": true,
           "InsCode": "TURING.FindColor(left, top, right, bottom, color, direction, similarity)",
           "Help": {
             "Caption": "FindColor",
@@ -2920,7 +2920,7 @@
           "Icon": "函数",
           "Templet": "command",
           "Visible": true,
-          "Function": true,
+          "Keyword": true,
           "InsCode": "TURING.FindColorExS(left, top, right, bottom, colorS, direction, similarity)",
           "Help": {
             "Caption": "FindColorExS",
@@ -2980,7 +2980,7 @@
           "Icon": "函数",
           "Templet": "command",
           "Visible": true,
-          "Function": true,
+          "Keyword": true,
           "InsCode": "TURING.FindImage(left, top, right, bottom, ImagePath, similarity)",
           "Help": {
             "Caption": "FindImage",
@@ -3034,7 +3034,7 @@
           "Icon": "函数",
           "Templet": "command",
           "Visible": true,
-          "Function": true,
+          "Keyword": true,
           "InsCode": "TURING.FindImageS(left, top, right, bottom, ImagePath, similarity)",
           "Help": {
             "Caption": "FindImageS",
@@ -3088,7 +3088,7 @@
           "Icon": "函数",
           "Templet": "command",
           "Visible": true,
-          "Function": true,
+          "Keyword": true,
           "InsCode": "TURING.FindImageEx(left, top, right, bottom, ImagePathS, similarity)",
           "Help": {
             "Caption": "FindImageEx",
@@ -3142,7 +3142,7 @@
           "Icon": "函数",
           "Templet": "command",
           "Visible": true,
-          "Function": true,
+          "Keyword": true,
           "InsCode": "TURING.FindImageExS(left, top, right, bottom, ImagePathS, similarity)",
           "Help": {
             "Caption": "FindImageExS",
@@ -3196,7 +3196,7 @@
           "Icon": "函数",
           "Templet": "command",
           "Visible": true,
-          "Function": true,
+          "Keyword": true,
           "InsCode": "TURING.FindMouseShape(Mode)",
           "Help": {
             "Caption": "FindMouseShape",
@@ -3220,7 +3220,7 @@
           "Icon": "函数",
           "Templet": "command",
           "Visible": true,
-          "Function": true,
+          "Keyword": true,
           "InsCode": "TURING.FindShape(distance, length)",
           "Help": {
             "Caption": "FindShape",
@@ -3260,7 +3260,7 @@
           "Icon": "函数",
           "Templet": "command",
           "Visible": true,
-          "Function": true,
+          "Keyword": true,
           "InsCode": "TURING.Draw_CreateCanvas(Width, Height, R, G, B)",
           "Help": {
             "Caption": "Draw_CreateCanvas",
@@ -3308,7 +3308,7 @@
           "Icon": "函数",
           "Templet": "command",
           "Visible": true,
-          "Function": true,
+          "Keyword": true,
           "InsCode": "TURING.Draw_Point(x, y, R, G, B)",
           "Help": {
             "Caption": "Draw_Point",
@@ -3356,7 +3356,7 @@
           "Icon": "函数",
           "Templet": "command",
           "Visible": true,
-          "Function": true,
+          "Keyword": true,
           "InsCode": "TURING.Draw_Line(x1, y1, x2, y2, R, G, B)",
           "Help": {
             "Caption": "Draw_Line",
@@ -3416,7 +3416,7 @@
           "Icon": "函数",
           "Templet": "command",
           "Visible": true,
-          "Function": true,
+          "Keyword": true,
           "InsCode": "TURING.Draw_Rectangle(left, top, right, bottom, R, G, B)",
           "Help": {
             "Caption": "Draw_Rectangle",
@@ -3476,7 +3476,7 @@
           "Icon": "函数",
           "Templet": "command",
           "Visible": true,
-          "Function": true,
+          "Keyword": true,
           "InsCode": "TURING.Draw_Block(left, top, right, bottom, R, G, B, Alpha)",
           "Help": {
             "Caption": "Draw_Block",
@@ -3542,7 +3542,7 @@
           "Icon": "函数",
           "Templet": "command",
           "Visible": true,
-          "Function": true,
+          "Keyword": true,
           "InsCode": "TURING.Draw_Circle(x, y, Radius, R, G, B, Full, Alpha)",
           "Help": {
             "Caption": "Draw_Circle",
@@ -3608,7 +3608,7 @@
           "Icon": "函数",
           "Templet": "command",
           "Visible": true,
-          "Function": true,
+          "Keyword": true,
           "InsCode": "TURING.Draw_Text(x, y, Text, Mode, R, G, B)",
           "Help": {
             "Caption": "Draw_Text",
@@ -3668,7 +3668,7 @@
           "Icon": "函数",
           "Templet": "command",
           "Visible": true,
-          "Function": true,
+          "Keyword": true,
           "InsCode": "TURING.Draw_Fill(x, y, Through, R, G, B)",
           "Help": {
             "Caption": "Draw_Fill",
@@ -3722,7 +3722,7 @@
           "Icon": "函数",
           "Templet": "command",
           "Visible": true,
-          "Function": true,
+          "Keyword": true,
           "InsCode": "TURING.Draw_Backups(Serial, Mode)",
           "Help": {
             "Caption": "Draw_Backups",
@@ -3752,7 +3752,7 @@
           "Icon": "函数",
           "Templet": "command",
           "Visible": true,
-          "Function": true,
+          "Keyword": true,
           "InsCode": "TURING.Draw_Recover(Serial, Mode)",
           "Help": {
             "Caption": "Draw_Recover",
@@ -3782,7 +3782,7 @@
           "Icon": "函数",
           "Templet": "command",
           "Visible": true,
-          "Function": true,
+          "Keyword": true,
           "InsCode": "TURING.Draw_CAPTCHA()",
           "Help": {
             "Caption": "Draw_CAPTCHA",
@@ -3799,7 +3799,7 @@
           "Icon": "函数",
           "Templet": "command",
           "Visible": true,
-          "Function": true,
+          "Keyword": true,
           "InsCode": "TURING.FileSaveGIF(LoadName, SaveName, Delay)",
           "Help": {
             "Caption": "FileSaveGIF",
@@ -3845,7 +3845,7 @@
           "Icon": "函数",
           "Templet": "command",
           "Visible": true,
-          "Function": true,
+          "Keyword": true,
           "InsCode": "TURING.RGBtoHSV(color)",
           "Help": {
             "Caption": "RGBtoHSV",
@@ -3869,7 +3869,7 @@
           "Icon": "函数",
           "Templet": "command",
           "Visible": true,
-          "Function": true,
+          "Keyword": true,
           "InsCode": "TURING.HSVtoRGB(h, s, v)",
           "Help": {
             "Caption": "HSVtoRGB",
@@ -3905,7 +3905,7 @@
           "Icon": "函数",
           "Templet": "command",
           "Visible": true,
-          "Function": true,
+          "Keyword": true,
           "InsCode": "TURING.BGRvsRGB(Color1)",
           "Help": {
             "Caption": "BGRvsRGB",
@@ -3929,7 +3929,7 @@
           "Icon": "函数",
           "Templet": "command",
           "Visible": true,
-          "Function": true,
+          "Keyword": true,
           "InsCode": "TURING.BITtoHEX(BitStr)",
           "Help": {
             "Caption": "BITtoHEX",
@@ -3953,7 +3953,7 @@
           "Icon": "函数",
           "Templet": "command",
           "Visible": true,
-          "Function": true,
+          "Keyword": true,
           "InsCode": "TURING.HEXtoBIT(HexStr)",
           "Help": {
             "Caption": "HEXtoBIT",
@@ -3977,7 +3977,7 @@
           "Icon": "函数",
           "Templet": "command",
           "Visible": true,
-          "Function": true,
+          "Keyword": true,
           "InsCode": "TURING.Image_Base64Encode(FilePath, IsHead)",
           "Help": {
             "Caption": "Image_Base64Encode",
@@ -4007,7 +4007,7 @@
           "Icon": "函数",
           "Templet": "command",
           "Visible": true,
-          "Function": true,
+          "Keyword": true,
           "InsCode": "TURING.Pass_MD5String(Text, Code)",
           "Help": {
             "Caption": "Pass_MD5String",
@@ -4037,7 +4037,7 @@
           "Icon": "函数",
           "Templet": "command",
           "Visible": true,
-          "Function": true,
+          "Keyword": true,
           "InsCode": "TURING.Pass_Encode(text, password)",
           "Help": {
             "Caption": "Pass_Encode",
@@ -4067,7 +4067,7 @@
           "Icon": "函数",
           "Templet": "command",
           "Visible": true,
-          "Function": true,
+          "Keyword": true,
           "InsCode": "TURING.Pass_Uncode(cipher, password)",
           "Help": {
             "Caption": "Pass_Uncode",
@@ -4107,7 +4107,7 @@
           "Icon": "函数",
           "Templet": "command",
           "Visible": true,
-          "Function": true,
+          "Keyword": true,
           "InsCode": "TURING.Memory_Clear()",
           "Help": {
             "Caption": "Memory_Clear",
@@ -4124,7 +4124,7 @@
           "Icon": "函数",
           "Templet": "command",
           "Visible": true,
-          "Function": true,
+          "Keyword": true,
           "InsCode": "TURING.Memory_GetInfo()",
           "Help": {
             "Caption": "Memory_GetInfo",
@@ -4151,7 +4151,7 @@
           "Icon": "函数",
           "Templet": "command",
           "Visible": true,
-          "Function": true,
+          "Keyword": true,
           "InsCode": "TURING.Run(CmdLine)",
           "Help": {
             "Caption": "Run",

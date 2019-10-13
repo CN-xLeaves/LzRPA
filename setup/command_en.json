@@ -12,7 +12,7 @@
 				"Caption": "TracePrint",
 				"Remark": "调试输出",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "TracePrint(\"消息内容\")",
 				"Templet": "command",
 				"Help": {
@@ -35,7 +35,7 @@
 				"Caption": "MsgBox",
 				"Remark": "弹出消息框",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "MsgBox(\"消息内容\")",
 				"Templet": "command",
 				"Help": {
@@ -70,7 +70,7 @@
 				"Caption": "InputBox",
 				"Remark": "弹出输入框",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "InputBox(\"提示内容\", \"默认内容\", \"标题\")",
 				"Templet": "command",
 				"Help": {
@@ -105,7 +105,7 @@
 				"Caption": "Alert",
 				"Remark": "弹出消息通知",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "Alert(\"标题\", \"消息内容\", 2)",
 				"Templet": "command",
 				"Help": {
@@ -140,7 +140,7 @@
 				"Caption": "Delay",
 				"Remark": "延时",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "Delay(1000)",
 				"Templet": "command",
 				"Help": {
@@ -163,7 +163,7 @@
 				"Caption": "RunApp",
 				"Remark": "运行应用程序",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "RunApp(\"程序路径\")",
 				"Templet": "command",
 				"Help": {
@@ -198,7 +198,7 @@
 				"Caption": "ShellExecute",
 				"Remark": "打开文件或网址",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "ShellExecute(\"open\", \"c:\\1.txt\", \"\", \"\", %SW_SHOWNORMAL)",
 				"Templet": "command",
 				"Help": {
@@ -245,7 +245,7 @@
 				"Caption": "GetTickCount",
 				"Remark": "获取时间戳",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "GetTickCount",
 				"Templet": "command",
 				"Help": {
@@ -262,7 +262,7 @@
 				"Caption": "DoEvents",
 				"Remark": "执行消息循环",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "DoEvents",
 				"Templet": "command",
 				"Help": {
@@ -285,7 +285,7 @@
 				"Caption": "Stop",
 				"Remark": "结束脚本运行",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "Stop",
 				"Templet": "command",
 				"Help": {
@@ -323,6 +323,7 @@
 						"Caption": "Dim",
 						"Remark": "定义变量",
 						"Visible": true,
+						"Keyword": true,
 						"InsCode": "Dim Var As Long = 0",
 						"Templet": "syntax",
 						"Help": {
@@ -335,6 +336,7 @@
 						"Caption": "Const",
 						"Remark": "定义常量",
 						"Visible": true,
+						"Keyword": true,
 						"InsCode": "Const Var As Long = 0",
 						"Templet": "syntax",
 						"Help": {
@@ -347,6 +349,7 @@
 						"Caption": "If",
 						"Remark": "条件判断",
 						"Visible": true,
+						"Keyword": true,
 						"InsCode": "If Exp Then\n	\nEnd If",
 						"Templet": "syntax",
 						"Help": {
@@ -380,9 +383,36 @@
 						}
 					},
 					{
+						"备注": "隐藏的条目，用来生成自动完成和气泡提示",
+						"Caption": "Else",
+						"Remark": "条件分支",
+						"Visible": false,
+						"Keyword": true,
+						"Templet": "syntax",
+						"Help": {
+							"Caption": "If",
+							"Define": "If exp Then<br>&nbsp;&nbsp;&nbsp;&nbsp;block<br>ElseIf exp Then<br>&nbsp;&nbsp;&nbsp;&nbsp;block<br>Else<br><br>End If",
+							"Describe": "判断条件 exp，当 exp 满足时，执行条件下方的 block 代码，当条件不满足时，执行 Else 分支下的代码，条件可以使用多组。"
+						}
+					},
+					{
+						"备注": "隐藏的条目，用来生成自动完成和气泡提示",
+						"Caption": "ElseIf",
+						"Remark": "多个条件分支",
+						"Visible": false,
+						"Keyword": true,
+						"Templet": "syntax",
+						"Help": {
+							"Caption": "If",
+							"Define": "If exp Then<br>&nbsp;&nbsp;&nbsp;&nbsp;block<br>ElseIf exp Then<br>&nbsp;&nbsp;&nbsp;&nbsp;block<br>Else<br><br>End If",
+							"Describe": "判断条件 exp，当 exp 满足时，执行条件下方的 block 代码，当条件不满足时，执行 Else 分支下的代码，条件可以使用多组。"
+						}
+					},
+					{
 						"Caption": "Select",
 						"Remark": "条件分支选择",
 						"Visible": true,
+						"Keyword": true,
 						"InsCode": "Select Case Exp\n	Case Value1\n		\n	Case Value2\n		\n	Case Else\n		\nEnd Select",
 						"Templet": "syntax",
 						"Help": {
@@ -392,10 +422,37 @@
 						}
 					},
 					{
+						"备注": "隐藏的条目，用来生成自动完成和气泡提示",
+						"Caption": "Case",
+						"Remark": "条件分支",
+						"Visible": false,
+						"Keyword": true,
+						"Templet": "syntax",
+						"Help": {
+							"Caption": "Select Case",
+							"Define": "Select Case exp<br>&nbsp;&nbsp;&nbsp;&nbsp;Case val<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;block<br>&nbsp;&nbsp;&nbsp;&nbsp;Case Else<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;block<br>End Select",
+							"Describe": "判断值 exo，当 exp 满足某项分支的条件时执行这条分支的 block 代码，当所有分支都不满足时，执行 Case Else 分支下的代码，条件可以使用多组。"
+						}
+					},
+					{
 						"Caption": "For",
 						"Remark": "计次循环",
 						"Visible": true,
+						"Keyword": true,
 						"InsCode": "For i As Long = 1 To 100\n	\nNext",
+						"Templet": "syntax",
+						"Help": {
+							"Caption": "For",
+							"Define": "For var [As Long] = start To end [Step stpval]<br>&nbsp;&nbsp;&nbsp;&nbsp;block<br>Next",
+							"Describe": "代入循环变量 var （如果var没有定义，则需要在循环语句头定义），将它的值从 start 一直递增到 end，每次递增 stpval，每一次循环变量递增都会执行一遍 block 代码，直到循环变量的值超出 end 范围。"
+						}
+					},
+					{
+						"备注": "隐藏的条目，用来生成自动完成和气泡提示",
+						"Caption": "Next",
+						"Remark": "计次循环",
+						"Visible": false,
+						"Keyword": true,
 						"Templet": "syntax",
 						"Help": {
 							"Caption": "For",
@@ -425,6 +482,58 @@
 							"Caption": "Continue For",
 							"Define": "Continue For",
 							"Describe": "跳过本次 For 循环，开始下一轮循环逻辑的执行，必须在 For 循环语句内使用。"
+						}
+					},
+					{
+						"备注": "隐藏的条目，用来生成自动完成和气泡提示",
+						"Caption": "Do",
+						"Remark": "条件循环",
+						"Visible": false,
+						"Keyword": true,
+						"Templet": "syntax",
+						"Help": {
+							"Caption": "Do Loop",
+							"Define": "Do [While|Until exp]<br>&nbsp;&nbsp;&nbsp;&nbsp;block<br>Loop[While|Until exp]",
+							"Describe": "循环执行 block 语句，直到 exp 的值满足条件，当使用 While 时，exp 必须为 true 才会循环，当使用 Until 时，exp 必须为 false 才会循环，当条件放在 Do 语句后面时，每一次循环之前都会进行一次判断，当条件放在 Loop 语句后面时，会在每次循环执行完毕后进行判断（循环语句至少执行一次）。"
+						}
+					},
+					{
+						"备注": "隐藏的条目，用来生成自动完成和气泡提示",
+						"Caption": "Loop",
+						"Remark": "条件循环",
+						"Visible": false,
+						"Keyword": true,
+						"Templet": "syntax",
+						"Help": {
+							"Caption": "Do Loop",
+							"Define": "Do [While|Until exp]<br>&nbsp;&nbsp;&nbsp;&nbsp;block<br>Loop[While|Until exp]",
+							"Describe": "循环执行 block 语句，直到 exp 的值满足条件，当使用 While 时，exp 必须为 true 才会循环，当使用 Until 时，exp 必须为 false 才会循环，当条件放在 Do 语句后面时，每一次循环之前都会进行一次判断，当条件放在 Loop 语句后面时，会在每次循环执行完毕后进行判断（循环语句至少执行一次）。"
+						}
+					},
+					{
+						"备注": "隐藏的条目，用来生成自动完成和气泡提示",
+						"Caption": "While",
+						"Remark": "条件循环",
+						"Visible": false,
+						"Keyword": true,
+						"Templet": "syntax",
+						"Help": {
+							"Caption": "Do Loop",
+							"Define": "Do [While|Until exp]<br>&nbsp;&nbsp;&nbsp;&nbsp;block<br>Loop[While|Until exp]",
+							"Describe": "循环执行 block 语句，直到 exp 的值满足条件，当使用 While 时，exp 必须为 true 才会循环，当使用 Until 时，exp 必须为 false 才会循环，当条件放在 Do 语句后面时，每一次循环之前都会进行一次判断，当条件放在 Loop 语句后面时，会在每次循环执行完毕后进行判断（循环语句至少执行一次）。"
+						}
+					},
+					{
+						"备注": "隐藏的条目，用来生成自动完成和气泡提示",
+						"Caption": "Until",
+						"Remark": "条件循环",
+						"Visible": false,
+						"Keyword": true,
+						"Templet": "syntax",
+						"Help": {
+							"Caption": "Do Loop",
+							"Define": "Do [While|Until exp]<br>&nbsp;&nbsp;&nbsp;&nbsp;block<br>Loop[While|Until exp]",
+							"Describe": "循环执行 block 语句，直到 exp 的值满足条件，当使用 While 时，exp 必须为 true 才会循环，当使用 Until 时，exp 必须为 false 才会循环，当条件放在 Do 语句后面时，每一次循环之前都会进行一次判断，当条件放在 Loop 语句后面时，会在每次循环执行完毕后进行判断（循环语句至少执行一次）。"
 						}
 					},
 					{
@@ -512,9 +621,23 @@
 						}
 					},
 					{
+						"备注": "隐藏的条目，用来生成自动完成和气泡提示",
+						"Caption": "Continue",
+						"Remark": "跳过本次循环",
+						"Visible": false,
+						"Keyword": true,
+						"Templet": "syntax",
+						"Help": {
+							"Caption": "Continue",
+							"Define": "Continue For<br>Continue Do",
+							"Describe": "跳过本次循环，开始下一轮循环逻辑的执行，必须在循环语句内使用。"
+						}
+					},
+					{
 						"Caption": "Sub",
 						"Remark": "定义子程序",
 						"Visible": true,
+						"Keyword": true,
 						"InsCodeEnd": "\nSub ProcName()\n	\nEnd Sub",
 						"Templet": "syntax",
 						"Help": {
@@ -526,7 +649,7 @@
 					{
 						"Caption": "CallBack Sub",
 						"Remark": "定义回调子程序",
-						"Visible": false,
+						"Visible": true,
 						"InsCodeEnd": "\nCallback Sub ProcName()\n	\nEnd Sub",
 						"Templet": "syntax",
 						"Help": {
@@ -551,6 +674,7 @@
 						"Caption": "Function",
 						"Remark": "定义函数",
 						"Visible": true,
+						"Keyword": true,
 						"InsCodeEnd": "\nFunction ProcName() As Variant\n	\nEnd Function",
 						"Templet": "syntax",
 						"Help": {
@@ -562,7 +686,7 @@
 					{
 						"Caption": "CallBack Function",
 						"Remark": "定义回调函数",
-						"Visible": false,
+						"Visible": true,
 						"InsCodeEnd": "\nCallback Function ProcName() As Variant\n	\nEnd Function",
 						"Templet": "syntax",
 						"Help": {
@@ -584,9 +708,36 @@
 						}
 					},
 					{
+						"备注": "隐藏的条目，用来生成自动完成和气泡提示",
+						"Caption": "CallBack",
+						"Remark": "定义回调函数或子程序",
+						"Visible": false,
+						"Keyword": true,
+						"Templet": "syntax",
+						"Help": {
+							"Caption": "CallBack",
+							"Define": "[Callback] Function|Sub ProcName([param As Variant ...])[ As Variant]<br>&nbsp;&nbsp;&nbsp;&nbsp;block<br>End Function|Sub",
+							"Describe": "定义一个函数或子程序，取名为 ProcName，可以设置多个参数 param，并指定这些参数的数据类型。函数运行结束后，可以返回一个数据作为结果通知调用代码，函数定义时可以指定返回值的数据类型。"
+						}
+					},
+					{
+						"备注": "隐藏的条目，用来生成自动完成和气泡提示",
+						"Caption": "Exit",
+						"Remark": "跳出结构化语句",
+						"Visible": false,
+						"Keyword": true,
+						"Templet": "syntax",
+						"Help": {
+							"Caption": "Exit",
+							"Define": "Exit For<br>Exit Do<br>Exit Sub<br>Exit Function",
+							"Describe": "跳出当前结构化语句块，必须在结构语句内使用。"
+						}
+					},
+					{
 						"Caption": "Return",
 						"Remark": "返回数据并退出",
 						"Visible": true,
+						"Keyword": true,
 						"InsCode": "Return 0",
 						"Templet": "syntax",
 						"Help": {
@@ -599,6 +750,7 @@
 						"Caption": "Type",
 						"Remark": "定义结构体",
 						"Visible": true,
+						"Keyword": true,
 						"InsCodeTop": "\nType TypeName\n	Property As Variant\nEnd Type",
 						"Templet": "syntax",
 						"Help": {
@@ -611,7 +763,7 @@
 						"Caption": "Class",
 						"Remark": "定义类",
 						"Visible": true,
-						"InsCodeTop": "\nType ClassName Extends 继承父类\n\n	' 属性\n	Property As Variant\n\n	' 构造函数(可添加参数)\n	Sub _Create()\n		\n	End Sub\n\n	' 析构函数\n	Sub _Destroy()\n		\n	End Sub\n\nEnd Type",
+						"InsCodeTop": "\nType ClassName Extends ParentClass\n\n	' Property\n	Property As Variant\n\n	' Constructor\n	Sub _Create()\n		\n	End Sub\n\n	' Destructor\n	Sub _Destroy()\n		\n	End Sub\n\nEnd Type",
 						"Templet": "syntax",
 						"Help": {
 							"Caption": "Type",
@@ -620,9 +772,23 @@
 						}
 					},
 					{
+						"备注": "隐藏的条目，用来生成自动完成和气泡提示",
+						"Caption": "End",
+						"Remark": "结束结构化语句",
+						"Visible": false,
+						"Keyword": true,
+						"Templet": "syntax",
+						"Help": {
+							"Caption": "End",
+							"Define": "End Sub<br>End Function<br>End Type",
+							"Describe": "结束结构化语句。"
+						}
+					},
+					{
 						"Caption": "New",
 						"Remark": "创建类对象",
 						"Visible": true,
+						"Keyword": true,
 						"InsCode": "var = New ClassName",
 						"Templet": "syntax",
 						"Help": {
@@ -656,15 +822,42 @@
 						}
 					},
 					{
-						"Caption": "#Include",
+						"备注": "隐藏的条目，用来生成自动完成和气泡提示",
+						"Caption": "Declare",
+						"Remark": "声明外部DLL函数",
+						"Visible": false,
+						"Keyword": true,
+						"Templet": "syntax",
+						"Help": {
+							"Caption": "Declare",
+							"Define": "Declare Sub FuncName Lib \\\"LibName\\\" Alias \\\"AliasName\\\" (...)<br>Declare Function FuncName Lib \\\"LibName\\\" Alias \\\"AliasName\\\" (...) As Long",
+							"Describe": "定义一个来自外部 DLL 的函数，一般用于定义系统 API，支持各种基础类型和结构体、指针的访问，也支持回调函数（函数声明时应使用 CallBack 关键字修饰）。"
+						}
+					},
+					{
+						"Caption": "Include",
 						"Remark": "引用代码文件",
 						"Visible": true,
+						"Keyword": true,
 						"InsCodeTop": "#Include Once \"文件名\"",
 						"Templet": "syntax",
 						"Help": {
-							"Caption": "Include",
+							"Caption": "#Include",
 							"Define": "#Include [Once] \\\"Path\\\"",
 							"Describe": "引用 Path 路径的文件到当前源代码，相当于在引用的位置添加了目标文件的内容，如果指定了 Once，则文件只会被引用一次，避免出现重复定义的问题。"
+						}
+					},
+					{
+						"Caption": "Uses",
+						"Remark": "引用插件",
+						"Visible": true,
+						"Keyword": true,
+						"InsCodeTop": "Uses \"文件名\"",
+						"Templet": "syntax",
+						"Help": {
+							"Caption": "Uses",
+							"Define": "Uses \\\"Name\\\"",
+							"Describe": "引用名为 Name 的 ThinBasic 插件。"
 						}
 					}
 				]
@@ -682,6 +875,7 @@
 						"Caption": "Byte",
 						"Remark": "字节",
 						"Visible": true,
+						"Keyword": true,
 						"InsCode": "Dim sVarName As Byte",
 						"Templet": "variant",
 						"Help": {
@@ -694,6 +888,7 @@
 						"Caption": "Integer",
 						"Remark": "短整数",
 						"Visible": true,
+						"Keyword": true,
 						"InsCode": "Dim sVarName As Integer",
 						"Templet": "variant",
 						"Help": {
@@ -706,6 +901,7 @@
 						"Caption": "Long",
 						"Remark": "整数",
 						"Visible": true,
+						"Keyword": true,
 						"InsCode": "Dim sVarName As Long",
 						"Templet": "variant",
 						"Help": {
@@ -718,6 +914,7 @@
 						"Caption": "Int64",
 						"Remark": "长整数",
 						"Visible": true,
+						"Keyword": true,
 						"InsCode": "Dim sVarName As Int64",
 						"Templet": "variant",
 						"Help": {
@@ -730,6 +927,7 @@
 						"Caption": "WORD",
 						"Remark": "无符号短整数",
 						"Visible": true,
+						"Keyword": true,
 						"InsCode": "Dim sVarName As WORD",
 						"Templet": "variant",
 						"Help": {
@@ -742,6 +940,7 @@
 						"Caption": "DWORD",
 						"Remark": "无符号整数",
 						"Visible": true,
+						"Keyword": true,
 						"InsCode": "Dim sVarName As DWORD",
 						"Templet": "variant",
 						"Help": {
@@ -754,6 +953,7 @@
 						"Caption": "Single",
 						"Remark": "单精度浮点数",
 						"Visible": true,
+						"Keyword": true,
 						"InsCode": "Dim sVarName As Single",
 						"Templet": "variant",
 						"Help": {
@@ -766,6 +966,7 @@
 						"Caption": "Double",
 						"Remark": "双精度浮点数",
 						"Visible": true,
+						"Keyword": true,
 						"InsCode": "Dim sVarName As Double",
 						"Templet": "variant",
 						"Help": {
@@ -778,6 +979,7 @@
 						"Caption": "Currency",
 						"Remark": "货币",
 						"Visible": true,
+						"Keyword": true,
 						"InsCode": "Dim sVarName As Currency",
 						"Templet": "variant",
 						"Help": {
@@ -790,6 +992,7 @@
 						"Caption": "String",
 						"Remark": "字符串",
 						"Visible": true,
+						"Keyword": true,
 						"InsCode": "Dim sVarName As String",
 						"Templet": "variant",
 						"Help": {
@@ -802,6 +1005,7 @@
 						"Caption": "ZString",
 						"Remark": "ANSI字符串",
 						"Visible": true,
+						"Keyword": true,
 						"InsCode": "Dim sVarName As ZString",
 						"Templet": "variant",
 						"Help": {
@@ -814,6 +1018,7 @@
 						"Caption": "WString",
 						"Remark": "Unicode字符串",
 						"Visible": true,
+						"Keyword": true,
 						"InsCode": "Dim sVarName As WString",
 						"Templet": "variant",
 						"Help": {
@@ -826,6 +1031,7 @@
 						"Caption": "Variant",
 						"Remark": "变体类型",
 						"Visible": true,
+						"Keyword": true,
 						"InsCode": "Dim sVarName As Variant",
 						"Templet": "variant",
 						"Help": {
@@ -839,6 +1045,45 @@
 						"Remark": "COM对象",
 						"Visible": true,
 						"InsCode": "Dim sVarName As Object = CreateObject(\"sProgID\")",
+						"Templet": "variant",
+						"Help": {
+							"Caption": "Object",
+							"Define": "Dim sVarName As Object<br>Dim sVarName As COM<br>Dim sVarName As iDispatch",
+							"Describe": "COM对象，可用于访问大漠插件、WSH、WMI等对象。"
+						}
+					},
+					{
+						"备注": "隐藏的条目，用来生成自动完成和气泡提示",
+						"Caption": "COM",
+						"Remark": "COM对象",
+						"Visible": false,
+						"Keyword": true,
+						"Templet": "variant",
+						"Help": {
+							"Caption": "Object",
+							"Define": "Dim sVarName As Object<br>Dim sVarName As COM<br>Dim sVarName As iDispatch",
+							"Describe": "COM对象，可用于访问大漠插件、WSH、WMI等对象。"
+						}
+					},
+					{
+						"备注": "隐藏的条目，用来生成自动完成和气泡提示",
+						"Caption": "Object",
+						"Remark": "COM对象",
+						"Visible": false,
+						"Keyword": true,
+						"Templet": "variant",
+						"Help": {
+							"Caption": "Object",
+							"Define": "Dim sVarName As Object<br>Dim sVarName As COM<br>Dim sVarName As iDispatch",
+							"Describe": "COM对象，可用于访问大漠插件、WSH、WMI等对象。"
+						}
+					},
+					{
+						"备注": "隐藏的条目，用来生成自动完成和气泡提示",
+						"Caption": "iDispatch",
+						"Remark": "COM对象",
+						"Visible": false,
+						"Keyword": true,
 						"Templet": "variant",
 						"Help": {
 							"Caption": "Object",
@@ -1229,7 +1474,7 @@
 						"Caption": "CStr",
 						"Remark": "转换为字符串",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "CStr(0)",
 						"Templet": "command",
 						"Help": {
@@ -1258,7 +1503,7 @@
 						"Caption": "CLng",
 						"Remark": "转换为整数",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "CLng(\"10\")",
 						"Templet": "command",
 						"Help": {
@@ -1281,7 +1526,7 @@
 						"Caption": "CDbl",
 						"Remark": "转换为小数",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "CDbl(\"3.14\")",
 						"Templet": "command",
 						"Help": {
@@ -1304,7 +1549,7 @@
 						"Caption": "CBool",
 						"Remark": "转换为逻辑数据",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "CBool(0)",
 						"Templet": "command",
 						"Help": {
@@ -1327,7 +1572,7 @@
 						"Caption": "SizeOf",
 						"Remark": "获取数据长度",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "SizeOf(Long)",
 						"Templet": "command",
 						"Help": {
@@ -1350,7 +1595,7 @@
 						"Caption": "TypeOf",
 						"Remark": "获取数据类型",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "TypeOf(0)",
 						"Templet": "command",
 						"Help": {
@@ -1373,7 +1618,7 @@
 						"Caption": "Swap",
 						"Remark": "交换数据",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Swap(Var1, Var2)",
 						"Templet": "command",
 						"Help": {
@@ -1402,7 +1647,7 @@
 						"Caption": "Variable_Exists",
 						"Remark": "变量是否存在",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Variable_Exists(\"varName\")",
 						"Templet": "command",
 						"Help": {
@@ -1425,7 +1670,7 @@
 						"Caption": "Type_Exists",
 						"Remark": "数据类型是否存在",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Type_Exists(\"TypeName\")",
 						"Templet": "command",
 						"Help": {
@@ -1459,7 +1704,7 @@
 						"Caption": "Asc",
 						"Remark": "获取字符的ASCII码",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Asc(\"A\")",
 						"Templet": "command",
 						"Help": {
@@ -1488,7 +1733,7 @@
 						"Caption": "Chr",
 						"Remark": "根据ASCII码获取字符",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Chr(65)",
 						"Templet": "command",
 						"Help": {
@@ -1511,7 +1756,7 @@
 						"Caption": "Bin",
 						"Remark": "转换数字到二进制表达形式",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Bin(16)",
 						"Templet": "command",
 						"Help": {
@@ -1540,7 +1785,7 @@
 						"Caption": "Choose$",
 						"Remark": "返回某个参数",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Choose$(3, \"Val1\", \"Val2\", \"Val3\")",
 						"Templet": "command",
 						"Help": {
@@ -1569,7 +1814,7 @@
 						"Caption": "Expand$",
 						"Remark": "将变量代入字符串",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Expand$(\"\")",
 						"Templet": "command",
 						"Help": {
@@ -1592,7 +1837,7 @@
 						"Caption": "Hex",
 						"Remark": "转换数字到十六进制表达形式",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Hex(254)",
 						"Templet": "command",
 						"Help": {
@@ -1621,7 +1866,7 @@
 						"Caption": "InStr",
 						"Remark": "查找字符串",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "InStr(\"abc\", \"b\")",
 						"Templet": "command",
 						"Help": {
@@ -1656,7 +1901,7 @@
 						"Caption": "IsLike",
 						"Remark": "判断字符串是否相似",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "IsLike(\"abc\", \"?b*\", false)",
 						"Templet": "command",
 						"Help": {
@@ -1691,7 +1936,7 @@
 						"Caption": "LCase$",
 						"Remark": "转换为小写",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "LCase$(\"AbCdE\")",
 						"Templet": "command",
 						"Help": {
@@ -1714,7 +1959,7 @@
 						"Caption": "UCase$",
 						"Remark": "转换为大写",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "UCase$(\"AbCdE\")",
 						"Templet": "command",
 						"Help": {
@@ -1737,7 +1982,7 @@
 						"Caption": "MCase$",
 						"Remark": "转换为首字母大写",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "MCase$(\"AbCdE\")",
 						"Templet": "command",
 						"Help": {
@@ -1760,7 +2005,7 @@
 						"Caption": "Left$",
 						"Remark": "获取左侧字符串",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Left$(\"ABCDEFG\", 3)",
 						"Templet": "command",
 						"Help": {
@@ -1789,7 +2034,7 @@
 						"Caption": "Right$",
 						"Remark": "获取右侧字符串",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Right$(\"ABCDEFG\", 3)",
 						"Templet": "command",
 						"Help": {
@@ -1818,7 +2063,7 @@
 						"Caption": "Mid$",
 						"Remark": "获取中间字符串",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Mid$(\"ABCDEFG\", 3, 3)",
 						"Templet": "command",
 						"Help": {
@@ -1853,7 +2098,7 @@
 						"Caption": "LeftAndRight$",
 						"Remark": "获取左右两侧字符串",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "LeftAndRight$(\"ABCDEFG\", 2, 2)",
 						"Templet": "command",
 						"Help": {
@@ -1888,7 +2133,7 @@
 						"Caption": "Len",
 						"Remark": "获取字符串长度",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Len(\"ABCDEFG\")",
 						"Templet": "command",
 						"Help": {
@@ -1911,7 +2156,7 @@
 						"Caption": "LSet$",
 						"Remark": "填充左侧字符串",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "LSet$(\"ABCDEFG\", 10)",
 						"Templet": "command",
 						"Help": {
@@ -1946,7 +2191,7 @@
 						"Caption": "RSet$",
 						"Remark": "填充右侧字符串",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "RSet$(\"ABCDEFG\", 10)",
 						"Templet": "command",
 						"Help": {
@@ -1981,7 +2226,7 @@
 						"Caption": "CSet$",
 						"Remark": "填充左右两侧字符串",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "CSet$(\"ABCDEFG\", 10)",
 						"Templet": "command",
 						"Help": {
@@ -2016,7 +2261,7 @@
 						"Caption": "Iif$",
 						"Remark": "根据条件返回数据",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Iif$(\"ABCDEFG\", 10)",
 						"Templet": "command",
 						"Help": {
@@ -2051,7 +2296,7 @@
 						"Caption": "Trim",
 						"Remark": "清理两侧字符",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Trim(\"   <内容>\", Any \" <>\")",
 						"Templet": "command",
 						"Help": {
@@ -2080,7 +2325,7 @@
 						"Caption": "LTrim",
 						"Remark": "清理左侧字符",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "LTrim(\"   <内容>\", Any \" <>\")",
 						"Templet": "command",
 						"Help": {
@@ -2109,7 +2354,7 @@
 						"Caption": "RTrim",
 						"Remark": "清理右侧字符",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "RTrim(\"   <内容>\", Any \" <>\")",
 						"Templet": "command",
 						"Help": {
@@ -2138,7 +2383,7 @@
 						"Caption": "Replace",
 						"Remark": "替换字符串",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Replace(\"qaq\", \"a\", \"w\")",
 						"Templet": "command",
 						"Help": {
@@ -2173,7 +2418,7 @@
 						"Caption": "Split",
 						"Remark": "分割字符串",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Split(\"1,2,3\", \",\", Array)",
 						"Templet": "command",
 						"Help": {
@@ -2208,7 +2453,7 @@
 						"Caption": "String$",
 						"Remark": "生成字符串",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "String$(10, \"*\")",
 						"Templet": "command",
 						"Help": {
@@ -2237,7 +2482,7 @@
 						"Caption": "StrInsert",
 						"Remark": "插入字符串",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "StrInsert(\"qq\", \"a\", 2)",
 						"Templet": "command",
 						"Help": {
@@ -2272,7 +2517,7 @@
 						"Caption": "StrDelete",
 						"Remark": "删除字符串",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "StrDelete(\"qaq\", 2, 1)",
 						"Templet": "command",
 						"Help": {
@@ -2307,7 +2552,7 @@
 						"Caption": "StrReverse",
 						"Remark": "翻转字符串",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "StrReverse(\"CDEFGAB\")",
 						"Templet": "command",
 						"Help": {
@@ -2330,7 +2575,7 @@
 						"Caption": "StrFormat",
 						"Remark": "格式化字符串",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "StrFormat(\"{1}是全世界{2}\", \"叶飞\", \"最帅的人\")",
 						"Templet": "command",
 						"Help": {
@@ -2359,7 +2604,7 @@
 						"Caption": "Tally",
 						"Remark": "统计字符串出现的次数",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Tally(\"qaq\", \"q\")",
 						"Templet": "command",
 						"Help": {
@@ -2399,7 +2644,7 @@
 						"Caption": "Int",
 						"Remark": "转换为整数",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Int(3.5)",
 						"Templet": "command",
 						"Help": {
@@ -2422,7 +2667,7 @@
 						"Caption": "Round",
 						"Remark": "四舍五入取整数",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Round(3.5)",
 						"Templet": "command",
 						"Help": {
@@ -2445,7 +2690,7 @@
 						"Caption": "Fix",
 						"Remark": "返回整数部分",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Fix(3.5)",
 						"Templet": "command",
 						"Help": {
@@ -2468,7 +2713,7 @@
 						"Caption": "Frac",
 						"Remark": "返回小数部分",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Frac(3.14)",
 						"Templet": "command",
 						"Help": {
@@ -2491,7 +2736,7 @@
 						"Caption": "Sgn",
 						"Remark": "获取符号信息",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Sgn(-1)",
 						"Templet": "command",
 						"Help": {
@@ -2514,7 +2759,7 @@
 						"Caption": "Abs",
 						"Remark": "取绝对值",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Abs(-12)",
 						"Templet": "command",
 						"Help": {
@@ -2537,7 +2782,7 @@
 						"Caption": "Mod",
 						"Remark": "取模（求余数）",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Mod(5, 2)",
 						"Templet": "command",
 						"Help": {
@@ -2566,7 +2811,7 @@
 						"Caption": "Sum",
 						"Remark": "求和",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Sum(1, 2, 3, 4)",
 						"Templet": "command",
 						"Help": {
@@ -2589,7 +2834,7 @@
 						"Caption": "Pow",
 						"Remark": "次方计算",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Pow(5, 2)",
 						"Templet": "command",
 						"Help": {
@@ -2618,7 +2863,7 @@
 						"Caption": "Sqr",
 						"Remark": "平方根计算",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Sqr(9)",
 						"Templet": "command",
 						"Help": {
@@ -2641,7 +2886,7 @@
 						"Caption": "Pct",
 						"Remark": "求百分比",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Pct(23412, 100000, 2)",
 						"Templet": "command",
 						"Help": {
@@ -2676,7 +2921,7 @@
 						"Caption": "Exp",
 						"Remark": "e为底的指数",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Exp(2)",
 						"Templet": "command",
 						"Help": {
@@ -2699,7 +2944,7 @@
 						"Caption": "Log",
 						"Remark": "e为底的对数",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Log(2)",
 						"Templet": "command",
 						"Help": {
@@ -2722,7 +2967,7 @@
 						"Caption": "Log10",
 						"Remark": "常用对数",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Log10(2)",
 						"Templet": "command",
 						"Help": {
@@ -2745,7 +2990,7 @@
 						"Caption": "Tan",
 						"Remark": "正切",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Tan(2)",
 						"Templet": "command",
 						"Help": {
@@ -2768,7 +3013,7 @@
 						"Caption": "Atn",
 						"Remark": "反正切",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Atn(2)",
 						"Templet": "command",
 						"Help": {
@@ -2791,7 +3036,7 @@
 						"Caption": "Sin",
 						"Remark": "正弦",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Sin(2)",
 						"Templet": "command",
 						"Help": {
@@ -2814,7 +3059,7 @@
 						"Caption": "Cos",
 						"Remark": "余弦",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Cos(2)",
 						"Templet": "command",
 						"Help": {
@@ -2837,7 +3082,7 @@
 						"Caption": "Max",
 						"Remark": "找最大值",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Max(2, 1, 3)",
 						"Templet": "command",
 						"Help": {
@@ -2860,7 +3105,7 @@
 						"Caption": "Min",
 						"Remark": "找最小值",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Min(2, 1, 3)",
 						"Templet": "command",
 						"Help": {
@@ -2883,7 +3128,7 @@
 						"Caption": "MinMax",
 						"Remark": "限定数字范围",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "MinMax(123, 0, 100)",
 						"Templet": "command",
 						"Help": {
@@ -2918,7 +3163,7 @@
 						"Caption": "Between",
 						"Remark": "获取范围百分比",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Between(300, 0, 1000)",
 						"Templet": "command",
 						"Help": {
@@ -2953,7 +3198,7 @@
 						"Caption": "Choose",
 						"Remark": "返回某个参数",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Choose(2, 123, 456, 789)",
 						"Templet": "command",
 						"Help": {
@@ -2982,7 +3227,7 @@
 						"Caption": "Randomize",
 						"Remark": "初始化随机数种子",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Randomize",
 						"Templet": "command",
 						"Help": {
@@ -3005,7 +3250,7 @@
 						"Caption": "Rnd",
 						"Remark": "取随机数",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Rnd",
 						"Templet": "command",
 						"Help": {
@@ -3034,7 +3279,7 @@
 						"Caption": "RndF",
 						"Remark": "取指定范围浮点随机数",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "RndF(1, 10)",
 						"Templet": "command",
 						"Help": {
@@ -3063,7 +3308,7 @@
 						"Caption": "Collision_CToC",
 						"Remark": "圆形碰撞检测",
 						"Visible": false,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Collision_CToC(2, 123, 456, 789)",
 						"Templet": "command",
 						"Help": {
@@ -3086,7 +3331,7 @@
 						"Caption": "Dist",
 						"Remark": "取两点间距",
 						"Visible": false,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Dist(2, 123, 456, 789)",
 						"Templet": "command",
 						"Help": {
@@ -3120,7 +3365,7 @@
 						"Caption": "CountOf",
 						"Remark": "获取元素数量",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "CountOf(arr)",
 						"Templet": "command",
 						"Help": {
@@ -3149,7 +3394,7 @@
 						"Caption": "LBound",
 						"Remark": "获取数组下标",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "LBound(arr)",
 						"Templet": "command",
 						"Help": {
@@ -3178,7 +3423,7 @@
 						"Caption": "UBound",
 						"Remark": "获取数组上标",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "UBound(arr)",
 						"Templet": "command",
 						"Help": {
@@ -3207,7 +3452,7 @@
 						"Caption": "Join",
 						"Remark": "将数组合并为字符串",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Join(Array, \",\")",
 						"Templet": "command",
 						"Help": {
@@ -3527,7 +3772,7 @@
 						"Caption": "Hash_New",
 						"Remark": "创建哈希表",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Hash_New(0)",
 						"Templet": "command",
 						"Help": {
@@ -3550,7 +3795,7 @@
 						"Caption": "Hash_Free",
 						"Remark": "释放哈希表",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Hash_Free(pHashTable)",
 						"Templet": "command",
 						"Help": {
@@ -3573,7 +3818,7 @@
 						"Caption": "Hash_Set",
 						"Remark": "设置键值",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Hash_Set(pHashTable, \"Key\", \"Value\")",
 						"Templet": "command",
 						"Help": {
@@ -3608,7 +3853,7 @@
 						"Caption": "Hash_Get",
 						"Remark": "获取键值",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Hash_Get(pHashTable, \"Key\")",
 						"Templet": "command",
 						"Help": {
@@ -3637,7 +3882,7 @@
 						"Caption": "Hash_GetPtr",
 						"Remark": "获取键值指针",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Hash_GetPtr(pHashTable, \"Key\")",
 						"Templet": "command",
 						"Help": {
@@ -3666,7 +3911,7 @@
 						"Caption": "Hash_Exists",
 						"Remark": "键是否存在",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Hash_Exists(pHashTable, \"Key\")",
 						"Templet": "command",
 						"Help": {
@@ -3695,7 +3940,7 @@
 						"Caption": "Hash_Del",
 						"Remark": "删除键值",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Hash_Del(pHashTable, \"Key\")",
 						"Templet": "command",
 						"Help": {
@@ -3724,7 +3969,7 @@
 						"Caption": "Hash_Count",
 						"Remark": "键值数量",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Hash_Count(pHashTable)",
 						"Templet": "command",
 						"Help": {
@@ -3747,7 +3992,7 @@
 						"Caption": "Hash_Clear",
 						"Remark": "清空表",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Hash_Clear(pHashTable)",
 						"Templet": "command",
 						"Help": {
@@ -3770,7 +4015,7 @@
 						"Caption": "Hash_Clone",
 						"Remark": "复制表",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Hash_Clone(pHashTable)",
 						"Templet": "command",
 						"Help": {
@@ -3793,7 +4038,7 @@
 						"Caption": "Hash_GetKeys",
 						"Remark": "获取键列表",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Hash_GetKeys(pHashTable, \"\\r\\n\")",
 						"Templet": "command",
 						"Help": {
@@ -3822,7 +4067,7 @@
 						"Caption": "Hash_Validate",
 						"Remark": "是否为哈希表",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Hash_Validate(pHashTable)",
 						"Templet": "command",
 						"Help": {
@@ -3845,7 +4090,7 @@
 						"Caption": "Hash_CapGet",
 						"Remark": "获取预申请键值数量",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Hash_CapGet(pHashTable)",
 						"Templet": "command",
 						"Help": {
@@ -3868,7 +4113,7 @@
 						"Caption": "Hash_CapSet",
 						"Remark": "设置预申请键值数量",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Hash_CapSet(pHashTable, 200)",
 						"Templet": "command",
 						"Help": {
@@ -3908,7 +4153,7 @@
 						"Caption": "LList_New",
 						"Remark": "创建链表",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "LList_New()",
 						"Templet": "command",
 						"Help": {
@@ -3925,7 +4170,7 @@
 						"Caption": "LList_Free",
 						"Remark": "释放链表",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "LList_Free(pListTable)",
 						"Templet": "command",
 						"Help": {
@@ -3948,7 +4193,7 @@
 						"Caption": "LList_First",
 						"Remark": "选中第一个值",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "LList_First(pListTable)",
 						"Templet": "command",
 						"Help": {
@@ -3971,7 +4216,7 @@
 						"Caption": "LList_Last",
 						"Remark": "选中最后一个值",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "LList_Last(pListTable)",
 						"Templet": "command",
 						"Help": {
@@ -3994,7 +4239,7 @@
 						"Caption": "LList_Prev",
 						"Remark": "选中上一个值",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "LList_Prev(pListTable)",
 						"Templet": "command",
 						"Help": {
@@ -4017,7 +4262,7 @@
 						"Caption": "LList_Next",
 						"Remark": "选中下一个值",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "LList_Next(pListTable)",
 						"Templet": "command",
 						"Help": {
@@ -4040,7 +4285,7 @@
 						"Caption": "LList_Add",
 						"Remark": "添加值到末尾",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "LList_Add(pListTable, \"Value\")",
 						"Templet": "command",
 						"Help": {
@@ -4069,7 +4314,7 @@
 						"Caption": "LList_Ins",
 						"Remark": "添加值到开头",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "LList_Ins(pListTable, \"Value\")",
 						"Templet": "command",
 						"Help": {
@@ -4098,7 +4343,7 @@
 						"Caption": "LList_InsPrev",
 						"Remark": "向前插入值",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "LList_InsPrev(pListTable, pElement, \"Value\")",
 						"Templet": "command",
 						"Help": {
@@ -4133,7 +4378,7 @@
 						"Caption": "LList_InsNext",
 						"Remark": "向后插入值",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "LList_InsNext(pListTable, pElement, \"Value\")",
 						"Templet": "command",
 						"Help": {
@@ -4168,7 +4413,7 @@
 						"Caption": "LList_Del",
 						"Remark": "删除值",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "LList_Del(pListTable, pElement)",
 						"Templet": "command",
 						"Help": {
@@ -4197,7 +4442,7 @@
 						"Caption": "LList_DelPrev",
 						"Remark": "删除前一个值",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "LList_DelPrev(pListTable, pElement)",
 						"Templet": "command",
 						"Help": {
@@ -4226,7 +4471,7 @@
 						"Caption": "LList_DelNext",
 						"Remark": "删除后一个值",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "LList_DelNext(pListTable, pElement)",
 						"Templet": "command",
 						"Help": {
@@ -4255,7 +4500,7 @@
 						"Caption": "LList_Set",
 						"Remark": "设置值",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "LList_Set(pListTable, \"Value\")",
 						"Templet": "command",
 						"Help": {
@@ -4284,7 +4529,7 @@
 						"Caption": "LList_Get",
 						"Remark": "获取值",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "LList_Get(pListTable)",
 						"Templet": "command",
 						"Help": {
@@ -4307,7 +4552,7 @@
 						"Caption": "LList_Count",
 						"Remark": "元素数量",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "LList_Count(pListTable)",
 						"Templet": "command",
 						"Help": {
@@ -4330,7 +4575,7 @@
 						"Caption": "LList_Clear",
 						"Remark": "清空链表",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "LList_Clear(pListTable)",
 						"Templet": "command",
 						"Help": {
@@ -4353,7 +4598,7 @@
 						"Caption": "LList_Validate",
 						"Remark": "是否为链表",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "LList_Validate(pListTable)",
 						"Templet": "command",
 						"Help": {
@@ -4398,7 +4643,7 @@
 						"Caption": "UDT_ElementByte",
 						"Remark": "获取成员位置",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "UDT_ElementByte(v.ele)",
 						"Templet": "command",
 						"Help": {
@@ -4421,7 +4666,7 @@
 						"Caption": "UDT_ElementExists",
 						"Remark": "成员是否存在",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "UDT_ElementExists(v.ele)",
 						"Templet": "command",
 						"Help": {
@@ -4444,7 +4689,7 @@
 						"Caption": "UDT_ElementOffset",
 						"Remark": "获取成员偏移",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "UDT_ElementOffset(v.ele)",
 						"Templet": "command",
 						"Help": {
@@ -4478,7 +4723,7 @@
 						"Caption": "APP_ScriptName",
 						"Remark": "文件名",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "APP_ScriptName",
 						"Templet": "command",
 						"Help": {
@@ -4495,7 +4740,7 @@
 						"Caption": "APP_ScriptPath",
 						"Remark": "文件所在目录",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "APP_ScriptPath",
 						"Templet": "command",
 						"Help": {
@@ -4512,7 +4757,7 @@
 						"Caption": "APP_ScriptFile",
 						"Remark": "完整文件路径",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "APP_ScriptFile",
 						"Templet": "command",
 						"Help": {
@@ -4529,7 +4774,7 @@
 						"Caption": "APP_Name",
 						"Remark": "执行程序文件名",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "APP_Name",
 						"Templet": "command",
 						"Help": {
@@ -4546,7 +4791,7 @@
 						"Caption": "APP_Path",
 						"Remark": "执行程序文件路径",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "APP_Path",
 						"Templet": "command",
 						"Help": {
@@ -4563,7 +4808,7 @@
 						"Caption": "APP_IsBundled",
 						"Remark": "是否已编译",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "APP_IsBundled",
 						"Templet": "command",
 						"Help": {
@@ -4591,7 +4836,7 @@
 						"Caption": "VarPtr",
 						"Remark": "获取变量指针",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "VarPtr(var)",
 						"Templet": "command",
 						"Help": {
@@ -4614,7 +4859,7 @@
 						"Caption": "StrPtr",
 						"Remark": "获取字符串指针",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "StrPtr(var)",
 						"Templet": "command",
 						"Help": {
@@ -4637,7 +4882,7 @@
 						"Caption": "Peek",
 						"Remark": "读取内存",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Peek(Long, Address)",
 						"Templet": "command",
 						"Help": {
@@ -4666,7 +4911,7 @@
 						"Caption": "Peek$",
 						"Remark": "读取内存字符串",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Peek$(AsciiZ, Address)",
 						"Templet": "command",
 						"Help": {
@@ -4701,7 +4946,7 @@
 						"Caption": "PeekZ",
 						"Remark": "读取\\0结尾字符串",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "PeekZ(Address)",
 						"Templet": "command",
 						"Help": {
@@ -4730,7 +4975,7 @@
 						"Caption": "PeekHex",
 						"Remark": "读取内存[十六进制]",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "PeekHex(Address, 8)",
 						"Templet": "command",
 						"Help": {
@@ -4759,7 +5004,7 @@
 						"Caption": "Poke",
 						"Remark": "写入内存",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Poke(Long, Address, value)",
 						"Templet": "command",
 						"Help": {
@@ -4794,7 +5039,7 @@
 						"Caption": "Poke$",
 						"Remark": "写入内存字符串",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Poke$(AsciiZ, Address, \"写入内容\")",
 						"Templet": "command",
 						"Help": {
@@ -4829,7 +5074,7 @@
 						"Caption": "Memory_Compare",
 						"Remark": "内存比较",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Memory_Compare(pMem1, pMem2, 12)",
 						"Templet": "command",
 						"Help": {
@@ -4864,7 +5109,7 @@
 						"Caption": "Memory_Copy",
 						"Remark": "内存复制",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Memory_Copy(pSource, pDest, 12)",
 						"Templet": "command",
 						"Help": {
@@ -4899,7 +5144,7 @@
 						"Caption": "Memory_Get",
 						"Remark": "内存获取",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Memory_Get(pMem, 12)",
 						"Templet": "command",
 						"Help": {
@@ -4928,7 +5173,7 @@
 						"Caption": "Memory_Set",
 						"Remark": "内存写入",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Memory_Set(pMem, \"要写入的内容\", 12)",
 						"Templet": "command",
 						"Help": {
@@ -4963,7 +5208,7 @@
 						"Caption": "Memory_Swap",
 						"Remark": "内存交换数据",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Memory_Swap(pMem1, pMem2, 12)",
 						"Templet": "command",
 						"Help": {
@@ -4998,7 +5243,7 @@
 						"Caption": "Heap_Alloc",
 						"Remark": "申请内存",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Heap_Alloc(12)",
 						"Templet": "command",
 						"Help": {
@@ -5021,7 +5266,7 @@
 						"Caption": "Heap_AllocByStr",
 						"Remark": "申请字符串内存",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Heap_AllocByStr(\"申请内存\")",
 						"Templet": "command",
 						"Help": {
@@ -5050,7 +5295,7 @@
 						"Caption": "Heap_Copy",
 						"Remark": "申请内存副本",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Heap_Copy(pMem)",
 						"Templet": "command",
 						"Help": {
@@ -5073,7 +5318,7 @@
 						"Caption": "Heap_ReAlloc",
 						"Remark": "重新申请内存",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Heap_ReAlloc(pOldMem, 12)",
 						"Templet": "command",
 						"Help": {
@@ -5102,7 +5347,7 @@
 						"Caption": "Heap_ReAllocByStr",
 						"Remark": "重新申请字符串内存",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Heap_ReAllocByStr(pOldMem, \"申请内存\")",
 						"Templet": "command",
 						"Help": {
@@ -5137,7 +5382,7 @@
 						"Caption": "Heap_Free",
 						"Remark": "释放内存",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Heap_Free(pMem)",
 						"Templet": "command",
 						"Help": {
@@ -5160,7 +5405,7 @@
 						"Caption": "Heap_End",
 						"Remark": "内存结束位置",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Heap_End(pMem)",
 						"Templet": "command",
 						"Help": {
@@ -5183,7 +5428,7 @@
 						"Caption": "Heap_Size",
 						"Remark": "获取内存大小",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Heap_Size(pMem)",
 						"Templet": "command",
 						"Help": {
@@ -5206,7 +5451,7 @@
 						"Caption": "Heap_Get",
 						"Remark": "读取内存字符串",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Heap_Get(pMem)",
 						"Templet": "command",
 						"Help": {
@@ -5229,7 +5474,7 @@
 						"Caption": "Heap_Set",
 						"Remark": "写入内存字符串",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Heap_Set(pMem)",
 						"Templet": "command",
 						"Help": {
@@ -5258,7 +5503,7 @@
 						"Caption": "Heap_Mid",
 						"Remark": "读取内存中间字符串",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Heap_Mid(pMem, 3, 5)",
 						"Templet": "command",
 						"Help": {
@@ -5293,7 +5538,7 @@
 						"Caption": "Heap_Left",
 						"Remark": "读取内存左侧字符串",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Heap_Left(pMem, 5)",
 						"Templet": "command",
 						"Help": {
@@ -5322,7 +5567,7 @@
 						"Caption": "Heap_Right",
 						"Remark": "读取内存右侧字符串",
 						"Visible": true,
-						"Function": true,
+						"Keyword": true,
 						"InsCode": "Heap_Right(pMem, 5)",
 						"Templet": "command",
 						"Help": {
@@ -5364,7 +5609,7 @@
 				"Caption": "MouseMove",
 				"Remark": "模拟移动鼠标",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "MouseMove(0, 0)",
 				"Templet": "command",
 				"Help": {
@@ -5399,7 +5644,7 @@
 				"Caption": "MouseClick",
 				"Remark": "模拟点击鼠标按键",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "MouseClick(0, 0, %Mouse_Right)",
 				"Templet": "command",
 				"Help": {
@@ -5440,7 +5685,7 @@
 				"Caption": "MouseDClick",
 				"Remark": "模拟双击鼠标按键",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "MouseDClick(0, 0, %Mouse_Right)",
 				"Templet": "command",
 				"Help": {
@@ -5481,7 +5726,7 @@
 				"Caption": "MouseDown",
 				"Remark": "模拟按下鼠标按键",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "MouseDown(0, 0, %Mouse_Right)",
 				"Templet": "command",
 				"Help": {
@@ -5522,7 +5767,7 @@
 				"Caption": "MouseUp",
 				"Remark": "模拟弹起鼠标按键",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "MouseUp(0, 0, %Mouse_Right)",
 				"Templet": "command",
 				"Help": {
@@ -5563,7 +5808,7 @@
 				"Caption": "MouseWhell",
 				"Remark": "模拟滚动鼠标滚轮",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "MouseWhell(1)",
 				"Templet": "command",
 				"Help": {
@@ -5603,7 +5848,7 @@
 				"Caption": "KeyPress",
 				"Remark": "模拟点击键盘按键",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "KeyPress(%VK_A)",
 				"Templet": "command",
 				"Help": {
@@ -5632,7 +5877,7 @@
 				"Caption": "KeyDown",
 				"Remark": "模拟按下键盘按键",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "KeyDown(%VK_A)",
 				"Templet": "command",
 				"Help": {
@@ -5661,7 +5906,7 @@
 				"Caption": "KeyUp",
 				"Remark": "模拟弹起键盘按键",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "KeyUp(%VK_A)",
 				"Templet": "command",
 				"Help": {
@@ -5703,17 +5948,17 @@
 				"Visible": true,
 				"Templet": "document",
 				"Help": {
-					"Caption": "任务功能使用警告",
-					"Document": "在灵智机器人源代码结构中，不属于任何函数的代码（Global Block）会在所有任务中执行，Main 函数只会在主进程中执行，因此创建任务时，千万不要把代码写在 Main 函数之外，否则会造成任务创建死循环，可能卡死用户或开发者的机器，导致文档数据丢失。"
+					"Caption": "Work function usage warning",
+					"Document": "In the source code structure of the smart robot, the code that does not belong to any function (Global Block) will be executed in all tasks, the Main function will only be executed in the main process, so when creating the task, do not write the code in the Main function. In addition, otherwise it will cause the task to create an infinite loop, which may cause the user or the developer's machine to be stuck, resulting in loss of document data."
 				}
 			},
 			{
 				"Caption": "Work_Create",
 				"Remark": "创建即时任务",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "Work_Create(\"WorkName\", \"参数\")",
-				"InsCodeEnd": "\n' 线程回调函数\nFunction Work_WorkName(ByVal sParam As String) As Long\n	\nEnd Function",
+				"InsCodeEnd": "\n' Thread callback function\nFunction Work_WorkName(ByVal sParam As String) As Long\n	\nEnd Function",
 				"Templet": "command",
 				"Help": {
 					"Caption": "Work_Create",
@@ -5741,7 +5986,7 @@
 				"Caption": "Work_Stop",
 				"Remark": "停止任务",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "Work_Stop(Work)",
 				"Templet": "command",
 				"Help": {
@@ -5764,7 +6009,7 @@
 				"Caption": "Work_Pause",
 				"Remark": "暂停任务",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "Work_Pause(Work)",
 				"Templet": "command",
 				"Help": {
@@ -5787,7 +6032,7 @@
 				"Caption": "Work_Resume",
 				"Remark": "恢复任务",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "Work_Resume(Work)",
 				"Templet": "command",
 				"Help": {
@@ -5821,7 +6066,7 @@
 				"Caption": "CreateObject",
 				"Remark": "创建COM对象",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "CreateObject(\"ProgID\")",
 				"Templet": "command",
 				"Help": {
@@ -5844,7 +6089,7 @@
 				"Caption": "GetObject",
 				"Remark": "获取COM对象",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "GetObject(\"ProgID\")",
 				"Templet": "command",
 				"Help": {
@@ -5867,7 +6112,7 @@
 				"Caption": "ReleaseObject",
 				"Remark": "释放COM对象",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "ReleaseObject(objCOM)",
 				"Templet": "command",
 				"Help": {
@@ -5890,7 +6135,7 @@
 				"Caption": "IsNothing",
 				"Remark": "判断COM对象是否释放",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "IsNothing(objCOM)",
 				"Templet": "command",
 				"Help": {
@@ -5913,7 +6158,7 @@
 				"Caption": "IsObject",
 				"Remark": "判断是否为COM对象",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "IsObject(VarData)",
 				"Templet": "command",
 				"Help": {
@@ -5936,7 +6181,7 @@
 				"Caption": "GetObjPtr",
 				"Remark": "获取COM对象指针",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "GetObjPtr(objCOM)",
 				"Templet": "command",
 				"Help": {
@@ -5959,7 +6204,7 @@
 				"Caption": "RegCom",
 				"Remark": "注册COM组件",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "RegCom(\"文件路径\")",
 				"Templet": "command",
 				"Help": {
@@ -5982,7 +6227,7 @@
 				"Caption": "UnRegCom",
 				"Remark": "取消注册COM组件",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "UnRegCom(\"文件路径\")",
 				"Templet": "command",
 				"Help": {
@@ -6016,7 +6261,7 @@
 				"Caption": "Now",
 				"Remark": "获取系统日期和时间",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "Now()",
 				"Templet": "command",
 				"Help": {
@@ -6033,7 +6278,7 @@
 				"Caption": "Date",
 				"Remark": "获取系统日期",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "Date()",
 				"Templet": "command",
 				"Help": {
@@ -6050,7 +6295,7 @@
 				"Caption": "Time",
 				"Remark": "获取系统时间",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "Time()",
 				"Templet": "command",
 				"Help": {
@@ -6067,7 +6312,7 @@
 				"Caption": "Timer",
 				"Remark": "获取系统时间戳",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "Timer()",
 				"Templet": "command",
 				"Help": {
@@ -6084,7 +6329,7 @@
 				"Caption": "Year",
 				"Remark": "获取时间中的年份",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "Year()",
 				"Templet": "command",
 				"Help": {
@@ -6107,7 +6352,7 @@
 				"Caption": "Month",
 				"Remark": "获取时间中的月份",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "Month()",
 				"Templet": "command",
 				"Help": {
@@ -6130,7 +6375,7 @@
 				"Caption": "Day",
 				"Remark": "获取时间中的日期",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "Day()",
 				"Templet": "command",
 				"Help": {
@@ -6153,7 +6398,7 @@
 				"Caption": "Weekday",
 				"Remark": "获取时间中的星期",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "Weekday()",
 				"Templet": "command",
 				"Help": {
@@ -6182,7 +6427,7 @@
 				"Caption": "Hour",
 				"Remark": "获取时间中的小时",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "Hour()",
 				"Templet": "command",
 				"Help": {
@@ -6205,7 +6450,7 @@
 				"Caption": "Minute",
 				"Remark": "获取时间中的分钟",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "Minute()",
 				"Templet": "command",
 				"Help": {
@@ -6228,7 +6473,7 @@
 				"Caption": "Second",
 				"Remark": "获取时间中的秒钟",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "Second()",
 				"Templet": "command",
 				"Help": {
@@ -6251,7 +6496,7 @@
 				"Caption": "DateSerial",
 				"Remark": "构建日期",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "DateSerial(2019, 12, 1)",
 				"Templet": "command",
 				"Help": {
@@ -6286,7 +6531,7 @@
 				"Caption": "TimeSerial",
 				"Remark": "构建时间",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "TimeSerial(12, 0, 0)",
 				"Templet": "command",
 				"Help": {
@@ -6339,7 +6584,7 @@
 				"Caption": "DateAdd",
 				"Remark": "时间加减计算",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "DateAdd(\"d\", 10, Now())",
 				"Templet": "command",
 				"Help": {
@@ -6374,7 +6619,7 @@
 				"Caption": "DateDiff",
 				"Remark": "计算时间差",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "DateDiff(\"d\", Now() + 10, Now())",
 				"Templet": "command",
 				"Help": {
@@ -6421,7 +6666,7 @@
 				"Caption": "DatePart",
 				"Remark": "获取时间中指定单位的值",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "DatePart(\"d\", Now())",
 				"Templet": "command",
 				"Help": {
@@ -6462,7 +6707,7 @@
 				"Caption": "Format",
 				"Remark": "格式化时间数据",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "Format(Now(), \"yyyy-mm-dd hh:mm:ss\")",
 				"Templet": "command",
 				"Help": {
@@ -6491,7 +6736,7 @@
 				"Caption": "ToUnixTime",
 				"Remark": "时间数据转换为Unix时间戳",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "ToUnixTime(Now())",
 				"Templet": "command",
 				"Help": {
@@ -6514,7 +6759,7 @@
 				"Caption": "FromUnixTime",
 				"Remark": "Unix时间戳转换为时间数据",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "FromUnixTime(Now())",
 				"Templet": "command",
 				"Help": {
@@ -6537,7 +6782,7 @@
 				"Caption": "IsDate",
 				"Remark": "字符串是否可以转为时间",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "IsDate(\"2019年1月1日 12:00:00\")",
 				"Templet": "command",
 				"Help": {
@@ -6566,7 +6811,7 @@
 				"Caption": "CDate",
 				"Remark": "字符串转换为时间",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "CDate(\"2019年1月1日 12:00:00\")",
 				"Templet": "command",
 				"Help": {
@@ -6606,7 +6851,7 @@
 				"Caption": "OS_Environ",
 				"Remark": "读取环境变量",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "OS_Environ(\"PATH\")",
 				"Templet": "command",
 				"Help": {
@@ -6629,7 +6874,7 @@
 				"Caption": "OS_GetComputerName",
 				"Remark": "获取计算机名",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "OS_GetComputerName",
 				"Templet": "command",
 				"Help": {
@@ -6646,7 +6891,7 @@
 				"Caption": "OS_GetCurrentProcessId",
 				"Remark": "获取当前进程PID",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "OS_GetCurrentProcessId",
 				"Templet": "command",
 				"Help": {
@@ -6663,7 +6908,7 @@
 				"Caption": "OS_GetCurrentThreadId",
 				"Remark": "获取当前线程TID",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "OS_GetCurrentThreadId",
 				"Templet": "command",
 				"Help": {
@@ -6680,7 +6925,7 @@
 				"Caption": "OS_GetSystemDir",
 				"Remark": "获取系统目录",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "OS_GetSystemDir",
 				"Templet": "command",
 				"Help": {
@@ -6697,7 +6942,7 @@
 				"Caption": "OS_GetWindowsDir",
 				"Remark": "获取Windows目录",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "OS_GetWindowsDir",
 				"Templet": "command",
 				"Help": {
@@ -6714,7 +6959,7 @@
 				"Caption": "OS_GetTempDir",
 				"Remark": "获取临时目录",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "OS_GetTempDir",
 				"Templet": "command",
 				"Help": {
@@ -6731,7 +6976,7 @@
 				"Caption": "OS_GetSpecialFolder",
 				"Remark": "获取系统特殊路径",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "OS_GetSpecialFolder",
 				"Templet": "command",
 				"Help": {
@@ -6754,7 +6999,7 @@
 				"Caption": "OS_GetUserName",
 				"Remark": "获取用户名",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "OS_GetUserName",
 				"Templet": "command",
 				"Help": {
@@ -6771,7 +7016,7 @@
 				"Caption": "OS_WinVersionText",
 				"Remark": "获取Windows版本",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "OS_WinVersionText",
 				"Templet": "command",
 				"Help": {
@@ -6788,7 +7033,7 @@
 				"Caption": "OS_WinGetVersionTimeline",
 				"Remark": "获取Windows版本",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "OS_WinGetVersionTimeline",
 				"Templet": "command",
 				"Help": {
@@ -6805,7 +7050,7 @@
 				"Caption": "OS_IEVersion",
 				"Remark": "获取IE版本",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "OS_IEVersion",
 				"Templet": "command",
 				"Help": {
@@ -6822,7 +7067,7 @@
 				"Caption": "OS_IsWow64",
 				"Remark": "是否64位系统",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "OS_IsWow64",
 				"Templet": "command",
 				"Help": {
@@ -6839,7 +7084,7 @@
 				"Caption": "OS_MessageBeep",
 				"Remark": "播放系统提示音",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "OS_MessageBeep(%MB_SIMPLE)",
 				"Templet": "command",
 				"Help": {
@@ -6862,7 +7107,7 @@
 				"Caption": "OS_ShellAbout",
 				"Remark": "弹出关于对话框",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "OS_ShellAbout(0, \"灵智机器人\", \"灵智机器人 v0.72\", \"Power By xLeaves QQ：605072846\")",
 				"Templet": "command",
 				"Help": {
@@ -6909,7 +7154,7 @@
 				"Caption": "OS_IsFeaturePresent",
 				"Remark": "确认CPU特性",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "OS_IsFeaturePresent(%PF_SSE3_INSTRUCTIONS_AVAILABLE)",
 				"Templet": "command",
 				"Help": {
@@ -6943,7 +7188,7 @@
 				"Caption": "OS_ProcessGetList",
 				"Remark": "获取进程列表",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "OS_ProcessGetList($CRLF)",
 				"Templet": "command",
 				"Help": {
@@ -6966,7 +7211,7 @@
 				"Caption": "OS_ProcessIsRunning",
 				"Remark": "进程是否正在运行",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "OS_ProcessIsRunning(\"notepad.exe\")",
 				"Templet": "command",
 				"Help": {
@@ -6989,7 +7234,7 @@
 				"Caption": "OS_ProcessIsRunningById",
 				"Remark": "进程PID是否正在运行",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "OS_ProcessIsRunningById(PID)",
 				"Templet": "command",
 				"Help": {
@@ -7012,7 +7257,7 @@
 				"Caption": "OS_ProcessKillByName",
 				"Remark": "结束进程名",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "OS_ProcessKillByName(\"notepad.exe\")",
 				"Templet": "command",
 				"Help": {
@@ -7035,7 +7280,7 @@
 				"Caption": "OS_ProcessKillById",
 				"Remark": "结束进程PID",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "OS_ProcessKillById(0)",
 				"Templet": "command",
 				"Help": {
@@ -7058,7 +7303,7 @@
 				"Caption": "OS_ProcessPauseById",
 				"Remark": "挂起进程",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "OS_ProcessPauseById(0)",
 				"Templet": "command",
 				"Help": {
@@ -7081,7 +7326,7 @@
 				"Caption": "OS_ProcessResumeById",
 				"Remark": "恢复挂起进程",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "OS_ProcessResumeById(0)",
 				"Templet": "command",
 				"Help": {
@@ -7104,7 +7349,7 @@
 				"Caption": "OS_ProcessGetID",
 				"Remark": "获取进程PID",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "OS_ProcessGetID(\"notepad.exe\")",
 				"Templet": "command",
 				"Help": {
@@ -7127,7 +7372,7 @@
 				"Caption": "OS_ProcessGetFullPath",
 				"Remark": "获取进程文件路径",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "OS_ProcessGetFullPath(0)",
 				"Templet": "command",
 				"Help": {
@@ -7161,7 +7406,7 @@
 				"Caption": "Load_File",
 				"Remark": "读取文件",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "Load_File(\"文件路径\")",
 				"Templet": "command",
 				"Help": {
@@ -7184,7 +7429,7 @@
 				"Caption": "Save_File",
 				"Remark": "写入文件",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "Save_File(\"文件路径\", \"写入内容\")",
 				"Templet": "command",
 				"Help": {
@@ -7230,7 +7475,7 @@
 				"Caption": "ClipBoard_SetText",
 				"Remark": "设置剪贴板文本",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "ClipBoard_SetText(\"\")",
 				"Templet": "command",
 				"Help": {
@@ -7253,7 +7498,7 @@
 				"Caption": "ClipBoard_GetText",
 				"Remark": "读取剪贴板文本",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "ClipBoard_GetText",
 				"Templet": "command",
 				"Help": {
@@ -7281,7 +7526,7 @@
 				"Caption": "A2U",
 				"Remark": "ANSI转Utf-8",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "A2U(\"要转换的内容\")",
 				"Templet": "command",
 				"Help": {
@@ -7304,7 +7549,7 @@
 				"Caption": "U2A",
 				"Remark": "Utf-8转ANSI",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "U2A(\"要转换的内容\")",
 				"Templet": "command",
 				"Help": {
@@ -7327,7 +7572,7 @@
 				"Caption": "A2W",
 				"Remark": "ANSI转Unicode",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "A2W(\"要转换的内容\")",
 				"Templet": "command",
 				"Help": {
@@ -7350,7 +7595,7 @@
 				"Caption": "W2A",
 				"Remark": "Unicode转ANSI",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "W2A(\"要转换的内容\")",
 				"Templet": "command",
 				"Help": {
@@ -7373,7 +7618,7 @@
 				"Caption": "W2U",
 				"Remark": "Unicode转Utf-8",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "W2U(\"要转换的内容\")",
 				"Templet": "command",
 				"Help": {
@@ -7396,7 +7641,7 @@
 				"Caption": "U2W",
 				"Remark": "Utf-8转Unicode",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "U2W(\"要转换的内容\")",
 				"Templet": "command",
 				"Help": {
@@ -7419,7 +7664,7 @@
 				"Caption": "IsUnicode",
 				"Remark": "判断是否为Unicode编码",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "IsUnicode(\"要判断的字符串\")",
 				"Templet": "command",
 				"Help": {
@@ -7442,7 +7687,7 @@
 				"Caption": "IsUtf8",
 				"Remark": "判断是否为Utf-8编码",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "IsUtf8(\"要判断的字符串\")",
 				"Templet": "command",
 				"Help": {
@@ -7487,7 +7732,7 @@
 				"Caption": "GetCommand",
 				"Remark": "获取命令行",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "GetCommand(1)",
 				"Templet": "command",
 				"Help": {
@@ -7510,7 +7755,7 @@
 				"Caption": "CommandCount",
 				"Remark": "命令行数量",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "CommandCount",
 				"Templet": "command",
 				"Help": {
@@ -7527,7 +7772,7 @@
 				"Caption": "GetCommandSep",
 				"Remark": "获取命令行分隔符",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "GetCommandSep",
 				"Templet": "command",
 				"Help": {
@@ -7544,7 +7789,7 @@
 				"Caption": "SetCommandSep",
 				"Remark": "设置命令行分隔符",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "SetCommandSep(\"_\")",
 				"Templet": "command",
 				"Help": {
@@ -7567,7 +7812,7 @@
 				"Caption": "CommandPresent",
 				"Remark": "查找命令行",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "CommandPresent(\"-t\")",
 				"Templet": "command",
 				"Help": {
@@ -7601,7 +7846,7 @@
 				"Caption": "RGB",
 				"Remark": "合并颜色分量为RGB值",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "RGB(255, 128, 0)",
 				"Templet": "command",
 				"Help": {
@@ -7636,7 +7881,7 @@
 				"Caption": "BGR",
 				"Remark": "合并颜色分量为BGR值",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "BGR(255, 128, 0)",
 				"Templet": "command",
 				"Help": {
@@ -7671,7 +7916,7 @@
 				"Caption": "Sound_Play",
 				"Remark": "播放声音",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "Sound_Play(\"\")",
 				"Templet": "command",
 				"Help": {
@@ -7694,7 +7939,7 @@
 				"Caption": "Beep",
 				"Remark": "鸣笛",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "Beep()",
 				"Templet": "command",
 				"Help": {
@@ -7723,7 +7968,7 @@
 				"Caption": "MD5",
 				"Remark": "MD5计算",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "MD5(\"要计算的字符串\")",
 				"Templet": "command",
 				"Help": {
@@ -7746,7 +7991,7 @@
 				"Caption": "Hash",
 				"Remark": "Hash计算",
 				"Visible": true,
-				"Function": true,
+				"Keyword": true,
 				"InsCode": "Hash(1, \"要计算的字符串\")",
 				"Templet": "command",
 				"Help": {

@@ -12,7 +12,7 @@
       "Icon": "信息",
       "Templet": "document",
       "Visible": true,
-      "Function": true,
+      "Keyword": true,
       "Help": {
         "Caption": "扩展库使用帮助",
         "Document": "感谢 瞳灵 制作了这个扩展库的帮助文档。<br><br>在项目中使用扩展库功能会自动将扩展库引入项目，项目编译或运行时，自动加入扩展库依赖代码和文件。<br><br>如果您在单文件中希望使用本扩展库，则必须编写扩展库依赖代码才能调用扩展库中的函数，否则会报错，LzRPA 建议使用工程方式编写程序，但仍保留单文件使用扩展库的方法。<br><br>扩展库依赖代码：<br>&nbsp;&nbsp;Uses &quot;FTP&quot;<br><br>建议将引用扩展库代码统一添加到全局代码块，也就是代码的最上面。"
@@ -24,7 +24,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": true,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "nRet = FTP_Connect(Server, User, Password)",
       "Help": {
         "Caption": "FTP_Connect",
@@ -60,7 +60,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": true,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "n = FTP_Quit",
       "Help": {
         "Caption": "FTP_Quit",
@@ -77,7 +77,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": true,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "n = FTP_GetErrorNumber()",
       "Help": {
         "Caption": "FTP_GetErrorNumber",
@@ -94,7 +94,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": true,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "s = FTP_GetErrorString(nErrorNo)",
       "Help": {
         "Caption": "FTP_GetErrorString",
@@ -118,7 +118,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": true,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "n = FTP_Command(sCommand)",
       "Help": {
         "Caption": "FTP_Command",
@@ -142,7 +142,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": true,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "n = FTP_Finished()",
       "Help": {
         "Caption": "FTP_Finished",
@@ -159,7 +159,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": true,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "n = FTP_SetMode(sMode)",
       "Help": {
         "Caption": "FTP_SetMode",
@@ -183,7 +183,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": true,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "sFileList = FTP_GetList(%FTP_LIST_FULLLISTFILE, %FTP_FULL_LIST)",
       "Help": {
         "Caption": "FTP_GetList",
@@ -213,7 +213,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": true,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "n = FTP_DelFile(sFileName)",
       "Help": {
         "Caption": "FTP_DelFile",
@@ -237,7 +237,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": true,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "n = FTP_GetFile(sFileName, lOptions)",
       "Help": {
         "Caption": "FTP_GetFile",
@@ -267,7 +267,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": true,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "n = FTP_PutFile(sFileName, SyncMode)",
       "Help": {
         "Caption": "FTP_PutFile",
@@ -297,7 +297,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": true,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "sLine = FTP_Extract(sFileListBuffer, LineNumber, FieldNumber)",
       "Help": {
         "Caption": "FTP_Extract",
@@ -333,7 +333,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": true,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "s = FTP_GetServerDir()",
       "Help": {
         "Caption": "FTP_GetServerDir",
@@ -350,7 +350,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": true,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "s = FTP_GetLocalDir()",
       "Help": {
         "Caption": "FTP_GetLocalDir",
@@ -367,7 +367,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": true,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "n = FTP_SetServerDir(LocalRemoteDir)",
       "Help": {
         "Caption": "FTP_SetServerDir",
@@ -391,7 +391,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": true,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "n = FTP_SetLocalDir(LocalCurrentDir)",
       "Help": {
         "Caption": "FTP_SetLocalDir",
@@ -415,7 +415,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": true,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "n = FTP_SetLogFile(LogFile)",
       "Help": {
         "Caption": "FTP_SetLogFile",
@@ -439,7 +439,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": true,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "n = FTP_WriteToLogFile(sBuffer)",
       "Help": {
         "Caption": "FTP_WriteToLogFile",
@@ -463,7 +463,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": true,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "n = FTP_GetNumber(lWhat)",
       "Help": {
         "Caption": "FTP_GetNumber",
@@ -487,7 +487,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": true,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "n = FTP_SetNumber(lWhat, lValue)",
       "Help": {
         "Caption": "FTP_SetNumber",
@@ -517,7 +517,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": true,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "n = FTP_GetString(lWhat)",
       "Help": {
         "Caption": "FTP_GetString",

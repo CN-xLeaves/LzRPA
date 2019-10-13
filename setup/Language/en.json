@@ -189,7 +189,9 @@
         "Tips_Param": "Parameter :",
         "Tips_Param_Optional": " (Optional)",
         "Tips_Param_Mandatory": " (Mandatory)",
-        "Tips_Return": "Return :"
+        "Tips_Return": "Return :",
+        "Tips_Syntax": "Syntax :",
+        "Tips_Variant": "Data Type :"
     },
 
 

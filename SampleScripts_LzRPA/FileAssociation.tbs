@@ -18,9 +18,11 @@ Registry_SetValue("HKEYCR", "lzbot_ThinBasic_Script\shell\编辑\command", "", """
 Registry_SetValue("HKEYCR", ".tb", "", "lzbot_ThinBasic_Script")
 Registry_SetValue("HKEYCR", ".tbs", "", "lzbot_ThinBasic_Script")
 Registry_SetValue("HKEYCR", ".tbasic", "", "lzbot_ThinBasic_Script")
+Registry_SetValue("HKEYCR", ".tbasicc", "", "lzbot_ThinBasic_Script")
+Registry_SetValue("HKEYCR", ".tbasicu", "", "lzbot_ThinBasic_Script")
 Registry_SetValue("HKEYCR", ".lzw", "", "lzbot_ThinBasic_Script")
 Registry_SetValue("HKEYCR", ".lzp", "", "lzbot_ThinBasic_Script")
 
-MsgBox("文件关联完毕，现在双击 lzw、lzp、tbs、tb、tbasic 文件即可使用灵智机器人编辑！", , "灵智机器人")
+MsgBox("文件关联完毕，现在双击 lzw、lzp、tbs、tb、tbasic、tbasicc、tbasicu 文件即可使用灵智机器人编辑！", , "灵智机器人")
 
 

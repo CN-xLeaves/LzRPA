@@ -23,7 +23,7 @@
             "Caption": "INI_GetKey",
             "Remark": "读键值",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "INI_GetKey(\"文件路径\", \"小节名\", \"键名\")",
             "Templet": "command",
             "Help": {
@@ -64,7 +64,7 @@
             "Caption": "INI_SetKey",
             "Remark": "写键值",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "INI_SetKey(\"文件路径\", \"小节名\", \"键名\", \"键值\")",
             "Templet": "command",
             "Help": {
@@ -105,7 +105,7 @@
             "Caption": "INI_GetSectionsList",
             "Remark": "遍历小节",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "INI_GetSectionsList(\"文件路径\")",
             "Templet": "command",
             "Help": {
@@ -134,7 +134,7 @@
             "Caption": "INI_GetSectionKeyList",
             "Remark": "遍历键",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "INI_GetSectionKeyList(\"文件路径\", \"小节名\")",
             "Templet": "command",
             "Help": {
@@ -181,7 +181,7 @@
                     "Remark": "文件名",
                     "Icon": "属性",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "MyIni.FileName",
                     "Templet": "command",
                     "Help": {
@@ -198,7 +198,7 @@
                     "Caption": "GetKey",
                     "Remark": "读键值",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "MyIni.GetKey(\"小节名\", \"键名\")",
                     "Templet": "command",
                     "Help": {
@@ -233,7 +233,7 @@
                     "Caption": "SetKey",
                     "Remark": "写键值",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "MyIni.SetKey(\"小节名\", \"键名\", \"键值\")",
                     "Templet": "command",
                     "Help": {
@@ -269,7 +269,7 @@
                     "Remark": "小节集合",
                     "Icon": "命名空间",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "MyIni.Sections(1)",
                     "Templet": "command",
                     "Help": {
@@ -293,7 +293,7 @@
                             "Remark": "小节数量",
                             "Icon": "属性",
                             "Visible": true,
-                            "Function": true,
+                            "Keyword": true,
                             "InsCode": "MyIni.Sections.Count",
                             "Templet": "command",
                             "Help": {
@@ -310,7 +310,7 @@
                             "Caption": "List",
                             "Remark": "获取小节列表",
                             "Visible": true,
-                            "Function": true,
+                            "Keyword": true,
                             "InsCode": "MyIni.Sections.List($CRLF)",
                             "Templet": "command",
                             "Help": {
@@ -335,7 +335,7 @@
                     "Caption": "GetKeys",
                     "Remark": "遍历键",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "MyIni.GetKeys(\"小节名\", $CRLF)",
                     "Templet": "command",
                     "Help": {

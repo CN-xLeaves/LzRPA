@@ -23,7 +23,7 @@
             "Caption": "File_Load",
             "Remark": "快捷读文件",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "File_Load(\"文件路径\")",
             "Templet": "command",
             "Help": {
@@ -46,7 +46,7 @@
             "Caption": "File_Save",
             "Remark": "快捷写文件",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "File_Save(\"文件路径\", \"写入内容\")",
             "Templet": "command",
             "Help": {
@@ -81,7 +81,7 @@
             "Caption": "File_Append",
             "Remark": "追加写文件",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "File_Append(\"文件路径\", \"写入内容\")",
             "Templet": "command",
             "Help": {
@@ -110,7 +110,7 @@
             "Caption": "File_Size",
             "Remark": "获取文件大小",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "File_Size(\"文件路径\")",
             "Templet": "command",
             "Help": {
@@ -133,7 +133,7 @@
             "Caption": "File_Open",
             "Remark": "打开文件",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "File_Open(\"文件路径\", \"OUTPUT\")",
             "Templet": "command",
             "Help": {
@@ -168,7 +168,7 @@
             "Caption": "File_Close",
             "Remark": "关闭文件",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "File_Close(文件号)",
             "Templet": "command",
             "Help": {
@@ -191,7 +191,7 @@
             "Caption": "File_Get",
             "Remark": "读取已打开的文件",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "File_Get(文件号, 长度)",
             "Templet": "command",
             "Help": {
@@ -220,7 +220,7 @@
             "Caption": "File_Put",
             "Remark": "写入已打开的文件",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "File_Put(文件号, \"写入内容\")",
             "Templet": "command",
             "Help": {
@@ -249,7 +249,7 @@
             "Caption": "File_GetR",
             "Remark": "读取随机文件记录",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "File_GetR(文件号, 记录号, 保存数据的结构体)",
             "Templet": "command",
             "Help": {
@@ -284,7 +284,7 @@
             "Caption": "File_PutR",
             "Remark": "写入随机文件记录",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "File_PutR(文件号, 记录号, 保存数据的结构体)",
             "Templet": "command",
             "Help": {
@@ -319,7 +319,7 @@
             "Caption": "File_LineInput",
             "Remark": "读取一行",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "File_LineInput(文件号)",
             "Templet": "command",
             "Help": {
@@ -342,7 +342,7 @@
             "Caption": "File_LinePrint",
             "Remark": "写入一行",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "File_LinePrint(文件号, \"写入内容\")",
             "Templet": "command",
             "Help": {
@@ -371,7 +371,7 @@
             "Caption": "File_Seek",
             "Remark": "设置读写位置",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "File_Seek(文件号, 读写位置)",
             "Templet": "command",
             "Help": {
@@ -400,7 +400,7 @@
             "Caption": "File_EOF",
             "Remark": "是否到文件尾",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "File_EOF(文件号)",
             "Templet": "command",
             "Help": {
@@ -423,7 +423,7 @@
             "Caption": "File_LOF",
             "Remark": "已打开的文件长度",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "File_LOF(文件号)",
             "Templet": "command",
             "Help": {
@@ -446,7 +446,7 @@
             "Caption": "File_Exists",
             "Remark": "文件是否存在",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "File_Exists(\"文件路径\")",
             "Templet": "command",
             "Help": {
@@ -469,7 +469,7 @@
             "Caption": "Dir_Exists",
             "Remark": "目录是否存在",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "Dir_Exists(\"文件路径\")",
             "Templet": "command",
             "Help": {
@@ -492,7 +492,7 @@
             "Caption": "Dir_IsDir",
             "Remark": "是否是目录",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "Dir_IsDir(\"路径\")",
             "Templet": "command",
             "Help": {
@@ -515,7 +515,7 @@
             "Caption": "File_GetAttr",
             "Remark": "获取文件属性",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "File_GetAttr(\"文件路径\")",
             "Templet": "command",
             "Help": {
@@ -538,7 +538,7 @@
             "Caption": "File_SetAttr",
             "Remark": "设置文件属性",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "File_SetAttr(\"文件路径\", %FILE_HIDDEN)",
             "Templet": "command",
             "Help": {
@@ -567,7 +567,7 @@
             "Caption": "File_GetDate",
             "Remark": "获取文件日期属性",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "File_GetDate(\"文件路径\", %DATE_TIME_LAST_FILE_WRITE)",
             "Templet": "command",
             "Help": {
@@ -596,7 +596,7 @@
             "Caption": "File_GetTime",
             "Remark": "获取文件时间属性",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "File_GetTime(\"文件路径\", %DATE_TIME_LAST_FILE_WRITE)",
             "Templet": "command",
             "Help": {
@@ -625,7 +625,7 @@
             "Caption": "File_GetDateTime",
             "Remark": "获取文件最后修改时间",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "File_GetDateTime(\"文件路径\")",
             "Templet": "command",
             "Help": {
@@ -648,7 +648,7 @@
             "Caption": "File_SetDateTime",
             "Remark": "设置文件最后修改时间",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "File_SetDateTime(\"文件路径\", \"07-23-2005\", \"22:00:00\", %DATE_TIME_LAST_FILE_WRITE)",
             "Templet": "command",
             "Help": {
@@ -689,7 +689,7 @@
             "Caption": "File_Copy",
             "Remark": "复制文件",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "File_Copy(\"待复制文件\", \"目标位置\")",
             "Templet": "command",
             "Help": {
@@ -718,7 +718,7 @@
             "Caption": "File_Move",
             "Remark": "移动文件",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "File_Move(\"待移动文件\", \"目标位置\")",
             "Templet": "command",
             "Help": {
@@ -747,7 +747,7 @@
             "Caption": "File_Rename",
             "Remark": "重命名文件",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "File_Rename(\"待移动文件\", \"目标位置\")",
             "Templet": "command",
             "Help": {
@@ -776,7 +776,7 @@
             "Caption": "File_Kill",
             "Remark": "删除文件",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "File_Kill(\"文件路径\")",
             "Templet": "command",
             "Help": {
@@ -799,7 +799,7 @@
             "Caption": "File_ShellCopy",
             "Remark": "复制文件[系统]",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "File_ShellCopy(\"待复制文件\", \"目标位置\")",
             "Templet": "command",
             "Help": {
@@ -828,7 +828,7 @@
             "Caption": "File_ShellMove",
             "Remark": "移动文件[系统]",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "File_ShellMove(\"待移动文件\", \"目标位置\")",
             "Templet": "command",
             "Help": {
@@ -857,7 +857,7 @@
             "Caption": "File_ShellDelete",
             "Remark": "删除文件[系统]",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "File_ShellDelete(\"文件路径\")",
             "Templet": "command",
             "Help": {
@@ -880,7 +880,7 @@
             "Caption": "Dir_Remove",
             "Remark": "删除目录",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "Dir_Remove(\"路径\")",
             "Templet": "command",
             "Help": {
@@ -903,7 +903,7 @@
             "Caption": "Dir_Make",
             "Remark": "创建目录",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "Dir_Make(\"路径\")",
             "Templet": "command",
             "Help": {
@@ -926,7 +926,7 @@
             "Caption": "Dir_MakeAll",
             "Remark": "创建多级目录",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "Dir_MakeAll(\"路径\")",
             "Templet": "command",
             "Help": {
@@ -949,7 +949,7 @@
             "Caption": "File_PathSplit",
             "Remark": "路径分割处理",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "File_PathSplit(\"文件路径\", %Path_RootPath)",
             "Templet": "command",
             "Help": {
@@ -978,7 +978,7 @@
             "Caption": "Dir_GetCurrent",
             "Remark": "获取当前目录",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "Dir_GetCurrent",
             "Templet": "command",
             "Help": {
@@ -995,7 +995,7 @@
             "Caption": "Dir_ListArray",
             "Remark": "遍历路径",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "Dir_ListArray(数据返回数组, \"路径\", \"*.*\", %FILE_NORMAL)",
             "Templet": "command",
             "Help": {

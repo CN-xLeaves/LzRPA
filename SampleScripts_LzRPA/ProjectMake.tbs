@@ -1,0 +1,73 @@
+Uses "File"
+
+
+
+Dim sProjPath As String = Trim(OS_GetCommand(2), Any """")
+Dim sProjName As String = Trim(OS_GetCommand(3), Any """")
+Dim sParam    As String = Trim(OS_GetCommand(4), Any """")
+Dim sProjFile As String = sProjPath & "\" & sProjName & ".lzp"
+
+
+
+' 创建子目录
+Dir_Make(sProjPath & "\src")
+Dir_Make(sProjPath & "\res")
+Dir_Make(sProjPath & "\release")
+
+Dim Project_Library As String
+Dim Project_Files As String
+Dim Project_Icon As String
+
+' 根据工程类型创建文件
+Select Case sParam
+	Case "空白项目"
+        
+        Project_Icon = "标准应用"
+        Project_Library = ""
+		Project_Files = "{""Path"": ""src\\Main.tbs"", ""Open"": true}"
+        
+        File_Copy(APP_ScriptPath & "app_gui.ico", sProjPath & "\res\app.icon")
+        File_Copy(APP_ScriptPath & "空白项目.tbs", sProjPath & "\src\Main.tbs")
+        
+	Case "标准项目"
+        
+        Project_Icon = "标准应用"
+        Project_Library = ""
+		Project_Files = "{""Path"": ""src\\Main.tbs"", ""Open"": true}"
+        
+        File_Copy(APP_ScriptPath & "app_gui.ico", sProjPath & "\res\app.icon")
+        File_Copy(APP_ScriptPath & "Readme.txt", sProjPath & "\Readme.txt")
+        File_Copy(APP_ScriptPath & "标准项目.tbs", sProjPath & "\src\Main.tbs")
+		
+	Case "控制台项目"
+        
+        Project_Icon = "控制台应用"
+        Project_Library = """Console"""
+		Project_Files = "{""Path"": ""src\\Main.tbs"", ""Open"": true}"
+        
+        File_Copy(APP_ScriptPath & "app_cui.ico", sProjPath & "\res\app.icon")
+        File_Copy(APP_ScriptPath & "Readme.txt", sProjPath & "\Readme.txt")
+        File_Copy(APP_ScriptPath & "控制台项目.tbs", sProjPath & "\src\Main.tbs")
+        
+	Case "多线程项目"
+        
+        Project_Icon = "标准应用"
+        Project_Library = """Redis"", ""RedisServer"", ""GlobalData"""
+		Project_Files = "{""Path"": ""src\\Main.tbs"", ""Open"": true}"
+        
+        File_Copy(APP_ScriptPath & "app_gui.ico", sProjPath & "\res\app.icon")
+        File_Copy(APP_ScriptPath & "Readme.txt", sProjPath & "\Readme.txt")
+        File_Copy(APP_ScriptPath & "多线程项目.tbs", sProjPath & "\src\Main.tbs")
+		
+End Select
+
+' 修改工程文件
+Dim sProjText As String = File_Load(sProjFile)
+Dim Project_Description As String = sProjName
+Dim Project_AppPath As String = "release"
+Dim Build_File As String = sProjName & ".exe"
+Dim Build_Icon As String = "res\\app.icon"
+sProjText = Expand$(sProjText)
+File_Save(sProjFile, A2U(sProjText))
+
+

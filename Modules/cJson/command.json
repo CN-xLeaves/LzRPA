@@ -24,7 +24,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": true,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "n = cJSON_LibIsLoaded[()]",
       "Help": {
         "Caption": "cJSON_LibIsLoaded",
@@ -41,7 +41,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": true,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "pNode = cJSON_Parse(sStringBuffer)",
       "Help": {
         "Caption": "cJSON_Parse",
@@ -65,7 +65,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": true,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "cJSON_Delete(pJson)",
       "Help": {
         "Caption": "cJSON_Delete",
@@ -89,7 +89,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": true,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "s = cJSON_Print(pJson)",
       "Help": {
         "Caption": "cJSON_Print",
@@ -113,7 +113,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": true,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "s = cJSON_Version[()]",
       "Help": {
         "Caption": "cJSON_Version",
@@ -130,7 +130,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": true,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "pNode = cJSON_GetObjectItem(pJson, sItemName)",
       "Help": {
         "Caption": "cJSON_GetObjectItem",
@@ -160,7 +160,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": true,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "pNode = cJSON_GetObjectItemCaseSensitive(pJson, sItemName)",
       "Help": {
         "Caption": "cJSON_GetObjectItemCaseSensitive",
@@ -190,7 +190,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": true,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "s = cJSON_GetError[()]",
       "Help": {
         "Caption": "cJSON_GetError",
@@ -207,7 +207,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": true,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "pNode = cJSON_GetArrayItem(pJson, lIdx)",
       "Help": {
         "Caption": "cJSON_GetArrayItem",
@@ -237,7 +237,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": true,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "n = cJSON_GetArraySize(pJson)",
       "Help": {
         "Caption": "cJSON_GetArraySize",
@@ -261,7 +261,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": true,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "n = cJSON_HasObjectItem(pJson, sItemName)",
       "Help": {
         "Caption": "cJSON_HasObjectItem",
@@ -291,7 +291,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": true,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "n = cJSON_IsRaw(pJson)",
       "Help": {
         "Caption": "cJSON_IsRaw",
@@ -315,7 +315,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": true,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "n = cJSON_IsObject(pJson)",
       "Help": {
         "Caption": "cJSON_IsObject",
@@ -339,7 +339,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": true,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "n = cJSON_IsArray(pJson)",
       "Help": {
         "Caption": "cJSON_IsArray",
@@ -363,7 +363,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": true,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "n = cJSON_IsString(pJson)",
       "Help": {
         "Caption": "cJSON_IsString",
@@ -387,7 +387,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": true,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "n = cJSON_IsNumber(pJson)",
       "Help": {
         "Caption": "cJSON_IsNumber",
@@ -411,7 +411,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": true,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "n = cJSON_IsNull(pJson)",
       "Help": {
         "Caption": "cJSON_IsNull",
@@ -435,7 +435,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": true,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "n = cJSON_IsBool(pJson)",
       "Help": {
         "Caption": "cJSON_IsBool",
@@ -459,7 +459,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": true,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "n = cJSON_IsTrue(pJson)",
       "Help": {
         "Caption": "cJSON_IsTrue",
@@ -483,7 +483,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": true,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "n = cJSON_IsFalse(pJson)",
       "Help": {
         "Caption": "cJSON_IsFalse",
@@ -507,7 +507,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": true,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "n = cJSON_IsInvalid(pJson)",
       "Help": {
         "Caption": "cJSON_IsInvalid",
@@ -531,7 +531,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": true,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "pNode = cJSON_Item_GetChild(pJson)",
       "Help": {
         "Caption": "cJSON_Item_GetChild",
@@ -555,7 +555,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": true,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "pNode = cJSON_Item_GetPrev(pJson)",
       "Help": {
         "Caption": "cJSON_Item_GetPrev",
@@ -579,7 +579,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": true,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "pNode = cJSON_Item_GetNext(pJson)",
       "Help": {
         "Caption": "cJSON_Item_GetNext",
@@ -603,7 +603,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": true,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "s = cJSON_Item_GetName(pJson)",
       "Help": {
         "Caption": "cJSON_Item_GetName",
@@ -627,7 +627,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": true,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "s = cJSON_Item_GetText(pJson)",
       "Help": {
         "Caption": "cJSON_Item_GetText",
@@ -651,7 +651,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": true,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "n = cJSON_Item_GetType(pJson)",
       "Help": {
         "Caption": "cJSON_Item_GetType",
@@ -675,7 +675,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": true,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "n = cJSON_Item_GetType(pJson)",
       "Help": {
         "Caption": "cJSON_Item_GetTypeName",
@@ -699,7 +699,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": true,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "s = cJSON_Item_GetValue(pJson)",
       "Help": {
         "Caption": "cJSON_Item_GetValue",
@@ -723,7 +723,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": true,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "n = cJSON_Item_GetValueNumber(pJson)",
       "Help": {
         "Caption": "cJSON_Item_GetValueNumber",
@@ -747,7 +747,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": false,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "cJSON_GetPathItem(pJson, \"root.dict(1).Key\")",
       "Help": {
         "Caption": "cJSON_GetPathItem",
@@ -777,7 +777,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": false,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "cJSON_GetPathItemByString(sJson, \"root.dict(1).Key\")",
       "Help": {
         "Caption": "cJSON_GetPathItemByString",
@@ -807,7 +807,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": false,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "cJSON_GetPathItemByFile(sPath, \"root.dict(1).Key\")",
       "Help": {
         "Caption": "cJSON_GetPathItemByFile",
@@ -837,7 +837,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": false,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "cJSON_GetPathValue(pJson, \"root.dict(1).Key\")",
       "Help": {
         "Caption": "cJSON_GetPathValue",
@@ -867,7 +867,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": false,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "cJSON_GetPathValueByString(sJson, \"root.dict(1).Key\")",
       "Help": {
         "Caption": "cJSON_GetPathValueByString",
@@ -897,7 +897,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": false,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "cJSON_GetPathValueByFile(sPath, \"root.dict(1).Key\")",
       "Help": {
         "Caption": "cJSON_GetPathValueByFile",
@@ -927,7 +927,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": false,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "cJSON_GetPathValueNumber(pJson, \"root.dict(1).Key\")",
       "Help": {
         "Caption": "cJSON_GetPathValueNumber",
@@ -957,7 +957,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": false,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "cJSON_GetPathValueNumberByString(sJson, \"root.dict(1).Key\")",
       "Help": {
         "Caption": "cJSON_GetPathValueNumberByString",
@@ -987,7 +987,7 @@
       "Icon": "函数",
       "Templet": "command",
       "Visible": false,
-      "Function": true,
+      "Keyword": true,
       "InsCode": "cJSON_GetPathValueNumberByFile(sPath, \"root.dict(1).Key\")",
       "Help": {
         "Caption": "cJSON_GetPathValueNumberByFile",

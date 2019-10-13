@@ -58,7 +58,7 @@
             "Remark": "创建托盘",
             "Icon": "属性",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "CreaTray(\"LzRPA\", -1)",
             "Templet": "command",
             "Help": {
@@ -88,7 +88,7 @@
             "Remark": "托盘气泡提示",
             "Icon": "属性",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "Tips(\"我是气泡提示。。。\") : TracePrint(运行状态)",
             "Templet": "command",
             "Help": {
@@ -112,7 +112,7 @@
             "Remark": "卸载托盘",
             "Icon": "属性",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "UnTray()",
             "Templet": "command",
             "Help": {
@@ -128,7 +128,7 @@
             "Caption": "About",
             "Remark": "生成插件帮助文档",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "TracePrint SmWeb.About()",
             "Templet": "command",
             "Help": {
@@ -144,7 +144,7 @@
             "Caption": "Ver",
             "Remark": "取插件版本",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "TracePrint SmWeb.Ver()",
             "Templet": "command",
             "Help": {
@@ -160,7 +160,7 @@
             "Caption": "GetBasePath",
             "Remark": "取插件路径",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "TracePrint SmWeb.GetBasePath()",
             "Templet": "command",
             "Help": {
@@ -176,7 +176,7 @@
             "Caption": "GetID",
             "Remark": "取插件对象ID",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "TracePrint SmWeb.GetID()",
             "Templet": "command",
             "Help": {
@@ -192,7 +192,7 @@
             "Caption": "GetLastError",
             "Remark": "获取错误描述",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "TracePrint SmWeb.GetLastError()",
             "Templet": "command",
             "Help": {
@@ -208,7 +208,7 @@
             "Caption": "SetShowErrorMsg",
             "Remark": "设置是否显示弹窗错误",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "TracePrint SmWeb.SetShowErrorMsg(IsShow)",
             "Templet": "command",
             "Help": {
@@ -229,7 +229,6 @@
         },
         {
             "Caption": "基本命令",
-            "Remark": "",
             "Icon": "文件夹",
             "Visible": true,
             "Templet": "index",
@@ -241,7 +240,7 @@
                     "Caption": "Init",
                     "Remark": "初始化插件",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "'//记得要先初始化插件，才能用其他功能\nTracePrint SmWeb.Init()\n\n'//启动谷歌浏览器\nIf SmWeb.Bind(\"Chrome.exe\") Then \n    \n    '打开百度网址\n    SmWeb.TabGo(\"https://www.baidu.com/\")\n    Delay(2000)\n    \n    '输入“神梦填表”\n    SmWebInput(\"神梦填表\", \"id:kw\") \n    Delay(2000)\n    \n    '点击百度一下\n    SmWebClick(\"id:su\")\n    Delay(3500)\n    \n    MsgBox \"脚本执行完毕！\", 1+64+4096, \"填表例子\"\nElse \n    MsgBox \"出错，绑定浏览器失败！\", 1 + 16 + 4096, \"警告！\"\n    ExitScript \nEnd If\n\n\n",
                     "Templet": "command",
                     "Help": {
@@ -257,7 +256,7 @@
                     "Caption": "FindWebHwnd",
                     "Remark": "查找符合要求的浏览器句柄",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint SmWeb.FindWebHwnd(\"http://www.baidu.com\", 1 + 0)",
                     "Templet": "command",
                     "Help": {
@@ -286,7 +285,7 @@
                     "Caption": "Bind",
                     "Remark": "绑定浏览器",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "'绑定IE浏览器\nTracePrint SmWeb.Bind(\"IE.exe\")\n\n'绑定谷歌浏览器\nTracePrint SmWeb.Bind(\"Chrome.exe\")\n\n'绑定浏览器句柄\nTracePrint SmWeb.Bind(123456)",
                     "Templet": "command",
                     "Help": {
@@ -309,7 +308,7 @@
                     "Caption": "Quit",
                     "Remark": "退出绑定的浏览器",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint SmWeb.Quit()",
                     "Templet": "command",
                     "Help": {
@@ -325,7 +324,6 @@
         },
         {
             "Caption": "网页命令",
-            "Remark": "",
             "Icon": "文件夹",
             "Visible": true,
             "Templet": "index",
@@ -337,7 +335,7 @@
                     "Caption": "ClearHistory",
                     "Remark": "清除历史记录",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint SmWeb.ClearHistory()",
                     "Templet": "command",
                     "Help": {
@@ -353,7 +351,7 @@
                     "Caption": "ClearTemp",
                     "Remark": "清除临时文件",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint SmWeb.ClearTemp()",
                     "Templet": "command",
                     "Help": {
@@ -369,7 +367,7 @@
                     "Caption": "ClearCookie",
                     "Remark": "清除Cookie",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint SmWeb.ClearCookie()",
                     "Templet": "command",
                     "Help": {
@@ -385,7 +383,7 @@
                     "Caption": "SetProxy",
                     "Remark": "设置浏览器代理IP",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "'设置代理IP\nTracePrint SmWeb.SetProxy(\"127.0.0.1:80\")\n\n'取消代理IP\nTracePrint SmWeb.SetProxy()\n\n\n",
                     "Templet": "command",
                     "Help": {
@@ -408,7 +406,7 @@
                     "Caption": "SetjQuery",
                     "Remark": "设置引用jQuery",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "'引用百度的JQ库\nTracePrint SmWeb.SetjQuery(\"baidu\")\n\n'引用内网的JQ库\nTracePrint SmWeb.SetjQuery(\"localhost\")\n\n'引用官网的JQ库\nTracePrint SmWeb.SetjQuery(\"jquery\")\n\n'取消JQ效果\nTracePrint SmWeb.SetjQuery()\n\n\n",
                     "Templet": "command",
                     "Help": {
@@ -431,7 +429,7 @@
                     "Caption": "Frame_Enum",
                     "Remark": "递归枚举网页框架",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Dim Framelist As Variant\nFramelist = SmWeb.Frame_Enum()\nFramelist = Split(Framelist, \"|\")\nFor i = 0 To Ubound(Framelist)\n    TracePrint \"框架索引：\" & Framelist(i)\nNext",
                     "Templet": "command",
                     "Help": {
@@ -447,7 +445,7 @@
                     "Caption": "Frame_Load",
                     "Remark": "进入框架",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint SmWeb.Frame_Load(\"0>1\")",
                     "Templet": "command",
                     "Help": {
@@ -470,7 +468,7 @@
                     "Caption": "Frame_Exit",
                     "Remark": "退出框架",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint SmWeb.Frame_Exit()",
                     "Templet": "command",
                     "Help": {
@@ -486,7 +484,7 @@
                     "Caption": "TabRunJS",
                     "Remark": "当前网页执行JS代码",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "'可以用 jQuery 来修改标题, 我内置集成了 jQuery 1.11.3\nSmWeb.TabRunJS(0, \"$('title')('神梦无痕');\")\n\n'利用JS语句返回网页标题，必须加 return 语句才有返回值\nTracePrint SmWeb.TabRunJS(1, \"var t=document.title;return t;\")\n\n'获取传入JS的参数\nTracePrint SmWeb.TabRunJS(1, \"return arguments[0];\", \"我是传入的参数\")",
                     "Templet": "command",
                     "Help": {
@@ -521,7 +519,7 @@
                     "Caption": "TabGetHwnd",
                     "Remark": "获取网页句柄",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint SmWeb.TabGetHwnd()",
                     "Templet": "command",
                     "Help": {
@@ -537,7 +535,7 @@
                     "Caption": "TabGetURL",
                     "Remark": "获取网页地址",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint SmWeb.TabGetURL() ",
                     "Templet": "command",
                     "Help": {
@@ -553,7 +551,7 @@
                     "Caption": "TabGetTitle",
                     "Remark": "获取网页标题",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint SmWeb.TabGetTitle()",
                     "Templet": "command",
                     "Help": {
@@ -569,7 +567,7 @@
                     "Caption": "TabGetHTML",
                     "Remark": "获取网页源码",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint SmWeb.TabGetHTML()",
                     "Templet": "command",
                     "Help": {
@@ -585,7 +583,7 @@
                     "Caption": "TabGetCharset",
                     "Remark": "获取网页编码",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint SmWeb.TabGetCharset()",
                     "Templet": "command",
                     "Help": {
@@ -601,7 +599,7 @@
                     "Caption": "TabGetCookie",
                     "Remark": "获取网页Cookie",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint SmWeb.TabGetCookie()",
                     "Templet": "command",
                     "Help": {
@@ -617,7 +615,7 @@
                     "Caption": "TabGetUserAgent",
                     "Remark": "获取当前网页UserAgent",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint  SmWeb.TabGetUserAgent()",
                     "Templet": "command",
                     "Help": {
@@ -633,7 +631,7 @@
                     "Caption": "TabGetScroll",
                     "Remark": "获取滚动条所在位置",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint  SmWeb.TabGetScroll()",
                     "Templet": "command",
                     "Help": {
@@ -649,7 +647,7 @@
                     "Caption": "TabIsReady",
                     "Remark": "判断网页是否加载完毕",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint  SmWeb.TabIsReady(30)",
                     "Templet": "command",
                     "Help": {
@@ -672,7 +670,7 @@
                     "Caption": "TabIsReadyEx",
                     "Remark": "判断网页是否加载完毕加强版",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint  SmWeb.TabIsReadyEx(\"张三|李四|王五\", 0, 5)",
                     "Templet": "command",
                     "Help": {
@@ -707,7 +705,7 @@
                     "Caption": "TabGo",
                     "Remark": "打开地址，跳转到新的页面",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint  SmWeb.TabGo(\"http://www.神梦.com\")",
                     "Templet": "command",
                     "Help": {
@@ -730,7 +728,7 @@
                     "Caption": "TabForward",
                     "Remark": "前进操作",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint  SmWeb.TabForward()",
                     "Templet": "command",
                     "Help": {
@@ -746,7 +744,7 @@
                     "Caption": "TabBack",
                     "Remark": "后退操作",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint  SmWeb.TabBack()",
                     "Templet": "command",
                     "Help": {
@@ -762,7 +760,7 @@
                     "Caption": "TabRefresh",
                     "Remark": "刷新当前页面",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint  SmWeb.TabRefresh()",
                     "Templet": "command",
                     "Help": {
@@ -778,7 +776,7 @@
                     "Caption": "TabStop",
                     "Remark": "停止加载页面",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint  SmWeb.TabStop()",
                     "Templet": "command",
                     "Help": {
@@ -794,7 +792,7 @@
                     "Caption": "TabNew",
                     "Remark": "创建一个新的标签",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint  SmWeb.TabNew(\"about:blank\")",
                     "Templet": "command",
                     "Help": {
@@ -817,7 +815,7 @@
                     "Caption": "TabGoto",
                     "Remark": "切换到指定标签页",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "'IE浏览器切换标签页\nTracePrint  SmWeb.TabGoto(123456)\n\n'谷歌浏览器切换标签页\nTracePrint  SmWeb.TabGoto(\"D038B8E1D711176709F3C233D064F80D\")",
                     "Templet": "command",
                     "Help": {
@@ -840,7 +838,7 @@
                     "Caption": "TabClose",
                     "Remark": "关闭当前标签，也支持指定标签句柄",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "'关闭当前标签页\nTracePrint  SmWeb.TabClose()\n\n'IE浏览器关闭指定标签页\nTracePrint  SmWeb.TabClose(123456)\n\n'谷歌浏览器关闭指定标签页\nTracePrint  SmWeb.TabClose(\"D038B8E1D711176709F3C233D064F80D\")",
                     "Templet": "command",
                     "Help": {
@@ -863,7 +861,7 @@
                     "Caption": "TabEnumEle",
                     "Remark": "当前网页枚举标记指定标签",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint  SmWeb.TabEnumEle(\"A\")",
                     "Templet": "command",
                     "Help": {
@@ -886,7 +884,7 @@
                     "Caption": "TabScrollTo",
                     "Remark": "当前网页滚动到指定位置",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint  SmWeb.TabScrollTo(123, 456)",
                     "Templet": "command",
                     "Help": {
@@ -915,7 +913,7 @@
                     "Caption": "TabSetCookie",
                     "Remark": "设置当前页面Cookie",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint  SmWeb.TabSetCookie(\"smwh=123;\")",
                     "Templet": "command",
                     "Help": {
@@ -938,7 +936,7 @@
                     "Caption": "TabSetUserAgent",
                     "Remark": "设置浏览器UserAgent",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint  SmWeb.TabSetUserAgent(\"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.50 (KHTML, like Gecko) Version/5.1 Safari/534.50\")",
                     "Templet": "command",
                     "Help": {
@@ -961,7 +959,7 @@
                     "Caption": "TabNoMsgbox",
                     "Remark": "禁止当前网页中弹出的信息框",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint  SmWeb.TabNoMsgbox()",
                     "Templet": "command",
                     "Help": {
@@ -977,7 +975,7 @@
                     "Caption": "TabZoom",
                     "Remark": "放大或缩小网页视图",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint  SmWeb.TabZoom(50)",
                     "Templet": "command",
                     "Help": {
@@ -1000,7 +998,7 @@
                     "Caption": "TabKeyLight",
                     "Remark": "高亮网页上指定的关键字",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint  SmWeb.TabKeyLight(\"神梦\", \"FF0000\", \"D6F20D\", True)",
                     "Templet": "command",
                     "Help": {
@@ -1041,7 +1039,7 @@
                     "Caption": "TabPreDialog",
                     "Remark": "预处理弹窗",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint  SmWeb.TabPreDialog(\"神梦无痕\",  true, 30)",
                     "Templet": "command",
                     "Help": {
@@ -1076,7 +1074,7 @@
                     "Caption": "TabGetDialog",
                     "Remark": "获取弹出窗口上的文本内容",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint  SmWeb.TabGetDialog()",
                     "Templet": "command",
                     "Help": {
@@ -1092,7 +1090,7 @@
                     "Caption": "TabSnapShot",
                     "Remark": "网页截屏并保存图像",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint  SmWeb.TabSnapShot(0, 0, 0, 0, \"C:\\1.jpg\")",
                     "Templet": "command",
                     "Help": {
@@ -1139,7 +1137,7 @@
                     "Caption": "TabSave",
                     "Remark": "下载保存文件",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint  SmWeb.TabSave(\"http://bbs.anjian.com/templates/default/Images/logo1.png\", \"C:\\logo1.png\")",
                     "Templet": "command",
                     "Help": {
@@ -1168,7 +1166,6 @@
         },
         {
             "Caption": "元素命令",
-            "Remark": "",
             "Icon": "文件夹",
             "Visible": true,
             "Templet": "index",
@@ -1180,7 +1177,7 @@
                     "Caption": "HtmlExists",
                     "Remark": "判断网页元素是否存在",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "'WQM格式\nTracePrint  SmWebExists(\"id:su\")\n\n'CSS格式\nTracePrint  SmWebExists(\"#su\")\n\n'XPath格式\nTracePrint  SmWebExists(\"//*[@id='su']\")",
                     "Templet": "command",
                     "Help": {
@@ -1203,7 +1200,7 @@
                     "Caption": "HtmlEnum",
                     "Remark": "枚举网页元素匹配数量",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Dim 元素特征 As String\nDim Enums As Long\nDim i As Long\n\n'//枚举标记同名的txt特征\n元素特征 = \"tag:A&txt:今日热点\"\nEnums = SmWebEnum(元素特征)\nFor i = 0 To Enums - 1\n    TracePrint \"【\"& i &\"】：\" & SmWebGet(\"outerHTML\",  元素特征 & \"&enum:\" & i)\nNext",
                     "Templet": "command",
                     "Help": {
@@ -1226,7 +1223,7 @@
                     "Caption": "HtmlFocus",
                     "Remark": "设置元素焦点",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint SmWebFocus(\"id:kw\")",
                     "Templet": "command",
                     "Help": {
@@ -1249,7 +1246,7 @@
                     "Caption": "HtmlBlur",
                     "Remark": "失去元素焦点",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint SmWebBlur(\"id:kw\")",
                     "Templet": "command",
                     "Help": {
@@ -1272,7 +1269,7 @@
                     "Caption": "HtmlClick",
                     "Remark": "点击网页元素",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint SmWebClick(\"id:su\")",
                     "Templet": "command",
                     "Help": {
@@ -1295,7 +1292,7 @@
                     "Caption": "HtmlInput",
                     "Remark": "往文本框中输入文字",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint SmWebInput(\"id:kw\")",
                     "Templet": "command",
                     "Help": {
@@ -1318,7 +1315,7 @@
                     "Caption": "HtmlCheck",
                     "Remark": "选择/清除网页中的单选框或复选框",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint SmWebCheck(\"id:myCheck\")",
                     "Templet": "command",
                     "Help": {
@@ -1341,7 +1338,7 @@
                     "Caption": "HtmlSelect",
                     "Remark": "选择网页中的下拉框",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint SmWebSelect(\"id:mySelect\")",
                     "Templet": "command",
                     "Help": {
@@ -1364,7 +1361,7 @@
                     "Caption": "HtmlGet",
                     "Remark": "获取网页元素的信息",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint SmWebGet(\"value\", \"id:su\")",
                     "Templet": "command",
                     "Help": {
@@ -1393,7 +1390,7 @@
                     "Caption": "HtmlSet",
                     "Remark": "设置网页元素的信息",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint SmWebSet(\"value\", \"神梦无痕\", \"id:su\")",
                     "Templet": "command",
                     "Help": {
@@ -1428,7 +1425,7 @@
                     "Caption": "HtmlScroll",
                     "Remark": "网页滚动到指定网页元素位置",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint SmWebScroll(\"id:su\")",
                     "Templet": "command",
                     "Help": {
@@ -1451,7 +1448,7 @@
                     "Caption": "HtmlHover",
                     "Remark": "执行指定网页元素悬停事件",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint SmWebHover(\"id:su\")",
                     "Templet": "command",
                     "Help": {
@@ -1474,7 +1471,7 @@
                     "Caption": "HtmlSwipe",
                     "Remark": "执行指定网页元素滑动事件",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint SmWebSwipe(123, 456, 789, 456, \"id:mySwipe\")",
                     "Templet": "command",
                     "Help": {
@@ -1515,7 +1512,7 @@
                     "Caption": "HtmlEvent",
                     "Remark": "执行指定网页元素相关事件方法",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint SmWebEvent(\"change\", \"id:kw\")",
                     "Templet": "command",
                     "Help": {
@@ -1544,7 +1541,7 @@
                     "Caption": "HtmlInputFile",
                     "Remark": "上传文件",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint SmWebInputFile(\"C:\\1.jpg|C:\\2.jpg\", \"tag:INPUT&type:file\")",
                     "Templet": "command",
                     "Help": {
@@ -1573,7 +1570,7 @@
                     "Caption": "HtmlBorder",
                     "Remark": "设置网页元素边框添加或还原",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint SmWebBorder(true, \"id:myBorder\")",
                     "Templet": "command",
                     "Help": {
@@ -1602,7 +1599,7 @@
                     "Caption": "HtmlEnabled",
                     "Remark": "设置网页元素是否启用",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint SmWebEnabled()",
                     "Templet": "command",
                     "Help": {
@@ -1631,7 +1628,7 @@
                     "Caption": "HtmlVisible",
                     "Remark": "设置网页元素是否显示",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint SmWebVisible(false, \"id:su\")",
                     "Templet": "command",
                     "Help": {
@@ -1666,7 +1663,7 @@
                     "Caption": "HtmlIsEnabled",
                     "Remark": "判断网页元素是否启用",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint SmWebIsEnabled(\"id:su\")",
                     "Templet": "command",
                     "Help": {
@@ -1689,7 +1686,7 @@
                     "Caption": "HtmlIsVisible",
                     "Remark": "判断网页元素是否显示",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint SmWebIsVisible(\"id:su\")",
                     "Templet": "command",
                     "Help": {
@@ -1712,7 +1709,7 @@
                     "Caption": "HtmlImage",
                     "Remark": "获取网页元素的图片并保存",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint SmWebImage(\"C:\\img.jpg\", \"tag:IMG\")",
                     "Templet": "command",
                     "Help": {
@@ -1741,7 +1738,7 @@
                     "Caption": "HtmlOffset",
                     "Remark": "获取网页元素的坐标",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint SmWebOffset(\"id:su\")",
                     "Templet": "command",
                     "Help": {
@@ -1764,7 +1761,7 @@
                     "Caption": "HtmlReadCSS",
                     "Remark": "获取指定网页元素的 CSS 选择器",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint SmWebReadCSS(\"#su\")",
                     "Templet": "command",
                     "Help": {
@@ -1787,7 +1784,7 @@
                     "Caption": "HtmlReadXPath",
                     "Remark": "获取指定网页元素的 XPath 选择器",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint SmWebReadXPath(\"//*[@id='su']\")",
                     "Templet": "command",
                     "Help": {
@@ -1810,7 +1807,7 @@
                     "Caption": "HtmlReadWQM",
                     "Remark": "获取指定网页元素的 WQM 选择器",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint SmWebReadWQM(\"id:su\")",
                     "Templet": "command",
                     "Help": {
@@ -1833,7 +1830,7 @@
                     "Caption": "HtmlTable",
                     "Remark": "操作网页中的表格",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint SmWebTable(\"0\", 0, 1, \"神梦无痕\", \"id:myTable\")",
                     "Templet": "command",
                     "Help": {
@@ -1880,7 +1877,7 @@
                     "Caption": "HtmlGetTable",
                     "Remark": "获取网页中的表格",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint SmWebGetTable(\"0\", 0, 1, \"id:myTable\")",
                     "Templet": "command",
                     "Help": {
@@ -1921,7 +1918,7 @@
                     "Caption": "HtmlGetList",
                     "Remark": "获取网页中的列表指定索引内容",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint SmWebGetList(0, \"id:myList\")",
                     "Templet": "command",
                     "Help": {
@@ -1950,7 +1947,6 @@
         },
         {
             "Caption": "图色命令",
-            "Remark": "",
             "Icon": "文件夹",
             "Visible": true,
             "Templet": "index",
@@ -1962,7 +1958,7 @@
                     "Caption": "GetPixelColor",
                     "Remark": "后台取色",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint SmWeb.GetPixelColor(123, 456)",
                     "Templet": "command",
                     "Help": {
@@ -1991,7 +1987,7 @@
                     "Caption": "CmpColor",
                     "Remark": "后台比色",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint SmWeb.CmpColor(123, 345, \"FF00FF\", 0.9)",
                     "Templet": "command",
                     "Help": {
@@ -2032,7 +2028,7 @@
                     "Caption": "FindColor",
                     "Remark": "后台找色",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Dim intX, intY As Integer\nTracePrint SmWeb.FindColor(0, 0, 0, 0, \"FF00FF\", 0,9, intX, intY)\nTracePrint intX\nTracePrint intY\n\n",
                     "Templet": "command",
                     "Help": {
@@ -2097,7 +2093,7 @@
                     "Caption": "FindPic",
                     "Remark": "后台找图",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Dim intX, intY As Integer\nTracePrint SmWeb.FindPic(0, 0, 0, 0, \"C:\\1.bmp|C:\\2.bmp\", 0,9, intX, intY)\nTracePrint intX\nTracePrint intY\n\n",
                     "Templet": "command",
                     "Help": {
@@ -2162,7 +2158,6 @@
         },
         {
             "Caption": "鼠键命令",
-            "Remark": "",
             "Icon": "文件夹",
             "Visible": true,
             "Templet": "index",
@@ -2174,7 +2169,7 @@
                     "Caption": "KeyDown",
                     "Remark": "模拟键盘按下",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint SmWeb.KeyDown(65)",
                     "Templet": "command",
                     "Help": {
@@ -2197,7 +2192,7 @@
                     "Caption": "KeyUp",
                     "Remark": "模拟键盘弹起",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint SmWeb.KeyUp(65)",
                     "Templet": "command",
                     "Help": {
@@ -2220,7 +2215,7 @@
                     "Caption": "KeyPress",
                     "Remark": "模拟键盘点击",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint SmWeb.KeyPress(13)",
                     "Templet": "command",
                     "Help": {
@@ -2243,7 +2238,7 @@
                     "Caption": "KeyGroup",
                     "Remark": "模拟键盘组合键",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint SmWeb.KeyGroup(\"Ctrl+A\")",
                     "Templet": "command",
                     "Help": {
@@ -2266,7 +2261,7 @@
                     "Caption": "SendString",
                     "Remark": "模拟输入文字",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint SmWeb.SendString(\"神梦无痕\")",
                     "Templet": "command",
                     "Help": {
@@ -2289,7 +2284,7 @@
                     "Caption": "MoveTo",
                     "Remark": "模拟鼠标移动",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint SmWeb.MoveTo(123, 456)",
                     "Templet": "command",
                     "Help": {
@@ -2318,7 +2313,7 @@
                     "Caption": "LeftDown",
                     "Remark": "模拟鼠标左键按下",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint SmWeb.LeftDown(123, 456)",
                     "Templet": "command",
                     "Help": {
@@ -2347,7 +2342,7 @@
                     "Caption": "LeftUp",
                     "Remark": "模拟鼠标左键弹起",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint SmWeb.LeftUp(123, 456)",
                     "Templet": "command",
                     "Help": {
@@ -2376,7 +2371,7 @@
                     "Caption": "LeftClick",
                     "Remark": "模拟鼠标左键单击",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint SmWeb.LeftClick(123, 456)",
                     "Templet": "command",
                     "Help": {
@@ -2405,7 +2400,7 @@
                     "Caption": "LeftDoubleClick",
                     "Remark": "模拟鼠标左键双击",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint SmWeb.LeftDoubleClick(123, 456)",
                     "Templet": "command",
                     "Help": {
@@ -2434,7 +2429,7 @@
                     "Caption": "MouseWheel",
                     "Remark": "模拟鼠标滚轮滚动",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "TracePrint SmWeb.MouseWheel(100)",
                     "Templet": "command",
                     "Help": {

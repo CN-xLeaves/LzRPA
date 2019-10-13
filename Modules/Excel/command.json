@@ -34,7 +34,7 @@
                     "Remark": "活动的窗口",
                     "Icon": "属性",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "ActiveWindow",
                     "Templet": "command",
                     "Help": {
@@ -51,7 +51,7 @@
                             "Caption": "Close",
                             "Remark": "关闭活动窗口",
                             "Visible": true,
-                            "Function": true,
+                            "Keyword": true,
                             "InsCode": "Close",
                             "Templet": "command",
                             "Help": {
@@ -71,7 +71,7 @@
                     "Remark": "活动的工作簿",
                     "Icon": "属性",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "ActiveWorkbook",
                     "Templet": "command",
                     "Help": {
@@ -89,7 +89,7 @@
                     "Remark": "活动的工作表",
                     "Icon": "属性",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "ActiveSheet",
                     "Templet": "command",
                     "Help": {
@@ -107,7 +107,7 @@
                     "Remark": "活动单元格",
                     "Icon": "属性",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "ActiveCell",
                     "Templet": "command",
                     "Help": {
@@ -125,7 +125,7 @@
                     "Remark": "选中的对象",
                     "Icon": "属性",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Selection",
                     "Templet": "command",
                     "Help": {
@@ -143,7 +143,7 @@
                     "Remark": "是否显示",
                     "Icon": "属性",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Visible",
                     "Templet": "command",
                     "Help": {
@@ -161,7 +161,7 @@
                     "Remark": "显示对话框",
                     "Icon": "属性",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "DisplayAlerts",
                     "Templet": "command",
                     "Help": {
@@ -179,7 +179,7 @@
                     "Remark": "拖放覆盖警告",
                     "Icon": "属性",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "AlertBeforeOverwriting",
                     "Templet": "command",
                     "Help": {
@@ -197,7 +197,7 @@
                     "Remark": "版本",
                     "Icon": "属性",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Version",
                     "Templet": "command",
                     "Help": {
@@ -214,7 +214,7 @@
                     "Caption": "Quit",
                     "Remark": "退出",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Quit",
                     "Templet": "command",
                     "Help": {
@@ -231,7 +231,7 @@
                     "Caption": "IsNothing",
                     "Remark": "对象是否创建成功",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "IsNothing",
                     "Templet": "command",
                     "Help": {
@@ -248,7 +248,7 @@
                     "Caption": "SendKeys",
                     "Remark": "发送按键",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "SendKeys(\"Keys\")",
                     "Templet": "command",
                     "Help": {
@@ -282,7 +282,7 @@
                             "Remark": "工作簿数量",
                             "Icon": "属性",
                             "Visible": true,
-                            "Function": true,
+                            "Keyword": true,
                             "InsCode": "Count",
                             "Templet": "command",
                             "Help": {
@@ -299,7 +299,7 @@
                             "Caption": "Add",
                             "Remark": "创建工作簿",
                             "Visible": true,
-                            "Function": true,
+                            "Keyword": true,
                             "InsCode": "Add",
                             "Templet": "command",
                             "Help": {
@@ -316,7 +316,7 @@
                             "Caption": "Open",
                             "Remark": "打开工作簿",
                             "Visible": true,
-                            "Function": true,
+                            "Keyword": true,
                             "InsCode": "Open(\"文件路径\", 2, false, 5, \"\")",
                             "Templet": "command",
                             "Help": {
@@ -369,7 +369,7 @@
                             "Caption": "Close",
                             "Remark": "关闭工作簿",
                             "Visible": true,
-                            "Function": true,
+                            "Keyword": true,
                             "InsCode": "Close",
                             "Templet": "command",
                             "Help": {
@@ -401,7 +401,7 @@
                     "Remark": "活动的工作表",
                     "Icon": "属性",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "ActiveSheet",
                     "Templet": "command",
                     "Help": {
@@ -419,7 +419,7 @@
                     "Remark": "文件路径",
                     "Icon": "属性",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "FullName",
                     "Templet": "command",
                     "Help": {
@@ -437,7 +437,7 @@
                     "Remark": "工作簿名称",
                     "Icon": "属性",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Name",
                     "Templet": "command",
                     "Help": {
@@ -455,7 +455,7 @@
                     "Remark": "是否已保存",
                     "Icon": "属性",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Saved",
                     "Templet": "command",
                     "Help": {
@@ -472,7 +472,7 @@
                     "Caption": "Activate",
                     "Remark": "激活工作簿",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Activate",
                     "Templet": "command",
                     "Help": {
@@ -489,7 +489,7 @@
                     "Caption": "Save",
                     "Remark": "保存工作簿",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Save",
                     "Templet": "command",
                     "Help": {
@@ -506,7 +506,7 @@
                     "Caption": "SaveAs",
                     "Remark": "另存为工作簿",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "SaveAs",
                     "Templet": "command",
                     "Help": {
@@ -534,7 +534,7 @@
                             "Remark": "工作表数量",
                             "Icon": "属性",
                             "Visible": true,
-                            "Function": true,
+                            "Keyword": true,
                             "InsCode": "Count",
                             "Templet": "command",
                             "Help": {
@@ -551,7 +551,7 @@
                             "Caption": "Add",
                             "Remark": "创建工作表",
                             "Visible": true,
-                            "Function": true,
+                            "Keyword": true,
                             "InsCode": "Add(\"工作表标题\")",
                             "Templet": "command",
                             "Help": {
@@ -574,7 +574,7 @@
                             "Caption": "(Index).Select",
                             "Remark": "选中工作表",
                             "Visible": true,
-                            "Function": true,
+                            "Keyword": true,
                             "InsCode": "(Index).Select",
                             "Templet": "command",
                             "Help": {
@@ -612,7 +612,7 @@
                     "Remark": "工作表标题",
                     "Icon": "属性",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Name",
                     "Templet": "command",
                     "Help": {
@@ -629,7 +629,7 @@
                     "Caption": "Cells",
                     "Remark": "访问单元格",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Cells(行编号, 列编号)",
                     "Templet": "command",
                     "Help": {
@@ -659,7 +659,7 @@
                             "Remark": "单元格的值",
                             "Icon": "属性",
                             "Visible": true,
-                            "Function": true,
+                            "Keyword": true,
                             "InsCode": "Value",
                             "Templet": "command",
                             "Help": {
@@ -678,7 +678,7 @@
                     "Caption": "Range",
                     "Remark": "访问选区",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Range(\"A3:C5\")",
                     "Templet": "command",
                     "Help": {
@@ -702,7 +702,7 @@
                             "Remark": "选区的值",
                             "Icon": "属性",
                             "Visible": true,
-                            "Function": true,
+                            "Keyword": true,
                             "InsCode": "Value",
                             "Templet": "command",
                             "Help": {
@@ -720,7 +720,7 @@
                             "Remark": "选区的值(公式)",
                             "Icon": "属性",
                             "Visible": true,
-                            "Function": true,
+                            "Keyword": true,
                             "InsCode": "Formula",
                             "Templet": "command",
                             "Help": {
@@ -737,7 +737,7 @@
                             "Caption": "Select",
                             "Remark": "选择选区",
                             "Visible": true,
-                            "Function": true,
+                            "Keyword": true,
                             "InsCode": "Select",
                             "Templet": "command",
                             "Help": {
@@ -754,7 +754,7 @@
                             "Caption": "Clear",
                             "Remark": "清空选区内容",
                             "Visible": true,
-                            "Function": true,
+                            "Keyword": true,
                             "InsCode": "Clear",
                             "Templet": "command",
                             "Help": {
@@ -773,7 +773,7 @@
                     "Caption": "Activate",
                     "Remark": "激活工作表",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Activate",
                     "Templet": "command",
                     "Help": {
@@ -790,7 +790,7 @@
                     "Caption": "PrintPreview",
                     "Remark": "打印预览",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "PrintPreview",
                     "Templet": "command",
                     "Help": {
@@ -820,7 +820,7 @@
                     "Remark": "选区的值",
                     "Icon": "属性",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Value",
                     "Templet": "command",
                     "Help": {
@@ -838,7 +838,7 @@
                     "Remark": "选区的值(公式)",
                     "Icon": "属性",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Formula",
                     "Templet": "command",
                     "Help": {
@@ -856,7 +856,7 @@
                     "Remark": "对齐方式",
                     "Icon": "属性",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "HorizontalAlignment",
                     "Templet": "command",
                     "Help": {
@@ -874,7 +874,7 @@
                     "Remark": "数字格式",
                     "Icon": "属性",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "NumberFormat",
                     "Templet": "command",
                     "Help": {
@@ -892,7 +892,7 @@
                     "Remark": "选区路径",
                     "Icon": "属性",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Address",
                     "Templet": "command",
                     "Help": {
@@ -910,7 +910,7 @@
                     "Remark": "列宽度",
                     "Icon": "属性",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "ColumnWidth",
                     "Templet": "command",
                     "Help": {
@@ -927,7 +927,7 @@
                     "Caption": "Clear",
                     "Remark": "清空选区内容",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Clear",
                     "Templet": "command",
                     "Help": {
@@ -944,7 +944,7 @@
                     "Caption": "ClearComments",
                     "Remark": "清空选区注释",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "ClearComments",
                     "Templet": "command",
                     "Help": {
@@ -961,7 +961,7 @@
                     "Caption": "ClearContents",
                     "Remark": "清空选区内容",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "ClearContents",
                     "Templet": "command",
                     "Help": {
@@ -978,7 +978,7 @@
                     "Caption": "ClearFormats",
                     "Remark": "清空选区格式",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "ClearFormats",
                     "Templet": "command",
                     "Help": {
@@ -995,7 +995,7 @@
                     "Caption": "ClearNotes",
                     "Remark": "清空选区笔记",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "ClearNotes",
                     "Templet": "command",
                     "Help": {
@@ -1012,7 +1012,7 @@
                     "Caption": "Select",
                     "Remark": "选择选区",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Select",
                     "Templet": "command",
                     "Help": {

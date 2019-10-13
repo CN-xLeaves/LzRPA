@@ -23,7 +23,7 @@
             "Caption": "Cls",
             "Remark": "清空控制台",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "Cls",
             "Templet": "command",
             "Help": {
@@ -40,7 +40,7 @@
             "Caption": "Print",
             "Remark": "输出文本",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "Print",
             "Templet": "command",
             "Help": {
@@ -81,7 +81,7 @@
             "Caption": "PrintL",
             "Remark": "输出一行文本",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "PrintL",
             "Templet": "command",
             "Help": {
@@ -122,7 +122,7 @@
             "Caption": "WaitKey",
             "Remark": "等待按键",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "WaitKey",
             "Templet": "command",
             "Help": {
@@ -145,7 +145,7 @@
             "Caption": "Console_Read",
             "Remark": "读取输入",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "Console_Read()",
             "Templet": "command",
             "Help": {
@@ -162,7 +162,7 @@
             "Caption": "Console_Line",
             "Remark": "画一条线",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "Console_Line(3, 3, 20, %Console_Line_Vertical)",
             "Templet": "command",
             "Help": {
@@ -203,7 +203,7 @@
             "Caption": "Console_GetCursorX",
             "Remark": "获取横坐标",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "Console_GetCursorX",
             "Templet": "command",
             "Help": {
@@ -220,7 +220,7 @@
             "Caption": "Console_GetCursorY",
             "Remark": "获取纵坐标",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "Console_GetCursorY",
             "Templet": "command",
             "Help": {
@@ -237,7 +237,7 @@
             "Caption": "Console_SetCursorPosition",
             "Remark": "设置光标位置",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "Console_SetCursorPosition(3, 3)",
             "Templet": "command",
             "Help": {
@@ -266,7 +266,7 @@
             "Caption": "Console_GetSizeX",
             "Remark": "获取宽度",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "Console_GetSizeX",
             "Templet": "command",
             "Help": {
@@ -283,7 +283,7 @@
             "Caption": "Console_GetSizeY",
             "Remark": "获取高度",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "Console_GetSizeY",
             "Templet": "command",
             "Help": {
@@ -300,7 +300,7 @@
             "Caption": "Console_GetTitle",
             "Remark": "获取窗口标题",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "Console_GetTitle()",
             "Templet": "command",
             "Help": {
@@ -317,7 +317,7 @@
             "Caption": "Console_SetTitle",
             "Remark": "设置窗口标题",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "Console_SetTitle(\"New Title\")",
             "Templet": "command",
             "Help": {

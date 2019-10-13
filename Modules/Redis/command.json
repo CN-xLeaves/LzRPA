@@ -23,7 +23,7 @@
             "Caption": "RedisConnect",
             "Remark": "连接服务器",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "RedisConnect(\"127.0.0.1\", 6379)",
             "Templet": "command",
             "Help": {
@@ -52,7 +52,7 @@
             "Caption": "RedisConnectWithTimeout",
             "Remark": "连接服务器[超时]",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "RedisConnectWithTimeout(\"127.0.0.1\", 6379, 3000)",
             "Templet": "command",
             "Help": {
@@ -87,7 +87,7 @@
             "Caption": "RedisFree",
             "Remark": "断开连接",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "RedisFree(redisContext)",
             "Templet": "command",
             "Help": {
@@ -110,7 +110,7 @@
             "Caption": "RedisCommand",
             "Remark": "执行命令",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "RedisCommand(redisContext, \"Ping test\")",
             "Templet": "command",
             "Help": {
@@ -138,7 +138,7 @@
             "Caption": "RedisLastError",
             "Remark": "获取错误描述",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "RedisLastError()",
             "Templet": "command",
             "Help": {
@@ -176,7 +176,7 @@
                     "Caption": "Connect",
                     "Remark": "连接服务器",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Connect(\"127.0.0.1\", 6379, 3000)",
                     "Templet": "command",
                     "Help": {
@@ -211,7 +211,7 @@
                     "Caption": "Close",
                     "Remark": "断开连接",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Close()",
                     "Templet": "command",
                     "Help": {
@@ -228,7 +228,7 @@
                     "Caption": "Command",
                     "Remark": "执行命令",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Command(\"Ping test\")",
                     "Templet": "command",
                     "Help": {
@@ -251,7 +251,7 @@
                     "Caption": "Ping",
                     "Remark": "测试服务器连接",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Ping(\"test\")",
                     "Templet": "command",
                     "Help": {
@@ -274,7 +274,7 @@
                     "Caption": "Echo",
                     "Remark": "文字回显",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Echo(\"test\")",
                     "Templet": "command",
                     "Help": {
@@ -297,7 +297,7 @@
                     "Caption": "RandomKey",
                     "Remark": "取随机键",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "RandomKey()",
                     "Templet": "command",
                     "Help": {
@@ -314,7 +314,7 @@
                     "Caption": "DBSize",
                     "Remark": "取键数量",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "DBSize()",
                     "Templet": "command",
                     "Help": {
@@ -331,7 +331,7 @@
                     "Caption": "Keys",
                     "Remark": "获取键列表",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Keys(\"*\")",
                     "Templet": "command",
                     "Help": {
@@ -354,7 +354,7 @@
                     "Caption": "Scan",
                     "Remark": "键迭代器",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Scan(iCursor)",
                     "Templet": "command",
                     "Help": {
@@ -383,7 +383,7 @@
                     "Caption": "Sort",
                     "Remark": "数据排序",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Sort(iCursor)",
                     "Templet": "command",
                     "Help": {
@@ -412,7 +412,7 @@
                     "Caption": "FlushDB",
                     "Remark": "清空数据库",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "FlushDB()",
                     "Templet": "command",
                     "Help": {
@@ -429,7 +429,7 @@
                     "Caption": "FlushAll",
                     "Remark": "清空所有数据库",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "FlushAll()",
                     "Templet": "command",
                     "Help": {
@@ -446,7 +446,7 @@
                     "Caption": "SelectDB",
                     "Remark": "切换数据库",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "SelectDB(Index)",
                     "Templet": "command",
                     "Help": {
@@ -469,7 +469,7 @@
                     "Caption": "SwapDB",
                     "Remark": "对换数据库数据",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "SwapDB(Index1, Index2)",
                     "Templet": "command",
                     "Help": {
@@ -498,7 +498,7 @@
                     "Caption": "Save",
                     "Remark": "保存数据库",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Save()",
                     "Templet": "command",
                     "Help": {
@@ -515,7 +515,7 @@
                     "Caption": "BGSave",
                     "Remark": "后台保存数据库",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "BGSave()",
                     "Templet": "command",
                     "Help": {
@@ -532,7 +532,7 @@
                     "Caption": "BGReWriteAOF",
                     "Remark": "重写AOF文件",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "BGReWriteAOF()",
                     "Templet": "command",
                     "Help": {
@@ -549,7 +549,7 @@
                     "Caption": "LastSave",
                     "Remark": "最后保存时间",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "LastSave()",
                     "Templet": "command",
                     "Help": {
@@ -566,7 +566,7 @@
                     "Caption": "Auth",
                     "Remark": "密码登录",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Auth(sPwd)",
                     "Templet": "command",
                     "Help": {
@@ -589,7 +589,7 @@
                     "Caption": "Quit",
                     "Remark": "断开连接",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Quit()",
                     "Templet": "command",
                     "Help": {
@@ -606,7 +606,7 @@
                     "Caption": "Info",
                     "Remark": "获取服务器信息",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Info(\"all\")",
                     "Templet": "command",
                     "Help": {
@@ -629,7 +629,7 @@
                     "Caption": "Shutdown",
                     "Remark": "关闭服务器",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Shutdown()",
                     "Templet": "command",
                     "Help": {
@@ -646,7 +646,7 @@
                     "Caption": "ServerTime",
                     "Remark": "服务器时间",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "ServerTime()",
                     "Templet": "command",
                     "Help": {
@@ -663,7 +663,7 @@
                     "Caption": "Client_SetName",
                     "Remark": "设置客户端名字",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Client_SetName(\"客户端名字\")",
                     "Templet": "command",
                     "Help": {
@@ -686,7 +686,7 @@
                     "Caption": "Client_GetName",
                     "Remark": "获取客户端名字",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Client_GetName()",
                     "Templet": "command",
                     "Help": {
@@ -703,7 +703,7 @@
                     "Caption": "Client_List",
                     "Remark": "获取客户端列表",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Client_List()",
                     "Templet": "command",
                     "Help": {
@@ -720,7 +720,7 @@
                     "Caption": "Client_Kill",
                     "Remark": "断开客户端连接",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Client_Kill(\"127.0.0.1:12345\")",
                     "Templet": "command",
                     "Help": {
@@ -743,7 +743,7 @@
                     "Caption": "Config_Set",
                     "Remark": "设置服务器配置",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Config_Set(\"slowlog-max-len\", \"10086\")",
                     "Templet": "command",
                     "Help": {
@@ -772,7 +772,7 @@
                     "Caption": "Config_Get",
                     "Remark": "获取服务器配置",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Config_Get(\"slowlog-max-len\")",
                     "Templet": "command",
                     "Help": {
@@ -795,7 +795,7 @@
                     "Caption": "Config_ReSetStat",
                     "Remark": "重置统计数据",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Config_ReSetStat()",
                     "Templet": "command",
                     "Help": {
@@ -812,7 +812,7 @@
                     "Caption": "Config_ReWrite",
                     "Remark": "重写配置文件",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Config_ReWrite()",
                     "Templet": "command",
                     "Help": {
@@ -829,7 +829,7 @@
                     "Caption": "Key_Set",
                     "Remark": "写字符串",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Key_Set(\"key\", \"Value\")",
                     "Templet": "command",
                     "Help": {
@@ -858,7 +858,7 @@
                     "Caption": "Key_SetInt",
                     "Remark": "写整数",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Key_SetInt(\"key\", 123)",
                     "Templet": "command",
                     "Help": {
@@ -887,7 +887,7 @@
                     "Caption": "Key_SetNum",
                     "Remark": "写数字",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Key_SetNum(\"key\", 3.14)",
                     "Templet": "command",
                     "Help": {
@@ -916,7 +916,7 @@
                     "Caption": "Key_SetNX",
                     "Remark": "只在Key不存在时写字符串",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Key_SetNX(\"key\", \"Value\")",
                     "Templet": "command",
                     "Help": {
@@ -945,7 +945,7 @@
                     "Caption": "Key_SetEX",
                     "Remark": "写字符串并设置超时时间",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Key_SetEX(\"key\", 5, \"Value\")",
                     "Templet": "command",
                     "Help": {
@@ -980,7 +980,7 @@
                     "Caption": "Key_PSetEX",
                     "Remark": "写字符串并设置超时时间",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Key_PSetEX(\"key\", 5000, \"Value\")",
                     "Templet": "command",
                     "Help": {
@@ -1015,7 +1015,7 @@
                     "Caption": "Key_Get",
                     "Remark": "读字符串",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Key_Get(\"key\")",
                     "Templet": "command",
                     "Help": {
@@ -1038,7 +1038,7 @@
                     "Caption": "Key_GetInt",
                     "Remark": "读整数",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Key_GetInt(\"key\")",
                     "Templet": "command",
                     "Help": {
@@ -1061,7 +1061,7 @@
                     "Caption": "Key_GetNum",
                     "Remark": "读数字",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Key_GetNum(\"key\")",
                     "Templet": "command",
                     "Help": {
@@ -1084,7 +1084,7 @@
                     "Caption": "Key_GetSet",
                     "Remark": "获取旧值并写字符串",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Key_GetSet(\"key\", \"Value\")",
                     "Templet": "command",
                     "Help": {
@@ -1113,7 +1113,7 @@
                     "Caption": "Key_StrLen",
                     "Remark": "获取字符串长度",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Key_StrLen(\"key\")",
                     "Templet": "command",
                     "Help": {
@@ -1136,7 +1136,7 @@
                     "Caption": "Key_Append",
                     "Remark": "追加写字符串",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Key_Append(\"key\", \"Value\")",
                     "Templet": "command",
                     "Help": {
@@ -1165,7 +1165,7 @@
                     "Caption": "Key_SetRange",
                     "Remark": "根据范围写字符串",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Key_SetRange(\"key\", 10, \"从10字节处开始写字符串\")",
                     "Templet": "command",
                     "Help": {
@@ -1200,7 +1200,7 @@
                     "Caption": "Key_GetRange",
                     "Remark": "根据范围读字符串",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Key_GetRange(\"key\", 10, 20)",
                     "Templet": "command",
                     "Help": {
@@ -1235,7 +1235,7 @@
                     "Caption": "Key_Incr",
                     "Remark": "原子累加",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Key_Incr(\"key\")",
                     "Templet": "command",
                     "Help": {
@@ -1258,7 +1258,7 @@
                     "Caption": "Key_IncrBy",
                     "Remark": "原子累加整数",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Key_IncrBy(\"key\", 10)",
                     "Templet": "command",
                     "Help": {
@@ -1287,7 +1287,7 @@
                     "Caption": "Key_IncrByFloat",
                     "Remark": "原子累加数值",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Key_IncrByFloat(\"key\", 0.1)",
                     "Templet": "command",
                     "Help": {
@@ -1316,7 +1316,7 @@
                     "Caption": "Key_Decr",
                     "Remark": "原子累减",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Key_Decr(\"key\")",
                     "Templet": "command",
                     "Help": {
@@ -1339,7 +1339,7 @@
                     "Caption": "Key_DecrBy",
                     "Remark": "原子累减整数",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Key_DecrBy(\"key\", 10)",
                     "Templet": "command",
                     "Help": {
@@ -1368,7 +1368,7 @@
                     "Caption": "Key_Exists",
                     "Remark": "检查键是否存在",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Key_Exists(\"key\")",
                     "Templet": "command",
                     "Help": {
@@ -1391,7 +1391,7 @@
                     "Caption": "Key_Type",
                     "Remark": "获取键值的数据类型",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Key_Type(\"key\")",
                     "Templet": "command",
                     "Help": {
@@ -1414,7 +1414,7 @@
                     "Caption": "Key_Rename",
                     "Remark": "重命名键",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Key_Rename(\"skeyName\", \"sNewName\")",
                     "Templet": "command",
                     "Help": {
@@ -1443,7 +1443,7 @@
                     "Caption": "Key_RenameNX",
                     "Remark": "当新键名不存在时重命名键",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Key_RenameNX(\"skeyName\", \"sNewName\")",
                     "Templet": "command",
                     "Help": {
@@ -1472,7 +1472,7 @@
                     "Caption": "Key_Move",
                     "Remark": "移动键到另一个数据库",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Key_Move(\"skeyName\", 2)",
                     "Templet": "command",
                     "Help": {
@@ -1501,7 +1501,7 @@
                     "Caption": "Key_Del",
                     "Remark": "删除键值",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Key_Del(\"key\")",
                     "Templet": "command",
                     "Help": {
@@ -1524,7 +1524,7 @@
                     "Caption": "List_LPush",
                     "Remark": "将数据插入到表头",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "List_LPush(\"key\", \"数据\")",
                     "Templet": "command",
                     "Help": {
@@ -1553,7 +1553,7 @@
                     "Caption": "List_LPushX",
                     "Remark": "当表存在时将数据插入到表头",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "List_LPushX(\"key\", \"数据\")",
                     "Templet": "command",
                     "Help": {
@@ -1582,7 +1582,7 @@
                     "Caption": "List_RPush",
                     "Remark": "将数据插入到表尾",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "List_RPush(\"key\", \"数据\")",
                     "Templet": "command",
                     "Help": {
@@ -1611,7 +1611,7 @@
                     "Caption": "List_RPushX",
                     "Remark": "当表存在时将数据插入到表尾",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "List_RPushX(\"key\", \"数据\")",
                     "Templet": "command",
                     "Help": {
@@ -1640,7 +1640,7 @@
                     "Caption": "List_LPop",
                     "Remark": "弹出表头元素",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "List_LPop(\"key\")",
                     "Templet": "command",
                     "Help": {
@@ -1663,7 +1663,7 @@
                     "Caption": "List_RPop",
                     "Remark": "弹出表尾元素",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "List_RPop(\"key\")",
                     "Templet": "command",
                     "Help": {
@@ -1686,7 +1686,7 @@
                     "Caption": "List_RPopLPush",
                     "Remark": "弹出表尾元素并插入一个头元素",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "List_RPopLPush(\"key\", \"数据\")",
                     "Templet": "command",
                     "Help": {
@@ -1715,7 +1715,7 @@
                     "Caption": "List_LRem",
                     "Remark": "移除列表元素",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "List_LRem(\"key\", -2, \"数据\")",
                     "Templet": "command",
                     "Help": {
@@ -1750,7 +1750,7 @@
                     "Caption": "List_Len",
                     "Remark": "获取列表长度",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "List_Len(\"key\")",
                     "Templet": "command",
                     "Help": {
@@ -1773,7 +1773,7 @@
                     "Caption": "List_Index",
                     "Remark": "获取列表元素",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "List_Index(\"key\", 1)",
                     "Templet": "command",
                     "Help": {
@@ -1802,7 +1802,7 @@
                     "Caption": "List_Insert",
                     "Remark": "插入元素",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "List_Insert(\"key\", \"参考值\", \"值\")",
                     "Templet": "command",
                     "Help": {
@@ -1843,7 +1843,7 @@
                     "Caption": "List_Set",
                     "Remark": "设置列表项值",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "List_Set(\"key\", 1, \"值\")",
                     "Templet": "command",
                     "Help": {
@@ -1878,7 +1878,7 @@
                     "Caption": "List_Range",
                     "Remark": "获取列表的部分值",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "List_Range(\"key\", 0, 3)",
                     "Templet": "command",
                     "Help": {
@@ -1913,7 +1913,7 @@
                     "Caption": "List_Trim",
                     "Remark": "修剪列表",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "List_Trim(\"key\", 0, 3)",
                     "Templet": "command",
                     "Help": {
@@ -1948,7 +1948,7 @@
                     "Caption": "List_BLPop",
                     "Remark": "阻塞弹出表头元素",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "List_BLPop(\"key\", 60)",
                     "Templet": "command",
                     "Help": {
@@ -1977,7 +1977,7 @@
                     "Caption": "List_BRPop",
                     "Remark": "阻塞弹出表尾元素",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "List_BRPop(\"key\", 60)",
                     "Templet": "command",
                     "Help": {
@@ -2006,7 +2006,7 @@
                     "Caption": "List_BRPopLPush",
                     "Remark": "阻塞弹出表尾元素并插入一个头元素",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "List_BRPopLPush(\"key\", \"数据\", 60)",
                     "Templet": "command",
                     "Help": {
@@ -2041,7 +2041,7 @@
                     "Caption": "List_Clear",
                     "Remark": "清空列表",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "List_Clear(\"key\")",
                     "Templet": "command",
                     "Help": {
@@ -2064,7 +2064,7 @@
                     "Caption": "HTbl_Set",
                     "Remark": "设置键值",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "HTbl_Set(\"key\", \"Field\", \"Value\")",
                     "Templet": "command",
                     "Help": {
@@ -2099,7 +2099,7 @@
                     "Caption": "HTbl_SetNX",
                     "Remark": "当键不存在时设置键值",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "HTbl_SetNX(\"key\", \"Field\", \"Value\")",
                     "Templet": "command",
                     "Help": {
@@ -2134,7 +2134,7 @@
                     "Caption": "HTbl_Get",
                     "Remark": "获取键值",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "HTbl_Get(\"key\", \"Field\")",
                     "Templet": "command",
                     "Help": {
@@ -2163,7 +2163,7 @@
                     "Caption": "HTbl_Exists",
                     "Remark": "判断键是否存在",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "HTbl_Exists(\"key\", \"Field\")",
                     "Templet": "command",
                     "Help": {
@@ -2192,7 +2192,7 @@
                     "Caption": "HTbl_Del",
                     "Remark": "删除键值",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "HTbl_Del(\"key\", \"Field\")",
                     "Templet": "command",
                     "Help": {
@@ -2221,7 +2221,7 @@
                     "Caption": "HTbl_Len",
                     "Remark": "键值对数量",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "HTbl_Len(\"key\")",
                     "Templet": "command",
                     "Help": {
@@ -2244,7 +2244,7 @@
                     "Caption": "HTbl_StrLen",
                     "Remark": "获取字符串长度",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "HTbl_StrLen(\"key\", \"Field\")",
                     "Templet": "command",
                     "Help": {
@@ -2273,7 +2273,7 @@
                     "Caption": "HTbl_IncrBy",
                     "Remark": "原子累加整数",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "HTbl_IncrBy(\"key\", \"Field\", 10)",
                     "Templet": "command",
                     "Help": {
@@ -2308,7 +2308,7 @@
                     "Caption": "HTbl_IncrByFloat",
                     "Remark": "原子累加数字",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "HTbl_IncrByFloat(\"key\", \"Field\", 0.1)",
                     "Templet": "command",
                     "Help": {
@@ -2343,7 +2343,7 @@
                     "Caption": "HTbl_Keys",
                     "Remark": "获取表中所有键",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "HTbl_Keys(\"key\")",
                     "Templet": "command",
                     "Help": {
@@ -2366,7 +2366,7 @@
                     "Caption": "HTbl_Vals",
                     "Remark": "获取表中所有值",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "HTbl_Vals(\"key\")",
                     "Templet": "command",
                     "Help": {
@@ -2389,7 +2389,7 @@
                     "Caption": "HTbl_GetAll",
                     "Remark": "获取表中所有键值",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "HTbl_GetAll(\"key\")",
                     "Templet": "command",
                     "Help": {
@@ -2412,7 +2412,7 @@
                     "Caption": "HTbl_Scan",
                     "Remark": "哈希表数据迭代器",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "HTbl_Scan(\"key\", iCursor)",
                     "Templet": "command",
                     "Help": {

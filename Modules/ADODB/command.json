@@ -34,7 +34,7 @@
                     "Remark": "SQL超时时间",
                     "Icon": "属性",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "CommandTimeOut",
                     "Templet": "command",
                     "Help": {
@@ -52,7 +52,7 @@
                     "Remark": "连接字符串",
                     "Icon": "属性",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "ConnectionString",
                     "Templet": "command",
                     "Help": {
@@ -70,7 +70,7 @@
                     "Remark": "连接超时时间",
                     "Icon": "属性",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "ConnectionTimeOut",
                     "Templet": "command",
                     "Help": {
@@ -88,7 +88,7 @@
                     "Remark": "游标位置",
                     "Icon": "属性",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "CursorLocation",
                     "Templet": "command",
                     "Help": {
@@ -106,7 +106,7 @@
                     "Remark": "默认数据库",
                     "Icon": "属性",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "DefaultDatabase",
                     "Templet": "command",
                     "Help": {
@@ -124,7 +124,7 @@
                     "Remark": "提供者名称",
                     "Icon": "属性",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Provider",
                     "Templet": "command",
                     "Help": {
@@ -142,7 +142,7 @@
                     "Remark": "连接状态",
                     "Icon": "属性",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "State",
                     "Templet": "command",
                     "Help": {
@@ -160,7 +160,7 @@
                     "Remark": "ADO版本",
                     "Icon": "属性",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Version",
                     "Templet": "command",
                     "Help": {
@@ -177,7 +177,7 @@
                     "Caption": "Open",
                     "Remark": "打开连接",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Open()",
                     "Templet": "command",
                     "Help": {
@@ -218,7 +218,7 @@
                     "Caption": "Close",
                     "Remark": "关闭连接",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Close",
                     "Templet": "command",
                     "Help": {
@@ -235,7 +235,7 @@
                     "Caption": "Execute",
                     "Remark": "执行SQL语句",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Execute()",
                     "Templet": "command",
                     "Help": {
@@ -270,7 +270,7 @@
                     "Caption": "LookUp",
                     "Remark": "返回某个字段的值",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "LookUp()",
                     "Templet": "command",
                     "Help": {
@@ -299,7 +299,7 @@
                     "Caption": "BeginTrans",
                     "Remark": "开始新事务",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "BeginTrans",
                     "Templet": "command",
                     "Help": {
@@ -316,7 +316,7 @@
                     "Caption": "CommitTrans",
                     "Remark": "保存并结束当前事务",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "CommitTrans",
                     "Templet": "command",
                     "Help": {
@@ -333,7 +333,7 @@
                     "Caption": "RollbackTrans",
                     "Remark": "取消并结束当前事务",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "RollbackTrans",
                     "Templet": "command",
                     "Help": {
@@ -361,7 +361,7 @@
                             "Remark": "错误总数",
                             "Icon": "属性",
                             "Visible": true,
-                            "Function": true,
+                            "Keyword": true,
                             "InsCode": "Count",
                             "Templet": "command",
                             "Help": {
@@ -379,7 +379,7 @@
                             "Remark": "错误信息",
                             "Icon": "属性",
                             "Visible": true,
-                            "Function": true,
+                            "Keyword": true,
                             "InsCode": "Msg",
                             "Templet": "command",
                             "Help": {
@@ -396,7 +396,7 @@
                             "Caption": "Clear",
                             "Remark": "清除错误",
                             "Visible": true,
-                            "Function": true,
+                            "Keyword": true,
                             "InsCode": "Clear",
                             "Templet": "command",
                             "Help": {
@@ -413,7 +413,7 @@
                             "Caption": "(Index).Number",
                             "Remark": "错误号",
                             "Visible": true,
-                            "Function": true,
+                            "Keyword": true,
                             "InsCode": "(Index).Number",
                             "Templet": "command",
                             "Help": {
@@ -436,7 +436,7 @@
                             "Caption": "(Index).Description",
                             "Remark": "错误描述",
                             "Visible": true,
-                            "Function": true,
+                            "Keyword": true,
                             "InsCode": "(Index).Description",
                             "Templet": "command",
                             "Help": {
@@ -459,7 +459,7 @@
                             "Caption": "(Index).Source",
                             "Remark": "生成错误的对象名",
                             "Visible": true,
-                            "Function": true,
+                            "Keyword": true,
                             "InsCode": "(Index).Source",
                             "Templet": "command",
                             "Help": {
@@ -482,7 +482,7 @@
                             "Caption": "(Index).SQLState",
                             "Remark": "SQL错误代码",
                             "Visible": true,
-                            "Function": true,
+                            "Keyword": true,
                             "InsCode": "(Index).SQLState",
                             "Templet": "command",
                             "Help": {
@@ -505,7 +505,7 @@
                             "Caption": "(Index).NativeError",
                             "Remark": "数据源错误代码",
                             "Visible": true,
-                            "Function": true,
+                            "Keyword": true,
                             "InsCode": "(Index).NativeError",
                             "Templet": "command",
                             "Help": {
@@ -543,7 +543,7 @@
                     "Remark": "是否到记录头",
                     "Icon": "属性",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "BOF",
                     "Templet": "command",
                     "Help": {
@@ -561,7 +561,7 @@
                     "Remark": "是否到记录尾",
                     "Icon": "属性",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "EOF",
                     "Templet": "command",
                     "Help": {
@@ -579,7 +579,7 @@
                     "Remark": "记录数量",
                     "Icon": "属性",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "RecordCount",
                     "Templet": "command",
                     "Help": {
@@ -597,7 +597,7 @@
                     "Remark": "返回字段值(文本)",
                     "Icon": "属性",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Collect",
                     "Templet": "command",
                     "Help": {
@@ -621,7 +621,7 @@
                     "Remark": "返回或设置字段值(日期)",
                     "Icon": "属性",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "CollectD",
                     "Templet": "command",
                     "Help": {
@@ -651,7 +651,7 @@
                     "Remark": "返回或设置字段值(数值)",
                     "Icon": "属性",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "CollectN",
                     "Templet": "command",
                     "Help": {
@@ -681,7 +681,7 @@
                     "Remark": "返回或设置字段值(文本)",
                     "Icon": "属性",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "CollectS",
                     "Templet": "command",
                     "Help": {
@@ -711,7 +711,7 @@
                     "Remark": "设置字段值(日期)",
                     "Icon": "属性",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "UpdateD",
                     "Templet": "command",
                     "Help": {
@@ -741,7 +741,7 @@
                     "Remark": "设置字段值(数值)",
                     "Icon": "属性",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "UpdateN",
                     "Templet": "command",
                     "Help": {
@@ -771,7 +771,7 @@
                     "Remark": "设置字段值(文本)",
                     "Icon": "属性",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "UpdateS",
                     "Templet": "command",
                     "Help": {
@@ -801,7 +801,7 @@
                     "Remark": "游标位置",
                     "Icon": "属性",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "CursorLocation",
                     "Templet": "command",
                     "Help": {
@@ -819,7 +819,7 @@
                     "Remark": "游标类型",
                     "Icon": "属性",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "CursorType",
                     "Templet": "command",
                     "Help": {
@@ -837,7 +837,7 @@
                     "Remark": "排序语句",
                     "Icon": "属性",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Sort",
                     "Templet": "command",
                     "Help": {
@@ -855,7 +855,7 @@
                     "Remark": "状态",
                     "Icon": "属性",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "State",
                     "Templet": "command",
                     "Help": {
@@ -872,7 +872,7 @@
                     "Caption": "AddNew",
                     "Remark": "添加记录",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "AddNew",
                     "Templet": "command",
                     "Help": {
@@ -889,7 +889,7 @@
                     "Caption": "Close",
                     "Remark": "关闭记录集",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Close",
                     "Templet": "command",
                     "Help": {
@@ -906,7 +906,7 @@
                     "Caption": "Move",
                     "Remark": "移动游标到指定位置",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Move",
                     "Templet": "command",
                     "Help": {
@@ -935,7 +935,7 @@
                     "Caption": "MoveFirst",
                     "Remark": "移动游标到第一条记录",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "MoveFirst",
                     "Templet": "command",
                     "Help": {
@@ -952,7 +952,7 @@
                     "Caption": "MoveLast",
                     "Remark": "移动游标到最后一条记录",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "MoveLast",
                     "Templet": "command",
                     "Help": {
@@ -969,7 +969,7 @@
                     "Caption": "MoveNext",
                     "Remark": "移动游标到下一条记录",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "MoveNext",
                     "Templet": "command",
                     "Help": {
@@ -986,7 +986,7 @@
                     "Caption": "MovePrevious",
                     "Remark": "移动游标到上一条记录",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "MovePrevious",
                     "Templet": "command",
                     "Help": {
@@ -1003,7 +1003,7 @@
                     "Caption": "Update",
                     "Remark": "保存更改",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Update",
                     "Templet": "command",
                     "Help": {
@@ -1020,7 +1020,7 @@
                     "Caption": "Expand",
                     "Remark": "根据模板生成文本",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Expand",
                     "Templet": "command",
                     "Help": {
@@ -1043,7 +1043,7 @@
                     "Caption": "GetString",
                     "Remark": "以文本形式返回",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "GetString",
                     "Templet": "command",
                     "Help": {
@@ -1090,7 +1090,7 @@
                     "Caption": "Open",
                     "Remark": "打开记录集",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Open",
                     "Templet": "command",
                     "Help": {
@@ -1137,7 +1137,7 @@
                     "Caption": "Save",
                     "Remark": "保存记录集",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Save",
                     "Templet": "command",
                     "Help": {
@@ -1166,7 +1166,7 @@
                     "Caption": "Find",
                     "Remark": "查找记录",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Find",
                     "Templet": "command",
                     "Help": {
@@ -1218,7 +1218,7 @@
                             "Remark": "字段总数",
                             "Icon": "属性",
                             "Visible": true,
-                            "Function": true,
+                            "Keyword": true,
                             "InsCode": "Count",
                             "Templet": "command",
                             "Help": {
@@ -1236,7 +1236,7 @@
                             "Remark": "字段实际长度",
                             "Icon": "属性",
                             "Visible": true,
-                            "Function": true,
+                            "Keyword": true,
                             "InsCode": "(Index).ActualSize",
                             "Templet": "command",
                             "Help": {
@@ -1260,7 +1260,7 @@
                             "Remark": "字段定义长度",
                             "Icon": "属性",
                             "Visible": true,
-                            "Function": true,
+                            "Keyword": true,
                             "InsCode": "(Index).DefinedSize",
                             "Templet": "command",
                             "Help": {
@@ -1285,7 +1285,7 @@
                             "Remark": "字段名称",
                             "Icon": "属性",
                             "Visible": true,
-                            "Function": true,
+                            "Keyword": true,
                             "InsCode": "(Index).Name",
                             "Templet": "command",
                             "Help": {
@@ -1309,7 +1309,7 @@
                             "Remark": "字段类型",
                             "Icon": "属性",
                             "Visible": true,
-                            "Function": true,
+                            "Keyword": true,
                             "InsCode": "(Index).Type",
                             "Templet": "command",
                             "Help": {
@@ -1333,7 +1333,7 @@
                             "Remark": "字段类型(字符串)",
                             "Icon": "属性",
                             "Visible": true,
-                            "Function": true,
+                            "Keyword": true,
                             "InsCode": "(Index).Type$",
                             "Templet": "command",
                             "Help": {
@@ -1357,7 +1357,7 @@
                             "Remark": "字段的值",
                             "Icon": "属性",
                             "Visible": true,
-                            "Function": true,
+                            "Keyword": true,
                             "InsCode": "(Index).Value",
                             "Templet": "command",
                             "Help": {
@@ -1396,7 +1396,7 @@
                     "Remark": "连接对象",
                     "Icon": "属性",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "ActiveConnection",
                     "Templet": "command",
                     "Help": {
@@ -1414,7 +1414,7 @@
                     "Remark": "SQL语句",
                     "Icon": "属性",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "CommandText",
                     "Templet": "command",
                     "Help": {
@@ -1432,7 +1432,7 @@
                     "Remark": "命令类型",
                     "Icon": "属性",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "CommandType",
                     "Templet": "command",
                     "Help": {
@@ -1449,7 +1449,7 @@
                     "Caption": "Execute",
                     "Remark": "执行SQL语句",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Execute()",
                     "Templet": "command",
                     "Help": {

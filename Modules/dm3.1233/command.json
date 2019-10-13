@@ -95,7 +95,7 @@
                     "Caption": "MoveTo",
                     "Remark": "移动鼠标",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.MoveTo(0, 0)",
                     "Templet": "command",
                     "Help": {
@@ -124,7 +124,7 @@
                     "Caption": "MoveR",
                     "Remark": "相对位置移动鼠标",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.MoveR(0, 0)",
                     "Templet": "command",
                     "Help": {
@@ -153,7 +153,7 @@
                     "Caption": "MoveToEx",
                     "Remark": "移动鼠标到随机坐标",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.MoveToEx(100, 100, 10, 10)",
                     "Templet": "command",
                     "Help": {
@@ -194,7 +194,7 @@
                     "Caption": "LeftClick",
                     "Remark": "点击鼠标左键",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.LeftClick()",
                     "Templet": "command",
                     "Help": {
@@ -211,7 +211,7 @@
                     "Caption": "LeftDoubleClick",
                     "Remark": "双击鼠标左键",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.LeftDoubleClick()",
                     "Templet": "command",
                     "Help": {
@@ -228,7 +228,7 @@
                     "Caption": "LeftDown",
                     "Remark": "按下鼠标左键",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.LeftDown()",
                     "Templet": "command",
                     "Help": {
@@ -245,7 +245,7 @@
                     "Caption": "LeftUp",
                     "Remark": "弹起鼠标左键",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.LeftUp()",
                     "Templet": "command",
                     "Help": {
@@ -262,7 +262,7 @@
                     "Caption": "RightClick",
                     "Remark": "点击鼠标右键",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.RightClick()",
                     "Templet": "command",
                     "Help": {
@@ -279,7 +279,7 @@
                     "Caption": "RightDown",
                     "Remark": "按下鼠标右键",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.RightDown()",
                     "Templet": "command",
                     "Help": {
@@ -296,7 +296,7 @@
                     "Caption": "RightUp",
                     "Remark": "弹起鼠标右键",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.RightUp()",
                     "Templet": "command",
                     "Help": {
@@ -313,7 +313,7 @@
                     "Caption": "MiddleClick",
                     "Remark": "点击鼠标中键",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.MiddleClick()",
                     "Templet": "command",
                     "Help": {
@@ -330,7 +330,7 @@
                     "Caption": "WheelDown",
                     "Remark": "鼠标滚轮向下滚",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.WheelDown()",
                     "Templet": "command",
                     "Help": {
@@ -347,7 +347,7 @@
                     "Caption": "WheelUp",
                     "Remark": "鼠标滚轮向上滚",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.WheelUp()",
                     "Templet": "command",
                     "Help": {
@@ -364,7 +364,7 @@
                     "Caption": "GetCursorPos",
                     "Remark": "获取鼠标位置 [无法使用，LzRPA获取不到形参]",
                     "Visible": false,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Dim As Long x, y\ndm.GetCursorPos(x, y)",
                     "Templet": "command",
                     "Help": {
@@ -393,7 +393,7 @@
                     "Caption": "GetCursorShape",
                     "Remark": "获取鼠标特征码",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.GetCursorShape()",
                     "Templet": "command",
                     "Help": {
@@ -410,7 +410,7 @@
                     "Caption": "GetCursorShapeEx",
                     "Remark": "获取鼠标特征码",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.GetCursorShapeEx(0)",
                     "Templet": "command",
                     "Help": {
@@ -433,7 +433,7 @@
                     "Caption": "GetCursorSpot",
                     "Remark": "获取鼠标热点位置",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.GetCursorSpot()",
                     "Templet": "command",
                     "Help": {
@@ -450,7 +450,7 @@
                     "Caption": "KeyPress",
                     "Remark": "点击键盘按键",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.KeyPress(65)",
                     "Templet": "command",
                     "Help": {
@@ -473,7 +473,7 @@
                     "Caption": "KeyPressChar",
                     "Remark": "点击键盘按键",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.KeyPressChar(\"F1\")",
                     "Templet": "command",
                     "Help": {
@@ -496,7 +496,7 @@
                     "Caption": "KeyPressStr",
                     "Remark": "点击按键按键序列",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.KeyPressStr(65)",
                     "Templet": "command",
                     "Help": {
@@ -525,7 +525,7 @@
                     "Caption": "KeyDown",
                     "Remark": "按下键盘按键",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.KeyDown(65)",
                     "Templet": "command",
                     "Help": {
@@ -548,7 +548,7 @@
                     "Caption": "KeyDownChar",
                     "Remark": "按下键盘按键",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.KeyDownChar(\"F1\")",
                     "Templet": "command",
                     "Help": {
@@ -571,7 +571,7 @@
                     "Caption": "KeyUp",
                     "Remark": "弹起键盘按键",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.KeyUp(65)",
                     "Templet": "command",
                     "Help": {
@@ -594,7 +594,7 @@
                     "Caption": "KeyUpChar",
                     "Remark": "弹起键盘按键",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.KeyUpChar(\"F1\")",
                     "Templet": "command",
                     "Help": {
@@ -617,7 +617,7 @@
                     "Caption": "GetKeyState",
                     "Remark": "获取按键状态",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.GetKeyState(65)",
                     "Templet": "command",
                     "Help": {
@@ -640,7 +640,7 @@
                     "Caption": "WaitKey",
                     "Remark": "等待按键按下",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.WaitKey(65, 3000)",
                     "Templet": "command",
                     "Help": {
@@ -669,7 +669,7 @@
                     "Caption": "SetMouseDelay",
                     "Remark": "设置鼠标操作间隔",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.SetMouseDelay(\"normal\", 60)",
                     "Templet": "command",
                     "Help": {
@@ -698,7 +698,7 @@
                     "Caption": "SetKeypadDelay",
                     "Remark": "设置键盘操作间隔",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.SetKeypadDelay(\"normal\", 60)",
                     "Templet": "command",
                     "Help": {
@@ -738,7 +738,7 @@
                     "Caption": "FindPic",
                     "Remark": "找图",
                     "Visible": false,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Dim As Long intX, intY\ndm.FindPic(0, 0, 2000, 2000, \"1.bmp|2.bmp|3.bmp\", \"000000\", 0.9, 0, intX, intY)",
                     "Templet": "command",
                     "Help": {
@@ -815,7 +815,7 @@
                     "Caption": "FindPicE",
                     "Remark": "找图",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.FindPicE(0, 0, 2000, 2000, \"1.bmp|2.bmp|3.bmp\", \"000000\", 0.9, 0)",
                     "Templet": "command",
                     "Help": {
@@ -880,7 +880,7 @@
                     "Caption": "FindPicEx",
                     "Remark": "找图返回所有坐标",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.FindPicEx(0, 0, 2000, 2000, \"1.bmp|2.bmp|3.bmp\", \"000000\", 0.9, 0)",
                     "Templet": "command",
                     "Help": {
@@ -945,7 +945,7 @@
                     "Caption": "FindPicS",
                     "Remark": "找图返回文件名",
                     "Visible": false,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Dim As Long intX, intY\ndm.FindPicS(0, 0, 2000, 2000, \"1.bmp|2.bmp|3.bmp\", \"000000\", 0.9, 0, intX, intY)",
                     "Templet": "command",
                     "Help": {
@@ -1022,7 +1022,7 @@
                     "Caption": "FindPicExS",
                     "Remark": "找图返回所有坐标",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.FindPicExS(0, 0, 2000, 2000, \"1.bmp|2.bmp|3.bmp\", \"000000\", 0.9, 0)",
                     "Templet": "command",
                     "Help": {
@@ -1087,7 +1087,7 @@
                     "Caption": "FindColor",
                     "Remark": "找色",
                     "Visible": false,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Dim As Long intX, intY\ndm.FindColor(0, 0, 2000, 2000, \"123456-000000|aabbcc-030303|ddeeff-202020\", 1.0, 0, intX, intY)",
                     "Templet": "command",
                     "Help": {
@@ -1158,7 +1158,7 @@
                     "Caption": "FindColorE",
                     "Remark": "找色",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.FindColorE(0, 0, 2000, 2000, \"123456-000000|aabbcc-030303|ddeeff-202020\", 1.0, 0)",
                     "Templet": "command",
                     "Help": {
@@ -1217,7 +1217,7 @@
                     "Caption": "FindColorEx",
                     "Remark": "找色返回所有坐标",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.FindColorEx(0, 0, 2000, 2000, \"123456-000000|aabbcc-030303|ddeeff-202020\", 1.0, 0)",
                     "Templet": "command",
                     "Help": {
@@ -1276,7 +1276,7 @@
                     "Caption": "FindMulColor",
                     "Remark": "找多个颜色",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.FindMulColor(0, 0, 2000, 2000, \"123456-000000|aabbcc-030303|ddeeff-202020\", 1.0)",
                     "Templet": "command",
                     "Help": {
@@ -1329,7 +1329,7 @@
                     "Caption": "FindMultiColor",
                     "Remark": "找多点",
                     "Visible": false,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Dim As Long intX, intY\ndm.FindMultiColor(0, 0, 2000, 2000, \"cc805b-020202\", \"9|2|-00ff00,15|2|2dff1c-010101,6|11|a0d962,11|14|-ffffff\", 1.0, 1, intX, intY)",
                     "Templet": "command",
                     "Help": {
@@ -1406,7 +1406,7 @@
                     "Caption": "FindMultiColorE",
                     "Remark": "找多点",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.FindMultiColorE(0, 0, 2000, 2000, \"cc805b-020202\", \"9|2|-00ff00,15|2|2dff1c-010101,6|11|a0d962,11|14|-ffffff\", 1.0, 1)",
                     "Templet": "command",
                     "Help": {
@@ -1471,7 +1471,7 @@
                     "Caption": "FindMultiColorEx",
                     "Remark": "找多点返回所有坐标",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.FindMultiColorEx(0, 0, 2000, 2000, \"cc805b-020202\", \"9|2|-00ff00,15|2|2dff1c-010101,6|11|a0d962,11|14|-ffffff\", 1.0, 1)",
                     "Templet": "command",
                     "Help": {
@@ -1536,7 +1536,7 @@
                     "Caption": "FindShape",
                     "Remark": "找形状",
                     "Visible": false,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Dim As Long intX, intY\ndm.FindShape(0, 0, 2000, 2000, \"1|1|0,1|6|1,0|10|1,9|10|1,7|6|1,7|8|0,8|9|0,2|2|1,3|1|1\", 1.0, 0, intX, intY)",
                     "Templet": "command",
                     "Help": {
@@ -1607,7 +1607,7 @@
                     "Caption": "FindShapeE",
                     "Remark": "找形状",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.FindShapeE(0, 0, 2000, 2000, \"1|1|0,1|6|1,0|10|1,9|10|1,7|6|1,7|8|0,8|9|0,2|2|1,3|1|1\", 1.0, 0)",
                     "Templet": "command",
                     "Help": {
@@ -1666,7 +1666,7 @@
                     "Caption": "FindShapeEx",
                     "Remark": "找形状返回所有坐标",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.FindShapeEx(0, 0, 2000, 2000, \"1|1|0,1|6|1,0|10|1,9|10|1,7|6|1,7|8|0,8|9|0,2|2|1,3|1|1\", 1.0, 0)",
                     "Templet": "command",
                     "Help": {
@@ -1725,7 +1725,7 @@
                     "Caption": "FindPicMem",
                     "Remark": "找内存图",
                     "Visible": false,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Dim As Long intX, intY\ndm.FindPicMem(0, 0, 2000, 2000, \"0|0\", \"000000\", 0.9, 0, intX, intY)",
                     "Templet": "command",
                     "Help": {
@@ -1802,7 +1802,7 @@
                     "Caption": "FindPicMemE",
                     "Remark": "找内存图",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.FindPicMemE(0, 0, 2000, 2000, \"0|0\", \"000000\", 0.9, 0)",
                     "Templet": "command",
                     "Help": {
@@ -1867,7 +1867,7 @@
                     "Caption": "FindPicMemEx",
                     "Remark": "找内存图返回所有坐标",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.FindPicMemEx(0, 0, 2000, 2000, \"0|0\", \"000000\", 0.9, 0)",
                     "Templet": "command",
                     "Help": {
@@ -1932,7 +1932,7 @@
                     "Caption": "GetColor",
                     "Remark": "取色",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.GetColor(0, 0)",
                     "Templet": "command",
                     "Help": {
@@ -1961,7 +1961,7 @@
                     "Caption": "GetColorBGR",
                     "Remark": "取色",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.GetColorBGR(0, 0)",
                     "Templet": "command",
                     "Help": {
@@ -1990,7 +1990,7 @@
                     "Caption": "GetColorHSV",
                     "Remark": "取色",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.GetColorHSV(0, 0)",
                     "Templet": "command",
                     "Help": {
@@ -2019,7 +2019,7 @@
                     "Caption": "CmpColor",
                     "Remark": "比色",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.CmpColor(\"FF0000\")",
                     "Templet": "command",
                     "Help": {
@@ -2060,7 +2060,7 @@
                     "Caption": "GetColorNum",
                     "Remark": "获取区域颜色数量",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.GetColorNum(0, 0, 2000, 2000, \"123456-000000|aabbcc-030303|ddeeff-202020\", 1.0)",
                     "Templet": "command",
                     "Help": {
@@ -2113,7 +2113,7 @@
                     "Caption": "GetAveRGB",
                     "Remark": "获取范围颜色均值",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.GetAveRGB(0, 0, 2000, 2000)",
                     "Templet": "command",
                     "Help": {
@@ -2154,7 +2154,7 @@
                     "Caption": "GetAveHSV",
                     "Remark": "获取范围颜色均值",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.GetAveHSV(0, 0, 2000, 2000)",
                     "Templet": "command",
                     "Help": {
@@ -2195,7 +2195,7 @@
                     "Caption": "IsDisplayDead",
                     "Remark": "判断是否卡屏",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.IsDisplayDead(0, 0, 2000, 2000, 5)",
                     "Templet": "command",
                     "Help": {
@@ -2242,7 +2242,7 @@
                     "Caption": "BGR2RGB",
                     "Remark": "颜色格式转换",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.BGR2RGB(\"FF0000\")",
                     "Templet": "command",
                     "Help": {
@@ -2265,7 +2265,7 @@
                     "Caption": "RGB2BGR",
                     "Remark": "颜色格式转换",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.RGB2BGR(\"FF0000\")",
                     "Templet": "command",
                     "Help": {
@@ -2288,7 +2288,7 @@
                     "Caption": "Capture",
                     "Remark": "截图保存为bmp文件",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.Capture(0, 0, 2000, 2000, \"c:\\1.bmp\")",
                     "Templet": "command",
                     "Help": {
@@ -2335,7 +2335,7 @@
                     "Caption": "CaptureGif",
                     "Remark": "截图保存为gif文件",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.CaptureGif(0, 0, 2000, 2000, \"c:\\1.gif\", 100, 3000)",
                     "Templet": "command",
                     "Help": {
@@ -2394,7 +2394,7 @@
                     "Caption": "CaptureJpg",
                     "Remark": "截图保存为jpg文件",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.CaptureJpg(0, 0, 2000, 2000, \"c:\\1.bmp\", 80)",
                     "Templet": "command",
                     "Help": {
@@ -2447,7 +2447,7 @@
                     "Caption": "CapturePng",
                     "Remark": "截图保存为png文件",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.CapturePng(0, 0, 2000, 2000, \"c:\\1.bmp\")",
                     "Templet": "command",
                     "Help": {
@@ -2494,7 +2494,7 @@
                     "Caption": "CapturePre",
                     "Remark": "截图上次操作的区域",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.CapturePre(\"c:\\1.bmp\")",
                     "Templet": "command",
                     "Help": {
@@ -2517,7 +2517,7 @@
                     "Caption": "LoadPic",
                     "Remark": "加载图片到内存",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.LoadPic(\"1.bmp|2.bmp|3.bmp\")",
                     "Templet": "command",
                     "Help": {
@@ -2540,7 +2540,7 @@
                     "Caption": "FreePic",
                     "Remark": "释放内存图片",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.FreePic(\"1.bmp|2.bmp|3.bmp\")",
                     "Templet": "command",
                     "Help": {
@@ -2563,7 +2563,7 @@
                     "Caption": "GetPicSize",
                     "Remark": "获取图像大小",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.GetPicSize(\"1.bmp\")",
                     "Templet": "command",
                     "Help": {
@@ -2586,7 +2586,7 @@
                     "Caption": "SetPicPwd",
                     "Remark": "设置图片密码",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.SetPicPwd(\"123\")",
                     "Templet": "command",
                     "Help": {
@@ -2609,7 +2609,7 @@
                     "Caption": "ImageToBmp",
                     "Remark": "转换图片到bmp格式",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.ImageToBmp(\"1.png\", \"1.bmp\")",
                     "Templet": "command",
                     "Help": {
@@ -2638,7 +2638,7 @@
                     "Caption": "EnableDisplayDebug",
                     "Remark": "开启图色调试模式",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.EnableDisplayDebug(1)",
                     "Templet": "command",
                     "Help": {
@@ -2661,7 +2661,7 @@
                     "Caption": "EnableGetColorByCapture",
                     "Remark": "允许截图方式取色",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.EnableGetColorByCapture(1)",
                     "Templet": "command",
                     "Help": {
@@ -2684,7 +2684,7 @@
                     "Caption": "GetScreenData",
                     "Remark": "获取屏幕像素数据",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.GetScreenData(0, 0, 2000, 2000)",
                     "Templet": "command",
                     "Help": {
@@ -2725,7 +2725,7 @@
                     "Caption": "GetScreenDataBmp",
                     "Remark": "获取屏幕像素数据",
                     "Visible": false,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Dim As pData, iSize<br>dm.GetScreenDataBmp(0, 0, 2000, 2000, pData, iSize)",
                     "Templet": "command",
                     "Help": {
@@ -2778,7 +2778,7 @@
                     "Caption": "MatchPicName",
                     "Remark": "通配符取文件集合",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.MatchPicName(\"1.bmp|2.bmp|3.bmp\")",
                     "Templet": "command",
                     "Help": {
@@ -2801,7 +2801,7 @@
                     "Caption": "AppendPicAddr",
                     "Remark": "组合内存图片参数",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.AppendPicAddr(pic_info, 0, 0)",
                     "Templet": "command",
                     "Help": {
@@ -2847,7 +2847,7 @@
                     "Caption": "SetDict",
                     "Remark": "加载字库文件",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.SetDict(0, \"Dict.txt\")",
                     "Templet": "command",
                     "Help": {
@@ -2876,7 +2876,7 @@
                     "Caption": "SetDictMem",
                     "Remark": "加载内存字库",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.SetDictMem(0, \"Dict.txt\")",
                     "Templet": "command",
                     "Help": {
@@ -2911,7 +2911,7 @@
                     "Caption": "SetDictPwd",
                     "Remark": "设置字库密码",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.SetDictPwd(\"password\")",
                     "Templet": "command",
                     "Help": {
@@ -2934,7 +2934,7 @@
                     "Caption": "UseDict",
                     "Remark": "使用字库文件",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.UseDict(0)",
                     "Templet": "command",
                     "Help": {
@@ -2957,7 +2957,7 @@
                     "Caption": "GetNowDict",
                     "Remark": "获取当前字库编号",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.GetNowDict()",
                     "Templet": "command",
                     "Help": {
@@ -2974,7 +2974,7 @@
                     "Caption": "AddDict",
                     "Remark": "添加字库数据",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.AddDict(0, \"081101BF8020089FD10A21443F85038$记$0.0$11\")",
                     "Templet": "command",
                     "Help": {
@@ -3003,7 +3003,7 @@
                     "Caption": "GetDictCount",
                     "Remark": "获取字库条目数量",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.GetDictCount(0)",
                     "Templet": "command",
                     "Help": {
@@ -3026,7 +3026,7 @@
                     "Caption": "GetDict",
                     "Remark": "获取字库数据",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.GetDict(0, 0)",
                     "Templet": "command",
                     "Help": {
@@ -3055,7 +3055,7 @@
                     "Caption": "GetDictInfo",
                     "Remark": "获取系统字库数据",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.GetDictInfo(\"回收站\", \"宋体\", 9, 0)",
                     "Templet": "command",
                     "Help": {
@@ -3096,7 +3096,7 @@
                     "Caption": "ClearDict",
                     "Remark": "清空指定字库",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.ClearDict(0)",
                     "Templet": "command",
                     "Help": {
@@ -3119,7 +3119,7 @@
                     "Caption": "SaveDict",
                     "Remark": "保存字库",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.SaveDict(0, \"Dict.txt\")",
                     "Templet": "command",
                     "Help": {
@@ -3148,7 +3148,7 @@
                     "Caption": "FindStr",
                     "Remark": "找字",
                     "Visible": false,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Dim As Long intX, intY\ndm.FindStr(0, 0, 2000, 2000, \"长安|洛阳\", \"9f2e3f-000000\", 0.9, intX, intY)",
                     "Templet": "command",
                     "Help": {
@@ -3219,7 +3219,7 @@
                     "Caption": "FindStrS",
                     "Remark": "找字",
                     "Visible": false,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Dim As Long intX, intY\ndm.FindStrS(0, 0, 2000, 2000, \"长安|洛阳\", \"9f2e3f-000000\", 0.9, intX, intY)",
                     "Templet": "command",
                     "Help": {
@@ -3290,7 +3290,7 @@
                     "Caption": "FindStrE",
                     "Remark": "找图",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.FindStrE(0, 0, 2000, 2000, \"长安|洛阳\", \"9f2e3f-000000\", 0.9)",
                     "Templet": "command",
                     "Help": {
@@ -3349,7 +3349,7 @@
                     "Caption": "FindStrEx",
                     "Remark": "找图返回所有坐标",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.FindStrEx(0, 0, 2000, 2000, \"长安|洛阳\", \"9f2e3f-000000\", 0.9)",
                     "Templet": "command",
                     "Help": {
@@ -3408,7 +3408,7 @@
                     "Caption": "FindStrExS",
                     "Remark": "找图返回所有坐标",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.FindStrExS(0, 0, 2000, 2000, \"长安|洛阳\", \"9f2e3f-000000\", 0.9)",
                     "Templet": "command",
                     "Help": {
@@ -3467,7 +3467,7 @@
                     "Caption": "FindStrFast",
                     "Remark": "快速找字",
                     "Visible": false,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Dim As Long intX, intY\ndm.FindStrFast(0, 0, 2000, 2000, \"长安|洛阳\", \"9f2e3f-000000\", 0.9, intX, intY)",
                     "Templet": "command",
                     "Help": {
@@ -3538,7 +3538,7 @@
                     "Caption": "FindStrFastS",
                     "Remark": "快速找字",
                     "Visible": false,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Dim As Long intX, intY\ndm.FindStrFastS(0, 0, 2000, 2000, \"长安|洛阳\", \"9f2e3f-000000\", 0.9, intX, intY)",
                     "Templet": "command",
                     "Help": {
@@ -3609,7 +3609,7 @@
                     "Caption": "FindStrFastE",
                     "Remark": "快速找图",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.FindStrFastE(0, 0, 2000, 2000, \"长安|洛阳\", \"9f2e3f-000000\", 0.9)",
                     "Templet": "command",
                     "Help": {
@@ -3668,7 +3668,7 @@
                     "Caption": "FindStrFastEx",
                     "Remark": "快速找图返回所有坐标",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.FindStrFastEx(0, 0, 2000, 2000, \"长安|洛阳\", \"9f2e3f-000000\", 0.9)",
                     "Templet": "command",
                     "Help": {
@@ -3727,7 +3727,7 @@
                     "Caption": "FindStrFastExS",
                     "Remark": "快速找图返回所有坐标",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.FindStrFastExS(0, 0, 2000, 2000, \"长安|洛阳\", \"9f2e3f-000000\", 0.9)",
                     "Templet": "command",
                     "Help": {
@@ -3786,7 +3786,7 @@
                     "Caption": "FindStrWithFont",
                     "Remark": "系统字库找字",
                     "Visible": false,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Dim As Long intX, intY\ndm.FindStrWithFont(0, 0, 2000, 2000, \"长安|洛阳\", \"9f2e3f-000000\", 0.9, \"宋体\", 9, 0, intX, intY)",
                     "Templet": "command",
                     "Help": {
@@ -3875,7 +3875,7 @@
                     "Caption": "FindStrWithFontE",
                     "Remark": "系统字库找字",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.FindStrWithFontE(0, 0, 2000, 2000, \"长安|洛阳\", \"9f2e3f-000000\", 0.9, \"宋体\", 9, 0)",
                     "Templet": "command",
                     "Help": {
@@ -3952,7 +3952,7 @@
                     "Caption": "FindStrWithFontEx",
                     "Remark": "系统字库找字返回所有坐标",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.FindStrWithFontEx(0, 0, 2000, 2000, \"长安|洛阳\", \"9f2e3f-000000\", 0.9, \"宋体\", 9, 0)",
                     "Templet": "command",
                     "Help": {
@@ -4029,7 +4029,7 @@
                     "Caption": "Ocr",
                     "Remark": "文字识别",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.Ocr(0, 0, 2000, 2000, \"9f2e3f-000000\", 0.9)",
                     "Templet": "command",
                     "Help": {
@@ -4082,7 +4082,7 @@
                     "Caption": "OcrEx",
                     "Remark": "文字识别返回所有坐标",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.OcrEx(0, 0, 2000, 2000, \"9f2e3f-000000\", 0.9)",
                     "Templet": "command",
                     "Help": {
@@ -4135,7 +4135,7 @@
                     "Caption": "OcrInFile",
                     "Remark": "图像文字识别",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.OcrInFile(0, 0, 2000, 2000, \"test.bmp\", \"9f2e3f-000000\", 0.9)",
                     "Templet": "command",
                     "Help": {
@@ -4194,7 +4194,7 @@
                     "Caption": "GetResultCount",
                     "Remark": "获取结果数量",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.GetResultCount(sRet)",
                     "Templet": "command",
                     "Help": {
@@ -4217,7 +4217,7 @@
                     "Caption": "GetResultPos",
                     "Remark": "获取结果坐标",
                     "Visible": false,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Dim As Long IntX, IntY<br>dm.GetResultPos(sRet, 1, IntX, IntY)",
                     "Templet": "command",
                     "Help": {
@@ -4258,7 +4258,7 @@
                     "Caption": "GetWordResultCount",
                     "Remark": "获取词组结果数量",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.GetWordResultCount(sRet)",
                     "Templet": "command",
                     "Help": {
@@ -4281,7 +4281,7 @@
                     "Caption": "GetWordResultPos",
                     "Remark": "获取词组结果坐标",
                     "Visible": false,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Dim As Long IntX, IntY<br>dm.GetWordResultPos(sRet, 1, IntX, IntY)",
                     "Templet": "command",
                     "Help": {
@@ -4322,7 +4322,7 @@
                     "Caption": "GetWordResultStr",
                     "Remark": "获取词组结果内容",
                     "Visible": false,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.GetWordResultStr(sRet, 1)",
                     "Templet": "command",
                     "Help": {
@@ -4351,7 +4351,7 @@
                     "Caption": "GetWords",
                     "Remark": "识别词组",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.GetWords(0, 0, 2000, 2000, \"000000-000000\", 0.9)",
                     "Templet": "command",
                     "Help": {
@@ -4404,7 +4404,7 @@
                     "Caption": "GetWordsNoDict",
                     "Remark": "识别形状词组",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.GetWordsNoDict(0, 0, 2000, 2000, \"000000-000000\")",
                     "Templet": "command",
                     "Help": {
@@ -4451,7 +4451,7 @@
                     "Caption": "FetchWord",
                     "Remark": "提取点阵信息",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.FetchWord(0, 0, 2000, 2000, \"abcdef-101010|ffffff-101010\", \"张三\")",
                     "Templet": "command",
                     "Help": {
@@ -4504,7 +4504,7 @@
                     "Caption": "SetExactOcr",
                     "Remark": "设置精准识别开关",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.SetExactOcr(1)",
                     "Templet": "command",
                     "Help": {
@@ -4527,7 +4527,7 @@
                     "Caption": "SetMinRowGap",
                     "Remark": "设置行间距",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.SetMinRowGap(1)",
                     "Templet": "command",
                     "Help": {
@@ -4550,7 +4550,7 @@
                     "Caption": "SetMinColGap",
                     "Remark": "设置列间距",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.SetMinColGap(1)",
                     "Templet": "command",
                     "Help": {
@@ -4573,7 +4573,7 @@
                     "Caption": "SetRowGapNoDict",
                     "Remark": "设置文字行距",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.SetRowGapNoDict(1)",
                     "Templet": "command",
                     "Help": {
@@ -4596,7 +4596,7 @@
                     "Caption": "SetColGapNoDict",
                     "Remark": "设置文字列距",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.SetColGapNoDict(1)",
                     "Templet": "command",
                     "Help": {
@@ -4619,7 +4619,7 @@
                     "Caption": "SetWordGap",
                     "Remark": "设置单词间距",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.SetWordGap(5)",
                     "Templet": "command",
                     "Help": {
@@ -4642,7 +4642,7 @@
                     "Caption": "SetWordGapNoDict",
                     "Remark": "设置单词间距",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.SetWordGapNoDict(5)",
                     "Templet": "command",
                     "Help": {
@@ -4665,7 +4665,7 @@
                     "Caption": "SetWordLineHeight",
                     "Remark": "设置文字平均行高",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.SetWordLineHeight(5)",
                     "Templet": "command",
                     "Help": {
@@ -4688,7 +4688,7 @@
                     "Caption": "SetWordLineHeightNoDict",
                     "Remark": "设置文字平均行高",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.SetWordLineHeightNoDict(5)",
                     "Templet": "command",
                     "Help": {
@@ -4722,7 +4722,7 @@
                     "Caption": "Ver",
                     "Remark": "版本号",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.Ver()",
                     "Templet": "command",
                     "Help": {
@@ -4739,7 +4739,7 @@
                     "Caption": "SetPath",
                     "Remark": "设置全局路径",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.SetPath(APP_ScriptName & \"res\")",
                     "Templet": "command",
                     "Help": {
@@ -4762,7 +4762,7 @@
                     "Caption": "GetPath",
                     "Remark": "获取全局路径",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.GetPath()",
                     "Templet": "command",
                     "Help": {
@@ -4779,7 +4779,7 @@
                     "Caption": "GetBasePath",
                     "Remark": "获取DLL所在路径",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.GetBasePath()",
                     "Templet": "command",
                     "Help": {
@@ -4796,7 +4796,7 @@
                     "Caption": "SetShowErrorMsg",
                     "Remark": "设置是否弹出错误信息",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.SetShowErrorMsg(true)",
                     "Templet": "command",
                     "Help": {
@@ -4819,7 +4819,7 @@
                     "Caption": "Reg",
                     "Remark": "注册",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.Reg()",
                     "Templet": "command",
                     "Help": {
@@ -4848,7 +4848,7 @@
                     "Caption": "RegEx",
                     "Remark": "指定服务器注册",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.RegEx()",
                     "Templet": "command",
                     "Help": {
@@ -4883,7 +4883,7 @@
                     "Caption": "RegNoMac",
                     "Remark": "注册不带MAC",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.RegNoMac()",
                     "Templet": "command",
                     "Help": {
@@ -4912,7 +4912,7 @@
                     "Caption": "RegExNoMac",
                     "Remark": "指定服务器注册不带MAC",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.RegExNoMac()",
                     "Templet": "command",
                     "Help": {
@@ -4947,7 +4947,7 @@
                     "Caption": "GetID",
                     "Remark": "获取对象ID",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.GetID()",
                     "Templet": "command",
                     "Help": {
@@ -4964,7 +4964,7 @@
                     "Caption": "GetLastError",
                     "Remark": "获取最后的错误",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.GetLastError()",
                     "Templet": "command",
                     "Help": {
@@ -4981,7 +4981,7 @@
                     "Caption": "GetDmCount",
                     "Remark": "已创建的对象个数",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.GetDmCount()",
                     "Templet": "command",
                     "Help": {
@@ -4998,7 +4998,7 @@
                     "Caption": "SetDisplayInput",
                     "Remark": "设置图色获取方式",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.SetDisplayInput(\"screen\")",
                     "Templet": "command",
                     "Help": {
@@ -5021,7 +5021,7 @@
                     "Caption": "SetEnumWindowDelay",
                     "Remark": "设置枚举窗口超时时间",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.SetEnumWindowDelay(30000)",
                     "Templet": "command",
                     "Help": {
@@ -5055,7 +5055,7 @@
                     "Caption": "BindWindow",
                     "Remark": "绑定窗口",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.BindWindow(hWin, \"windows\", \"windows\", \"windows\", 0)",
                     "Templet": "command",
                     "Help": {
@@ -5102,7 +5102,7 @@
                     "Caption": "BindWindowEx",
                     "Remark": "绑定窗口",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.BindWindowEx(hWin, \"windows\", \"windows\", \"windows\", \"\", 0)",
                     "Templet": "command",
                     "Help": {
@@ -5155,7 +5155,7 @@
                     "Caption": "UnBindWindow",
                     "Remark": "解绑窗口",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.UnBindWindow()",
                     "Templet": "command",
                     "Help": {
@@ -5172,7 +5172,7 @@
                     "Caption": "ForceUnBindWindow",
                     "Remark": "暴力解绑窗口",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.ForceUnBindWindow(hWin)",
                     "Templet": "command",
                     "Help": {
@@ -5195,7 +5195,7 @@
                     "Caption": "EnableBind",
                     "Remark": "暂时关闭绑定",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.EnableBind(0)",
                     "Templet": "command",
                     "Help": {
@@ -5218,7 +5218,7 @@
                     "Caption": "IsBind",
                     "Remark": "判断是否已绑定",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.IsBind(hWin)",
                     "Templet": "command",
                     "Help": {
@@ -5241,7 +5241,7 @@
                     "Caption": "DownCpu",
                     "Remark": "降低CPU占用",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.DownCpu(50)",
                     "Templet": "command",
                     "Help": {
@@ -5264,7 +5264,7 @@
                     "Caption": "SetSimMode",
                     "Remark": "设置模拟方式",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.SetSimMode(1)",
                     "Templet": "command",
                     "Help": {
@@ -5287,7 +5287,7 @@
                     "Caption": "LockDisplay",
                     "Remark": "锁定图色刷新",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.LockDisplay(1)",
                     "Templet": "command",
                     "Help": {
@@ -5310,7 +5310,7 @@
                     "Caption": "LockInput",
                     "Remark": "锁定外部输入",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.LockInput(1)",
                     "Templet": "command",
                     "Help": {
@@ -5333,7 +5333,7 @@
                     "Caption": "LockMouseRect",
                     "Remark": "锁定鼠标活动范围",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.LockMouseRect(0, 0, 0, 0)",
                     "Templet": "command",
                     "Help": {
@@ -5374,7 +5374,7 @@
                     "Caption": "SetDisplayDelay",
                     "Remark": "设置截图等待时间",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.SetDisplayDelay(3000)",
                     "Templet": "command",
                     "Help": {
@@ -5397,7 +5397,7 @@
                     "Caption": "EnableFakeActive",
                     "Remark": "设置截图等待时间",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.EnableFakeActive(3000)",
                     "Templet": "command",
                     "Help": {
@@ -5420,7 +5420,7 @@
                     "Caption": "EnableIme",
                     "Remark": "开关输入法",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.EnableIme(0)",
                     "Templet": "command",
                     "Help": {
@@ -5443,7 +5443,7 @@
                     "Caption": "EnableKeypadMsg",
                     "Remark": "使用DX键盘时开启消息",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.EnableKeypadMsg(0)",
                     "Templet": "command",
                     "Help": {
@@ -5466,7 +5466,7 @@
                     "Caption": "EnableMouseMsg",
                     "Remark": "使用DX鼠标时开启消息",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.EnableMouseMsg(0)",
                     "Templet": "command",
                     "Help": {
@@ -5489,7 +5489,7 @@
                     "Caption": "EnableKeypadSync",
                     "Remark": "同步发送键盘消息",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.EnableKeypadSync(0, 1000)",
                     "Templet": "command",
                     "Help": {
@@ -5518,7 +5518,7 @@
                     "Caption": "EnableMouseSync",
                     "Remark": "同步发送鼠标消息",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.EnableMouseSync(0, 1000)",
                     "Templet": "command",
                     "Help": {
@@ -5547,7 +5547,7 @@
                     "Caption": "EnableKeypadPatch",
                     "Remark": "键盘消息发送补丁",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.EnableKeypadPatch(0)",
                     "Templet": "command",
                     "Help": {
@@ -5570,7 +5570,7 @@
                     "Caption": "EnableRealKeypad",
                     "Remark": "模拟真实键盘操作",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.EnableRealKeypad(0)",
                     "Templet": "command",
                     "Help": {
@@ -5593,7 +5593,7 @@
                     "Caption": "EnableRealMouse",
                     "Remark": "模拟真实鼠标操作",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.EnableRealMouse(1, 20, 50)",
                     "Templet": "command",
                     "Help": {
@@ -5628,7 +5628,7 @@
                     "Caption": "EnableSpeedDx",
                     "Remark": "高速dx键鼠模式",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.EnableSpeedDx(0)",
                     "Templet": "command",
                     "Help": {
@@ -5662,7 +5662,7 @@
                     "Caption": "FindWindow",
                     "Remark": "查找窗口",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.FindWindow(\"\", \"记事本\")",
                     "Templet": "command",
                     "Help": {
@@ -5691,7 +5691,7 @@
                     "Caption": "FindWindowEx",
                     "Remark": "查找子窗口",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.FindWindowEx(0, \"\", \"记事本\")",
                     "Templet": "command",
                     "Help": {
@@ -5726,7 +5726,7 @@
                     "Caption": "FindWindowByProcess",
                     "Remark": "根据进程名查找窗口",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.FindWindowByProcess(\"noteapd.exe\", \"\", \"记事本\")",
                     "Templet": "command",
                     "Help": {
@@ -5761,7 +5761,7 @@
                     "Caption": "FindWindowByProcessId",
                     "Remark": "根据进程PID查找窗口",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.FindWindowByProcessId(123456, \"\", \"记事本\")",
                     "Templet": "command",
                     "Help": {
@@ -5796,7 +5796,7 @@
                     "Caption": "FindWindowSuper",
                     "Remark": "多条件查找窗口",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.FindWindowSuper(\"记事本\", 0, 1, \"notepad\", 1, 0)",
                     "Templet": "command",
                     "Help": {
@@ -5849,7 +5849,7 @@
                     "Caption": "EnumWindow",
                     "Remark": "枚举窗口",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.EnumWindow(0, \"QQ三国\", \"\", 1 + 4 + 8 + 16)",
                     "Templet": "command",
                     "Help": {
@@ -5890,7 +5890,7 @@
                     "Caption": "EnumWindowByProcess",
                     "Remark": "枚举进程窗口",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.EnumWindowByProcess(\"game.exe\", \"天龙八部\", \"\", 1 + 8 + 16)",
                     "Templet": "command",
                     "Help": {
@@ -5931,7 +5931,7 @@
                     "Caption": "EnumWindowSuper",
                     "Remark": "多条件枚举窗口",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.EnumWindowSuper(\"记事本\", 0, 1, \"notepad\", 1, 0, true)",
                     "Templet": "command",
                     "Help": {
@@ -5990,7 +5990,7 @@
                     "Caption": "GetForegroundWindow",
                     "Remark": "获取活动窗口",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.GetForegroundWindow()",
                     "Templet": "command",
                     "Help": {
@@ -6007,7 +6007,7 @@
                     "Caption": "GetForegroundFocus",
                     "Remark": "获取活动子窗口",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.GetForegroundFocus()",
                     "Templet": "command",
                     "Help": {
@@ -6024,7 +6024,7 @@
                     "Caption": "GetMousePointWindow",
                     "Remark": "获取鼠标位置窗口",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.GetMousePointWindow()",
                     "Templet": "command",
                     "Help": {
@@ -6041,7 +6041,7 @@
                     "Caption": "GetPointWindow",
                     "Remark": "获取指定位置窗口",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.GetPointWindow(100, 100)",
                     "Templet": "command",
                     "Help": {
@@ -6070,7 +6070,7 @@
                     "Caption": "GetSpecialWindow",
                     "Remark": "获取特殊窗口",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.GetSpecialWindow(0)",
                     "Templet": "command",
                     "Help": {
@@ -6093,7 +6093,7 @@
                     "Caption": "GetWindow",
                     "Remark": "获取相关窗口",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.GetWindow(hWin, 0)",
                     "Templet": "command",
                     "Help": {
@@ -6122,7 +6122,7 @@
                     "Caption": "GetWindowClass",
                     "Remark": "获取窗口类名",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.GetWindowClass(hWin)",
                     "Templet": "command",
                     "Help": {
@@ -6145,7 +6145,7 @@
                     "Caption": "GetWindowTitle",
                     "Remark": "获取窗口标题",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.GetWindowTitle(hWin)",
                     "Templet": "command",
                     "Help": {
@@ -6168,7 +6168,7 @@
                     "Caption": "GetWindowState",
                     "Remark": "获取窗口状态",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.GetWindowState(hWin, 1)",
                     "Templet": "command",
                     "Help": {
@@ -6197,7 +6197,7 @@
                     "Caption": "GetWindowProcessId",
                     "Remark": "获取窗口进程PID",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.GetWindowProcessId(hWin)",
                     "Templet": "command",
                     "Help": {
@@ -6220,7 +6220,7 @@
                     "Caption": "GetWindowProcessPath",
                     "Remark": "获取窗口文件路径",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.GetWindowProcessPath(hWin)",
                     "Templet": "command",
                     "Help": {
@@ -6243,7 +6243,7 @@
                     "Caption": "GetWindowRect",
                     "Remark": "获取窗口位置",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Dim As Long x1, y1, x2, y2\ndm.GetWindowRect(hWin, x1, y1, x2, y2)",
                     "Templet": "command",
                     "Help": {
@@ -6290,7 +6290,7 @@
                     "Caption": "GetClientRect",
                     "Remark": "获取窗口客户区位置",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Dim As Long x1, y1, x2, y2\ndm.GetClientRect(hWin, x1, y1, x2, y2)",
                     "Templet": "command",
                     "Help": {
@@ -6337,7 +6337,7 @@
                     "Caption": "GetClientSize",
                     "Remark": "获取窗口客户区大小",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Dim As Long w, h\ndm.GetClientSize(hWin, w, h)",
                     "Templet": "command",
                     "Help": {
@@ -6372,7 +6372,7 @@
                     "Caption": "SetWindowText",
                     "Remark": "设置窗口标题",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.SetWindowText(hWin, \"新的标题\")",
                     "Templet": "command",
                     "Help": {
@@ -6401,7 +6401,7 @@
                     "Caption": "SetWindowState",
                     "Remark": "设置窗口状态",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.SetWindowState(hWin, 1)",
                     "Templet": "command",
                     "Help": {
@@ -6430,7 +6430,7 @@
                     "Caption": "SetClientSize",
                     "Remark": "设置窗口客户区大小",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.SetClientSize(hWin, 800, 600)",
                     "Templet": "command",
                     "Help": {
@@ -6465,7 +6465,7 @@
                     "Caption": "SetWindowSize",
                     "Remark": "设置窗口大小",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.SetWindowSize(hWin, 800, 600)",
                     "Templet": "command",
                     "Help": {
@@ -6500,7 +6500,7 @@
                     "Caption": "SetWindowTransparent",
                     "Remark": "设置窗口透明度",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.SetWindowTransparent(hWin, 128)",
                     "Templet": "command",
                     "Help": {
@@ -6529,7 +6529,7 @@
                     "Caption": "MoveWindow",
                     "Remark": "移动窗口位置",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.MoveWindow(hWin, 100, 100)",
                     "Templet": "command",
                     "Help": {
@@ -6564,7 +6564,7 @@
                     "Caption": "ClientToScreen",
                     "Remark": "客户区转屏幕坐标",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Dim As Long x, y = 100\ndm.ClientToScreen(hWin, x, y)",
                     "Templet": "command",
                     "Help": {
@@ -6599,7 +6599,7 @@
                     "Caption": "ScreenToClient",
                     "Remark": "屏幕转客户区坐标",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "Dim As Long x, y = 100\ndm.ScreenToClient(hWin, x, y)",
                     "Templet": "command",
                     "Help": {
@@ -6634,7 +6634,7 @@
                     "Caption": "SendString",
                     "Remark": "发送文本数据",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.SendString(hWin, \"我是来测试的\")",
                     "Templet": "command",
                     "Help": {
@@ -6663,7 +6663,7 @@
                     "Caption": "SendString2",
                     "Remark": "发送文本数据",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.SendString2(hWin, \"我是来测试的\")",
                     "Templet": "command",
                     "Help": {
@@ -6692,7 +6692,7 @@
                     "Caption": "SendStringIme",
                     "Remark": "输入法发送文本数据",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.SendStringIme(\"我是来测试的\")",
                     "Templet": "command",
                     "Help": {
@@ -6715,7 +6715,7 @@
                     "Caption": "SendPaste",
                     "Remark": "粘贴文本数据",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.SendPaste(hWin)",
                     "Templet": "command",
                     "Help": {
@@ -6749,7 +6749,7 @@
                     "Caption": "ReadFile",
                     "Remark": "读取文件内容",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.ReadFile(\"c:\\123.txt\")",
                     "Templet": "command",
                     "Help": {
@@ -6772,7 +6772,7 @@
                     "Caption": "WriteFile",
                     "Remark": "向文件写入内容",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.WriteFile(\"c:\\123.txt\", \"哈哈哈\")",
                     "Templet": "command",
                     "Help": {
@@ -6801,7 +6801,7 @@
                     "Caption": "GetFileLength",
                     "Remark": "获取文件大小",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.GetFileLength(\"c:\\123.txt\")",
                     "Templet": "command",
                     "Help": {
@@ -6824,7 +6824,7 @@
                     "Caption": "IsFileExist",
                     "Remark": "判断文件是否存在",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.IsFileExist(\"c:\\123.txt\")",
                     "Templet": "command",
                     "Help": {
@@ -6847,7 +6847,7 @@
                     "Caption": "CopyFile",
                     "Remark": "复制文件",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.CopyFile(\"c:\\123.txt\", \"c:\\456.txt\", true)",
                     "Templet": "command",
                     "Help": {
@@ -6882,7 +6882,7 @@
                     "Caption": "MoveFile",
                     "Remark": "移动文件",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.MoveFile(\"c:\\123.txt\", \"c:\\456.txt\")",
                     "Templet": "command",
                     "Help": {
@@ -6911,7 +6911,7 @@
                     "Caption": "DeleteFile",
                     "Remark": "删除文件",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.DeleteFile(\"c:\\123.txt\")",
                     "Templet": "command",
                     "Help": {
@@ -6934,7 +6934,7 @@
                     "Caption": "EncodeFile",
                     "Remark": "加密文件",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.EncodeFile(\"c:\\123.txt\", \"password\")",
                     "Templet": "command",
                     "Help": {
@@ -6963,7 +6963,7 @@
                     "Caption": "EncodeFile",
                     "Remark": "解密文件",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.DecodeFile(\"c:\\123.txt\", \"password\")",
                     "Templet": "command",
                     "Help": {
@@ -6992,7 +6992,7 @@
                     "Caption": "CreateFolder",
                     "Remark": "创建文件夹",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.CreateFolder(\"c:\\123\\456\\789\")",
                     "Templet": "command",
                     "Help": {
@@ -7015,7 +7015,7 @@
                     "Caption": "DeleteFolder",
                     "Remark": "删除文件夹",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.DeleteFolder(\"c:\\123\")",
                     "Templet": "command",
                     "Help": {
@@ -7038,7 +7038,7 @@
                     "Caption": "DownloadFile",
                     "Remark": "下载文件",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.DownloadFile(\"www.baidu.com\", \"baidu\", 3000)",
                     "Templet": "command",
                     "Help": {
@@ -7073,7 +7073,7 @@
                     "Caption": "ReadIni",
                     "Remark": "读ini键值",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.ReadIni(\"Global\", \"var1\", \"c:\\test_game\\cfg.ini\")",
                     "Templet": "command",
                     "Help": {
@@ -7108,7 +7108,7 @@
                     "Caption": "WriteIni",
                     "Remark": "写ini键值",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.WriteIni(\"Global\", \"var1\", \"123\", \"c:\\test_game\\cfg.ini\")",
                     "Templet": "command",
                     "Help": {
@@ -7149,7 +7149,7 @@
                     "Caption": "DeleteIni",
                     "Remark": "删除ini数据",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.DeleteIni(\"Global\", \"var1\", \"c:\\test_game\\cfg.ini\")",
                     "Templet": "command",
                     "Help": {
@@ -7184,7 +7184,7 @@
                     "Caption": "ReadIniPwd",
                     "Remark": "读加密ini键值",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.ReadIniPwd(\"Global\", \"var1\", \"c:\\test_game\\cfg.ini\", \"1234\")",
                     "Templet": "command",
                     "Help": {
@@ -7225,7 +7225,7 @@
                     "Caption": "WriteIniPwd",
                     "Remark": "写加密ini键值",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.WriteIniPwd(\"Global\", \"var1\", \"123\", \"c:\\test_game\\cfg.ini\", \"1234\")",
                     "Templet": "command",
                     "Help": {
@@ -7272,7 +7272,7 @@
                     "Caption": "DeleteIniPwd",
                     "Remark": "删除加密ini数据",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.DeleteIniPwd(\"Global\", \"var1\", \"c:\\test_game\\cfg.ini\", \"1234\")",
                     "Templet": "command",
                     "Help": {
@@ -7313,7 +7313,7 @@
                     "Caption": "SelectFile",
                     "Remark": "对话框选择文件",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.SelectFile()",
                     "Templet": "command",
                     "Help": {
@@ -7330,7 +7330,7 @@
                     "Caption": "SelectDirectory",
                     "Remark": "对话框选择文件夹",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.SelectDirectory()",
                     "Templet": "command",
                     "Help": {
@@ -7358,7 +7358,7 @@
                     "Caption": "RunApp",
                     "Remark": "运行应用程序",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.RunApp(\"notepad\", 0)",
                     "Templet": "command",
                     "Help": {
@@ -7387,7 +7387,7 @@
                     "Caption": "Delay",
                     "Remark": "延时指定毫秒",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.Delay(1000)",
                     "Templet": "command",
                     "Help": {
@@ -7410,7 +7410,7 @@
                     "Caption": "GetClipboard",
                     "Remark": "读取剪贴板文本",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.GetClipboard()",
                     "Templet": "command",
                     "Help": {
@@ -7427,7 +7427,7 @@
                     "Caption": "SetClipboard",
                     "Remark": "设置剪贴板文本",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.SetClipboard(\"abcd\")",
                     "Templet": "command",
                     "Help": {
@@ -7450,7 +7450,7 @@
                     "Caption": "GetOsType",
                     "Remark": "获取操作系统类型",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.GetOsType()",
                     "Templet": "command",
                     "Help": {
@@ -7467,7 +7467,7 @@
                     "Caption": "Is64Bit",
                     "Remark": "是否是64位系统",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.Is64Bit()",
                     "Templet": "command",
                     "Help": {
@@ -7484,7 +7484,7 @@
                     "Caption": "GetDir",
                     "Remark": "获取系统路径",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.GetDir(2)",
                     "Templet": "command",
                     "Help": {
@@ -7507,7 +7507,7 @@
                     "Caption": "CheckUAC",
                     "Remark": "检测UAC是否开启",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.CheckUAC()",
                     "Templet": "command",
                     "Help": {
@@ -7524,7 +7524,7 @@
                     "Caption": "SetUAC",
                     "Remark": "设置UAC开关",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.SetUAC(true)",
                     "Templet": "command",
                     "Help": {
@@ -7547,7 +7547,7 @@
                     "Caption": "CheckFontSmooth",
                     "Remark": "检测字体平滑",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.CheckFontSmooth()",
                     "Templet": "command",
                     "Help": {
@@ -7564,7 +7564,7 @@
                     "Caption": "DisableFontSmooth",
                     "Remark": "关闭字体平滑",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.DisableFontSmooth()",
                     "Templet": "command",
                     "Help": {
@@ -7581,7 +7581,7 @@
                     "Caption": "DisablePowerSave",
                     "Remark": "关闭电源管理",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.DisablePowerSave()",
                     "Templet": "command",
                     "Help": {
@@ -7598,7 +7598,7 @@
                     "Caption": "DisableScreenSave",
                     "Remark": "关闭屏幕保护",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.DisableScreenSave()",
                     "Templet": "command",
                     "Help": {
@@ -7615,7 +7615,7 @@
                     "Caption": "SetDisplayAcceler",
                     "Remark": "设置硬件加速级别",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.SetDisplayAcceler(5)",
                     "Templet": "command",
                     "Help": {
@@ -7638,7 +7638,7 @@
                     "Caption": "GetScreenWidth",
                     "Remark": "获取屏幕宽度",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.GetScreenWidth()",
                     "Templet": "command",
                     "Help": {
@@ -7655,7 +7655,7 @@
                     "Caption": "GetScreenHeight",
                     "Remark": "获取屏幕高度",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.GetScreenHeight()",
                     "Templet": "command",
                     "Help": {
@@ -7672,7 +7672,7 @@
                     "Caption": "GetScreenDepth",
                     "Remark": "获取屏幕色深",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.GetScreenDepth()",
                     "Templet": "command",
                     "Help": {
@@ -7689,7 +7689,7 @@
                     "Caption": "SetScreen",
                     "Remark": "设置系统显示参数",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.SetScreen(1920, 1080, 32)",
                     "Templet": "command",
                     "Help": {
@@ -7724,7 +7724,7 @@
                     "Caption": "GetDiskSerial",
                     "Remark": "获取硬盘序列号",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.GetDiskSerial()",
                     "Templet": "command",
                     "Help": {
@@ -7741,7 +7741,7 @@
                     "Caption": "GetMachineCode",
                     "Remark": "获取本机机器码",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.GetMachineCode()",
                     "Templet": "command",
                     "Help": {
@@ -7758,7 +7758,7 @@
                     "Caption": "GetMachineCodeNoMac",
                     "Remark": "获取本机机器码",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.GetMachineCodeNoMac()",
                     "Templet": "command",
                     "Help": {
@@ -7775,7 +7775,7 @@
                     "Caption": "GetTime",
                     "Remark": "获取时间戳",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.GetTime()",
                     "Templet": "command",
                     "Help": {
@@ -7792,7 +7792,7 @@
                     "Caption": "GetNetTime",
                     "Remark": "获取网络时间",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.GetNetTime()",
                     "Templet": "command",
                     "Help": {
@@ -7809,7 +7809,7 @@
                     "Caption": "GetNetTimeSafe",
                     "Remark": "获取网络时间",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.GetNetTimeSafe()",
                     "Templet": "command",
                     "Help": {
@@ -7826,7 +7826,7 @@
                     "Caption": "Play",
                     "Remark": "播放音乐",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.Play(\"d:\\test.mp3\")",
                     "Templet": "command",
                     "Help": {
@@ -7849,7 +7849,7 @@
                     "Caption": "Stop",
                     "Remark": "停止播放音乐",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.Stop(id)",
                     "Templet": "command",
                     "Help": {
@@ -7872,7 +7872,7 @@
                     "Caption": "Beep",
                     "Remark": "蜂鸣器",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.Beep(1000, 1000)",
                     "Templet": "command",
                     "Help": {
@@ -7901,7 +7901,7 @@
                     "Caption": "ExitOs",
                     "Remark": "退出系统",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.ExitOs(1)",
                     "Templet": "command",
                     "Help": {
@@ -7935,7 +7935,7 @@
                     "Caption": "FindData",
                     "Remark": "搜索二进制数据",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.FindData(hwnd, \"00000000-FFFFFFFF\", \"00 01 23 45 67 86 ab ce f1\")",
                     "Templet": "command",
                     "Help": {
@@ -7970,7 +7970,7 @@
                     "Caption": "FindDataEx",
                     "Remark": "搜索二进制数据",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.FindDataEx(hwnd, \"00000000-FFFFFFFF\", \"00 01 23 45 67 86 ab ce f1\", 4, 1, 0)",
                     "Templet": "command",
                     "Help": {
@@ -8023,7 +8023,7 @@
                     "Caption": "FindInt",
                     "Remark": "搜索整数",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.FindInt(hwnd, \"00000000-FFFFFFFF\", 300, 300, 0)",
                     "Templet": "command",
                     "Help": {
@@ -8070,7 +8070,7 @@
                     "Caption": "FindIntEx",
                     "Remark": "搜索整数",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.FindIntEx(hwnd, \"00000000-FFFFFFFF\", 300, 300, 0, 2, 1, 0)",
                     "Templet": "command",
                     "Help": {
@@ -8135,7 +8135,7 @@
                     "Caption": "FindFloat",
                     "Remark": "搜索单精度浮点数",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.FindFloat(hwnd, \"00000000-FFFFFFFF\", 0.5, 1.0)",
                     "Templet": "command",
                     "Help": {
@@ -8176,7 +8176,7 @@
                     "Caption": "FindFloatEx",
                     "Remark": "搜索单精度浮点数",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.FindFloatEx(hwnd, \"00000000-FFFFFFFF\", 0.5, 1.0, 0, 2, 1, 0)",
                     "Templet": "command",
                     "Help": {
@@ -8235,7 +8235,7 @@
                     "Caption": "FindDouble",
                     "Remark": "搜索双精度浮点数",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.FindDouble(hwnd, \"00000000-FFFFFFFF\", 0.5, 1.0)",
                     "Templet": "command",
                     "Help": {
@@ -8276,7 +8276,7 @@
                     "Caption": "FindDoubleEx",
                     "Remark": "搜索双精度浮点数",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.FindDoubleEx(hwnd, \"00000000-FFFFFFFF\", 0.5, 1.0, 0, 2, 1, 0)",
                     "Templet": "command",
                     "Help": {
@@ -8335,7 +8335,7 @@
                     "Caption": "FindString",
                     "Remark": "搜索字符串",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.FindString(hwnd, \"00000000-FFFFFFFF\", \"哈哈哈哈\", 0)",
                     "Templet": "command",
                     "Help": {
@@ -8376,7 +8376,7 @@
                     "Caption": "FindStringEx",
                     "Remark": "搜索字符串",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.FindStringEx(hwnd, \"00000000-FFFFFFFF\", \"哈哈哈哈\", 0, 0, 2, 1, 0)",
                     "Templet": "command",
                     "Help": {
@@ -8435,7 +8435,7 @@
                     "Caption": "ReadData",
                     "Remark": "读二进制数据",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.ReadData(hwnd, \"4DA678\", 10)",
                     "Templet": "command",
                     "Help": {
@@ -8470,7 +8470,7 @@
                     "Caption": "ReadInt",
                     "Remark": "读整数",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.ReadInt(hwnd, \"4DA678\", 0)",
                     "Templet": "command",
                     "Help": {
@@ -8505,7 +8505,7 @@
                     "Caption": "ReadFloat",
                     "Remark": "读单精度浮点数",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.ReadFloat(hwnd, \"4DA678\")",
                     "Templet": "command",
                     "Help": {
@@ -8534,7 +8534,7 @@
                     "Caption": "ReadDouble",
                     "Remark": "读双精度浮点数",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.ReadDouble(hwnd, \"4DA678\")",
                     "Templet": "command",
                     "Help": {
@@ -8563,7 +8563,7 @@
                     "Caption": "ReadString",
                     "Remark": "读字符串",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.ReadString(hwnd, \"4DA678\", 0, 10)",
                     "Templet": "command",
                     "Help": {
@@ -8604,7 +8604,7 @@
                     "Caption": "WriteData",
                     "Remark": "写二进制数据",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.WriteData(hwnd, \"4DA678\", \"12 34 56 78 90 ab cd\")",
                     "Templet": "command",
                     "Help": {
@@ -8639,7 +8639,7 @@
                     "Caption": "WriteInt",
                     "Remark": "写整数",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.WriteInt(hwnd, \"4DA678\", 0, 100)",
                     "Templet": "command",
                     "Help": {
@@ -8680,7 +8680,7 @@
                     "Caption": "WriteFloat",
                     "Remark": "写单精度浮点数",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.WriteFloat(hwnd, \"4DA678\", 2.34)",
                     "Templet": "command",
                     "Help": {
@@ -8715,7 +8715,7 @@
                     "Caption": "WriteDouble",
                     "Remark": "写双精度浮点数",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.WriteDouble(hwnd, \"4DA678\", 2.34)",
                     "Templet": "command",
                     "Help": {
@@ -8750,7 +8750,7 @@
                     "Caption": "WriteString",
                     "Remark": "写字符串",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.WriteString(hwnd, \"4DA678\", 0, \"我是来测试的\")",
                     "Templet": "command",
                     "Help": {
@@ -8791,7 +8791,7 @@
                     "Caption": "IntToData",
                     "Remark": "整数转二进制数据",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.IntToData(&H12345678, 0)",
                     "Templet": "command",
                     "Help": {
@@ -8820,7 +8820,7 @@
                     "Caption": "FloatToData",
                     "Remark": "单精度浮点数转二进制数据",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.FloatToData(1.24)",
                     "Templet": "command",
                     "Help": {
@@ -8843,7 +8843,7 @@
                     "Caption": "DoubleToData",
                     "Remark": "双精度浮点数转二进制数据",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.DoubleToData(1.24)",
                     "Templet": "command",
                     "Help": {
@@ -8866,7 +8866,7 @@
                     "Caption": "StringToData",
                     "Remark": "双精度浮点数转二进制数据",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.StringToData(\"12345678\", 0)",
                     "Templet": "command",
                     "Help": {
@@ -8895,7 +8895,7 @@
                     "Caption": "GetModuleBaseAddr",
                     "Remark": "获取模块基址",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.GetModuleBaseAddr(hwnd, \"gdi32.dll\")",
                     "Templet": "command",
                     "Help": {
@@ -8924,7 +8924,7 @@
                     "Caption": "SetMemoryHwndAsProcessId",
                     "Remark": "使用进程PID操作内存",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.SetMemoryHwndAsProcessId(true)",
                     "Templet": "command",
                     "Help": {
@@ -8947,7 +8947,7 @@
                     "Caption": "SetMemoryFindResultToFile",
                     "Remark": "设置结果存入文件",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.SetMemoryFindResultToFile(true)",
                     "Templet": "command",
                     "Help": {
@@ -8981,7 +8981,7 @@
                     "Caption": "AsmClear",
                     "Remark": "清除指令缓冲区",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.AsmClear()",
                     "Templet": "command",
                     "Help": {
@@ -8998,7 +8998,7 @@
                     "Caption": "AsmAdd",
                     "Remark": "添加指令",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.AsmAdd(\"push 0100\")",
                     "Templet": "command",
                     "Help": {
@@ -9021,7 +9021,7 @@
                     "Caption": "AsmCall",
                     "Remark": "添加指令",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.AsmCall(hwnd, 1)",
                     "Templet": "command",
                     "Help": {
@@ -9050,7 +9050,7 @@
                     "Caption": "AsmCode",
                     "Remark": "指令转换为机器码",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.AsmCode(&H405940)",
                     "Templet": "command",
                     "Help": {
@@ -9073,7 +9073,7 @@
                     "Caption": "Assemble",
                     "Remark": "机器码转换为汇编",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.Assemble(\"81 05 E0 5A 47 00 01 00 00 00\", &H435fde, 0)",
                     "Templet": "command",
                     "Help": {
@@ -9119,7 +9119,7 @@
                     "Caption": "ExcludePos",
                     "Remark": "排除坐标",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.ExcludePos(ret, 1, 100, 100, 300, 400)",
                     "Templet": "command",
                     "Help": {
@@ -9172,7 +9172,7 @@
                     "Caption": "FindNearestPos",
                     "Remark": "找最近的坐标",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.FindNearestPos(ret, 1, 100, 100)",
                     "Templet": "command",
                     "Help": {
@@ -9213,7 +9213,7 @@
                     "Caption": "SortPosDistance",
                     "Remark": "找最近的坐标",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.SortPosDistance(ret, 0, 100, 100)",
                     "Templet": "command",
                     "Help": {
@@ -9265,7 +9265,7 @@
                     "Caption": "DmGuard",
                     "Remark": "大漠防检测盾",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.DmGuard(true, \"np\")",
                     "Templet": "command",
                     "Help": {
@@ -9305,7 +9305,7 @@
                     "Caption": "RedisConnect",
                     "Remark": "连接服务器",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.RedisConnect(\"127.0.0.1\", 6379)",
                     "Templet": "command",
                     "Help": {
@@ -9345,7 +9345,7 @@
                     "Caption": "RedisConnect",
                     "Remark": "连接服务器",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.RedisConnect(\"127.0.0.1\", 6379)",
                     "Templet": "command",
                     "Help": {
@@ -9385,7 +9385,7 @@
                     "Caption": "ActiveInputMethod",
                     "Remark": "激活输入法",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.ActiveInputMethod(hwnd, \"中文 - QQ拼音输入法\")",
                     "Templet": "command",
                     "Help": {
@@ -9414,7 +9414,7 @@
                     "Caption": "FindInputMethod",
                     "Remark": "检测输入法是否安装",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.FindInputMethod(\"中文 - QQ拼音输入法\")",
                     "Templet": "command",
                     "Help": {
@@ -9437,7 +9437,7 @@
                     "Caption": "FindInputMethod",
                     "Remark": "检测输入法是否开启",
                     "Visible": true,
-                    "Function": true,
+                    "Keyword": true,
                     "InsCode": "dm.FindInputMethod(hwnd, \"中文 - QQ拼音输入法\")",
                     "Templet": "command",
                     "Help": {

@@ -23,7 +23,7 @@
             "Caption": "RedisServer_Run",
             "Remark": "启动服务器",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "RedisServer_Run()",
             "Templet": "command",
             "Help": {
@@ -58,7 +58,7 @@
             "Caption": "RedisServer_ForceClose",
             "Remark": "强制关闭服务器",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "RedisServer_ForceClose(PID)",
             "Templet": "command",
             "Help": {
@@ -81,7 +81,7 @@
             "Caption": "RedisServer_IsRun",
             "Remark": "检查服务器是否在运行",
             "Visible": true,
-            "Function": true,
+            "Keyword": true,
             "InsCode": "RedisServer_IsRun(PID)",
             "Templet": "command",
             "Help": {
