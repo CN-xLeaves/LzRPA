@@ -334,7 +334,7 @@
     },
     "Option": {
         "AutoClearTracePrint": true,
-        "CommandListView": 3,
-        "Language": null
+        "CommandListView": 1,
+        "Language": "en"
     }
 }
