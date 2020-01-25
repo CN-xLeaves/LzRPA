@@ -10,6 +10,9 @@ Declare Function RedisLastError Lib "hiredis.dll" Alias "LzBot_Redis_LastError" 
 Declare Function Redis_RetStr Lib "hiredis.dll" Alias "LzBot_Redis_RetStr" () As String
 Declare Function Redis_RetInt Lib "hiredis.dll" Alias "LzBot_Redis_RetInt" () As Int64
 
+Declare Function Redis_SetBin Lib "hiredis.dll" Alias "LzBot_Redis_SetBin" (ByVal c As Long, ByVal k As ZString, ByVal kl As Long, ByVal v As ZString, ByVal vl As Long) As String
+Declare Function Redis_GetBin Lib "hiredis.dll" Alias "LzBot_Redis_GetBin" (ByVal c As Long, ByVal k As ZString, ByVal kl As Long) As String
+
 const %REDIS_REPLY_STRING As Long = 1
 const %REDIS_REPLY_ARRAY As Long = 2
 const %REDIS_REPLY_INTEGER As Long = 3
@@ -36,7 +39,8 @@ Type Redis
 	' 析构函数
 	Sub _Destroy()
 		If Me.redisContext Then
-			Close()
+			RedisFree(Me.redisContext)
+			Me.redisContext = 0
         End If
 	End Sub
     
@@ -211,7 +215,8 @@ Type Redis
 	
     ' 设置字符串值
 	Function Key_Set(ByVal sKey As String, ByVal sValue As String) As String
-		Return RedisCommand(Me.redisContext, "SET " & sKey & " " & sValue)
+		'Return RedisCommand(Me.redisContext, "SET " & sKey & " " & sValue)
+		Return Redis_SetBin(Me.redisContext, sKey, Len(sKey), sValue, Len(sValue))
 	End Function
 	
     ' 设置整数值

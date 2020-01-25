@@ -1,4 +1,4 @@
-{
+﻿{
     "Edit": {
         "Style": {
             "Default": {
@@ -335,6 +335,7 @@
     "Option": {
         "AutoClearTracePrint": true,
         "CommandListView": 1,
-        "Language": "en"
+        "Language": "en",
+        "InsertSpace": false
     }
 }

@@ -1,4 +1,4 @@
-{
+﻿{
     "MainWindow":
     {
         "Title": "LzRPA",
@@ -79,7 +79,7 @@
         "Tool_Run": "Run",
         "Tool_Build": "Build",
 
-        "AboutLzRPA": "LzRPA Ver 0.97 - Power By xLeaves (QQ：605072846)",
+        "AboutLzRPA": "LzRPA Ver 0.98 - Power By xLeaves (QQ：605072846)",
         "StatusText": "This program has not added online update function, and is currently in the fast update iteration phase. For the latest version, please visit https://github.com/CN-xLeaves"
     },
 
@@ -96,6 +96,9 @@
 
         "Tree_Command": "Commands",
         "Tree_Document": "Documents",
+        "Tree_Favorite": "Favorite",
+        "Tree_History": "History",
+        "Tree_Notes": "Notes",
         "Tree_Extend": "Extends"
     },
 
@@ -253,6 +256,20 @@
         "Workspace_NoUse": "Do not use workspace",
         "Workspace_Create": "Create a new workspace",
         "Workspace_Join": "Join the current workspace"
+    },
+    
+    
+    
+    "Global":
+    {
+        "NewFile": "NweScript",
+
+        "Msg_FileAlreadyOpened": "工程  + sFile +  已经在编辑器中打开了。",
+        "Msg_ProjectAlreadyOpened": "文件  + sFile +  已经在编辑器中打开了。",
+        "Msg_RequestSaveFile": "是否将更改保存到  + Edit.FileName +  ？",
+        "Msg_RequestSaveProject": "已打开的工程（ + Project.Project_Description + ）有修改，是否保存？",
+        "Msg_FileNotExist": "找不到文件 :  + sPath",
+        "Msg_NoActionEdit": "没有活动的编辑器。"
     }
 }
 

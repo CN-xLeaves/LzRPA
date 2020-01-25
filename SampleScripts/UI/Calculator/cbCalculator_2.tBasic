@@ -1,4 +1,4 @@
-  '---
+﻿  '---
   ' A revised calculator example
   ' Author: Psch
   '---
@@ -133,212 +133,215 @@
 
       CASE %WM_COMMAND 
 
-        '---Test which control has been clicked 
-        SELECT CASE cbctl 
-          CASE %CtrlN00, %CtrlN01, %CtrlN02, %CtrlN03, %CtrlN04, %CtrlN05, %CtrlN06, %CtrlN07, %CtrlN08, %CtrlN09 
-            '---Numbers 
+       if CBCTLMSG = %BN_CLICKED then
+       
+         '---Test which control has been clicked 
+          SELECT CASE cbctl 
+            CASE %CtrlN00, %CtrlN01, %CtrlN02, %CtrlN03, %CtrlN04, %CtrlN05, %CtrlN06, %CtrlN07, %CtrlN08, %CtrlN09 
+              '---Numbers 
+
+                CONTROL GET TEXT CBHNDL, %CtrlRes TO tmpStr 
+                IF ClearNext = %TRUE THEN 
+                  ClearNext = %FALSE 
+                  tmpStr = VAL(FORMAT$(cbwParam - %CtrlN00)) 
+                ELSE                
+                  IF NextHasComma = %TRUE THEN 
+                    NextHasComma = %FALSE 
+                    tmpStr = VAL(VAL(tmpStr) & "." & FORMAT$(cbwParam - %CtrlN00)) 
+                  ELSE 
+                    tmpStr = VAL(VAL(tmpStr) & FORMAT$(cbwParam - %CtrlN00)) 
+                  END IF 
+                END IF 
+                CONTROL SET TEXT CBHNDL, %CtrlRes, tmpStr 
+
+            CASE %CtrlPlu, %CtrlMin, %CtrlMul, %CtrlDiv, %CtrlPct, %CtrlXuY 
+              '---Operation 
+              PostOperation = cbwParam 
+              CONTROL GET TEXT CBHNDL, %CtrlRes TO tmpStr 
+              PrevVal = VAL(tmpStr) 
+              ClearNext = %TRUE 
+
+            CASE %CtrlCOM 
+              CONTROL GET TEXT CBHNDL, %CtrlRes TO tmpStr 
+
+              tmpStr = TRIM$(tmpStr) 
+              IF instr(tmpStr, ".") = 0 THEN tmpStr += "." 
+              Control Set Text CBHNDL, %CtrlRes, tmpStr 
+
+              IF NOT NextHasComma THEN NextHasComma = 1 
+              
+
+              
+            CASE %CtrlEqu 
+              '---Result 
+              IF PostOperation <> 0 THEN 
+                CONTROL GET TEXT CBHNDL, %CtrlRes TO tmpStr 
+                SELECT CASE PostOperation 
+                  CASE %CtrlPlu 
+                    tmpStr = FORMAT$( VAL(PrevVal) + VAL(tmpStr) ) 
+
+                  CASE %CtrlMin 
+                    tmpStr = FORMAT$( VAL(PrevVal) - VAL(tmpStr) ) 
+
+                  CASE %CtrlMul 
+                    tmpStr = FORMAT$( VAL(PrevVal) * VAL(tmpStr) ) 
+
+                  CASE %CtrlDiv                        
+                    IF VAL(tmpStr) <> 0 THEN 
+                      tmpStr = FORMAT$( VAL(PrevVal) / VAL(tmpStr) ) 
+                    ELSE 
+                      BEEP 
+                      tmpStr = "Error: division by zero." 
+                      CONTROL SET COLOR CBHNDL, %CtrlRes, RGB(255,0,0), RGB(0,0,0) 
+                      CONTROL SET TEXT CBHNDL, %CtrlRes, tmpStr 
+                      tmpStr = "0" 
+                      SLEEP 1500 
+                      Control Set Color CBHNDL, %CtrlRes, Rgb(0,0,0), Rgb(255,255,255) 
+                    END IF 
+
+                  CASE %CtrlPct 
+                    tmpStr = FORMAT$( Pct(VAL(PrevVal), VAL(tmpStr) ) ) 
+
+                  CASE %CtrlXuY 
+                    tmpStr = FORMAT$( VAL(PrevVal) ^ (VAL(tmpStr)) ) 
+                      
+
+                END SELECT 
+                CONTROL SET TEXT CBHNDL, %CtrlRes, tmpStr 
+                PostOperation = 0 
+                ClearNext = %TRUE 
+              END IF 
+            
+            CASE %CtrlPM 
+              CONTROL GET TEXT CBHNDL, %CtrlRes TO tmpStr 
+              tmpStr = FORMAT$( -1 * VAL(tmpStr) ) 
+              CONTROL SET TEXT CBHNDL, %CtrlRes, tmpStr 
+              
+            CASE %CtrlSqr 
+              '---Result 
 
               CONTROL GET TEXT CBHNDL, %CtrlRes TO tmpStr 
-              IF ClearNext = %TRUE THEN 
-                ClearNext = %FALSE 
-                tmpStr = VAL(FORMAT$(cbwParam - %CtrlN00)) 
-              ELSE                
-                IF NextHasComma = %TRUE THEN 
-                  NextHasComma = %FALSE 
-                  tmpStr = VAL(VAL(tmpStr) & "." & FORMAT$(cbwParam - %CtrlN00)) 
-                ELSE 
-                  tmpStr = VAL(VAL(tmpStr) & FORMAT$(cbwParam - %CtrlN00)) 
-                END IF 
+              IF VAL(tmpStr) < 0 THEN 
+                BEEP 
+                CONTROL SET COLOR CBHNDL, %CtrlRes, RGB(255,0,0), RGB(0,0,0) 
+                CONTROL SET TEXT CBHNDL, %CtrlRes, "Error: Number must be positive" 
+                SLEEP 1500 
+                Control Set Color CBHNDL, %CtrlRes, Rgb(0,0,0), Rgb(255,255,255) 
+                  UpdateDisplay(CBHNDL, Val(tmpStr), 0) 
+              ELSE 
+                  UpdateDisplay(CBHNDL, SQR(VAL(tmpStr)), 0) 
+              END IF 
+
+
+            CASE %CtrlLOG 
+              '---Result 
+              CONTROL GET TEXT CBHNDL, %CtrlRes TO tmpStr 
+              IF VAL(tmpStr) < 0 THEN 
+                BEEP 
+                CONTROL SET COLOR CBHNDL, %CtrlRes, RGB(255,0,0), RGB(0,0,0) 
+                CONTROL SET TEXT CBHNDL, %CtrlRes, "Error: Number must be greater than 0" 
+                SLEEP 1500 
+                CONTROL SET COLOR CBHNDL, %CtrlRes, RGB(0,0,0), RGB(255,255,255) 
+                  UpdateDisplay(CBHNDL, Val(tmpStr), 0) 
+              ELSE 
+                  UpdateDisplay(CBHNDL, Log10(Val(tmpStr)), 0) 
+              END IF 
+              
+            CASE %CtrlLN 
+              '---Result 
+              CONTROL GET TEXT CBHNDL, %CtrlRes TO tmpStr 
+              IF VAL(tmpStr) < 0 THEN 
+                BEEP 
+                CONTROL SET COLOR CBHNDL, %CtrlRes, RGB(255,0,0), RGB(0,0,0) 
+                CONTROL SET TEXT CBHNDL, %CtrlRes, "Error: Number must be greater than 0" 
+                SLEEP 1500 
+                Control Set Color CBHNDL, %CtrlRes, Rgb(0,0,0), Rgb(255,255,255) 
+                  UpdateDisplay(CBHNDL, VAL(tmpStr), 0) 
+              ELSE 
+                  UpdateDisplay(CBHNDL, LOG(VAL(tmpStr)), 0) 
+              END IF 
+
+            CASE %CtrlSTO 
+              '---Result 
+              CONTROL GET TEXT CBHNDL, %CtrlRes TO tmpStr 
+              CalcMemory = FORMAT$( VAL(tmpStr) ) 
+
+            CASE %CtrlRCL 
+              '---Result 
+              CONTROL SET TEXT CBHNDL, %CtrlRes, FORMAT$(CalcMemory) 
+              PostOperation = 0 
+
+            CASE %CtrlSIN 
+              '---Result 
+              CONTROL GET TEXT CBHNDL, %CtrlRes TO tmpStr 
+              UpdateDisplay(CBHNDL, SIN(VAL(tmpStr)), 0) 
+
+            CASE %CtrlCOS 
+              '---Result 
+              CONTROL GET TEXT CBHNDL, %CtrlRes TO tmpStr 
+              UpdateDisplay(CBHNDL, Cos(Val(tmpStr)), 0) 
+              PostOperation = 0 
+
+            CASE %CtrlTAN 
+              '---Result 
+              CONTROL GET TEXT CBHNDL, %CtrlRes TO tmpStr 
+              UpdateDisplay(CBHNDL, TAN(VAL(tmpStr)), 0) 
+              PostOperation = 0 
+        
+            CASE %Ctrl1x 
+              '---Result 
+              Control Get Text CBHNDL, %CtrlRes To tmpStr 
+              IF VAL(tmpStr) <> 0 THEN 
+                tmpStr = FORMAT$( 1/(VAL(tmpStr)) ) 
+              ELSE  
+                BEEP 
+                tmpStr = "Error: division by zero." 
+                CONTROL SET COLOR CBHNDL, %CtrlRes, RGB(255,0,0), RGB(0,0,0) 
+                CONTROL SET TEXT CBHNDL, %CtrlRes, tmpStr 
+                tmpStr = "0" 
+                SLEEP 1500 
+                CONTROL SET COLOR CBHNDL, %CtrlRes, RGB(0,0,0), RGB(255,255,255) 
               END IF 
               CONTROL SET TEXT CBHNDL, %CtrlRes, tmpStr 
-
-          CASE %CtrlPlu, %CtrlMin, %CtrlMul, %CtrlDiv, %CtrlPct, %CtrlXuY 
-            '---Operation 
-            PostOperation = cbwParam 
-            CONTROL GET TEXT CBHNDL, %CtrlRes TO tmpStr 
-            PrevVal = VAL(tmpStr) 
-            ClearNext = %TRUE 
-
-          CASE %CtrlCOM 
-            CONTROL GET TEXT CBHNDL, %CtrlRes TO tmpStr 
-
-            tmpStr = TRIM$(tmpStr) 
-            IF instr(tmpStr, ".") = 0 THEN tmpStr += "." 
-            Control Set Text CBHNDL, %CtrlRes, tmpStr 
-
-            IF NOT NextHasComma THEN NextHasComma = 1 
-            
-
-            
-          CASE %CtrlEqu 
-            '---Result 
-            IF PostOperation <> 0 THEN 
-              CONTROL GET TEXT CBHNDL, %CtrlRes TO tmpStr 
-              SELECT CASE PostOperation 
-                CASE %CtrlPlu 
-                  tmpStr = FORMAT$( VAL(PrevVal) + VAL(tmpStr) ) 
-
-                CASE %CtrlMin 
-                  tmpStr = FORMAT$( VAL(PrevVal) - VAL(tmpStr) ) 
-
-                CASE %CtrlMul 
-                  tmpStr = FORMAT$( VAL(PrevVal) * VAL(tmpStr) ) 
-
-                CASE %CtrlDiv                        
-                  IF VAL(tmpStr) <> 0 THEN 
-                    tmpStr = FORMAT$( VAL(PrevVal) / VAL(tmpStr) ) 
-                  ELSE 
-                    BEEP 
-                    tmpStr = "Error: division by zero." 
-                    CONTROL SET COLOR CBHNDL, %CtrlRes, RGB(255,0,0), RGB(0,0,0) 
-                    CONTROL SET TEXT CBHNDL, %CtrlRes, tmpStr 
-                    tmpStr = "0" 
-                    SLEEP 1500 
-                    Control Set Color CBHNDL, %CtrlRes, Rgb(0,0,0), Rgb(255,255,255) 
-                  END IF 
-
-                CASE %CtrlPct 
-                  tmpStr = FORMAT$( Pct(VAL(PrevVal), VAL(tmpStr) ) ) 
-
-                CASE %CtrlXuY 
-                  tmpStr = FORMAT$( VAL(PrevVal) ^ (VAL(tmpStr)) ) 
-                    
-
-              END SELECT 
-              CONTROL SET TEXT CBHNDL, %CtrlRes, tmpStr 
               PostOperation = 0 
-              ClearNext = %TRUE 
-            END IF 
-          
-          CASE %CtrlPM 
-            CONTROL GET TEXT CBHNDL, %CtrlRes TO tmpStr 
-            tmpStr = FORMAT$( -1 * VAL(tmpStr) ) 
-            CONTROL SET TEXT CBHNDL, %CtrlRes, tmpStr 
-            
-          CASE %CtrlSqr 
-            '---Result 
 
-            CONTROL GET TEXT CBHNDL, %CtrlRes TO tmpStr 
-            IF VAL(tmpStr) < 0 THEN 
-              BEEP 
-              CONTROL SET COLOR CBHNDL, %CtrlRes, RGB(255,0,0), RGB(0,0,0) 
-              CONTROL SET TEXT CBHNDL, %CtrlRes, "Error: Number must be positive" 
-              SLEEP 1500 
-              Control Set Color CBHNDL, %CtrlRes, Rgb(0,0,0), Rgb(255,255,255) 
-                UpdateDisplay(CBHNDL, Val(tmpStr), 0) 
-            ELSE 
-                UpdateDisplay(CBHNDL, SQR(VAL(tmpStr)), 0) 
-            END IF 
+            CASE %CtrlPI 
+              UpdateDisplay(CBHNDL, 4 * Atn(1), 0) 
+
+            CASE %CtrlFCT 
+
+              CONTROL GET TEXT CBHNDL, %CtrlRes TO tmpStr 
+              IF VAL(tmpStr) < 0 THEN 
+                BEEP 
+                CONTROL SET COLOR CBHNDL, %CtrlRes, RGB(255,0,0), RGB(0,0,0) 
+                CONTROL SET TEXT CBHNDL, %CtrlRes, "Error: Number must be positive whole number" 
+                SLEEP 1500 
+                Control Set Color CBHNDL, %CtrlRes, Rgb(0,0,0), Rgb(255,255,255) 
+                  UpdateDisplay(CBHNDL, VAL(tmpStr), 0) 
+              ELSE 
+                tempEXT = 1 
+                FOR i = 2 TO VAL(tmpStr) 
+                  tempEXT = tempEXT * i 
+                NEXT 
+                UpdateDisplay(CBHNDL, tempEXT, 0) 
+
+              END IF 
 
 
-          CASE %CtrlLOG 
-            '---Result 
-            CONTROL GET TEXT CBHNDL, %CtrlRes TO tmpStr 
-            IF VAL(tmpStr) < 0 THEN 
-              BEEP 
-              CONTROL SET COLOR CBHNDL, %CtrlRes, RGB(255,0,0), RGB(0,0,0) 
-              CONTROL SET TEXT CBHNDL, %CtrlRes, "Error: Number must be greater than 0" 
-              SLEEP 1500 
-              CONTROL SET COLOR CBHNDL, %CtrlRes, RGB(0,0,0), RGB(255,255,255) 
-                UpdateDisplay(CBHNDL, Val(tmpStr), 0) 
-            ELSE 
-                UpdateDisplay(CBHNDL, Log10(Val(tmpStr)), 0) 
-            END IF 
-            
-          CASE %CtrlLN 
-            '---Result 
-            CONTROL GET TEXT CBHNDL, %CtrlRes TO tmpStr 
-            IF VAL(tmpStr) < 0 THEN 
-              BEEP 
-              CONTROL SET COLOR CBHNDL, %CtrlRes, RGB(255,0,0), RGB(0,0,0) 
-              CONTROL SET TEXT CBHNDL, %CtrlRes, "Error: Number must be greater than 0" 
-              SLEEP 1500 
-              Control Set Color CBHNDL, %CtrlRes, Rgb(0,0,0), Rgb(255,255,255) 
-                UpdateDisplay(CBHNDL, VAL(tmpStr), 0) 
-            ELSE 
-                UpdateDisplay(CBHNDL, LOG(VAL(tmpStr)), 0) 
-            END IF 
+            CASE %CtrlBac 
+              Control Get Text CBHNDL, %CtrlRes To tmpStr 
+              UpdateDisplay(CBHNDL, VAL(LEFT$(tmpStr, -1) ), -1) 
+              
+            CASE %CtrlCe 
+              UpdateDisplay(CBHNDL, 0, -1) 
 
-          CASE %CtrlSTO 
-            '---Result 
-            CONTROL GET TEXT CBHNDL, %CtrlRes TO tmpStr 
-            CalcMemory = FORMAT$( VAL(tmpStr) ) 
+            CASE %CtrlC 
+              UpdateDisplay(CBHNDL, 0, 0) 
+              PrevVal = 0 
 
-          CASE %CtrlRCL 
-            '---Result 
-            CONTROL SET TEXT CBHNDL, %CtrlRes, FORMAT$(CalcMemory) 
-            PostOperation = 0 
-
-          CASE %CtrlSIN 
-            '---Result 
-            CONTROL GET TEXT CBHNDL, %CtrlRes TO tmpStr 
-            UpdateDisplay(CBHNDL, SIN(VAL(tmpStr)), 0) 
-
-          CASE %CtrlCOS 
-            '---Result 
-            CONTROL GET TEXT CBHNDL, %CtrlRes TO tmpStr 
-            UpdateDisplay(CBHNDL, Cos(Val(tmpStr)), 0) 
-            PostOperation = 0 
-
-          CASE %CtrlTAN 
-            '---Result 
-            CONTROL GET TEXT CBHNDL, %CtrlRes TO tmpStr 
-            UpdateDisplay(CBHNDL, TAN(VAL(tmpStr)), 0) 
-            PostOperation = 0 
+          END SELECT 
+      end If
       
-          CASE %Ctrl1x 
-            '---Result 
-            Control Get Text CBHNDL, %CtrlRes To tmpStr 
-            IF VAL(tmpStr) <> 0 THEN 
-              tmpStr = FORMAT$( 1/(VAL(tmpStr)) ) 
-            ELSE  
-              BEEP 
-              tmpStr = "Error: division by zero." 
-              CONTROL SET COLOR CBHNDL, %CtrlRes, RGB(255,0,0), RGB(0,0,0) 
-              CONTROL SET TEXT CBHNDL, %CtrlRes, tmpStr 
-              tmpStr = "0" 
-              SLEEP 1500 
-              CONTROL SET COLOR CBHNDL, %CtrlRes, RGB(0,0,0), RGB(255,255,255) 
-            END IF 
-            CONTROL SET TEXT CBHNDL, %CtrlRes, tmpStr 
-            PostOperation = 0 
-
-          CASE %CtrlPI 
-            UpdateDisplay(CBHNDL, 4 * Atn(1), 0) 
-
-          CASE %CtrlFCT 
-
-            CONTROL GET TEXT CBHNDL, %CtrlRes TO tmpStr 
-            IF VAL(tmpStr) < 0 THEN 
-              BEEP 
-              CONTROL SET COLOR CBHNDL, %CtrlRes, RGB(255,0,0), RGB(0,0,0) 
-              CONTROL SET TEXT CBHNDL, %CtrlRes, "Error: Number must be positive whole number" 
-              SLEEP 1500 
-              Control Set Color CBHNDL, %CtrlRes, Rgb(0,0,0), Rgb(255,255,255) 
-                UpdateDisplay(CBHNDL, VAL(tmpStr), 0) 
-            ELSE 
-              tempEXT = 1 
-              FOR i = 2 TO VAL(tmpStr) 
-                tempEXT = tempEXT * i 
-              NEXT 
-              UpdateDisplay(CBHNDL, tempEXT, 0) 
-
-            END IF 
-
-
-          CASE %CtrlBac 
-            Control Get Text CBHNDL, %CtrlRes To tmpStr 
-            UpdateDisplay(CBHNDL, VAL(LEFT$(tmpStr, -1) ), -1) 
-            
-          CASE %CtrlCe 
-            UpdateDisplay(CBHNDL, 0, -1) 
-
-          CASE %CtrlC 
-            UpdateDisplay(CBHNDL, 0, 0) 
-            PrevVal = 0 
-
-        END SELECT 
-        
       
     END SELECT 
     
@@ -355,3 +358,4 @@
 
   END FUNCTION 
 
+ 

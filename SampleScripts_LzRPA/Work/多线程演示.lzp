@@ -25,7 +25,7 @@
     "FileVersion1": 1,
     "FileVersion2": 0,
     "FileVersion3": 0,
-    "FileVersion4": 4,
+    "FileVersion4": 1,
     "FileVersionAutoAdd": 2
   },
   "Library": [
@@ -36,7 +36,7 @@
   "File": [
     {
       "Path": "代码\\Main.tbs",
-      "Open": false
+      "Open": true
     }
   ],
   "BootCode": ""

@@ -1,0 +1,1582 @@
+﻿{
+  "Caption": "xLib",
+  "Remark": "星月扩展库",
+  "Icon": "公文包",
+  "Templet": "index",
+  "Visible": true,
+  "Function": true,
+  "Help": {},
+  "Child": [
+    {
+      "Caption": "单文件使用扩展库",
+      "Icon": "信息",
+      "Templet": "document",
+      "Visible": true,
+      "Function": true,
+      "Help": {
+        "Caption": "扩展库使用帮助",
+        "Document": "在项目中使用扩展库功能会自动将扩展库引入项目，项目编译或运行时，自动加入扩展库依赖代码和文件。<br><br>如果您在单文件中希望使用本扩展库，则必须编写扩展库依赖代码才能调用扩展库中的函数，否则会报错，LzRPA 建议使用工程方式编写程序，但仍保留单文件使用扩展库的方法。<br><br>扩展库依赖代码：<br>&nbsp;&nbsp;#Include &quot;%APP_PATH%\\\\..\\\\Modules\\\\xLib\\\\boot.tbs&quot;<br><br>建议将引用扩展库代码统一添加到全局代码块，也就是代码的最上面。"
+      }
+    },
+    {
+      "Caption": "窗口操作",
+      "Icon": "文件夹",
+      "Templet": "index",
+      "Visible": true,
+      "Function": true,
+      "Help": {},
+      "Child": [
+        {
+          "Caption": "Window_EasyFind",
+          "Remark": "根据类名和标题模糊查找窗口",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "InsCode": "Window_EasyFind(\"类名\", \"标题\")",
+          "Help": {
+            "Caption": "Window_EasyFind",
+            "Define": "Window_EasyFind(sClassName, sCaption)",
+            "Describe": "根据类名和标题模糊查找窗口，只能找到显示的顶层窗口",
+            "RetType": "Integer",
+            "Return": "返回找到的窗口句柄，没有找到任何窗口返回0",
+            "Param": [
+              {
+                "Caption": "sClassName",
+                "DataType": "String",
+                "Describe": "窗口类名，支持模糊查找",
+                "Optional": false
+              },
+              {
+                "Caption": "sCaption",
+                "DataType": "String",
+                "Describe": "窗口标题，支持模糊查找",
+                "Optional": false
+              }
+            ]
+          }
+        },
+        {
+          "Caption": "Window_Find",
+          "Remark": "查找顶层窗口",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "InsCode": "Window_Find(iMask, sClassName, sCaption, iStyle, iExStyle, iPID, iThread)",
+          "Help": {
+            "Caption": "Window_Find",
+            "Define": "Window_Find(iMask, sClassName, sCaption, iStyle, iExStyle, iPID, iThread)",
+            "Describe": "根据特定条件查找指定的顶层窗口句柄",
+            "RetType": "Integer",
+            "Return": "返回找到的窗口句柄，没有找到任何窗口返回0",
+            "Param": [
+              {
+                "Caption": "iMask",
+                "DataType": "Integer",
+                "Describe": "条件过滤掩码（请参照其他参数给出的过滤方法），多个过滤方式之间可以使用 bOr 运算符连接。",
+                "Optional": false
+              },
+              {
+                "Caption": "sClassName",
+                "DataType": "String",
+                "Describe": "窗口类名，iMask参数可设置为下列值决定过滤方式：<br>TZ_SKIPCLASS：不检查窗口类名<br>TZ_FULLCLASS：窗口类名必须完全匹配<br>TZ_PARTCLASS：窗口类名部分匹配即可<br>TZ_ELSECLASS：窗口类名必须不匹配",
+                "Optional": false
+              },
+              {
+                "Caption": "sCaption",
+                "DataType": "String",
+                "Describe": "窗口标题，iMask参数可设置为下列值决定过滤方式：<br>TZ_SKIPTITLE：不检查窗口标题<br>TZ_FULLTITLE：窗口标题必须完全匹配<br>TZ_PARTTITLE：窗口标题部分匹配即可<br>TZ_ELSETITLE：窗口标题必须不匹配",
+                "Optional": false
+              },
+              {
+                "Caption": "iStyle",
+                "DataType": "Integer",
+                "Describe": "窗口风格样式，iMask参数可设置为下列值决定过滤方式：<br>TZ_SKIPSTYLE：不检查窗口风格<br>TZ_EXISSTYLE：窗口必须存在指定风格<br>TZ_NONESTYLE：窗口必须不存在指定风格<br>TZ_MATESTYLE：窗口风格必须完全一致",
+                "Optional": false
+              },
+              {
+                "Caption": "iExStyle",
+                "DataType": "Integer",
+                "Describe": "窗口扩展风格样式，iMask参数可设置为下列值决定过滤方式：<br>TZ_SKIPEXSTY：不检查窗口扩展风格<br>TZ_EXISEXSTY：窗口必须存在指定扩展风格<br>TZ_NONEEXSTY：窗口必须不存在指定扩展风格<br>TZ_MATEEXSTY：窗口扩展风格必须完全一致",
+                "Optional": false
+              },
+              {
+                "Caption": "iPID",
+                "DataType": "Integer",
+                "Describe": "所属进程PID，iMask参数设置为 TZ_USEPID 时指定进程PID，则只从这个进程内查找窗口",
+                "Optional": false
+              },
+              {
+                "Caption": "iThread",
+                "DataType": "Integer",
+                "Describe": "所属线程ID，iMask参数设置为 TZ_USETHREAD 时指定线程ID，则只从这个线程内查找窗口，注意：线程ID不是线程句柄",
+                "Optional": false
+              }
+            ]
+          }
+        },
+        {
+          "Caption": "Window_E2H",
+          "Remark": "根据控件枚举值定位子窗口",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "Window_H2E",
+          "Remark": "根据窗口句柄获得控件枚举值",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "Window_List",
+          "Remark": "获取符合条件的窗口列表",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "Window_ListChild",
+          "Remark": "获取符合条件的子窗口列表",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "Window_FindChild",
+          "Remark": "查找子窗口",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "Window_Send",
+          "Remark": "同步发送窗口消息",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "Window_Post",
+          "Remark": "异步发送窗口消息",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "Window_Show",
+          "Remark": "显示或隐藏窗口",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "Window_GetCaption",
+          "Remark": "获取窗口标题",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "Window_SetCaption",
+          "Remark": "设置窗口标题",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "Window_GetText",
+          "Remark": "获取窗口文本",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "Window_SetText",
+          "Remark": "设置窗口文本",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "Window_GetClassName",
+          "Remark": "获取窗口类名",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "Window_ConvS2C",
+          "Remark": "将屏幕坐标映射为窗口坐标",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "Window_ConvC2S",
+          "Remark": "将窗口坐标映射为屏幕坐标",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "Window_GetRect",
+          "Remark": "获取窗口的矩形范围",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "Window_GetPath",
+          "Remark": "获取窗口所属的程序文件路径",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "Window_GetPID",
+          "Remark": "获取窗口进程PID",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "Window_GetTID",
+          "Remark": "获取窗口线程ID",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "Window_GetParent",
+          "Remark": "获取父窗口",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "Window_GetRoot",
+          "Remark": "获取根窗口",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "Window_FormPoint",
+          "Remark": "获取指定坐标下的窗口",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "Window_FormMouse",
+          "Remark": "获取鼠标指向位置的窗口",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        }
+      ]
+    },
+    {
+      "Caption": "进程操作",
+      "Icon": "文件夹",
+      "Templet": "index",
+      "Visible": true,
+      "Function": true,
+      "Help": {},
+      "Child": [
+        {
+          "Caption": "Process_List",
+          "Remark": "获取进程列表",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "Process_FindChild",
+          "Remark": "查找子进程",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "Process_ListChild",
+          "Remark": "获取子进程列表",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "PID_FindChild",
+          "Remark": "查找子进程[通过PID]",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "PID_ListChild",
+          "Remark": "获取子进程列表[通过PID]",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "Process_Is64",
+          "Remark": "判断进程是否是64位",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "Process_CmdLine",
+          "Remark": "获取进程启动命令行",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "Process_CurPath",
+          "Remark": "获取进程的工作目录",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "Process_ImageName",
+          "Remark": "获取进程的映像名",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "Process_GetPath",
+          "Remark": "获取进程的文件路径",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "Proecss_WorkMenory",
+          "Remark": "获取进程的内存占用",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "Proecss_PageMenory",
+          "Remark": "获取进程的虚拟内存占用",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "Process_Parent",
+          "Remark": "获取进程的父进程",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "Process_H2ID",
+          "Remark": "通过进程句柄获取进程PID",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "Process_Status",
+          "Remark": "获取进程的状态",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "Process_Kill",
+          "Remark": "结束进程",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "Process_Pause",
+          "Remark": "挂起进程",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "Process_Resume",
+          "Remark": "继续运行进程",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "Process_InjectDll",
+          "Remark": "给进程注入DLL",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "PID_Is64",
+          "Remark": "判断进程是否是64位[通过PID]",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "PID_CmdLine",
+          "Remark": "获取进程启动命令行[通过PID]",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "PID_CurPath",
+          "Remark": "获取进程的工作目录[通过PID]",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "PID_ImageName",
+          "Remark": "获取进程的映像名[通过PID]",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "PID_GetPath",
+          "Remark": "获取进程的文件路径[通过PID]",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "PID_WorkMenory",
+          "Remark": "获取进程的内存占用[通过PID]",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "PID_PageMenory",
+          "Remark": "获取进程的虚拟内存占用[通过PID]",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "PID_Parent",
+          "Remark": "获取进程的父进程[通过PID]",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "PID_Status",
+          "Remark": "获取进程的状态[通过PID]",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "PID_Kill",
+          "Remark": "结束进程[通过PID]",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "PID_Pause",
+          "Remark": "挂起进程[通过PID]",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "PID_Resume",
+          "Remark": "继续运行进程[通过PID]",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "PID_InjectDll",
+          "Remark": "给进程注入DLL[通过PID]",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        }
+      ]
+    },
+    {
+      "Caption": "网络功能",
+      "Icon": "文件夹",
+      "Templet": "index",
+      "Visible": false,
+      "Function": true,
+      "Help": {}
+    },
+    {
+      "Caption": "文件目录操作",
+      "Icon": "文件夹",
+      "Templet": "index",
+      "Visible": false,
+      "Function": true,
+      "Help": {}
+    },
+    {
+      "Caption": "文件路径处理",
+      "Icon": "文件夹",
+      "Templet": "index",
+      "Visible": true,
+      "Function": true,
+      "Help": {},
+      "Child": [
+        {
+          "Caption": "GetPathDir",
+          "Remark": "获取路径中包含的目录",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "GetPathFile",
+          "Remark": "获取路径中包含的文件名",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "GetPathAbs",
+          "Remark": "转换为绝对路径",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "GetPathRel",
+          "Remark": "转换为相对路径",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "GetPathPixel",
+          "Remark": "获取路径在特定宽度下的显示形式",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "GetPathPixelDC",
+          "Remark": "获取路径在特定宽度下的显示形式[通过DC]",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "GetRandPath",
+          "Remark": "获取随机路径",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        }
+      ]
+    },
+    {
+      "Caption": "数据算法",
+      "Icon": "文件夹",
+      "Templet": "index",
+      "Visible": true,
+      "Function": true,
+      "Help": {},
+      "Child": [
+        {
+          "Caption": "CRC32",
+          "Remark": "CRC32",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "CRC32_File",
+          "Remark": "CRC32计算文件",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "MD5_ZS",
+          "Remark": "MD5",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "MD5_File",
+          "Remark": "MD5计算文件",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "SHA1",
+          "Remark": "SHA1",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "SHA1_File",
+          "Remark": "SHA1计算文件",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "SHA256",
+          "Remark": "SHA256",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "SHA256_File",
+          "Remark": "SHA256计算文件",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "Base64_Encode",
+          "Remark": "Base64编码字符串",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "Base64_Decode",
+          "Remark": "Base64字符串解码",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "Base64_Encode_File",
+          "Remark": "Base64编码文件",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "Base64_Decode_File",
+          "Remark": "Base64文件解码",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        }
+      ]
+    },
+    {
+      "Caption": "通用对话框",
+      "Icon": "文件夹",
+      "Templet": "index",
+      "Visible": true,
+      "Function": true,
+      "Help": {},
+      "Child": [
+        {
+          "Caption": "Dlg_OpenFile",
+          "Remark": "打开文件对话框",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "Dlg_OpenFiles",
+          "Remark": "打开文件对话框[多选]",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "Dlg_SaveFile",
+          "Remark": "保存文件对话框",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "Dlg_SelFolder",
+          "Remark": "选择目录对话框",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "Dlg_SelFont",
+          "Remark": "选择字体对话框",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "Dlg_SelColor",
+          "Remark": "选择颜色对话框",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        }
+      ]
+    },
+    {
+      "Caption": "ini文件读写",
+      "Icon": "文件夹",
+      "Templet": "index",
+      "Visible": true,
+      "Function": true,
+      "Help": {},
+      "Child": [
+        {
+          "Caption": "Ini_Read",
+          "Remark": "读键值",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "Ini_ReadInt",
+          "Remark": "读键值[整数]",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "Ini_Write",
+          "Remark": "写键值",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "Ini_EnumSec",
+          "Remark": "枚举小节",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "Ini_EnumKey",
+          "Remark": "枚举键值",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "Ini_DelSec",
+          "Remark": "删除小节",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        },
+        {
+          "Caption": "Ini_DelKey",
+          "Remark": "删除键值",
+          "Icon": "函数",
+          "Templet": "command",
+          "Visible": true,
+          "Function": true,
+          "Help": {
+            "Caption": "",
+            "Define": "",
+            "Describe": "",
+            "RetType": "",
+            "Return": "",
+            "Param": []
+          }
+        }
+      ]
+    }
+  ],
+  "ModuleName": "xLib",
+  "ModuleCode": "#Include \"%APP_PATH%\\\\..\\\\Modules\\\\xLib\\\\boot.tbs\""
+}

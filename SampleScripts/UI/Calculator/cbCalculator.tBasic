@@ -1,4 +1,4 @@
-  '---
+﻿  '---
   ' Version 1.0.0
   '---
   
@@ -116,127 +116,130 @@
 
       CASE %WM_COMMAND
 
-        '---Test which control has been clicked
-        SELECT CASE cbctl 
+        if CBCTLMSG = %BN_CLICKED then
 
-          '---A number was activated
-          CASE %CtrlN00, %CtrlN01, %CtrlN02, %CtrlN03, %CtrlN04, %CtrlN05, %CtrlN06, %CtrlN07, %CtrlN08, %CtrlN09
+          '---Test which control has been clicked
+          SELECT CASE cbctl 
 
-            
-            '---Just for fun and to test killing a control,
-            '---if number was clicked and CTRL was down then delete the control
-            IF GetAsyncKeyState(%VK_CONTROL) <> 0 then
-              Control Kill CBHNDL, CBWPARAM
-            ELSE
+            '---A number was activated
+            CASE %CtrlN00, %CtrlN01, %CtrlN02, %CtrlN03, %CtrlN04, %CtrlN05, %CtrlN06, %CtrlN07, %CtrlN08, %CtrlN09
+
               
-              Control Get Text CBHNDL, %CtrlRes To tmpStr
-              IF ClearNext = %TRUE THEN
-                ClearNext = %FALSE
-                tmpStr = VAL(FORMAT$(cbwParam - %CtrlN00))
-              ELSE                
-                IF NextHasComma = %TRUE THEN
-                  NextHasComma = %FALSE
-                  tmpStr = VAL(VAL(tmpStr) & "." & FORMAT$(cbwParam - %CtrlN00))
-                ELSE
-                  tmpStr = VAL(VAL(tmpStr) & FORMAT$(cbwParam - %CtrlN00))
-                END IF
-              END IF
-              CONTROL SET TEXT hDlg, %CtrlRes, tmpStr
-            END IF
-
-          '---An operation was activated
-          CASE %CtrlPlu, %CtrlMin, %CtrlMul, %CtrlDiv
-            PostOperation = cbwParam
-            Control Get Text CBHNDL, %CtrlRes To tmpStr
-            PrevVal = VAL(tmpStr)
-            ClearNext = %TRUE
-
-          '---Comma
-          CASE %CtrlCOM
-            IF NextHasComma = %TRUE THEN
-              BEEP
-            ELSE
-              NextHasComma = %TRUE
-            END IF
-          
-          '---Equal sign
-          CASE %CtrlEqu
-            IF PostOperation <> 0 THEN
-              Control Get Text CBHNDL, %CtrlRes To tmpStr
-              SELECT CASE PostOperation
-                CASE %CtrlPlu
-                  tmpStr = FORMAT$( VAL(PrevVal) + VAL(tmpStr) )
-                CASE %CtrlMin
-                  tmpStr = FORMAT$( VAL(PrevVal) - VAL(tmpStr) )
-                CASE %CtrlMul
-                  tmpStr = FORMAT$( VAL(PrevVal) * VAL(tmpStr) )
-                CASE %CtrlDiv                       
-                  IF VAL(tmpStr) <> 0 THEN
-                    tmpStr = FORMAT$( VAL(PrevVal) / VAL(tmpStr) )
+              '---Just for fun and to test killing a control,
+              '---if number was clicked and CTRL was down then delete the control
+              IF GetAsyncKeyState(%VK_CONTROL) <> 0 then
+                Control Kill CBHNDL, CBWPARAM
+              ELSE
+                
+                Control Get Text CBHNDL, %CtrlRes To tmpStr
+                IF ClearNext = %TRUE THEN
+                  ClearNext = %FALSE
+                  tmpStr = VAL(FORMAT$(cbwParam - %CtrlN00))
+                ELSE                
+                  IF NextHasComma = %TRUE THEN
+                    NextHasComma = %FALSE
+                    tmpStr = VAL(VAL(tmpStr) & "." & FORMAT$(cbwParam - %CtrlN00))
                   ELSE
-                    BEEP
-                    tmpStr = "Error: division by zero."
-                    Control Set Color CBHNDL, %CtrlRes, Rgb(255,0,0), Rgb(0,0,0) 
-                    Control Set Text CBHNDL, %CtrlRes, tmpStr
-                    tmpStr = "0"
-                    SLEEP 1500
-                    Control Set Color CBHNDL, %CtrlRes, Rgb(0,0,0), Rgb(255,255,255) 
+                    tmpStr = VAL(VAL(tmpStr) & FORMAT$(cbwParam - %CtrlN00))
                   END IF
-              END SELECT
+                END IF
+                CONTROL SET TEXT hDlg, %CtrlRes, tmpStr
+              END IF
+
+            '---An operation was activated
+            CASE %CtrlPlu, %CtrlMin, %CtrlMul, %CtrlDiv
+              PostOperation = cbwParam
+              Control Get Text CBHNDL, %CtrlRes To tmpStr
+              PrevVal = VAL(tmpStr)
+              ClearNext = %TRUE
+
+            '---Comma
+            CASE %CtrlCOM
+              IF NextHasComma = %TRUE THEN
+                BEEP
+              ELSE
+                NextHasComma = %TRUE
+              END IF
+            
+            '---Equal sign
+            CASE %CtrlEqu
+              IF PostOperation <> 0 THEN
+                Control Get Text CBHNDL, %CtrlRes To tmpStr
+                SELECT CASE PostOperation
+                  CASE %CtrlPlu
+                    tmpStr = FORMAT$( VAL(PrevVal) + VAL(tmpStr) )
+                  CASE %CtrlMin
+                    tmpStr = FORMAT$( VAL(PrevVal) - VAL(tmpStr) )
+                  CASE %CtrlMul
+                    tmpStr = FORMAT$( VAL(PrevVal) * VAL(tmpStr) )
+                  CASE %CtrlDiv                       
+                    IF VAL(tmpStr) <> 0 THEN
+                      tmpStr = FORMAT$( VAL(PrevVal) / VAL(tmpStr) )
+                    ELSE
+                      BEEP
+                      tmpStr = "Error: division by zero."
+                      Control Set Color CBHNDL, %CtrlRes, Rgb(255,0,0), Rgb(0,0,0) 
+                      Control Set Text CBHNDL, %CtrlRes, tmpStr
+                      tmpStr = "0"
+                      SLEEP 1500
+                      Control Set Color CBHNDL, %CtrlRes, Rgb(0,0,0), Rgb(255,255,255) 
+                    END IF
+                END SELECT
+                Control Set Text CBHNDL, %CtrlRes, tmpStr
+                PostOperation = 0
+                ClearNext = %TRUE
+              END IF
+            
+            '---Change sign
+            CASE %CtrlPM
+              Control Get Text CBHNDL, %CtrlRes To tmpStr
+              tmpStr = FORMAT$( -1 * VAL(tmpStr) )
+              Control Set Text CBHNDL, %CtrlRes, tmpStr
+              
+            '---
+            CASE %CtrlSqr
+              Control Get Text CBHNDL, %CtrlRes To tmpStr
+              tmpStr = FORMAT$( SQR(VAL(tmpStr)) )
+              Control Set Text CBHNDL, %CtrlRes, tmpStr
+              PostOperation = 0 
+            
+            '---
+            CASE %Ctrl1x
+              CONTROL GET TEXT CBHNDL, %CtrlRes TO tmpStr
+              IF VAL(tmpStr) <> 0 THEN
+                tmpStr = FORMAT$( 1/(VAL(tmpStr)) )
+              ELSE  
+                BEEP
+                tmpStr = "Error: division by zero."
+                CONTROL SET COLOR CBHNDL, %CtrlRes, RGB(255,0,0), RGB(0,0,0) 
+                CONTROL SET TEXT CBHNDL, %CtrlRes, tmpStr
+                tmpStr = "0"
+                SLEEP 1500
+                CONTROL SET COLOR CBHNDL, %CtrlRes, RGB(0,0,0), RGB(255,255,255) 
+              END IF
               Control Set Text CBHNDL, %CtrlRes, tmpStr
               PostOperation = 0
-              ClearNext = %TRUE
-            END IF
-          
-          '---Change sign
-          CASE %CtrlPM
-            Control Get Text CBHNDL, %CtrlRes To tmpStr
-            tmpStr = FORMAT$( -1 * VAL(tmpStr) )
-            Control Set Text CBHNDL, %CtrlRes, tmpStr
-            
-          '---
-          CASE %CtrlSqr
-            Control Get Text CBHNDL, %CtrlRes To tmpStr
-            tmpStr = FORMAT$( SQR(VAL(tmpStr)) )
-            Control Set Text CBHNDL, %CtrlRes, tmpStr
-            PostOperation = 0 
-          
-          '---
-          CASE %Ctrl1x
-            CONTROL GET TEXT CBHNDL, %CtrlRes TO tmpStr
-            IF VAL(tmpStr) <> 0 THEN
-              tmpStr = FORMAT$( 1/(VAL(tmpStr)) )
-            ELSE  
-              BEEP
-              tmpStr = "Error: division by zero."
-              CONTROL SET COLOR CBHNDL, %CtrlRes, RGB(255,0,0), RGB(0,0,0) 
+
+            '---
+            CASE %CtrlBac
+              CONTROL GET TEXT CBHNDL, %CtrlRes TO tmpStr
+              tmpStr = FORMAT$( VAL(LEFT$(tmpStr, -1) ) )
               CONTROL SET TEXT CBHNDL, %CtrlRes, tmpStr
-              tmpStr = "0"
-              SLEEP 1500
-              CONTROL SET COLOR CBHNDL, %CtrlRes, RGB(0,0,0), RGB(255,255,255) 
-            END IF
-            Control Set Text CBHNDL, %CtrlRes, tmpStr
-            PostOperation = 0
+            
+            '---
+            CASE %CtrlCe
+              CONTROL SET TEXT CBHNDL, %CtrlRes, "0"
 
-          '---
-          CASE %CtrlBac
-            CONTROL GET TEXT CBHNDL, %CtrlRes TO tmpStr
-            tmpStr = FORMAT$( VAL(LEFT$(tmpStr, -1) ) )
-            CONTROL SET TEXT CBHNDL, %CtrlRes, tmpStr
-          
-          '---
-          CASE %CtrlCe
-            CONTROL SET TEXT CBHNDL, %CtrlRes, "0"
+            '---
+            CASE %CtrlC
+              Control Set Text CBHNDL, %CtrlRes, "0"
+              PostOperation = 0 
+              PrevVal = 0
+            CASE %CtrlRes
 
-          '---
-          CASE %CtrlC
-            Control Set Text CBHNDL, %CtrlRes, "0"
-            PostOperation = 0 
-            PrevVal = 0
-          CASE %CtrlRes
-
-        END SELECT
-        
+          END SELECT
+        end If
+      
       '---Some other notifications ...
       
       CASE %WM_NOTIFY
@@ -256,3 +259,4 @@
     END SELECT
     
   END function
+ 

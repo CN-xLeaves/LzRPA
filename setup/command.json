@@ -1261,6 +1261,7 @@
 						"Caption": "And",
 						"Remark": "与",
 						"Visible": true,
+						"Keyword": true,
 						"InsCode": "true And false",
 						"Templet": "syntax",
 						"Help": {
@@ -1273,6 +1274,7 @@
 						"Caption": "Or",
 						"Remark": "或",
 						"Visible": true,
+						"Keyword": true,
 						"InsCode": "true Or false",
 						"Templet": "syntax",
 						"Help": {
@@ -1285,6 +1287,7 @@
 						"Caption": "Not",
 						"Remark": "非",
 						"Visible": true,
+						"Keyword": true,
 						"InsCode": "Not true",
 						"Templet": "syntax",
 						"Help": {
@@ -1297,6 +1300,7 @@
 						"Caption": "All",
 						"Remark": "判断所有条件成立",
 						"Visible": true,
+						"Keyword": true,
 						"InsCode": "All(true, false, true)",
 						"Templet": "syntax",
 						"Help": {
@@ -1309,6 +1313,7 @@
 						"Caption": "Some",
 						"Remark": "判断部分条件成立",
 						"Visible": true,
+						"Keyword": true,
 						"InsCode": "Some(true, false, true)",
 						"Templet": "syntax",
 						"Help": {
@@ -1321,6 +1326,7 @@
 						"Caption": "IsTrue",
 						"Remark": "是否为 true",
 						"Visible": true,
+						"Keyword": true,
 						"InsCode": "IsTrue(true)",
 						"Templet": "syntax",
 						"Help": {
@@ -1333,6 +1339,7 @@
 						"Caption": "IsFalse",
 						"Remark": "是否为 false",
 						"Visible": true,
+						"Keyword": true,
 						"InsCode": "IsFalse(true)",
 						"Templet": "syntax",
 						"Help": {
@@ -1403,6 +1410,7 @@
 						"Caption": "AndB",
 						"Remark": "按位与",
 						"Visible": true,
+						"Keyword": true,
 						"InsCode": "AndB(8, 15)",
 						"Templet": "syntax",
 						"Help": {
@@ -1415,6 +1423,7 @@
 						"Caption": "OrB",
 						"Remark": "按位或",
 						"Visible": true,
+						"Keyword": true,
 						"InsCode": "OrB(8, 15)",
 						"Templet": "syntax",
 						"Help": {
@@ -1427,6 +1436,7 @@
 						"Caption": "NotB",
 						"Remark": "按位非",
 						"Visible": true,
+						"Keyword": true,
 						"InsCode": "NotB(15)",
 						"Templet": "syntax",
 						"Help": {
@@ -1439,6 +1449,7 @@
 						"Caption": "Xor",
 						"Remark": "按位异或",
 						"Visible": true,
+						"Keyword": true,
 						"InsCode": "8 Xor 15",
 						"Templet": "syntax",
 						"Help": {

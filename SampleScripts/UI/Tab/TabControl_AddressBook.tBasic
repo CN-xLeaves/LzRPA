@@ -1,4 +1,4 @@
-  uses "UI"
+﻿  uses "UI"
   uses "File"
   
   #minversion 1.7.0.0  
@@ -144,7 +144,7 @@
         CONTROL ADD TAB, cbhndl, %ID_Main_TAB, "", 200, 0, dw - 200, dh - control_getheight(cbhndl, %ID_STATUSBAR), _
                                                                             0 _'%TCS_VERTICAL | %TCS_RIGHT _
                                                                             call cb_Tab_Main
-        control untheme cbhndl, %ID_Main_TAB
+        'control untheme cbhndl, %ID_Main_TAB
         'control set resize cbhndl, %ID_Main_TAB, 1, 1, 1, 1
 
         static lvStyle as long
@@ -213,19 +213,19 @@
             '---lParam contains a pointer to a listview notification structure
             '---so assign it to our lvnm pointer
             lvnm = cblParam
-
+            dim ldw as dword = lvnm.hdr.code
 
             '---Now check the notification event occurred
-            select case lvnm.hdr.code
+            select case ldw'lvnm.hdr.code
               case %LVN_ITEMCHANGED
                 '---When a selection change takes place, more %LVN_ITEMCHANGED are fired.
                 '---To catch only the needed notification, check .uNewState notification member to have %LVIS_SELECTED on.
-                if lvnm.uNewState and %LVIS_SELECTED then
+                if lvnm.uNewState <> 0 then'and %LVIS_SELECTED then
                   idx = ListView_GetNextItem(cbhndl, %ID_LV_ADDR, -1, %LVNI_SELECTED)
                   Data_SetFields(cbhndl, %ID_Main_TAB, Idx)
                 end if
 
-            end select      
+            end select
         end select
 
     END SELECT
@@ -233,10 +233,11 @@
   end function
 
   function Data_SetFields(hDlg as long, idTab as long, idx as long) as long
-    dim hDlg_General  as long value tab_pagegethandle(hDlg, idTab, 1)
-    dim hDlg_Home     as long value tab_pagegethandle(hDlg, idTab, 2)
-    dim hDlg_Work     as long value tab_pagegethandle(hDlg, idTab, 3)
-    dim hDlg_Notes    as long value tab_pagegethandle(hDlg, idTab, 4)
+    dim hDlg_General  as dword value tab_pagegethandle(hDlg, idTab, 1)
+    dim hDlg_Home     as dword value tab_pagegethandle(hDlg, idTab, 2)
+    dim hDlg_Work     as dword value tab_pagegethandle(hDlg, idTab, 3)
+    dim hDlg_Notes    as dword value tab_pagegethandle(hDlg, idTab, 4)
+
 
     '---Tab General
       control set text hDlg_General , %ID_TabGeneral_FirstName    , gsData(idx, %Data_Fld_FirstName)
@@ -300,7 +301,7 @@
         CONTROL ADD textbox, cbhndl, %ID_TabGeneral_NickName   , , xPos, yPos, tWidth, lHeight, %WS_CHILD, , call cb_Text   : yPos += lHeight + yGap
         CONTROL ADD textbox, cbhndl, %ID_TabGeneral_Title      , , xPos, yPos, tWidth, lHeight, %WS_CHILD, , call cb_Text   : yPos += lHeight + yGap
         CONTROL ADD textbox, cbhndl, %ID_TabGeneral_Birthday   , , xPos, yPos, tWidth, lHeight, %WS_CHILD, , call cb_Text   : yPos += lHeight + yGap
-        
+
       case %WM_SIZE
         dialog get client cbhndl to xPos, yPos
         for nControl as long = %ID_TabGeneral_FirstName to %ID_TabGeneral_Birthday
@@ -432,7 +433,7 @@
     select case CBCTLMSG
       case %EN_SETFOCUS
         '---When textbox get focus, change colors
-        CONTROL SET COLOR CBHNDL, CBCTL, -1, rgb(233, 244, 250)
+        CONTROL SET COLOR CBHNDL, CBCTL, -1, %RGB_LEMONCHIFFON'%RGB_LIGHTYELLOW'rgb(233, 244, 250)
         return %TRUE
         
       case %EN_KILLFOCUS
@@ -443,3 +444,4 @@
      
   end function
 
+ 

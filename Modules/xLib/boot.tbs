@@ -1,0 +1,481 @@
+
+'------------------------------------ 系统信息获取  ------------------------------------'
+
+Declare  Function Sys_Bits Lib "xLib.dll" Alias "Sys_Bits" () As Long
+
+
+
+'------------------------------------ 线程锁功能  ------------------------------------'
+
+Declare Function Lock_Create lib "xLib.dll" Alias "Lock_Create" () As Long
+Declare Sub Lock_Free lib "xLib.dll" Alias "Lock_Free" (pLock As Long)
+Declare Sub Lock_On lib "xLib.dll" Alias "Lock_On" (pLock As Long)
+Declare Sub Lock_Off lib "xLib.dll" Alias "Lock_Off" (pLock As Long)
+
+
+
+'------------------------------------ 目录操作功能  ------------------------------------'
+
+Declare Function GetPathDir_Ori Lib "xLib.dll" Alias "GetPathDir" (ByVal Path As ASCIIZ) As ASCIIZ Ptr
+Declare Function GetPathFile_Ori Lib "xLib.dll" Alias "GetPathFile" (ByVal Path As ASCIIZ) As ASCIIZ Ptr
+Declare Function GetPathAbs_Ori Lib "xLib.dll" Alias "GetPathAbs" (ByVal Path As ASCIIZ) As ASCIIZ Ptr
+Declare Function GetPathRel_Ori Lib "xLib.dll" Alias "GetPathRel" (ByVal Dir1 As ASCIIZ, ByVal Dir2 As ASCIIZ) As ASCIIZ Ptr
+Declare Function GetPathPixel_Ori Lib "xLib.dll" Alias "GetPathPixel" (ByVal Path As ASCIIZ, ByVal hWnd As Long, ByVal Pixel As Long) As ASCIIZ Ptr
+Declare Function GetPathPixelDC_Ori Lib "xLib.dll" Alias "GetPathPixelDC" (ByVal Path As ASCIIZ, ByVal hWinDC As Long, ByVal Pixel As Long) As ASCIIZ Ptr
+Declare Function GetRandPath_Ori Lib "xLib.dll" Alias "GetRandPath" (ByVal PathHead As ASCIIZ, ByVal PathFoot As ASCIIZ, ByVal RandSize As Long) As ASCIIZ Ptr
+
+Function GetPathDir(ByVal sPath As ASCIIZ) As String
+	Dim sPtr As Long = GetPathDir_Ori(sPath)
+    Dim sRet As String = Peek$(ASCIIZ, sPtr)
+    Return sRet
+End Function
+
+Function GetPathFile(ByVal sPath As ASCIIZ) As String
+	Dim sPtr As Long = GetPathFile_Ori(sPath)
+    Dim sRet As String = Peek$(ASCIIZ, sPtr)
+    Return sRet
+End Function
+
+Function GetPathAbs(ByVal sPath As ASCIIZ) As String
+	Dim sPtr As Long = GetPathAbs_Ori(sPath)
+    Dim sRet As String = Peek$(ASCIIZ, sPtr)
+    Return sRet
+End Function
+
+Function GetPathRel(ByVal sDir1 As ASCIIZ, ByVal sDir2 As ASCIIZ) As String
+	Dim sPtr As Long = GetPathRel_Ori(sDir1, sDir2)
+    Dim sRet As String = Peek$(ASCIIZ, sPtr)
+    Return sRet
+End Function
+
+Function GetPathPixel(ByVal sPath As ASCIIZ, ByVal hWin As Long, ByVal iPixel As Long) As String
+	Dim sPtr As Long = GetPathPixel_Ori(sPath, hWin, iPixel)
+    Dim sRet As String = Peek$(ASCIIZ, sPtr)
+    Return sRet
+End Function
+
+Function GetPathPixelDC(ByVal sPath As ASCIIZ, ByVal hDC As Long, ByVal iPixel As Long) As String
+	Dim sPtr As Long = GetPathPixelDC_Ori(sPath, hDC, iPixel)
+    Dim sRet As String = Peek$(ASCIIZ, sPtr)
+    Return sRet
+End Function
+
+Function GetRandPath(ByVal sPathHead As ASCIIZ, ByVal sPathFoot As ASCIIZ, ByVal iRandSize As Long) As String
+	Dim sPtr As Long = GetRandPath_Ori(sPathHead, sPathFoot, iRandSize)
+    Dim sRet As String = Peek$(ASCIIZ, sPtr)
+    Return sRet
+End Function
+
+
+
+'------------------------------------ 文件系统功能  ------------------------------------'
+
+Declare Function Drives_List Lib "kernel32.dll" Alias "GetLogicalDrives" () As Long
+Declare Function Drives_Type Lib "kernel32.dll" Alias "GetDriveTypeA" (ByVal sDrives As ASCIIZ) As Long
+
+Declare Function File_List_Ori lib "xLib.dll" Alias "File_List" (ByVal Path As ASCIIZ, ByVal Filt As ASCIIZ, ByVal Attr As Long, ByVal Atex As Long, ByVal Recu As Long) As ASCIIZ Ptr
+Declare Function File_ListName_Ori lib "xLib.dll" Alias "File_ListName" (ByVal Path As ASCIIZ, ByVal Filt As ASCIIZ, ByVal Attr As Long, ByVal Atex As Long) As ASCIIZ Ptr
+
+Declare Function File_Read_Ori lib "xLib.dll" Alias "File_Read" (ByVal Path As ASCIIZ) As ASCIIZ Ptr
+Declare Function File_ReadEx_Ori lib "xLib.dll" Alias "File_ReadEx" (ByVal Path As ASCIIZ, ByVal Addr As Long, ByVal Size As Long, ByVal Char As Long) As ASCIIZ Ptr
+Declare Function File_Write lib "xLib.dll" Alias "File_Write" (ByVal sPath As ASCIIZ, ByVal sText As ASCIIZ, ByVal iSize As Long) As Long
+Declare Function File_WriteEx lib "xLib.dll" Alias "File_WriteEx" (ByVal sPath As ASCIIZ, ByVal sText As ASCIIZ, ByVal iAddr As Long, ByVal iSize As Long, ByVal eChar As Long) As Long
+Declare Function File_Append lib "xLib.dll" Alias "File_Append" (ByVal sPath As ASCIIZ, ByVal sText As ASCIIZ, ByVal iSize As Long) As Long
+Declare Function File_AppendEx lib "xLib.dll" Alias "File_AppendEx" (ByVal sPath As ASCIIZ, ByVal sText As ASCIIZ, ByVal iSize As Long, ByVal eChar As Long) As Long
+Declare Function File_Len lib "xLib.dll" Alias "File_Len" (ByVal sPath As ASCIIZ) As Long
+Declare Function File_LenEx lib "xLib.dll" Alias "File_LenEx" (ByVal sPath As ASCIIZ) As QUAD
+Declare Function File_Create lib "xLib.dll" Alias "File_Create" (ByVal sPath As ASCIIZ) As Long
+Declare Function File_Copy lib "xLib.dll" Alias "File_Copy" (ByVal sPathSrc As ASCIIZ, ByVal sPathDst As ASCIIZ) As Long
+Declare Function File_Move lib "xLib.dll" Alias "File_Move" (ByVal sPathSrc As ASCIIZ, ByVal sPathDst As ASCIIZ) As Long
+Declare Function File_Rename lib "xLib.dll" Alias "File_Rename" (ByVal sPathSrc As ASCIIZ, ByVal sPathDst As ASCIIZ) As Long
+Declare Function File_Delete lib "kernel32.dll" Alias "DeleteFileA" (ByVal sPath As ASCIIZ) As Long
+Declare Function File_Exists lib "xLib.dll" Alias "File_Exists" (ByVal sPath As ASCIIZ) As Long
+Declare Function File_GetAttr lib "kernel32.dll" Alias "GetFileAttributesA" (ByVal sPath As ASCIIZ) As Long
+Declare Function File_SetAttr lib "kernel32.dll" Alias "SetFileAttributesA" (ByVal sPath As ASCIIZ, ByVal uVal As Long) As Long
+
+Declare Function Folder_Len lib "xLib.dll" Alias "Folder_Len" (ByVal sPath As ASCIIZ, ByVal sFilt As ASCIIZ, ByVal iRecu As Long) As Long
+Declare Function Folder_LenEx lib "xLib.dll" Alias "Folder_LenEx" (ByVal sPath As ASCIIZ, ByVal sFilt As ASCIIZ, ByVal iRecu As Long) As QUAD
+Declare Function Folder_Create lib "xLib.dll" Alias "Folder_Create" (ByVal sPath As ASCIIZ) As Long
+Declare Function Folder_Exists lib "xLib.dll" Alias "Folder_Exists" (ByVal sPath As ASCIIZ) As Long
+Declare Function Folder_Copy lib "xLib.dll" Alias "Folder_Copy" (ByVal sPathSrc As ASCIIZ, ByVal sPathDst As ASCIIZ, ByVal sFilt As ASCIIZ, ByVal iRecu As Long) As Long
+Declare Function Folder_Move lib "xLib.dll" Alias "Folder_Move" (ByVal sPathSrc As ASCIIZ, ByVal sPathDst As ASCIIZ, ByVal sFilt As ASCIIZ, ByVal iRecu As Long) As Long
+Declare Function Folder_Rename lib "xLib.dll" Alias "File_Rename" (ByVal sPathSrc As ASCIIZ, ByVal sPathDst As ASCIIZ) As Long
+Declare Function Folder_Delete lib "xLib.dll" Alias "Folder_Delete" (ByVal sPath As ASCIIZ, ByVal sFilt As ASCIIZ, ByVal iRecu As Long) As Long
+Declare Function Folder_GetAttr lib "kernel32.dll" Alias "GetFileAttributesA" (ByVal sPath As ASCIIZ) As Long
+Declare Function Folder_SetAttr lib "kernel32.dll" Alias "SetFileAttributesA" (ByVal sPath As ASCIIZ, ByVal uVal As Long) As Long
+
+Function File_List_Ori(ByVal sPath As ASCIIZ, ByVal sFilt As ASCIIZ, ByVal iAttr As Long, ByVal iAtex As Long, ByVal iRecu As Long) As String
+	Dim sPtr As Long = File_List_Ori(sPath, sFilt, iAttr, iAtex, iRecu)
+    Dim sRet As String = Peek$(ASCIIZ, sPtr)
+    Return sRet
+End Function
+
+Function File_ListName_Ori(ByVal sPath As ASCIIZ, ByVal sFilt As ASCIIZ, ByVal iAttr As Long, ByVal iAtex As Long) As String
+	Dim sPtr As Long = File_ListName_Ori(sPath, sFilt, iAttr, iAtex)
+    Dim sRet As String = Peek$(ASCIIZ, sPtr)
+    Return sRet
+End Function
+
+Function File_Read_Ori(ByVal sPath As ASCIIZ) As String
+	Dim sPtr As Long = File_Read_Ori(sPath)
+    Dim sRet As String = Peek$(ASCIIZ, sPtr)
+    Return sRet
+End Function
+
+Function File_ReadEx_Ori(ByVal sPath As ASCIIZ, ByVal iAddr As Long, ByVal iSize As Long, ByVal eChar As Long) As String
+	Dim sPtr As Long = File_ReadEx_Ori(sPath, iAddr, iSize, eChar)
+    Dim sRet As String = Peek$(ASCIIZ, sPtr)
+    Return sRet
+End Function
+
+
+
+'------------------------------------ 算法功能  ------------------------------------'
+
+Declare Function CRC32 lib "xLib.dll" Alias "CRC32" (ByVal pDat As ASCIIZ, ByVal iSize As Long) As Long
+Declare Function CRC32_File lib "xLib.dll" Alias "CRC32_File" (ByVal sPath As ASCIIZ) As Long
+Declare Function MD5_ZS_Ori lib "xLib.dll" Alias "MD5" (ByVal pDat As ASCIIZ, ByVal Size As Long) As ASCIIZ Ptr
+Declare Function MD5_File_Ori lib "xLib.dll" Alias "MD5_File" (ByVal Path As ASCIIZ) As ASCIIZ Ptr
+Declare Function SHA1_Ori lib "xLib.dll" Alias "SHA1" (ByVal pDat As ASCIIZ, ByVal Size As Long) As ASCIIZ Ptr
+Declare Function SHA1_File_Ori lib "xLib.dll" Alias "SHA1_File" (ByVal Path As ASCIIZ) As ASCIIZ Ptr
+Declare Function SHA256_Ori lib "xLib.dll" Alias "SHA256" (ByVal pDat As ASCIIZ, ByVal Size As Long) As ASCIIZ Ptr
+Declare Function SHA256_File_Ori lib "xLib.dll" Alias "SHA256_File" (ByVal Path As ASCIIZ) As ASCIIZ Ptr
+Declare Function Base64_Encode_Ori lib "xLib.dll" Alias "Base64_Encode" (ByVal pDat As ASCIIZ, ByVal Size As Long) As ASCIIZ Ptr
+Declare Function Base64_Decode_Ori lib "xLib.dll" Alias "Base64_Decode" (ByVal pDat As ASCIIZ) As ASCIIZ Ptr
+Declare Function Base64_Encode_File_Ori lib "xLib.dll" Alias "Base64_Encode_File" (ByVal Path As ASCIIZ) As ASCIIZ Ptr
+Declare Function Base64_Decode_File_Ori lib "xLib.dll" Alias "Base64_Decode_File" (ByVal Path As ASCIIZ) As ASCIIZ Ptr
+
+Function MD5_ZS(ByVal sDat As ASCIIZ, ByVal iSize As Long) As String
+	Dim sPtr As Long = MD5_ZS_Ori(sDat, iSize)
+    Dim sRet As String = Peek$(ASCIIZ, sPtr)
+    Return sRet
+End Function
+
+Function MD5_File(ByVal sPath As ASCIIZ) As String
+	Dim sPtr As Long = MD5_File_Ori(sPath)
+    Dim sRet As String = Peek$(ASCIIZ, sPtr)
+    Return sRet
+End Function
+
+Function SHA1(ByVal sDat As ASCIIZ, ByVal iSize As Long) As String
+	Dim sPtr As Long = SHA1_Ori(sDat, iSize)
+    Dim sRet As String = Peek$(ASCIIZ, sPtr)
+    Return sRet
+End Function
+
+Function SHA1_File(ByVal sPath As ASCIIZ) As String
+	Dim sPtr As Long = SHA1_File_Ori(sPath)
+    Dim sRet As String = Peek$(ASCIIZ, sPtr)
+    Return sRet
+End Function
+
+Function SHA256(ByVal sDat As ASCIIZ, ByVal iSize As Long) As String
+	Dim sPtr As Long = SHA256_Ori(sDat, iSize)
+    Dim sRet As String = Peek$(ASCIIZ, sPtr)
+    Return sRet
+End Function
+
+Function SHA256_File(ByVal sPath As ASCIIZ) As String
+	Dim sPtr As Long = SHA256_File_Ori(sPath)
+    Dim sRet As String = Peek$(ASCIIZ, sPtr)
+    Return sRet
+End Function
+
+Function Base64_Encode(ByVal sDat As ASCIIZ, ByVal iSize As Long) As String
+	Dim sPtr As Long = Base64_Encode_Ori(sDat, iSize)
+    Dim sRet As String = Peek$(ASCIIZ, sPtr)
+    Return sRet
+End Function
+
+Function Base64_Decode(ByVal sDat As ASCIIZ) As String
+	Dim sPtr As Long = Base64_Decode_Ori(sDat)
+    Dim sRet As String = Peek$(ASCIIZ, sPtr)
+    Return sRet
+End Function
+
+Function Base64_Encode_File(ByVal sPath As ASCIIZ) As String
+	Dim sPtr As Long = Base64_Encode_File_Ori(sPath)
+    Dim sRet As String = Peek$(ASCIIZ, sPtr)
+    Return sRet
+End Function
+
+Function Base64_Decode_File(ByVal sPath As ASCIIZ) As String
+	Dim sPtr As Long = Base64_Decode_File_Ori(sPath)
+    Dim sRet As String = Peek$(ASCIIZ, sPtr)
+    Return sRet
+End Function
+
+
+
+'------------------------------------ 窗口相关功能  ------------------------------------'
+
+Const TZ_USEPID As Long = &H1				' 在指定进程PID下查找窗口
+
+Const TZ_USETHREAD As Long = &H2			' 在指定线程下查找窗口
+
+Const TZ_SKIPCLASS As Long = &H0			' 不检查窗口类名
+Const TZ_FULLCLASS As Long = &H4			' 窗口类名必须完全匹配
+Const TZ_PARTCLASS As Long = &H8			' 窗口类名部分匹配即可
+Const TZ_ELSECLASS As Long = &HC			' 窗口类名必须不匹配
+
+Const TZ_SKIPTITLE As Long = &H0			' 不检查窗口标题
+Const TZ_FULLTITLE As Long = &H10			' 窗口标题必须完全匹配
+Const TZ_PARTTITLE As Long = &H20			' 窗口标题部分匹配即可
+Const TZ_ELSETITLE As Long = &H30			' 窗口标题必须不匹配
+
+Const TZ_SKIPSTYLE As Long = &H0			' 不检查窗口风格
+Const TZ_EXISSTYLE As Long = &H40			' 窗口必须存在指定风格
+Const TZ_NONESTYLE As Long = &H80			' 窗口必须不存在指定风格
+Const TZ_MATESTYLE As Long = &HC0			' 窗口风格必须完全一致
+
+Const TZ_SKIPEXSTY As Long = &H0			' 不检查窗口扩展风格
+Const TZ_EXISEXSTY As Long = &H100			' 窗口必须存在指定扩展风格
+Const TZ_NONEEXSTY As Long = &H200			' 窗口必须不存在指定扩展风格
+Const TZ_MATEEXSTY As Long = &H300			' 窗口扩展风格必须完全一致
+
+Declare Function Window_GetCaption_Ori Lib "xLib.dll" Alias "Window_GetCaption" (ByVal hWnd As Long) As ASCIIZ Ptr
+Declare Function Window_SetCaption Lib "user32.dll" Alias "SetWindowTextA" (ByVal hWnd As Long, ByVal sText As ASCIIZ) As Long
+Declare Function Window_GetClassName_Ori Lib "xLib.dll" Alias "Window_GetClassName" (ByVal hWnd As Long) As ASCIIZ Ptr
+Declare Function Window_GetRoot Lib "xLib.dll" Alias "Window_GetRoot" (ByVal hWnd As Long) As Long
+Declare Function Window_GetParent Lib "user32.dll" Alias "GetParent" (ByVal hWnd As Long) As Long
+Declare Function Window_H2E Lib "xLib.dll" Alias "Window_H2E" (ByVal Parent As Long, ByVal ClassName As ASCIIZ, ByVal Eid As Long) As Long
+Declare Function Window_List_Ori Lib "xLib.dll" Alias "Window_List" (ByVal Mask As Long, ByVal ClassName As ASCIIZ, ByVal Caption As ASCIIZ, ByVal Style As Long, ByVal ExStyle As Long, ByVal PID As Long, ByVal Thread As Long) As ASCIIZ Ptr
+Declare Function Window_EasyFind Lib "xLib.dll" Alias "Window_EasyFind" (ByVal sClassName As ASCIIZ, ByVal sCaption As ASCIIZ) As Long
+Declare Function Window_Send Lib "user32.dll" Alias "SendMessageA" (ByVal hWin As Long, ByVal uMsg As Long, ByVal wParam As Long, ByVal lParam As Long) As Long
+Declare Function Window_Post Lib "user32.dll" Alias "PostMessageA" (ByVal hWin As Long, ByVal uMsg As Long, ByVal wParam As Long, ByVal lParam As Long) As Long
+Declare Function Window_Show Lib "user32.dll" Alias "ShowWindow" (ByVal hWin As Long, ByVal iShow As Long) As Long
+Declare Function Window_Find Lib "xLib.dll" Alias "Window_Find" (ByVal Mask As Long, ByVal ClassName As ASCIIZ, ByVal Caption As ASCIIZ, ByVal Style As Long, ByVal ExStyle As Long, ByVal PID As Long, ByVal Thread As Long) As Long
+Declare Function Window_E2H Lib "xLib.dll" Alias "Window_E2H" (ByVal Parent As Long, ByVal ClassName As ASCIIZ, ByVal Eid As Long) As Long
+Declare Function Window_GetPID Lib "xLib.dll" Alias "Window_GetPID" (ByVal hWin As Long) As Long
+Declare Function Window_ListChild_Ori Lib "xLib.dll" Alias "Window_ListChild" (ByVal Parent As Long, ByVal Mask As Long, ByVal ClassName As ASCIIZ, ByVal Caption As ASCIIZ, ByVal Style As Long, ByVal ExStyle As Long, ByVal PID As Long, ByVal Thread As Long) As ASCIIZ Ptr
+Declare Function Window_FindChild Lib "xLib.dll" Alias "Window_FindChild" (ByVal Parent As Long, ByVal Mask As Long, ByVal ClassName As ASCIIZ, ByVal Caption As ASCIIZ, ByVal Style As Long, ByVal ExStyle As Long, ByVal PID As Long, ByVal Thread As Long) As Long
+Declare Function Window_GetTID Lib "xLib.dll" Alias "Window_GetTID" (ByVal hWin As Long) As Long
+Declare Function Window_GetPath_Ori Lib "xLib.dll" Alias "Window_GetPath" (ByVal hWnd As Long) As ASCIIZ Ptr
+Declare Function Window_FormPoint Lib "xLib.dll" Alias "Window_FormPoint" (ByVal x As Long, ByVal y As Long) As Long
+Declare Function Window_FormMouse Lib "xLib.dll" Alias "Window_FormMouse" () As Long
+Declare Function Window_ConvS2C Lib "xLib.dll" Alias "Window_ConvS2C" (ByVal hWin As Long, ByVal x As Long, ByVal y As Long) As Long
+Declare Function Window_ConvC2S Lib "xLib.dll" Alias "Window_ConvC2S" (ByVal hWin As Long, ByVal x As Long, ByVal y As Long) As Long
+Declare Function Window_GetRect Lib "xLib.dll" Alias "Window_GetRect" (ByVal hWin As Long) As Long
+
+Function Window_GetCaption(ByVal hWin As Long) As String
+	Dim sPtr As Long = Window_GetCaption_Ori(hWin)
+    Dim sRet As String = Peek$(ASCIIZ, sPtr)
+    Return sRet
+End Function
+
+Alias Window_GetCaption As Window_GetText
+Alias Window_SetCaption As Window_SetText
+
+Function Window_GetClassName(ByVal hWin As Long) As String
+	Dim sPtr As Long = Window_GetClassName_Ori(hWin)
+    Dim sRet As String = Peek$(ASCIIZ, sPtr)
+    Return sRet
+End Function
+
+Function Window_List(ByVal iMask As Long, ByVal sClassName As ASCIIZ, ByVal sCaption As ASCIIZ, ByVal iStyle As Long, ByVal iExStyle As Long, ByVal iPID As Long, ByVal iThread As Long) As String
+	Dim sPtr As Long = Window_List_Ori(iMask, sClassName, sCaption, iStyle, iExStyle, iPID, iThread)
+    Dim sRet As String = Peek$(ASCIIZ, sPtr)
+    Return sRet
+End Function
+
+Function Window_ListChild(ByVal iParent As Long, ByVal iMask As Long, ByVal sClassName As ASCIIZ, ByVal sCaption As ASCIIZ, ByVal iStyle As Long, ByVal iExStyle As Long, ByVal iPID As Long, ByVal iThread As Long) As String
+	Dim sPtr As Long = Window_ListChild_Ori(iParent, iMask, sClassName, sCaption, iStyle, iExStyle, iPID, iThread)
+    Dim sRet As String = Peek$(ASCIIZ, sPtr)
+    Return sRet
+End Function
+
+Function Window_GetPath(ByVal hWin As Long) As String
+	Dim sPtr As Long = Window_GetPath_Ori(hWin)
+    Dim sRet As String = Peek$(ASCIIZ, sPtr)
+    Return sRet
+End Function
+
+
+
+'------------------------------------ 进程相关功能  ------------------------------------'
+
+Declare Function Process_List_Ori Lib "xLib.dll" Alias "Process_List" () As ASCIIZ Ptr
+Declare Function Process_FindChild Lib "xLib.dll" Alias "Process_FindChild" (ByVal pHdr As Long) As Long
+Declare Function Process_ListChild_Ori Lib "xLib.dll" Alias "Process_ListChild" (ByVal pHdr As Long) As ASCIIZ Ptr
+Declare Function PID_FindChild Lib "xLib.dll" Alias "PID_FindChild" (ByVal pid As Long) As Long
+Declare Function PID_ListChild_Ori Lib "xLib.dll" Alias "PID_ListChild" (ByVal pid As Long) As ASCIIZ Ptr
+
+Declare Function Process_Is64 Lib "xLib.dll" Alias "Process_Is64" (ByVal pHdr As Long) As Long
+Declare Function Process_CmdLine_Ori Lib "xLib.dll" Alias "Process_CmdLine" (ByVal pHdr As Long) As ASCIIZ Ptr
+Declare Function Process_CurPath_Ori Lib "xLib.dll" Alias "Process_CurPath" (ByVal pHdr As Long) As ASCIIZ Ptr
+Declare Function Process_ImageName_Ori Lib "xLib.dll" Alias "Process_ImageName" (ByVal pHdr As Long) As ASCIIZ Ptr
+Declare Function Process_GetPath_Ori Lib "xLib.dll" Alias "Process_GetPath" (ByVal pHdr As Long) As ASCIIZ Ptr
+Declare Function Proecss_WorkMenory Lib "xLib.dll" Alias "Proecss_WorkMenory" (ByVal pHdr As Long) As Long
+Declare Function Proecss_PageMenory Lib "xLib.dll" Alias "Proecss_PageMenory" (ByVal pHdr As Long) As Long
+Declare Function Process_Parent Lib "xLib.dll" Alias "Process_Parent" (ByVal pHdr As Long) As Long
+Declare Function Process_H2ID Lib "xLib.dll" Alias "Process_H2ID" (ByVal pHdr As Long) As Long
+Declare Function Process_Status Lib "xLib.dll" Alias "Process_Status" (ByVal pHdr As Long) As Long
+Declare Function Process_Kill Lib "xLib.dll" Alias "Process_Kill" (ByVal pHdr As Long) As Long
+Declare Function Process_Pause Lib "xLib.dll" Alias "Process_Pause" (ByVal pHdr As Long) As Long
+Declare Function Process_Resume Lib "xLib.dll" Alias "Process_Resume" (ByVal pHdr As Long) As Long
+Declare Function Process_InjectDll Lib "xLib.dll" Alias "Process_InjectDll" (ByVal hProcess As Long, ByVal sDll As ASCIIZ) As Long
+
+Declare Function PID_Is64 Lib "xLib.dll" Alias "PID_Is64" (ByVal pid As Long) As Long
+Declare Function PID_CmdLine_Ori Lib "xLib.dll" Alias "PID_CmdLine" (ByVal pid As Long) As ASCIIZ Ptr
+Declare Function PID_CurPath_Ori Lib "xLib.dll" Alias "PID_CurPath" (ByVal pid As Long) As ASCIIZ Ptr
+Declare Function PID_ImageName_Ori Lib "xLib.dll" Alias "PID_ImageName" (ByVal pid As Long) As ASCIIZ Ptr
+Declare Function PID_GetPath_Ori Lib "xLib.dll" Alias "PID_GetPath" (ByVal pid As Long) As ASCIIZ Ptr
+Declare Function PID_WorkMenory Lib "xLib.dll" Alias "PID_WorkMenory" (ByVal pid As Long) As Long
+Declare Function PID_PageMenory Lib "xLib.dll" Alias "PID_PageMenory" (ByVal pid As Long) As Long
+Declare Function PID_Parent Lib "xLib.dll" Alias "PID_Parent" (ByVal pid As Long) As Long
+Declare Function PID_Status Lib "xLib.dll" Alias "PID_Status" (ByVal pid As Long) As Long
+Declare Function PID_Kill Lib "xLib.dll" Alias "PID_Kill" (ByVal pid As Long) As Long
+Declare Function PID_Pause Lib "xLib.dll" Alias "PID_Pause" (ByVal pid As Long) As Long
+Declare Function PID_Resume Lib "xLib.dll" Alias "PID_Resume" (ByVal pid As Long) As Long
+Declare Function PID_InjectDll Lib "xLib.dll" Alias "PID_InjectDll" (ByVal pid As Long, ByVal sDll As ASCIIZ) As Long
+
+Function Process_List() As String
+	Dim sPtr As Long = Process_List()
+    Dim sRet As String = Peek$(ASCIIZ, sPtr)
+    Return sRet
+End Function
+
+Function Process_ListChild(ByVal pHandle As Long) As String
+	Dim sPtr As Long = Process_ListChild_Ori(pHandle)
+    Dim sRet As String = Peek$(ASCIIZ, sPtr)
+    Return sRet
+End Function
+
+Function PID_ListChild(ByVal iPID As Long) As String
+	Dim sPtr As Long = PID_ListChild_Ori(iPID)
+    Dim sRet As String = Peek$(ASCIIZ, sPtr)
+    Return sRet
+End Function
+
+Function Process_CmdLine(ByVal pHandle As Long) As String
+	Dim sPtr As Long = Process_CmdLine_Ori(pHandle)
+    Dim sRet As String = Peek$(ASCIIZ, sPtr)
+    Return sRet
+End Function
+
+Function Process_CurPath(ByVal pHandle As Long) As String
+	Dim sPtr As Long = Process_CurPath_Ori(pHandle)
+    Dim sRet As String = Peek$(ASCIIZ, sPtr)
+    Return sRet
+End Function
+
+Function Process_ImageName(ByVal pHandle As Long) As String
+	Dim sPtr As Long = Process_ImageName_Ori(pHandle)
+    Dim sRet As String = Peek$(ASCIIZ, sPtr)
+    Return sRet
+End Function
+
+Function Process_GetPath(ByVal pHandle As Long) As String
+	Dim sPtr As Long = Process_GetPath_Ori(pHandle)
+    Dim sRet As String = Peek$(ASCIIZ, sPtr)
+    Return sRet
+End Function
+
+Function PID_CmdLine(ByVal iPID As Long) As String
+	Dim sPtr As Long = PID_CmdLine_Ori(iPID)
+    Dim sRet As String = Peek$(ASCIIZ, sPtr)
+    Return sRet
+End Function
+
+Function PID_CurPath(ByVal iPID As Long) As String
+	Dim sPtr As Long = PID_CurPath_Ori(iPID)
+    Dim sRet As String = Peek$(ASCIIZ, sPtr)
+    Return sRet
+End Function
+
+Function PID_ImageName(ByVal iPID As Long) As String
+	Dim sPtr As Long = PID_ImageName_Ori(iPID)
+    Dim sRet As String = Peek$(ASCIIZ, sPtr)
+    Return sRet
+End Function
+
+Function PID_GetPath(ByVal iPID As Long) As String
+	Dim sPtr As Long = PID_GetPath_Ori(iPID)
+    Dim sRet As String = Peek$(ASCIIZ, sPtr)
+    Return sRet
+End Function
+
+
+
+'------------------------------------ 网络相关功能  ------------------------------------'
+
+Declare Function Network_LocalIP_Ori lib "xLib.dll" Alias "Network_LocalIP" () As ASCIIZ Ptr
+Declare Function Ping lib "xLib.dll" Alias "Ping" (ByVal IP As ASCIIZ, ByVal ot As Long) As Long
+Declare Function Ping_Port lib "xLib.dll" Alias "Ping_Port" (ByVal IP As ASCIIZ, ByVal port As Long) As Long
+
+Function Network_LocalIP() As String
+	Dim sPtr As Long = Network_LocalIP_Ori()
+    Dim sRet As String = Peek$(ASCIIZ, sPtr)
+    Return sRet
+End Function
+
+
+
+'------------------------------------ INI文件读写  ------------------------------------'
+
+Declare Function Ini_Read_Ori lib "xLib.dll" Alias "Ini_Read" (ByVal file As ASCIIZ, ByVal sec As ASCIIZ, ByVal key As ASCIIZ) As ASCIIZ Ptr
+Declare Function Ini_ReadInt lib "xLib.dll" Alias "Ini_ReadInt" (ByVal file As ASCIIZ, ByVal sec As ASCIIZ, ByVal key As ASCIIZ) As Long
+Declare Function Ini_Write lib "xLib.dll" Alias "Ini_Write" (ByVal file As ASCIIZ, ByVal sec As ASCIIZ, ByVal key As ASCIIZ, ByVal value As ASCIIZ) As Long
+Declare Function Ini_EnumSec_Ori lib "xLib.dll" Alias "Ini_EnumSec" (ByVal file As ASCIIZ) As ASCIIZ Ptr
+Declare Function Ini_EnumKey_Ori lib "xLib.dll" Alias "Ini_EnumKey" (ByVal file As ASCIIZ, ByVal sec As ASCIIZ) As ASCIIZ Ptr
+Declare Function Ini_DelSec lib "xLib.dll" Alias "Ini_DelSec" (ByVal file As ASCIIZ, ByVal sec As ASCIIZ) As Long
+Declare Function Ini_DelKey lib "xLib.dll" Alias "Ini_DelKey" (ByVal file As ASCIIZ, ByVal sec As ASCIIZ, ByVal key As ASCIIZ) As Long
+
+Function Ini_Read(ByVal sFile As String, ByVal sSec As String, ByVal sKey As String) As String
+	Dim sPtr As Long = Ini_Read_Ori(sFile, sSec, sKey)
+    Dim sRet As String = Peek$(ASCIIZ, sPtr)
+    Return sRet
+End Function
+
+Function Ini_EnumSec(ByVal sFile As String) As String
+	Dim sPtr As Long = Ini_EnumSec_Ori(sFile)
+    Dim sRet As String = Peek$(ASCIIZ, sPtr)
+    Return sRet
+End Function
+
+Function Ini_EnumKey(ByVal sFile As String, ByVal sSec As String) As String
+	Dim sPtr As Long = Ini_EnumKey_Ori(sFile, sSec)
+    Dim sRet As String = Peek$(ASCIIZ, sPtr)
+    Return sRet
+End Function
+
+
+
+'------------------------------------ 对话框命令  ------------------------------------'
+
+Declare Function Dlg_OpenFile_Ori lib "xLib.dll" Alias "Dlg_OpenFile" (ByVal Parent As Long, ByVal DefPath As ASCIIZ, ByVal Filter As ASCIIZ) As Long
+Declare Function Dlg_OpenFiles_Ori lib "xLib.dll" Alias "Dlg_OpenFiles" (ByVal Parent As Long, ByVal DefPath As ASCIIZ, ByVal Filter As ASCIIZ) As ASCIIZ Ptr
+Declare Function Dlg_SaveFile_Ori lib "xLib.dll" Alias "Dlg_SaveFile" (ByVal Parent As Long, ByVal DefPath As ASCIIZ, ByVal Filter As ASCIIZ) As ASCIIZ Ptr
+Declare Function Dlg_SelFolder_Ori lib "xLib.dll" Alias "Dlg_SelFolder" (ByVal Parent As Long) As ASCIIZ Ptr
+Declare Function Dlg_SelFont_Ori lib "xLib.dll" Alias "Dlg_SelFont" (ByVal Parent As Long) As ASCIIZ Ptr
+Declare Function Dlg_SelColor lib "xLib.dll" Alias "Dlg_SelColor" (ByVal Parent As Long, ByVal defColor As Long) As Long
+
+Function Dlg_OpenFile(ByVal hParent As Long, ByVal sPath As String, ByVal sFilter As String) As String
+	Dim sPtr As Long = Dlg_OpenFile_Ori(hParent, sPath, sFilter)
+    Dim sRet As String = Peek$(ASCIIZ, sPtr)
+    Return sRet
+End Function
+
+Function Dlg_OpenFiles(ByVal hParent As Long, ByVal sPath As String, ByVal sFilter As String) As String
+	Dim sPtr As Long = Dlg_OpenFiles_Ori(hParent, sPath, sFilter)
+    Dim sRet As String = Peek$(ASCIIZ, sPtr)
+    Return sRet
+End Function
+
+Function Dlg_SaveFile(ByVal hParent As Long, ByVal sPath As String, ByVal sFilter As String) As String
+	Dim sPtr As Long = Dlg_SaveFile_Ori(hParent, sPath, sFilter)
+    Dim sRet As String = Peek$(ASCIIZ, sPtr)
+    Return sRet
+End Function
+
+Function Dlg_SelFolder(ByVal hParent As Long) As String
+	Dim sPtr As Long = Dlg_SelFolder_Ori(hParent)
+    Dim sRet As String = Peek$(ASCIIZ, sPtr)
+    Return sRet
+End Function
+
+Function Dlg_SelFont(ByVal hParent As Long, ByVal sPath As String, ByVal sFilter As String) As String
+	Dim sPtr As Long = Dlg_SelFont_Ori(hParent)
+    Dim sRet As String = Peek$(ASCIIZ, sPtr)
+    Return sRet
+End Function
